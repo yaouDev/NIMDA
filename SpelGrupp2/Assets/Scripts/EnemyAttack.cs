@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    private Transform target;
-
+    private GameObject target;
+    private Transform targetLocation;
+    [Range(0.1f, 10f)]private float dmg;
     [Range(0f, 10f)]private float combatDist;
-
+    [SerializeField] LayerMask layerMask;
 
     void Awake()
     {
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        targetLocation = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     // Update is called once per frame
     void Update()
-    {
-        if(Vector3.Distance(transform.position, target.position) <= combatDist)
+    { 
+        if(Vector3.Distance(transform.position, targetLocation.position) <= combatDist)
         {
             Attack();
         }   
@@ -25,6 +26,15 @@ public class EnemyAttack : MonoBehaviour
 
     private void Attack()
     {
-        //transform.
+        RaycastHit hit;
+        transform.LookAt(targetLocation);
+        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, layerMask))
+        {
+            /*
+            if(hit.collider.GetComponent<Player>())
+            Player player = hit.transform.GetComponent<Player>();
+            player.TakeDmg(dmg);
+            */
+        }
     }
 }
