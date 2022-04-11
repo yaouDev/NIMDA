@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    private GameObject target;
+    public GameObject target;
     private Transform targetLocation;
     [Range(0.1f, 10f)]private float dmg;
     [Range(0f, 10f)]private float combatDist;
@@ -12,7 +12,7 @@ public class EnemyAttack : MonoBehaviour
 
     void Awake()
     {
-        targetLocation = GameObject.FindGameObjectWithTag("Player").transform;
+        targetLocation = target.transform;
     }
 
     // Update is called once per frame
