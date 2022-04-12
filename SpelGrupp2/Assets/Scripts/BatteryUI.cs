@@ -7,15 +7,20 @@ using UnityEngine.UI;
 
 public class BatteryUI : MonoBehaviour {
 
-	private Image[] batteryUI;
-	private int currentBattery = 6;
+	private Image[] batteryUIs;
+	private int currentBattery = 5;
+	[SerializeField] [Range(1.0f, 10.0f)] private float percentagePerSecondIncrease;
 	private float[] batteryCharge = { 100, 100, 100, 100, 100, 100 };
-	
+
 	private void Update() {
-		RechargeBattery();	
+		RechargeBattery();
 	}
 
 	private void RechargeBattery() {
-		
+		if (batteryCharge[currentBattery] < -5.0f && currentBattery > 0) {
+			currentBattery--;
+		}
+
+		batteryCharge[currentBattery] += Time.deltaTime * percentagePerSecondIncrease;
 	}
 }
