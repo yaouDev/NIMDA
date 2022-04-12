@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Craft : MonoBehaviour
+public class Craft
 {
     public void CraftRecipe(Recipe recipe, Crafting crafting)
     {

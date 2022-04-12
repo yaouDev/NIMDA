@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 326990607570548879}
   - component: {fileID: 326990607570548866}
   - component: {fileID: 326990607570548864}
+  - component: {fileID: 1021181802951838962}
   - component: {fileID: 326990607570548867}
   m_Layer: 10
   m_Name: Player 1
@@ -355,6 +356,8 @@ MonoBehaviour:
     m_Bits: 4096
   crafting: {fileID: 0}
   cam: {fileID: 326990608734731272}
+  health: {fileID: 0}
+  visuals: {fileID: 0}
   _debugColor: {r: 10, g: 20, b: 30, a: 1}
 --- !u!114 &326990607570548866
 MonoBehaviour:
@@ -494,6 +497,22 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &1021181802951838962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326990607570548878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  copper: 10
+  transistor: 10
+  iron: 10
+  batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
 --- !u!114 &326990607570548867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,6 +602,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 69dbb80f-1dd5-4f32-9fb3-9f8bf3f9ebec
     m_ActionName: Player/LookDirection[/XboxOneGampadMacOSWireless2/rightStick,/XboxOneGampadMacOSWireless1/rightStick]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
+        m_MethodName: CraftBattery
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 0885f003-c53f-4a54-8ff0-f768a381b832
+    m_ActionName: Player/CraftBattery[/Keyboard/q]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: MouseKeyboard
   m_DefaultActionMap: Player
@@ -682,6 +717,7 @@ GameObject:
   - component: {fileID: 326990607881322125}
   - component: {fileID: 326990607881322124}
   - component: {fileID: 326990607881322112}
+  - component: {fileID: 5657999587282274127}
   - component: {fileID: 1652920257267338416}
   m_Layer: 11
   m_Name: Player 2
@@ -766,6 +802,8 @@ MonoBehaviour:
     m_Bits: 4096
   crafting: {fileID: 0}
   cam: {fileID: 326990608769707817}
+  health: {fileID: 0}
+  visuals: {fileID: 0}
   _debugColor: {r: 10, g: 20, b: 30, a: 1}
 --- !u!114 &326990607881322124
 MonoBehaviour:
@@ -905,6 +943,22 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &5657999587282274127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326990607881322127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  copper: 10
+  transistor: 10
+  iron: 10
+  batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
 --- !u!114 &1652920257267338416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1010,6 +1064,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 8cf9450c-9df7-4fa0-8dda-49f8391a87a4
     m_ActionName: Player/LookDirection[/XboxOneGampadMacOSWireless2/rightStick,/XboxOneGampadMacOSWireless1/rightStick]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
+        m_MethodName: CraftBattery
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: a2f97bf4-4646-4723-b059-afdd508121c9
+    m_ActionName: Player/CraftBattery[/Keyboard/q]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: GamePad
   m_DefaultActionMap: Player
