@@ -4,12 +4,12 @@ using UnityEngine;
 /**
  * Pickup-able objects require a rigidbody.
  * The name "PlayerPlaceHolder" refers to the players child object where picked-up object will appear.
- * Currently works on mouse objects.
+ * Currently works on Mouse objects, needs to be adjusted.
  * */
 public class PickUpableObject : MonoBehaviour
 {
-    [SerializeField] public Transform dest;
-    public Rigidbody rb;
+    [SerializeField] private Transform dest;
+    private Rigidbody rb;
 
 
     void Awake()
