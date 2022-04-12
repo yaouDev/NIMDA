@@ -85,6 +85,8 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField]
 	private LayerMask enemyLayerMask;
 
+	public Crafting crafting;
+
 	[SerializeField]
 	private Camera cam;
 
@@ -158,7 +160,7 @@ public class PlayerController : MonoBehaviour {
 			aimingDirection.Normalize();
 		}
 	}
-	
+
 	private void AimDirection() {
 		transform.LookAt(transform.position + aimingDirection);
 	}

@@ -6,8 +6,7 @@ public class EnemyAttack : MonoBehaviour
 {
     public GameObject target;
     private Transform targetLocation;
-    [Range(0.1f, 10f)]private float dmg;
-    [Range(0f, 10f)]private float combatDist;
+    [Range(0f, 10f)] private float combatDist;
     [SerializeField] LayerMask layerMask;
 
     void Awake()
@@ -17,24 +16,27 @@ public class EnemyAttack : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
-        if(Vector3.Distance(transform.position, targetLocation.position) <= combatDist)
+    {
+        if (Vector3.Distance(transform.position, targetLocation.position) <= combatDist)
         {
+            TurnToTarget();
             Attack();
-        }   
+        }
     }
 
     private void Attack()
     {
-        RaycastHit hit;
-        transform.LookAt(targetLocation);
-        if (Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, layerMask))
+        Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f);
+        //Debug.Log(hitInfo.collider.transform.name);
+        if (hitInfo.collider != null)
         {
-            /*
-            if(hit.collider.GetComponent<Player>())
-            Player player = hit.transform.GetComponent<Player>();
-            player.TakeDmg(dmg);
-            */
+            PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
+            //player.TakeDamage();
         }
+    }
+
+    private void TurnToTarget()
+    {
+        transform.LookAt(targetLocation);
     }
 }
