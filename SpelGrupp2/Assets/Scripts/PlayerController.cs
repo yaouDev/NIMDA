@@ -125,6 +125,8 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void JoystickLeft(InputAction.CallbackContext context) {
+		if (!alive) return; // TODO game jam code!!!
+		
 		 joyStickLeftInput = context.ReadValue<Vector2>();
 	}
 
@@ -163,11 +165,33 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void Fire(InputAction.CallbackContext context) {
-
+		if (!alive) return;	// TODO game jam code! 
+			
 		if (context.started) {
 			ShootLaser();
 			StartCoroutine(AnimateLineRenderer(aimingDirection));
 		}
+	}
+
+	[SerializeField]
+	private BatteryUI health;
+	
+	private bool alive = true;
+	[SerializeField] 
+	private GameObject visuals;
+	public void TakeDamage() {
+		
+		health.TakeDamage();
+	}
+
+	public void Die() {
+		alive = false;
+		visuals.SetActive(false);
+	}
+
+	public void Respawn() {
+		alive = true;
+		visuals.SetActive(true);
 	}
 
 	private void ShootLaser() {
