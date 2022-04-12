@@ -26,14 +26,16 @@ public class BatteryUI : MonoBehaviour {
 	
 	public bool takeDMG;
 	public bool respawn;
-	private bool alive = true;
+	public bool alive = true;
 
 	[SerializeField] private Transform player;
 	[SerializeField] private Transform otherPlayer;
+	[SerializeField] private PlayerController playerController;
 	[SerializeField] private float respawnTime = 12.0f;
 	private float respawnTimer;
 
 	private void Update() {
+		
 		if (alive) {
 			respawnTimer = 0.0f;
 			RechargeBattery();
@@ -52,7 +54,10 @@ public class BatteryUI : MonoBehaviour {
 	}
 
 	public void Respawn() {
-		if (alive) return;
+		if (alive) 
+			return;
+		
+		playerController.Respawn();
 		
 		alive = true;
 		
@@ -96,8 +101,9 @@ public class BatteryUI : MonoBehaviour {
 	}
 	
 	public void TakeDamage() {
-
-		if (!alive) return;
+		
+		if (!alive) 
+			return;
 		
 		batteryCharge[currentBattery] -= damageAmount;
 		
@@ -113,8 +119,14 @@ public class BatteryUI : MonoBehaviour {
 		}
 
 		if (currentBattery < 0) {
-			Debug.Log("You Died");
-			alive = false;
+			Die(); // !!!!
 		}
+	}
+
+	private void Die() {
+		
+		Debug.Log("You Died"); 
+		alive = false;
+		playerController.Die();
 	}
 }
