@@ -437,6 +437,7 @@ MonoBehaviour:
   - {fileID: 2501768213147240405}
   - {fileID: 2501768212046888249}
   percentagePerSecondIncrease: 0.1
+  damageAmount: 0.3
   batteryCharge:
   - 1
   - 1
@@ -444,7 +445,12 @@ MonoBehaviour:
   - 1
   - 1
   - 0.5
+  respawnBatteryAmount: 4
   takeDMG: 0
+  respawn: 0
+  player: {fileID: 0}
+  otherPlayer: {fileID: 0}
+  respawnTime: 12
 --- !u!1 &2501768212946325006
 GameObject:
   m_ObjectHideFlags: 0
@@ -758,6 +764,7 @@ MonoBehaviour:
   - {fileID: 2501768213814942553}
   - {fileID: 2501768212687892714}
   percentagePerSecondIncrease: 0.1
+  damageAmount: 0.3
   batteryCharge:
   - 1
   - 1
@@ -765,7 +772,12 @@ MonoBehaviour:
   - 1
   - 1
   - 0.5
+  respawnBatteryAmount: 4
   takeDMG: 0
+  respawn: 0
+  player: {fileID: 0}
+  otherPlayer: {fileID: 0}
+  respawnTime: 12
 --- !u!1 &2501768213420947974
 GameObject:
   m_ObjectHideFlags: 0
