@@ -31,5 +31,4 @@ public class PickUpableObject : MonoBehaviour
         rb.freezeRotation = false;
         transform.parent = null;
     }
-
 }
