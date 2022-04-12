@@ -34,9 +34,10 @@ public class BatteryUI : MonoBehaviour {
 	private float respawnTimer;
 
 	private void Update() {
-		if (alive)
+		if (alive) {
+			respawnTimer = 0.0f;
 			RechargeBattery();
-		else
+		} else
 			respawnTimer += Time.deltaTime;
 		
 		if (takeDMG) {
