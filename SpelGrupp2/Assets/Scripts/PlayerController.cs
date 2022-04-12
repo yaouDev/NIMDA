@@ -80,9 +80,12 @@ public class PlayerController : MonoBehaviour {
 	private Vector2 joyStickRightInput;
 
 	private Vector3 aimingDirection = Vector3.forward;
-	private LineRenderer lineRenderer;
+	[SerializeField] private LineRenderer lineRenderer;
+	[SerializeField] private LineRenderer aimLineRenderer;
 	[SerializeField]
 	private LayerMask enemyLayerMask;
+
+	public Crafting crafting;
 
 	[SerializeField]
 	private Camera cam;
@@ -92,7 +95,6 @@ public class PlayerController : MonoBehaviour {
 		stateMachine = new StateMachine(this, states);	// TODO FIXME statemachine
 		_collider = GetComponent<CapsuleCollider>();
 		_camera = GetComponentInChildren<Camera>().transform;
-		lineRenderer = GetComponent<LineRenderer>();
 	}
 
 	private void Start() {
@@ -110,6 +112,7 @@ public class PlayerController : MonoBehaviour {
 		ApplyJoystickMovement();
 		ApplyJoystickFireDirection();
 		AimDirection();
+		AnimateLaserSightLineRenderer(transform.forward);
 		stateMachine.Run();	// TODO FIXME statemachine
 	}
 
@@ -125,6 +128,8 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void JoystickLeft(InputAction.CallbackContext context) {
+		if (!alive) return; // TODO game jam code!!!
+		
 		 joyStickLeftInput = context.ReadValue<Vector2>();
 	}
 
@@ -157,22 +162,47 @@ public class PlayerController : MonoBehaviour {
 			aimingDirection.Normalize();
 		}
 	}
-	
+
 	private void AimDirection() {
 		transform.LookAt(transform.position + aimingDirection);
 	}
 
 	public void Fire(InputAction.CallbackContext context) {
-
+		if (!alive) return;	// TODO game jam code! 
+			
 		if (context.started) {
 			ShootLaser();
 			StartCoroutine(AnimateLineRenderer(aimingDirection));
 		}
 	}
 
+	[SerializeField]
+	private BatteryUI health;
+	
+	private bool alive = true;
+	[SerializeField] 
+	private GameObject visuals;
+	public void TakeDamage() {
+		
+		health.TakeDamage();
+	}
+
+	public void Die() {
+		alive = false;
+		visuals.SetActive(false);
+	}
+
+	public void Respawn() {
+		alive = true;
+		visuals.SetActive(true);
+	}
+
 	private void ShootLaser() {
 		Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
-		if (hitInfo.collider) {
+		//Debug.Log(hitInfo.collider.transform.name);
+		if (hitInfo.collider != null) {
+			EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
+			enemy.TakeDamage();
 			Debug.Log(String.Format("Hit {0}", hitInfo.transform.name));
 		}
 	}
@@ -196,7 +226,19 @@ public class PlayerController : MonoBehaviour {
 		lineRenderer.startWidth = 0.0f;
 		lineRenderer.endWidth = 0.0f;
 	}
-	
+
+	private void AnimateLaserSightLineRenderer(Vector3 dir)
+	{
+        Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * 30.0f };
+        aimLineRenderer.SetPositions(positions);
+        float lineWidth = 0.05f;
+        aimLineRenderer.startWidth = lineWidth;
+        aimLineRenderer.endWidth = lineWidth;
+        Color color = new Color(1f, 0.2f, 0.2f);
+        aimLineRenderer.startColor = color;
+        aimLineRenderer.endColor = color;
+    }
+
 	public void TargetMousePos(InputAction.CallbackContext context) {
 		Vector3 mousePos = context.ReadValue<Vector2>();
 		mousePos.z = 15.0f;
