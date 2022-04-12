@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            BatteryUI.instance.UseBattery(10);
+            
         }
 
     }
