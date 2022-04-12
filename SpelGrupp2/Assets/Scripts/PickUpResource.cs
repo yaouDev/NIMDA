@@ -11,7 +11,7 @@ public class PickUpResource : MonoBehaviour
 
     [SerializeField] private PickUp pickUpType;
 
-    void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Equals("Player"))
         {

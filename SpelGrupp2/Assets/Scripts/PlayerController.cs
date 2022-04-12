@@ -98,7 +98,6 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void Start() {
-		
 		_jumpVector = new Vector3(0.0f, _jumpForce);
 		_defaultGravity = -Physics.gravity.y;
 		_colliderRadius = _collider.radius;
@@ -182,12 +181,14 @@ public class PlayerController : MonoBehaviour {
 	private bool alive = true;
 	[SerializeField] 
 	private GameObject visuals;
-	public void TakeDamage() {
-		
-		health.TakeDamage();
-	}
+    public void TakeDamage()
+    {
 
-	public void Die() {
+		Debug.Log("Took damage");
+        //	health.TakeDamage();
+    }
+
+    public void Die() {
 		alive = false;
 		visuals.SetActive(false);
 	}
