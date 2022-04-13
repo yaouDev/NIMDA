@@ -118,18 +118,6 @@ public class SimpleGraph : MonoBehaviour {
         return currentBox;
     }
 
-
-    // Start is called before the first frame update
-    void Start() {
-        /*  nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
-         worldPos = gameObject.GetComponent<BoxCollider>().center;
-         worldSize = gameObject.transform.localScale;
-         worldPos.y += worldSize.y / 2;
-         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
-         initGraph(); */
-
-    }
-
     // this is *very* hardcoded and will most likely not work if the the "world" changes
     private void initGraph() {
         float startXPos = worldPos.x - worldSize.x / 2;
@@ -181,7 +169,7 @@ public class SimpleGraph : MonoBehaviour {
 
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
-    /*  private void OnDrawGizmos() {
+/*      private void OnDrawGizmos() {
          int count = 0;
          foreach (Vector3 v in nodes.Keys) {
              bool blocked = getBlockedNode(v).Length == 0;

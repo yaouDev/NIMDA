@@ -6,7 +6,6 @@ public class PathfinderManager : MonoBehaviour {
     [SerializeField] SimpleGraph graph;
     [SerializeField] float proximityToUseSamePath, acceptableDistanceFromTarget;
     private List<Vector3> latestCalculatedPath = new List<Vector3>();
-    private Vector3 targetBlocked, desiredTarget, activeTarget;
     public static PathfinderManager instance;
     private PriorityQueue<AI_Movement> pathQueue;
 
@@ -15,17 +14,9 @@ public class PathfinderManager : MonoBehaviour {
         pathQueue = new PriorityQueue<AI_Movement>();
     }
 
-    private bool isPathBlocked() {
-        return graph.getBlockedNode(activeTarget).Length != 0;
-    }
 
     public float getAcceptableDistanceFromTarget(){
         return acceptableDistanceFromTarget;
-    }
-
-    private bool shouldUpdatePath() {
-        bool realTargetFree = activeTarget == targetBlocked && graph.getBlockedNode(desiredTarget).Length == 0;
-        return latestCalculatedPath == null || latestCalculatedPath.Count == 0 || isPathBlocked() || realTargetFree;
     }
 
     private float heuristic(Vector3 currentPos, Vector3 endPos) {
@@ -77,7 +68,7 @@ public class PathfinderManager : MonoBehaviour {
             agentToUpdate.updateTarget();
             agentToUpdate.setPath(aStar(agentToUpdate.transform.position, agentToUpdate.getCurrentTarget(), true));
         } catch (System.Exception) {
-            Debug.Log("No current requested paths");
+            //Debug.Log("No current requested paths");
         }
 
 

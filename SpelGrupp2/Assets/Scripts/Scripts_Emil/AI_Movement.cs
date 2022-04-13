@@ -30,28 +30,16 @@ public class AI_Movement : MonoBehaviour {
         StartCoroutine(updatePath());
     }
 
-    // Update is called once per frame
+    // this code is for debugging purposes only, shows current calculated path
     void Update() {
-        updateTarget();
-        /*  if (!started) {
-
-             started = true;
-         }
-         timeSinceLastUpdate += Time.deltaTime;
-         updateTarget();
-         if (shouldUpdatePath()) {
-             currentPath = pathfinder.requestPath(transform.position, activeTarget);
-             currentPathIndex = 0;
-             timeSinceLastUpdate = 0;
-         } */
-        if (currentPath != null && currentPath.Count != 0) {
-            Vector3 prevPos = currentPath[0];
-            foreach (Vector3 pos in currentPath) {
-                if (pos != prevPos)
-                    Debug.DrawLine(prevPos, pos, Color.blue);
-                prevPos = pos;
-            }
-        }
+        /*              if (currentPath != null && currentPath.Count != 0) {
+                         Vector3 prevPos = currentPath[0];
+                         foreach (Vector3 pos in currentPath) {
+                             if (pos != prevPos)
+                                 Debug.DrawLine(prevPos, pos, Color.blue);
+                             prevPos = pos;
+                         }
+                     } */
     }
 
     public bool targetInSight() {
@@ -67,11 +55,9 @@ public class AI_Movement : MonoBehaviour {
 
     IEnumerator updatePath() {
         while (true) {
-            updateTarget();
             pathfinder.requestPath(this, transform.position, activeTarget);
             currentPathIndex = 0;
-            Debug.Log("New path!");
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(timeBetweenPathUpdates);
         }
     }
 
@@ -106,22 +92,11 @@ public class AI_Movement : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
-        } else if ((Vector3.Distance(transform.position, activeTarget) <= pathfinder.getAcceptableDistanceFromTarget())) {
+        } /* else if ((Vector3.Distance(transform.position, activeTarget) <= pathfinder.getAcceptableDistanceFromTarget())) {
             rBody.AddForce((activeTarget - transform.position).normalized * speed, ForceMode.Force);
-        }
+        } */
     }
 
-    private bool shouldUpdatePath() {
-        /*         bool realTargetFree = activeTarget == targetBlocked && pathfindingGrid.getBlockedNode(desiredTarget).Length == 0;
-                bool updateTime = timeSinceLastUpdate >= timeBetweenPathUpdates;// || timeSinceLastUpdate >= (timeBetweenPathUpdates * 5);
-                if (updateTime) Debug.Log(updateTime); //Debug.Log( "Time since: " + timeSinceLastUpdate);
-                return currentPath == null || currentPath.Count == 0 || realTargetFree || isPathBlocked() || updateTime; */
-        return timeSinceLastUpdate >= timeBetweenPathUpdates;
-    }
-
-    private bool isPathBlocked() {
-        return pathfindingGrid.getBlockedNode(activeTarget).Length != 0;
-    }
 
     public void updateTarget() {
         desiredTarget = enemyAttack.getCurrentTarget();
