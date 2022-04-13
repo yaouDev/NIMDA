@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /**
- * Identifierar närmsta spelare
- * Pausar & låser sikte f-tid innan skott
+ * Identifierar nï¿½rmsta spelare
+ * Pausar & lï¿½ser sikte f-tid innan skott
  * skjuter
- * pausar f-tid innan loop börjar om
+ * pausar f-tid innan loop bï¿½rjar om
  * */
 public class EnemyAttack : MonoBehaviour
 {
@@ -39,7 +39,7 @@ public class EnemyAttack : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, 
                 rotation,
                 Time.deltaTime * turnSpeed);
-            Debug.Log(transform.rotation.y);
+      
             if (isShooting)
             {
                 isShooting = false;
