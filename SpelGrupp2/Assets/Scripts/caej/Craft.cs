@@ -14,7 +14,7 @@ public class Craft
 
         if (recipe.product == null) Debug.LogWarning("Trying to craft null");
 
-        //kan bytas ut mot en foreach loop ifall man vill ha många resources/använda resource objekt
+        //kan bytas ut mot en foreach loop ifall man vill ha many resources/anvaenda resource objekt
         if (crafting.copper < recipe.copperNeeded)
         {
             Debug.Log("Not enough copper!");
@@ -45,7 +45,7 @@ public class Craft
             else
             {
                 Debug.Log("You crafted: " + recipe.product + "!");
-                Debug.Log("TODO: Implement desination for crafted items");
+                Debug.Log("TODO: Implement destination for crafted items");
             }
         }
     }
