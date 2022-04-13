@@ -10,39 +10,37 @@ public class PickUpResource : MonoBehaviour
     }
 
     [SerializeField] private PickUp pickUpType;
+    private bool pickedUp = false;
 
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Equals("Player"))
         {
-            Debug.Log("item detected");
             PlayerController player = other.transform.GetComponent<PlayerController>();
-            Debug.Log("player identified");
             pickUpDrop(player.crafting);
-            Debug.Log("resource assigned");
             Destroy(gameObject);
-            Debug.Log("item destroyed");
-
         }
     }
     private void pickUpDrop(Crafting crafting)
     {
+        if(!pickedUp)
         switch (pickUpType)
         {
             case (PickUp.Iron):
                 crafting.iron++;
-                Debug.Log("iron picked up");
+                Debug.Log("iron: " + crafting.iron);
                 break;
 
             case (PickUp.Copper):
                 crafting.copper++;
-                Debug.Log("copper picked up");
+                Debug.Log("copper: " + crafting.copper);
                 break;
 
             case (PickUp.Transistor):
                 crafting.transistor++;
-                Debug.Log("transistor picked up");
+                Debug.Log("transistor: " + crafting.transistor);
                 break;
         }
+        pickedUp = true;
     }
 }

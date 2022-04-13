@@ -36,10 +36,10 @@ public class EnemyAttack : MonoBehaviour
             // the second argument, upwards, defaults to Vector3.up
             Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, 
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
                 rotation,
                 Time.deltaTime * turnSpeed);
-      
+
             if (isShooting)
             {
                 isShooting = false;
