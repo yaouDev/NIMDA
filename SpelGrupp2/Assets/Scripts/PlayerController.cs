@@ -86,6 +86,8 @@ public class PlayerController : MonoBehaviour {
 	private LayerMask enemyLayerMask;
 
 	public Crafting crafting;
+	public bool inSafeZone = false;
+	private float healthReg, superReg, standardReg; // TODO Safe zone regeneration buff 
 
 	[SerializeField]
 	private Camera cam;
@@ -113,6 +115,7 @@ public class PlayerController : MonoBehaviour {
 		ApplyJoystickFireDirection();
 		AimDirection();
 		AnimateLaserSightLineRenderer(transform.forward);
+		UpdateSafeZoneBuff();
 		stateMachine.Run();	// TODO FIXME statemachine
 	}
 
@@ -385,6 +388,11 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		if (exit > 10) Debug.Log("EXITED");
+	}
+
+	public void UpdateSafeZoneBuff() // TODO Safe zone regeneration buff 
+	{
+		healthReg = inSafeZone ? superReg : standardReg; 
 	}
 
 	private void ApplyFriction(Vector3 normalForce) {

@@ -11,25 +11,26 @@ using UnityEngine;
 public class EnemyAttack : MonoBehaviour
 {
     GameObject[] targets;
-    private GameObject CurrentTarget;
     private float dist;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float attackRange;
     private bool isShooting = true;
-    [SerializeField] private float turnSpeed = 10.0f;
+    [SerializeField] private float turnSpeed = 10f;
+    private bool stunned = false;
+    private PlayerController p1, p2;
 
     void Awake()
     {
         targets = GameObject.FindGameObjectsWithTag("Player");
-        CurrentTarget = targets[0];
+        p1 = targets[0].GetComponent<PlayerController>();
+        p2 = targets[1].GetComponent<PlayerController>();
     }
 
     void Update()
     {
-        GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
+        PlayerController closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? p1 : p2;
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
-        //CurrentTarget = closestTarget;
-        if (dist <= attackRange)
+        if (dist <= attackRange && closestTarget.inSafeZone == false)
         {
             Vector3 relativePos = closestTarget.transform.position - transform.position;
 
@@ -46,6 +47,21 @@ public class EnemyAttack : MonoBehaviour
                 StartCoroutine(AttackDelay());
             }
         }
+        if (stunned)
+        {
+            Stunned();
+        }
+    }
+
+    IEnumerator Stunned()
+    {
+        yield return new WaitForSeconds(5f);
+        stunned = false;
+    }
+
+    public void StunEnemy()
+    {
+        stunned = true;
     }
 
     IEnumerator AttackDelay()
@@ -66,7 +82,7 @@ public class EnemyAttack : MonoBehaviour
         if (hitInfo.collider != null)
         {
             PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
-            //player.TakeDamage();
+            player.TakeDamage();
         }
     }
 

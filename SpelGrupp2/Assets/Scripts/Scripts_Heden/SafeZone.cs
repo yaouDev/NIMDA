@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SafeZone : MonoBehaviour
 {
-    public List<PlayerController> playersInZone;
     private float force = 5f;
 
     void OnTriggerEnter(Collider collider)
@@ -12,8 +11,8 @@ public class SafeZone : MonoBehaviour
         if (collider.gameObject.tag.Equals("Player"))
         {
             PlayerController player = collider.gameObject.GetComponent<PlayerController>();
+            player.inSafeZone = true;
             //player.batteryUI.batteryRecharge *= 2
-            playersInZone.Add(player);
         }
     }
 
@@ -23,7 +22,7 @@ public class SafeZone : MonoBehaviour
         {
             PlayerController player = collider.gameObject.GetComponent<PlayerController>();
             //player.batteryUI.batteryRecharge /= 2;
-            playersInZone.Remove(player);
+            player.inSafeZone = false;
         }
     }
 
@@ -31,10 +30,12 @@ public class SafeZone : MonoBehaviour
     {
         if (collision.gameObject.tag.Equals("Enemy"))
         {
-            EnemyHealth enemy = collision.gameObject.GetComponent<EnemyHealth>();
+            EnemyAttack enemy = collision.gameObject.GetComponent<EnemyAttack>();
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
             enemy.GetComponent<Rigidbody>().AddForce(dir * force);
+            enemy.StunEnemy();
+            
         }
     }
 }
