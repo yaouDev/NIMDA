@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Identifierar närmsta spelare
+ * Pausar & låser sikte f-tid innan skott
+ * skjuter
+ * pausar f-tid innan loop börjar om
+ * */
 public class EnemyAttack : MonoBehaviour
 {
     GameObject[] targets;
@@ -9,8 +15,8 @@ public class EnemyAttack : MonoBehaviour
     private float dist;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float attackRange;
-    private IEnumerator currCor;
-
+    private bool isShooting = true;
+    [SerializeField] private float turnSpeed = 10.0f;
 
     void Awake()
     {
@@ -22,33 +28,36 @@ public class EnemyAttack : MonoBehaviour
     {
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
-        CurrentTarget = closestTarget;
+        //CurrentTarget = closestTarget;
         if (dist <= attackRange)
         {
-            StartCoroutine(DoCheck());
+            Vector3 relativePos = closestTarget.transform.position - transform.position;
+
+            // the second argument, upwards, defaults to Vector3.up
+            Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, 
+                rotation,
+                Time.deltaTime * turnSpeed);
+            Debug.Log(transform.rotation.y);
+            if (isShooting)
+            {
+                isShooting = false;
+                StartCoroutine(AttackDelay());
+            }
         }
     }
 
-    IEnumerator DoCheck()
+    IEnumerator AttackDelay()
     {
-        ShootAtPlayer();
-        Pause();
         yield return new WaitForSeconds(1f);
-    } 
-
-    void Pause()
-    {
-        StopCoroutine(TurnToTarget());
-        StopCoroutine(AnimateLineRenderer());
-    }
-
-    void ShootAtPlayer()
-    {
-        StartCoroutine(TurnToTarget());
-        StartCoroutine(AnimateLineRenderer());
         Attack();
+        StartCoroutine(AnimateLineRenderer());
+        isShooting = true;
 
+        yield return new WaitForSeconds(3f);
     }
+
 
     void Attack()
     {
@@ -61,17 +70,8 @@ public class EnemyAttack : MonoBehaviour
         }
     }
 
-    IEnumerator TurnToTarget()
-    {
-        currCor = TurnToTarget();
-        transform.LookAt(CurrentTarget.transform.position);
-        Debug.Log("Facing target");
-        yield return new WaitForSeconds(2f);
-    }
-
     private IEnumerator AnimateLineRenderer()
     {
-        currCor = AnimateLineRenderer();
         Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + transform.forward * 30.0f };
         lineRenderer.SetPositions(positions);
         float t = 0.0f;
