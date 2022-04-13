@@ -9,13 +9,13 @@ public class EnemyAttack : MonoBehaviour
     private float dist;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float attackRange;
+    private IEnumerator currCor;
 
 
     void Awake()
     {
         targets = GameObject.FindGameObjectsWithTag("Player");
         CurrentTarget = targets[0];
-        StartCoroutine(ShootAtPlayer());
     }
 
     void Update()
@@ -23,19 +23,31 @@ public class EnemyAttack : MonoBehaviour
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
         CurrentTarget = closestTarget;
-        
+        if (dist <= attackRange)
+        {
+            StartCoroutine(DoCheck());
+        }
     }
 
-    IEnumerator ShootAtPlayer()
+    IEnumerator DoCheck()
     {
-        while (true && dist <= attackRange)
-        {
-            StartCoroutine(TurnToTarget());
-            StartCoroutine(AnimateLineRenderer());
-            Attack();
-            Debug.Log("Reloading. . .");
-            yield return new WaitForSeconds(2);
-        }
+        ShootAtPlayer();
+        Pause();
+        yield return new WaitForSeconds(1f);
+    } 
+
+    void Pause()
+    {
+        StopCoroutine(TurnToTarget());
+        StopCoroutine(AnimateLineRenderer());
+    }
+
+    void ShootAtPlayer()
+    {
+        StartCoroutine(TurnToTarget());
+        StartCoroutine(AnimateLineRenderer());
+        Attack();
+
     }
 
     void Attack()
@@ -51,13 +63,15 @@ public class EnemyAttack : MonoBehaviour
 
     IEnumerator TurnToTarget()
     {
+        currCor = TurnToTarget();
         transform.LookAt(CurrentTarget.transform.position);
         Debug.Log("Facing target");
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
     }
 
     private IEnumerator AnimateLineRenderer()
     {
+        currCor = AnimateLineRenderer();
         Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + transform.forward * 30.0f };
         lineRenderer.SetPositions(positions);
         float t = 0.0f;
