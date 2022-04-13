@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
-using UnityEngine.InputSystem; //ta bort sen
+using UnityEngine.InputSystem;
 
 public class Crafting : MonoBehaviour {
     public int copper = 1;
@@ -11,32 +11,21 @@ public class Crafting : MonoBehaviour {
 
     private Craft craft = new Craft();
     public Recipe batteryRecipe;
-        
-
-    private bool[] validRecipe = {true, true};
-
- 
     private enum scrap
     {
         copper,
         transistor,
         iron
-
-
-
-
     }
-
-    private scrap[,] combos =
+    
+    private scrap[][] combos = new scrap[][]
     {
-
-      
-
-        {scrap.copper, scrap.transistor, scrap.iron},
-        {scrap.iron, scrap.iron, scrap.iron}
+        new scrap[] {scrap.copper, scrap.transistor, scrap.iron},
+        new scrap[] {scrap.iron, scrap.iron, scrap.iron}
     };
-    public int currentIndex = 0;
-
+    
+    private int currentIndex = 0;
+    private bool[] validRecipe = {true, true};
 
     public void CraftBattery(InputAction.CallbackContext context)
     {
@@ -45,17 +34,45 @@ public class Crafting : MonoBehaviour {
             craft.CraftRecipe(batteryRecipe, this);
         }
     }
-
-
-
-    private void Combo(scrap latestCombo)
+    
+    
+    private void Combo(scrap latestPress)
     {
-        if (true)
-            return;
+        for (int recipee = 0; recipee < validRecipe.Length; recipee++)
+        {
+            if (!validRecipe[recipee]) continue;
+            if (recipee > combos[recipee].Length) continue;
+            
+            if (combos[recipee][currentIndex] == latestPress)
+            {
+                currentIndex++;
+                if (currentIndex >= combos[recipee].Length)
+                {
+                    // TODO [patrik] reset ALL validRecipee flags
+                    SuccessfulCombo(recipee);
+                    currentIndex = 0;
+                    return;
+                }
+            }
+            else
+            {
+                validRecipe[recipee] = false;
+            }
+        }
     }
 
-    private void Combo()
+    private void SuccessfulCombo(int recipee)
     {
-        
+        switch (recipee)
+        {
+            case (0):
+                Debug.Log("crafted battery");
+                craft.CraftRecipe(batteryRecipe, this);
+                break;
+            case (1):
+                Debug.Log("crafted bullet");
+                craft.CraftRecipe(batteryRecipe, this);
+                break;
+        }
     }
 }
