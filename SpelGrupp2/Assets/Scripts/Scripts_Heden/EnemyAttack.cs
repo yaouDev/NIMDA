@@ -62,7 +62,7 @@ public class EnemyAttack : MonoBehaviour
     void Attack()
     {
         Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f);
-        Debug.Log(hitInfo.collider.transform.name);
+        //Debug.Log(hitInfo.collider.transform.name);
         if (hitInfo.collider != null)
         {
             PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
