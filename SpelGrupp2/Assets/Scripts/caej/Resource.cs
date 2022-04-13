@@ -7,6 +7,6 @@ public class Resource : ScriptableObject
 {
     public new string name;
     public GameObject item;
-    //här kan man lägga in rarity, value, osv
+    //here kan man laegga in rarity, value, osv
 
 }

@@ -121,6 +121,7 @@ public class BatteryUI : MonoBehaviour {
 		laserBattery += Time.deltaTime * laserFillSpeed;
 		laserBattery = Mathf.Clamp01(laserBattery);
 		laserMeter.fillAmount = Ease.EaseInCirc( laserBattery );
+		laserMeter.color = Color.Lerp(Color.yellow, Color.red, Ease.EaseInCirc(laserBattery));
 	}
 
 	public void TakeDamage() => TakeDamage(damageAmount);
