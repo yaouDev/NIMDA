@@ -23,7 +23,12 @@ public class EnemyAttack : MonoBehaviour
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
         CurrentTarget = closestTarget;
-        
+
+    }
+
+    public GameObject getCurrentTarget()
+    {
+        return CurrentTarget;
     }
 
     IEnumerator ShootAtPlayer()
