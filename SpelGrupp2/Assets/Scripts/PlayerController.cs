@@ -98,6 +98,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void Start() {
+		crafting = new Crafting();
 		_jumpVector = new Vector3(0.0f, _jumpForce);
 		_defaultGravity = -Physics.gravity.y;
 		_colliderRadius = _collider.radius;
