@@ -52,6 +52,7 @@ public class Crafting : MonoBehaviour {
     {
         if (true)
             return;
+    }
 
     private void Combo()
     {
