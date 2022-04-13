@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Identifierar n�rmsta spelare
+ * Pausar & l�ser sikte f-tid innan skott
+ * skjuter
+ * pausar f-tid innan loop b�rjar om
+ * */
 public class EnemyAttack : MonoBehaviour
 {
     GameObject[] targets;
@@ -9,51 +15,59 @@ public class EnemyAttack : MonoBehaviour
     private float dist;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float attackRange;
-
+    private bool isShooting = true;
+    [SerializeField] private float turnSpeed = 10.0f;
 
     void Awake()
     {
         targets = GameObject.FindGameObjectsWithTag("Player");
         CurrentTarget = targets[0];
-        StartCoroutine(ShootAtPlayer());
     }
 
     void Update()
     {
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
-        CurrentTarget = closestTarget;
-        
-    }
-
-    IEnumerator ShootAtPlayer()
-    {
-        while (true && dist <= attackRange)
+        //CurrentTarget = closestTarget;
+        if (dist <= attackRange)
         {
-            StartCoroutine(TurnToTarget());
-            StartCoroutine(AnimateLineRenderer());
-            Attack();
-            Debug.Log("Reloading. . .");
-            yield return new WaitForSeconds(2);
+            Vector3 relativePos = closestTarget.transform.position - transform.position;
+
+            // the second argument, upwards, defaults to Vector3.up
+            Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, 
+                rotation,
+                Time.deltaTime * turnSpeed);
+      
+            if (isShooting)
+            {
+                isShooting = false;
+                StartCoroutine(AttackDelay());
+            }
         }
     }
+
+    IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(1f);
+        Attack();
+        StartCoroutine(AnimateLineRenderer());
+        isShooting = true;
+
+        yield return new WaitForSeconds(3f);
+    }
+
 
     void Attack()
     {
         Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f);
-        Debug.Log(hitInfo.collider.transform.name);
+        //Debug.Log(hitInfo.collider.transform.name);
         if (hitInfo.collider != null)
         {
             PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
             //player.TakeDamage();
         }
-    }
-
-    IEnumerator TurnToTarget()
-    {
-        transform.LookAt(CurrentTarget.transform.position);
-        Debug.Log("Facing target");
-        yield return new WaitForSeconds(1f);
     }
 
     private IEnumerator AnimateLineRenderer()

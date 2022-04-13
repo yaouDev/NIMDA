@@ -116,6 +116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 2456728121477429368}
   attackRange: 15
+  turnSpeed: 10
 --- !u!65 &4102459122074449257
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -148,7 +149,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
