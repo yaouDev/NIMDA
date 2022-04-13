@@ -26,9 +26,9 @@ public class EnemyAttack : MonoBehaviour
 
     }
 
-    public GameObject getCurrentTarget()
+    public Vector3 getCurrentTarget()
     {
-        return CurrentTarget;
+        return CurrentTarget.transform.position;
     }
 
     IEnumerator ShootAtPlayer()

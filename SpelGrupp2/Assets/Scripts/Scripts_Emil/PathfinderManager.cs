@@ -4,21 +4,23 @@ using UnityEngine;
 
 public class PathfinderManager : MonoBehaviour {
     [SerializeField] SimpleGraph graph;
-    [SerializeField] float proximityToUseSamePath;
+    [SerializeField] float proximityToUseSamePath, acceptableDistanceFromTarget;
     private List<Vector3> latestCalculatedPath = new List<Vector3>();
     private Vector3 targetBlocked, desiredTarget, activeTarget;
     public static PathfinderManager instance;
+    private PriorityQueue<AI_Movement> pathQueue;
 
-    void Awake(){
+    void Awake() {
         instance ??= this;
-    }
-
-    void Update(){
-        Debug.Log("Graph is " + graph == null);
+        pathQueue = new PriorityQueue<AI_Movement>();
     }
 
     private bool isPathBlocked() {
         return graph.getBlockedNode(activeTarget).Length != 0;
+    }
+
+    public float getAcceptableDistanceFromTarget(){
+        return acceptableDistanceFromTarget;
     }
 
     private bool shouldUpdatePath() {
@@ -43,20 +45,46 @@ public class PathfinderManager : MonoBehaviour {
     }
 
 
-    public List<Vector3> requestPath(Vector3 currentPosition, Vector3 endPos) {
+    /*     public List<Vector3> requestPath(Vector3 currentPosition, Vector3 endPos) {
+            if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
+                bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0], currentPosition) > 0;
+                if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
+                    List<Vector3> pathToStartOflatest = aStar(currentPosition, latestCalculatedPath[0], false);
+                    pathToStartOflatest.AddRange(latestCalculatedPath);
+                    return pathToStartOflatest;
+                }
+            }
+            return aStar(currentPosition, endPos, true);
+        } */
+
+    public void requestPath(AI_Movement agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
             bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0], currentPosition) > 0;
             if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
                 List<Vector3> pathToStartOflatest = aStar(currentPosition, latestCalculatedPath[0], false);
                 pathToStartOflatest.AddRange(latestCalculatedPath);
-                return pathToStartOflatest;
+                agent.setPath(pathToStartOflatest);
             }
         }
-        return aStar(currentPosition, endPos, true);
+        if (!pathQueue.contains(agent) && Vector3.Distance(currentPosition, endPos) >= acceptableDistanceFromTarget)
+            pathQueue.insert(agent, Vector3.Distance(currentPosition, endPos));
+
+    }
+
+    void Update() {
+        try {
+            AI_Movement agentToUpdate = pathQueue.deleteMin();
+            agentToUpdate.updateTarget();
+            agentToUpdate.setPath(aStar(agentToUpdate.transform.position, agentToUpdate.getCurrentTarget(), true));
+        } catch (System.Exception) {
+            Debug.Log("No current requested paths");
+        }
+
+
     }
 
     private List<Vector3> aStar(Vector3 startPos, Vector3 endPos, bool updateLatestPath) {
-        PriorityQueue priorityQueue = new PriorityQueue();
+        PriorityQueue<Vector3> priorityQueue = new PriorityQueue<Vector3>();
         Vector3 node = Vector3.zero;
         int edgesTested = 0;
         HashSet<Vector3> explored = new HashSet<Vector3>();
@@ -89,15 +117,17 @@ public class PathfinderManager : MonoBehaviour {
     }
 
     // Reused (but modified) heap from ALDA
-    private class PriorityQueue {
+    private class PriorityQueue<T> {
         private const int DEFAULT_CAPACITY = 50;
         private int numberOfChildren, currentSize;
         // coordinate of box and its priority
-        private KeyValuePair<Vector3, float>[] array;
+        private KeyValuePair<T, float>[] array;
+        private HashSet<T> contentCheckSet;
 
         public PriorityQueue() {
             numberOfChildren = 2;
-            array = new KeyValuePair<Vector3, float>[DEFAULT_CAPACITY];
+            array = new KeyValuePair<T, float>[DEFAULT_CAPACITY];
+            contentCheckSet = new HashSet<T>();
         }
 
         public int getParentIndex(int childToCheck) {
@@ -112,6 +142,10 @@ public class PathfinderManager : MonoBehaviour {
             throw new System.Exception("Illegal argument: Cannot check parent of root!");
         }
 
+        public bool contains(T element) {
+            return contentCheckSet.Contains(element);
+        }
+
         public int getFirstChildIndex(int parent) {
             if (parent > 0) return parent * numberOfChildren - (numberOfChildren - 2);
             throw new System.Exception("Illegal argument: Cannot check child of index 0 or below!");
@@ -119,34 +153,36 @@ public class PathfinderManager : MonoBehaviour {
 
         public int size() { return currentSize; }
 
-        public void insert(Vector3 coord, float priority) {
+        public void insert(T element, float priority) {
             if (currentSize == array.Length - 1) enlargeArray(array.Length * 2 + 1);
             int hole = ++currentSize;
-            KeyValuePair<Vector3, float> insertPair = new KeyValuePair<Vector3, float>(coord, priority);
+            KeyValuePair<T, float> insertPair = new KeyValuePair<T, float>(element, priority);
             for (array[0] = insertPair; hole > 1 && insertPair.Value < array[getParentIndex(hole)].Value; hole = getParentIndex(hole)) {
                 array[hole] = array[getParentIndex(hole)];
             }
             array[hole] = insertPair;
+            contentCheckSet.Add(element);
         }
 
         private void enlargeArray(int newSize) {
-            KeyValuePair<Vector3, float>[] old = array;
-            array = new KeyValuePair<Vector3, float>[newSize];
+            KeyValuePair<T, float>[] old = array;
+            array = new KeyValuePair<T, float>[newSize];
             for (int i = 0; i < old.Length; i++) {
                 array[i] = old[i];
             }
         }
 
-        public Vector3 findMin() {
+        public T findMin() {
             if (isEmpty()) throw new System.Exception("Underflow, Queue was empty!");
             return array[1].Key;
         }
 
-        public Vector3 deleteMin() {
+        public T deleteMin() {
             if (isEmpty()) throw new System.Exception("Underflow, Queue was empty!");
-            Vector3 minItem = findMin();
+            T minItem = findMin();
             array[1] = array[currentSize--];
             percolateDown(1);
+            contentCheckSet.Remove(minItem);
             return minItem;
         }
 
@@ -156,7 +192,7 @@ public class PathfinderManager : MonoBehaviour {
 
         private void percolateDown(int hole) {
             int child = 0;
-            KeyValuePair<Vector3, float> tmp = array[hole];
+            KeyValuePair<T, float> tmp = array[hole];
             for (; getFirstChildIndex(hole) <= currentSize; hole = child) {
                 child = findIndexOfMinChild(hole);
                 if (child > -1 && array[child].Value < tmp.Value) array[hole] = array[child];

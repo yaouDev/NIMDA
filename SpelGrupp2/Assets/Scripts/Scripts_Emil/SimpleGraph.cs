@@ -9,6 +9,17 @@ public class SimpleGraph : MonoBehaviour {
     [SerializeField] LayerMask colliderMask;
     private const int POSSIBLE_EDGES = 6;
     private Dictionary<Vector3, Dictionary<Vector3, float>> nodes;
+    public static SimpleGraph instance;
+
+    void Awake() {
+        nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
+        worldPos = gameObject.GetComponent<BoxCollider>().center;
+        worldSize = gameObject.transform.localScale;
+        worldPos.y += worldSize.y / 2;
+        numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
+        initGraph();
+        instance ??= this;
+    }
 
     public void connect(Vector3 node1, Vector3 node2, float cost) {
         if (nodes.ContainsKey(node1) && nodes.ContainsKey(node2) && !isConnected(node1, node2)) {
@@ -94,7 +105,7 @@ public class SimpleGraph : MonoBehaviour {
         Vector3 currentBox = getClosestBox(target);
         Collider[] cols = getBlockedNode(currentBox);
         if (cols.Length != 0) {
-            Vector3 directionToMoveBack = (cols[0].transform.position- currentPosition).normalized;
+            Vector3 directionToMoveBack = (cols[0].transform.position - currentPosition).normalized;
             float longestExtent = cols[0].bounds.extents.x;
             if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
             else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
@@ -110,12 +121,12 @@ public class SimpleGraph : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
-        worldPos = gameObject.GetComponent<BoxCollider>().center;
-        worldSize = gameObject.transform.localScale;
-        worldPos.y += worldSize.y / 2;
-        numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
-        initGraph();
+        /*  nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
+         worldPos = gameObject.GetComponent<BoxCollider>().center;
+         worldSize = gameObject.transform.localScale;
+         worldPos.y += worldSize.y / 2;
+         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
+         initGraph(); */
 
     }
 
@@ -168,19 +179,21 @@ public class SimpleGraph : MonoBehaviour {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
     }
 
-    private void OnDrawGizmos() {
-        int count = 0;
-        foreach (Vector3 v in nodes.Keys) {
-            bool blocked = getBlockedNode(v).Length == 0;
-            if (blocked) {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-            } else {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-            }
-            count++;
-        }
-    }
+
+    // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
+    /*  private void OnDrawGizmos() {
+         int count = 0;
+         foreach (Vector3 v in nodes.Keys) {
+             bool blocked = getBlockedNode(v).Length == 0;
+             if (blocked) {
+                 Gizmos.color = Color.green;
+                 Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+             } else {
+                 Gizmos.color = Color.red;
+                 Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+             }
+             count++;
+         }
+     } */
 
 }
