@@ -165,11 +165,13 @@ public class PlayerController : MonoBehaviour {
 	private void AimDirection() {
 		transform.LookAt(transform.position + aimingDirection);
 	}
-
+	
+	[SerializeField] private float laserDrainPerShot = .2f;
 	public void Fire(InputAction.CallbackContext context) {
 		if (!alive) return;	// TODO game jam code! 
 			
-		if (context.started) {
+		if (context.started)
+		{
 			ShootLaser();
 			StartCoroutine(AnimateLineRenderer(aimingDirection));
 		}
@@ -183,9 +185,8 @@ public class PlayerController : MonoBehaviour {
 	private GameObject visuals;
     public void TakeDamage()
     {
-
-		Debug.Log("Took damage");
-        //	health.TakeDamage();
+	    Debug.Log("Took damage");
+        health.TakeDamage();
     }
 
     public void Die() {
@@ -198,7 +199,11 @@ public class PlayerController : MonoBehaviour {
 		visuals.SetActive(true);
 	}
 
+	
 	private void ShootLaser() {
+		
+		health.LaserBatteryDrain();
+
 		Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
 		//Debug.Log(hitInfo.collider.transform.name);
 		if (hitInfo.collider != null) {

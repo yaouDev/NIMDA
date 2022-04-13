@@ -51,6 +51,8 @@ public class BatteryUI : MonoBehaviour {
 			respawn = false;
 			Respawn();
 		}
+
+		UpdateLaserUI();
 	}
 
 	public void Respawn() {
@@ -99,8 +101,31 @@ public class BatteryUI : MonoBehaviour {
 			batteryCharge[currentBattery] = 1.0f;
 		}
 	}
+
+	public float laserBattery = 1.0f;
+	[SerializeField] private float laserBatteryDrain = .2f;
+	public void LaserBatteryDrain()
+	{
+		laserBattery -= laserBatteryDrain;
+
+		if (laserBattery < 0.0f)
+		{
+			TakeDamage(Mathf.Abs(laserBattery));
+		}
+	}
+
+	[SerializeField] private Image laserMeter;
+	[SerializeField] private float laserFillSpeed;
+	private void UpdateLaserUI()
+	{
+		laserBattery += Time.deltaTime * laserFillSpeed;
+		laserBattery = Mathf.Clamp01(laserBattery);
+		laserMeter.fillAmount = Ease.EaseInCirc( laserBattery );
+	}
+
+	public void TakeDamage() => TakeDamage(damageAmount);
 	
-	public void TakeDamage() {
+	public void TakeDamage(float damageAmount) {
 		
 		if (!alive) 
 			return;
