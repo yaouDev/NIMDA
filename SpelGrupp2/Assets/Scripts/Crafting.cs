@@ -10,7 +10,7 @@ public class Crafting : MonoBehaviour {
 
     private Craft craft = new Craft();
     public Recipe batteryRecipe;
-    
+
 
     void Start() {
         
@@ -18,15 +18,30 @@ public class Crafting : MonoBehaviour {
     
     void Update() {
         
+
+    private bool[] validRecipe = {true, true};
+    private enum scrap
+    {
+        copper,
+        transistor,
+        iron
+
     }
 
     public void CraftBattery(InputAction.CallbackContext context)
     {
-        //byt ut hela jävla metoden
+        //byt ut hela jï¿½vla metoden
 
         if (context.performed)
         {
             craft.CraftRecipe(batteryRecipe, this);
         }
+    }
+
+
+    private void Combo(scrap latestCombo)
+    {
+        if (true)
+            return;
     }
 }
