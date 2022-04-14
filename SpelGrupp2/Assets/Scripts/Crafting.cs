@@ -52,16 +52,6 @@ public class Crafting : MonoBehaviour {
         }
     }
 
-
-    public void CraftBattery(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            craft.CraftRecipe(batteryRecipe, this);
-        }
-    }
-    
-    
     private void Combo(scrap latestPress)
     {
         for (int recipee = 0; recipee < validRecipe.Length; recipee++)
@@ -74,7 +64,7 @@ public class Crafting : MonoBehaviour {
                 currentIndex++;
                 if (currentIndex >= combos[recipee].Length)
                 {
-                    // TODO [patrik] reset ALL validRecipee flags
+                    ResetValidRecipees();
                     SuccessfulCombo(recipee);
                     currentIndex = 0;
                     return;
@@ -89,6 +79,7 @@ public class Crafting : MonoBehaviour {
 
     private void ResetValidRecipees()
     {
+        currentIndex = 0;
         for (int recipe = 0; recipe < validRecipe.Length; recipe++)
         {
             validRecipe[recipe] = true;
@@ -101,11 +92,11 @@ public class Crafting : MonoBehaviour {
         {
             case (0):
                 Debug.Log("crafted battery");
-                craft.CraftRecipe(batteryRecipe, this);
+                //craft.CraftRecipe(batteryRecipe, this);
                 break;
             case (1):
                 Debug.Log("crafted bullet");
-                craft.CraftRecipe(batteryRecipe, this);
+                //craft.CraftRecipe(batteryRecipe, this);
                 break;
         }
     }
