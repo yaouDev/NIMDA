@@ -100,7 +100,7 @@ public class AI_Controller : MonoBehaviour {
 
 
     private void FixedUpdate() {
-        stateMachine.run();
+        //stateMachine.run();
         Collider[] cols = Physics.OverlapSphere(transform.position, otherEnemyTrigger.radius);
         foreach (Collider c in cols) {
             if (c.tag == "Enemy" && c.gameObject != gameObject) {
@@ -109,7 +109,7 @@ public class AI_Controller : MonoBehaviour {
                 }
             }
         }
-        /* if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > enemyAttack.getAttackRange()) {
+        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > enemyAttack.getAttackRange()) {
             if (Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
@@ -121,7 +121,7 @@ public class AI_Controller : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
-        } */ /* else if (Vector3.Distance(transform.position, activeTarget) <= enemyAttack.getAttackRange() && targetInSight()) {
+        } /* else if (Vector3.Distance(transform.position, activeTarget) <= enemyAttack.getAttackRange() && targetInSight()) {
 
         } */
 
