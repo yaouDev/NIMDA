@@ -40,12 +40,11 @@ public class Craft
             if (recipe.product.name.Equals("Battery"))
             {
                 //crafting.gameObject.GetComponent<BatteryUI>().AddBattery();
-                Debug.Log("YOU CRAFTED A BATTERY, NOW GO CRAFT AN ASSAULT");
             }
             else
             {
                 Debug.Log("You crafted: " + recipe.product + "!");
-                Debug.Log("TODO: Implement destination for crafted items");
+                // TODO: Implement destination for crafted items
             }
         }
     }

@@ -5,21 +5,26 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.InputSystem;
 
-public class Crafting : MonoBehaviour {
+public class Crafting : MonoBehaviour
+{
     public int copper = 1;
     public int transistor = 1;
     public int iron = 1;
 
     private Craft craft = new Craft();
     public Recipe batteryRecipe;
-    private enum scrap
+
+    [SerializeField] 
+    private BatteryUI batteryUI;
+        
+    public enum scrap
     {
         copper,
         transistor,
         iron
     }
     
-    private scrap[][] combos = new scrap[][]
+    public static readonly scrap[][] Combos = new scrap[][]
     {
         new scrap[] {scrap.copper, scrap.transistor, scrap.iron},
         new scrap[] {scrap.iron, scrap.iron, scrap.iron}
@@ -54,15 +59,17 @@ public class Crafting : MonoBehaviour {
 
     private void Combo(scrap latestPress)
     {
+        bool correctSoFar = false;
         for (int recipee = 0; recipee < validRecipe.Length; recipee++)
         {
             if (!validRecipe[recipee]) continue;
-            if (recipee > combos[recipee].Length) continue;
+            if (recipee > Combos[recipee].Length) continue;
             
-            if (combos[recipee][currentIndex] == latestPress)
+            if (Combos[recipee][currentIndex] == latestPress)
             {
+                correctSoFar = true;
                 currentIndex++;
-                if (currentIndex >= combos[recipee].Length)
+                if (currentIndex >= Combos[recipee].Length)
                 {
                     ResetValidRecipees();
                     SuccessfulCombo(recipee);
@@ -75,6 +82,12 @@ public class Crafting : MonoBehaviour {
                 validRecipe[recipee] = false;
             }
         }
+
+        if (!correctSoFar)
+        {
+            Debug.LogWarning("INCORRECT! START AGAIN!");
+            ResetValidRecipees();
+        }
     }
 
     private void ResetValidRecipees()
@@ -84,6 +97,7 @@ public class Crafting : MonoBehaviour {
         {
             validRecipe[recipe] = true;
         }
+
     }
 
     private void SuccessfulCombo(int recipee)
@@ -92,6 +106,7 @@ public class Crafting : MonoBehaviour {
         {
             case (0):
                 Debug.Log("crafted battery");
+                batteryUI.AddBattery();
                 //craft.CraftRecipe(batteryRecipe, this);
                 break;
             case (1):
