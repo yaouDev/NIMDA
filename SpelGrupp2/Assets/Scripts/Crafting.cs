@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.InputSystem;
@@ -26,6 +27,31 @@ public class Crafting : MonoBehaviour {
     
     private int currentIndex = 0;
     private bool[] validRecipe = {true, true};
+
+    public void PressedCopper(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Combo(scrap.copper);
+        }
+    }
+    
+    public void PressedIron(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Combo(scrap.iron);
+        }
+    }
+    
+    public void PressedTransistor(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Combo(scrap.transistor);
+        }
+    }
+
 
     public void CraftBattery(InputAction.CallbackContext context)
     {
@@ -58,6 +84,14 @@ public class Crafting : MonoBehaviour {
             {
                 validRecipe[recipee] = false;
             }
+        }
+    }
+
+    private void ResetValidRecipees()
+    {
+        for (int recipe = 0; recipe < validRecipe.Length; recipe++)
+        {
+            validRecipe[recipe] = true;
         }
     }
 
