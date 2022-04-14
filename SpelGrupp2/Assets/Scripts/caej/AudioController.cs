@@ -6,11 +6,11 @@ using UnityEngine.InputSystem; //ta bort??
 
 public class AudioController : MonoBehaviour
 {
-    private AudioController instance;
 
     public FMOD.Studio.EventInstance eventInstance;
 
 
+    private AudioController instance;
     private void Awake()
     {
         instance ??= this;
