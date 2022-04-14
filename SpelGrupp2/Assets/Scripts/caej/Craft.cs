@@ -6,9 +6,9 @@ public class Craft
 {
     public void CraftRecipe(Recipe recipe, Crafting crafting)
     {
-        Debug.Log("Available copper: " + crafting.copper);
-        Debug.Log("Available iron: " + crafting.iron);
-        Debug.Log("Available transistor(s): " + crafting.transistor);
+        //Debug.Log("Available copper: " + crafting.copper);
+        //Debug.Log("Available iron: " + crafting.iron);
+        //Debug.Log("Available transistor(s): " + crafting.transistor);
 
         bool canCraft = true;
 
@@ -39,13 +39,12 @@ public class Craft
 
             if (recipe.product.name.Equals("Battery"))
             {
-                //crafting.gameObject.GetComponent<BatteryUI>().AddBattery();
-                Debug.Log("YOU CRAFTED A BATTERY, NOW GO CRAFT AN ASSAULT");
+                crafting.batteryUI.AddBattery();
             }
             else
             {
                 Debug.Log("You crafted: " + recipe.product + "!");
-                Debug.Log("TODO: Implement destination for crafted items");
+                // TODO: Implement destination for crafted items
             }
         }
     }

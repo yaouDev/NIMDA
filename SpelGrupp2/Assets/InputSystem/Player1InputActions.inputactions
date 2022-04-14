@@ -42,9 +42,27 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CraftBattery",
+                    "name": "PressCopper",
                     "type": "Button",
                     "id": "0885f003-c53f-4a54-8ff0-f768a381b832",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PressIron",
+                    "type": "Button",
+                    "id": "32993aca-4892-4fd0-847a-c1b515e885cf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PressTransistor",
+                    "type": "Button",
+                    "id": "02b17aaa-acdb-4f09-95cb-32b1cb41fcdc",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -242,22 +260,66 @@
                 {
                     "name": "",
                     "id": "5dbbfe50-e930-4b2c-acfc-f4b0dda8e939",
-                    "path": "<Keyboard>/#(Q)",
+                    "path": "<Keyboard>/j",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "CraftBattery",
+                    "groups": "MouseKeyboard",
+                    "action": "PressCopper",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "26fb7a7c-09d2-4da5-8a52-4972ea926354",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/dpad/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "CraftBattery",
+                    "groups": "GamePad",
+                    "action": "PressCopper",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bbd72d4e-157f-4c61-90e6-31b1db557b79",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseKeyboard",
+                    "action": "PressIron",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d8e46ead-fdd2-4a3f-9831-9854a694732d",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "PressIron",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3f3e66b5-9cd5-426e-bf86-88e5bdcfcdec",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseKeyboard",
+                    "action": "PressTransistor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ee5d93ae-a4e5-4a62-98cb-7d03ef892a49",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "PressTransistor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
