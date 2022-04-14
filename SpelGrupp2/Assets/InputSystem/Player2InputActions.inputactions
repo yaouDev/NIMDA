@@ -51,12 +51,30 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "CraftBattery",
+                    "name": "PressCopper",
                     "type": "Button",
-                    "id": "a2f97bf4-4646-4723-b059-afdd508121c9",
+                    "id": "49d8984a-b12c-46a0-af6f-fd10b54dbe59",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Tap",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PressIron",
+                    "type": "Button",
+                    "id": "5c187239-68b5-4e25-a0c2-3bd2195849c9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PressTransistor",
+                    "type": "Button",
+                    "id": "46abe2c4-8412-4bd3-a1ca-9ca4bc6df6bc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
                     "initialStateCheck": false
                 }
             ],
@@ -272,23 +290,67 @@
                 },
                 {
                     "name": "",
-                    "id": "77eaecf3-a268-42f2-86b5-c84220d7edcb",
-                    "path": "<Gamepad>/buttonNorth",
+                    "id": "ff944a79-3f75-40ff-be05-d7ba6f53b74c",
+                    "path": "<Keyboard>/j",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "CraftBattery",
+                    "groups": "MouseAndKeyboard",
+                    "action": "PressCopper",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "28411833-a6f1-426c-901f-c5e0d7e2aca8",
-                    "path": "<Keyboard>/#(Q)",
+                    "id": "396a9caf-d577-453f-96b7-f60ba92ba97f",
+                    "path": "<Gamepad>/dpad/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "CraftBattery",
+                    "groups": "GamePad",
+                    "action": "PressCopper",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "96a22613-e4b1-4802-b0c7-521fe06c6786",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseAndKeyboard",
+                    "action": "PressIron",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c5579178-d71c-4fda-b6f1-3c827e2ad841",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "PressIron",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fe878a93-59e1-4a94-8040-4884ddc5c2f3",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseAndKeyboard",
+                    "action": "PressTransistor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "784ee40c-9b1c-4387-ac75-943adbb9a92e",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "GamePad",
+                    "action": "PressTransistor",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
