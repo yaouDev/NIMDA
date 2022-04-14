@@ -6,26 +6,13 @@ using UnityEngine.InputSystem; //ta bort??
 
 public class AudioController : MonoBehaviour
 {
+    public EventReference testReference;
+    public Transform testPosition;
 
-    public FMOD.Studio.EventInstance eventInstance;
-
-
-    private AudioController instance;
+    public static AudioController instance;
     private void Awake()
     {
         instance ??= this;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void PlayOneShot(string path, Vector3 pos)
@@ -33,8 +20,8 @@ public class AudioController : MonoBehaviour
         RuntimeManager.PlayOneShot(path, pos);
     }
 
-    public void TriggerTest(InputAction.CallbackContext ctx)
+    public void TriggerTest()
     {
-        //if (ctx.performed) 
+        PlayOneShot(testReference.Path, testPosition.position);
     }
 }
