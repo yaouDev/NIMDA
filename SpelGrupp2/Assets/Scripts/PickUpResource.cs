@@ -15,14 +15,9 @@ public class PickUpResource : MonoBehaviour
     {
         if (other.gameObject.tag.Equals("Player"))
         {
-            Debug.Log("item detected");
-            PlayerController player = other.transform.GetComponent<PlayerController>();
-            Debug.Log("player identified");
-            pickUpDrop(player.crafting);
-            Debug.Log("resource assigned");
+            Crafting crafting = other.transform.GetComponent<Crafting>();
+            pickUpDrop(crafting);
             Destroy(gameObject);
-            Debug.Log("item destroyed");
-
         }
     }
     private void pickUpDrop(Crafting crafting)
@@ -31,17 +26,14 @@ public class PickUpResource : MonoBehaviour
         {
             case (PickUp.Iron):
                 crafting.iron++;
-                Debug.Log("iron picked up");
                 break;
 
             case (PickUp.Copper):
                 crafting.copper++;
-                Debug.Log("copper picked up");
                 break;
 
             case (PickUp.Transistor):
                 crafting.transistor++;
-                Debug.Log("transistor picked up");
                 break;
         }
     }
