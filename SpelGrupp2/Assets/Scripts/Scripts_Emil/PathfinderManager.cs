@@ -7,11 +7,11 @@ public class PathfinderManager : MonoBehaviour {
     [SerializeField] float proximityToUseSamePath, acceptableDistanceFromTarget;
     private List<Vector3> latestCalculatedPath = new List<Vector3>();
     public static PathfinderManager instance;
-    private PriorityQueue<AI_Movement> pathQueue;
+    private PriorityQueue<AI_Controller> pathQueue;
 
     void Awake() {
         instance ??= this;
-        pathQueue = new PriorityQueue<AI_Movement>();
+        pathQueue = new PriorityQueue<AI_Controller>();
     }
 
 
@@ -48,7 +48,7 @@ public class PathfinderManager : MonoBehaviour {
             return aStar(currentPosition, endPos, true);
         } */
 
-    public void requestPath(AI_Movement agent, Vector3 currentPosition, Vector3 endPos) {
+    public void requestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
             bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0], currentPosition) > 0;
             if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
@@ -64,7 +64,7 @@ public class PathfinderManager : MonoBehaviour {
 
     void Update() {
         try {
-            AI_Movement agentToUpdate = pathQueue.deleteMin();
+            AI_Controller agentToUpdate = pathQueue.deleteMin();
             agentToUpdate.updateTarget();
             agentToUpdate.setPath(aStar(agentToUpdate.transform.position, agentToUpdate.getCurrentTarget(), true));
         } catch (System.Exception) {

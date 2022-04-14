@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AI_Movement : MonoBehaviour {
+public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates;
     private float timeSinceLastUpdate;
@@ -17,6 +17,8 @@ public class AI_Movement : MonoBehaviour {
     private Rigidbody rBody;
     private int currentPathIndex = 0;
     bool started = false;
+    public AI_State[] states;
+    private AI_StateMachine stateMachine;
 
     // Start is called before the first frame update
     void Start() {
@@ -27,6 +29,7 @@ public class AI_Movement : MonoBehaviour {
         rBody = GetComponent<Rigidbody>();
         Physics.IgnoreLayerCollision(12, 12);
         enemyAttack = GetComponent<EnemyAttack>();
+        stateMachine = new AI_StateMachine(this, states);
         StartCoroutine(updatePath());
     }
 
@@ -40,6 +43,7 @@ public class AI_Movement : MonoBehaviour {
                              prevPos = pos;
                          }
                      } */
+
     }
 
     public bool targetInSight() {
@@ -70,8 +74,33 @@ public class AI_Movement : MonoBehaviour {
         currentPathIndex = 0;
     }
 
+    public List<Vector3> getCurrentPath() {
+        return currentPath;
+    }
+
+    public Vector3 getPosition() {
+        return transform.position;
+    }
+
+    public void addForce(Vector3 force){
+        rBody.AddForce(force, ForceMode.Force);
+    }
+
+    public float getAttackRange() {
+        return enemyAttack.getAttackRange();
+    }
+
+    public Vector3 getVelocity(){
+        return rBody.velocity;
+    }
+
+    public int getCurrentPathIndex() { return currentPathIndex; }
+    public void advanceCurrentPathIndex() { currentPathIndex++; }
+
+
 
     private void FixedUpdate() {
+        stateMachine.run();
         Collider[] cols = Physics.OverlapSphere(transform.position, otherEnemyTrigger.radius);
         foreach (Collider c in cols) {
             if (c.tag == "Enemy" && c.gameObject != gameObject) {
@@ -80,7 +109,7 @@ public class AI_Movement : MonoBehaviour {
                 }
             }
         }
-        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > pathfinder.getAcceptableDistanceFromTarget()) {
+        /* if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > enemyAttack.getAttackRange()) {
             if (Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
@@ -92,7 +121,11 @@ public class AI_Movement : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
-        } /* else if ((Vector3.Distance(transform.position, activeTarget) <= pathfinder.getAcceptableDistanceFromTarget())) {
+        } */ /* else if (Vector3.Distance(transform.position, activeTarget) <= enemyAttack.getAttackRange() && targetInSight()) {
+
+        } */
+
+        /* else if ((Vector3.Distance(transform.position, activeTarget) <= pathfinder.getAcceptableDistanceFromTarget())) {
             rBody.AddForce((activeTarget - transform.position).normalized * speed, ForceMode.Force);
         } */
     }

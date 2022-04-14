@@ -47,6 +47,10 @@ public class EnemyAttack : MonoBehaviour {
         return CurrentTarget.transform.position;
     }
 
+    public float getAttackRange(){
+        return attackRange;
+    }
+
     IEnumerator AttackDelay() {
         yield return new WaitForSeconds(1f);
         Attack();
