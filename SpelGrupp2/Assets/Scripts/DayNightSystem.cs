@@ -8,11 +8,10 @@ public class DayNightSystem : MonoBehaviour
     public float currentTime; 
     public float dayLenghtMinutes;
     public TextMeshProUGUI timeText;
-<<<<<<< Updated upstream
-=======
+
     public bool isDay;
     public bool isNight; 
->>>>>>> Stashed changes
+
 
     //public Material stars;
 
@@ -84,8 +83,7 @@ public class DayNightSystem : MonoBehaviour
             }
             currentTime = 0;
         }
-<<<<<<< Updated upstream
-=======
+
         if(currentTime == midDay +-6)
         {
             isDay = true;
@@ -96,7 +94,7 @@ public class DayNightSystem : MonoBehaviour
             isDay = false;
             isNight = true; 
         }
->>>>>>> Stashed changes
+
 
         //Minuter
         t *= 60;
