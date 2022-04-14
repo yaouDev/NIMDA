@@ -210,6 +210,7 @@ public class PlayerController : MonoBehaviour {
 		//Debug.Log(hitInfo.collider.transform.name);
 		if (hitInfo.collider != null) {
 			EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
+			Debug.Log(hitInfo.collider.name);
 			enemy.TakeDamage();
 			Debug.Log(String.Format("Hit {0}", hitInfo.transform.name));
 		}

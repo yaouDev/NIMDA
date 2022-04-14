@@ -35,14 +35,14 @@ public class AI_Controller : MonoBehaviour {
 
     // this code is for debugging purposes only, shows current calculated path
     void Update() {
-        /*              if (currentPath != null && currentPath.Count != 0) {
+                     if (currentPath != null && currentPath.Count != 0) {
                          Vector3 prevPos = currentPath[0];
                          foreach (Vector3 pos in currentPath) {
                              if (pos != prevPos)
                                  Debug.DrawLine(prevPos, pos, Color.blue);
                              prevPos = pos;
                          }
-                     } */
+                     }
 
     }
 
