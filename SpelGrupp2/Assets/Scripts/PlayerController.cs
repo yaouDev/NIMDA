@@ -176,6 +176,8 @@ public class PlayerController : MonoBehaviour {
 			
 		if (context.started)
 		{
+			AudioController.instance.TriggerTest();
+
 			ShootLaser();
 			StartCoroutine(AnimateLineRenderer(aimingDirection));
 		}

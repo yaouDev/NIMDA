@@ -10,5 +10,4 @@ public class Recipe : ScriptableObject
     public int transistorNeeded;
 
     public Resource product;
-
 }

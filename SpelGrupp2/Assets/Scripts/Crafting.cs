@@ -13,9 +13,10 @@ public class Crafting : MonoBehaviour
 
     private Craft craft = new Craft();
     public Recipe batteryRecipe;
+    public Recipe bulletRecipe;
 
     [SerializeField] 
-    private BatteryUI batteryUI;
+    public BatteryUI batteryUI;
         
     public enum scrap
     {
@@ -105,13 +106,13 @@ public class Crafting : MonoBehaviour
         switch (recipee)
         {
             case (0):
-                Debug.Log("crafted battery");
-                batteryUI.AddBattery();
-                //craft.CraftRecipe(batteryRecipe, this);
+                //Debug.Log("crafted battery");
+                //batteryUI.AddBattery();
+                craft.CraftRecipe(batteryRecipe, this);
                 break;
             case (1):
-                Debug.Log("crafted bullet");
-                //craft.CraftRecipe(batteryRecipe, this);
+                //Debug.Log("crafted bullet");
+                craft.CraftRecipe(batteryRecipe, this);
                 break;
         }
     }
