@@ -6,8 +6,15 @@ using UnityEngine.InputSystem; //ta bort??
 
 public class AudioController : MonoBehaviour
 {
+    /* HOW TO USE THE AUDIO CONTROLLER WITH AUDIO CONTAINERS
+     * 
+     * [SerializeField] private PlayerAudioContainer player1; //allocate space for a container
+     * AudioController.instance.PlayerOneShotAttached(player1.fire1, gameObject); //call upon the audio controller, choose how to trigger the audio, and send the event through the container
+    */
+
     public EventReference testReference;
     public Transform testPosition;
+
 
     public static AudioController instance;
     private void Awake()
@@ -15,13 +22,29 @@ public class AudioController : MonoBehaviour
         instance ??= this;
     }
 
-    public void PlayOneShot(string path, Vector3 pos)
+    public void PlayOneShot(EventReference audioEvent, Vector3 pos)
     {
-        RuntimeManager.PlayOneShot(path, pos);
+        RuntimeManager.PlayOneShot(audioEvent.Path, pos);
+    }
+
+    public void PlayerOneShotAttached(EventReference audioEvent, GameObject attached)
+    {
+        RuntimeManager.PlayOneShotAttached(audioEvent.Path, attached);
     }
 
     public void TriggerTest()
     {
-        PlayOneShot(testReference.Path, testPosition.position);
+        PlayOneShot(testReference, testPosition.position);
+    }
+
+    public EventReference FindEvent(string eventName, EventReference[] referenceArray)
+    {
+        foreach(EventReference er in referenceArray)
+        {
+            if (er.Path == "event:/" + eventName) return er;
+        }
+
+        Debug.LogWarning("No event with name: " + eventName);
+        return new EventReference();
     }
 }
