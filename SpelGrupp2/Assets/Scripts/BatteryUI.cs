@@ -31,6 +31,7 @@ public class BatteryUI : MonoBehaviour {
 	[SerializeField] private Transform player;
 	[SerializeField] private Transform otherPlayer;
 	[SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerHealth playerHealth;
 	[SerializeField] private float respawnTime = 12.0f;
 	private float respawnTimer;
 
@@ -59,7 +60,7 @@ public class BatteryUI : MonoBehaviour {
 		if (alive) 
 			return;
 		
-		playerController.Respawn();
+		playerHealth.Respawn();
 		
 		alive = true;
 		
@@ -153,6 +154,6 @@ public class BatteryUI : MonoBehaviour {
 		
 		Debug.Log("You Died"); 
 		alive = false;
-		playerController.Die();
+		playerHealth.Die();
 	}
 }

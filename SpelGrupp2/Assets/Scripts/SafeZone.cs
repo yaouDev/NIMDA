@@ -10,7 +10,7 @@ public class SafeZone : MonoBehaviour
     {
         if (collider.gameObject.tag.Equals("Player"))
         {
-            PlayerController player = collider.gameObject.GetComponent<PlayerController>();
+            PlayerHealth player = collider.gameObject.GetComponent<PlayerHealth>();
             player.inSafeZone = true;
             //player.batteryUI.batteryRecharge *= 2
         }
@@ -20,7 +20,7 @@ public class SafeZone : MonoBehaviour
     {
         if (collider.gameObject.tag.Equals("Player"))
         {
-            PlayerController player = collider.gameObject.GetComponent<PlayerController>();
+            PlayerHealth player = collider.gameObject.GetComponent<PlayerHealth>();
             //player.batteryUI.batteryRecharge /= 2;
             player.inSafeZone = false;
         }
