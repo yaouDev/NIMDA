@@ -28,10 +28,10 @@ public class BatteryUI : MonoBehaviour {
 	public bool respawn;
 	public bool alive = true;
 
-	[SerializeField] private Transform player;
+	[SerializeField] public Transform player;
 	[SerializeField] private Transform otherPlayer;
 	[SerializeField] private PlayerController playerController;
-    [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] public PlayerHealth playerHealth;
 	[SerializeField] private float respawnTime = 12.0f;
 	private float respawnTimer;
 
@@ -146,7 +146,7 @@ public class BatteryUI : MonoBehaviour {
 		}
 
 		if (currentBattery < 0) {
-			Die(); // !!!!
+			Die(); // TODO call UnitDeathEvent
 		}
 	}
 

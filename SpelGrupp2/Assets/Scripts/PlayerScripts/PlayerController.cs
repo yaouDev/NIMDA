@@ -87,8 +87,7 @@ public class PlayerController : MonoBehaviour {
     protected bool alive = true;
 	public Crafting crafting;
 
-	[SerializeField]
-	private Camera cam;
+	//[SerializeField] private Camera cam;
 
 	private void Awake() {
 		
@@ -111,7 +110,7 @@ public class PlayerController : MonoBehaviour {
 		Grounded();
 		ApplyJoystickMovement();
 		//ApplyJoystickFireDirection();
-		AimDirection();
+		//AimDirection();
 		//AnimateLaserSightLineRenderer(transform.forward);
 		stateMachine.Run();	// TODO FIXME statemachine
 	}

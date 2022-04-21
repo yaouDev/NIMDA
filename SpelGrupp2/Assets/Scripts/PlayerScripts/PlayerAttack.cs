@@ -14,15 +14,16 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private LineRenderer aimLineRenderer;
     [SerializeField] private LayerMask enemyLayerMask;
-    [SerializeField] private Camera cam;
+    private Camera cam;
 
     private void Awake()
     {
-        health = gameObject.GetComponent<PlayerHealth>();
+        cam = GetComponentInChildren<Camera>();
+        health = GetComponent<PlayerHealth>();
     }
     private void Update()
     {
-       // AimDirection();
+        AimDirection();
         AnimateLaserSightLineRenderer(transform.forward);
     }
 
@@ -55,7 +56,7 @@ public class PlayerAttack : MonoBehaviour
         if (hitInfo.collider != null)
         {
             EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
-            enemy.TakeDamage();
+            enemy.TakeDamage(); //TODO pickUp-object should not be on enemy-layer/tag!
             Debug.Log(String.Format("Hit {0}", hitInfo.transform.name));
         }
     }
