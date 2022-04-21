@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AI_Controller : MonoBehaviour {
 
-    [SerializeField] private float speed, timeBetweenPathUpdates;
+    [SerializeField] private float speed, timeBetweenPathUpdates, distanceFromTargetToStop;
     private float timeSinceLastUpdate;
     private EnemyAttack enemyAttack;
     private Vector3 target;
@@ -19,6 +19,7 @@ public class AI_Controller : MonoBehaviour {
     bool started = false;
     public AI_State[] states;
     private AI_StateMachine stateMachine;
+    public bool IsStopped = true;
 
     // Start is called before the first frame update
     void Start() {
@@ -35,14 +36,14 @@ public class AI_Controller : MonoBehaviour {
 
     // this code is for debugging purposes only, shows current calculated path
     void Update() {
-                     if (currentPath != null && currentPath.Count != 0) {
-                         Vector3 prevPos = currentPath[0];
-                         foreach (Vector3 pos in currentPath) {
-                             if (pos != prevPos)
-                                 Debug.DrawLine(prevPos, pos, Color.blue);
-                             prevPos = pos;
-                         }
-                     }
+        if (currentPath != null && currentPath.Count != 0) {
+            Vector3 prevPos = currentPath[0];
+            foreach (Vector3 pos in currentPath) {
+                if (pos != prevPos)
+                    Debug.DrawLine(prevPos, pos, Color.blue);
+                prevPos = pos;
+            }
+        }
 
     }
 
@@ -57,7 +58,7 @@ public class AI_Controller : MonoBehaviour {
         return false;
     }
 
-    IEnumerator updatePath() {
+    public IEnumerator updatePath() {
         while (true) {
             pathfinder.requestPath(this, transform.position, activeTarget);
             currentPathIndex = 0;
@@ -82,7 +83,7 @@ public class AI_Controller : MonoBehaviour {
         return transform.position;
     }
 
-    public void addForce(Vector3 force){
+    public void addForce(Vector3 force) {
         rBody.AddForce(force, ForceMode.Force);
     }
 
@@ -90,7 +91,11 @@ public class AI_Controller : MonoBehaviour {
         return enemyAttack.getAttackRange();
     }
 
-    public Vector3 getVelocity(){
+    public float getDistanceFromTarget() {
+        return Vector3.Distance(activeTarget, transform.position);
+    }
+
+    public Vector3 getVelocity() {
         return rBody.velocity;
     }
 
@@ -100,7 +105,10 @@ public class AI_Controller : MonoBehaviour {
 
 
     private void FixedUpdate() {
-        //stateMachine.run();
+        if (!IsStopped) move();
+    }
+
+    private void move() {
         Collider[] cols = Physics.OverlapSphere(transform.position, otherEnemyTrigger.radius);
         foreach (Collider c in cols) {
             if (c.tag == "Enemy" && c.gameObject != gameObject) {
@@ -109,7 +117,7 @@ public class AI_Controller : MonoBehaviour {
                 }
             }
         }
-        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > enemyAttack.getAttackRange()) {
+        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > distanceFromTargetToStop) {
             if (Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
@@ -121,13 +129,7 @@ public class AI_Controller : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
-        } /* else if (Vector3.Distance(transform.position, activeTarget) <= enemyAttack.getAttackRange() && targetInSight()) {
-
-        } */
-
-        /* else if ((Vector3.Distance(transform.position, activeTarget) <= pathfinder.getAcceptableDistanceFromTarget())) {
-            rBody.AddForce((activeTarget - transform.position).normalized * speed, ForceMode.Force);
-        } */
+        }
     }
 
 
