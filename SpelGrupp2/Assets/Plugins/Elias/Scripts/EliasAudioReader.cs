@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 using AOT;
+using FMODUnity;
 
 /// <summary>
 /// Reads ELIAS' output and plays it via an AudioSource.
@@ -9,7 +10,8 @@ using AOT;
 public class EliasAudioReader
 {
 	private EliasHelper elias;
-	private AudioSource audioSource;
+    //private AudioSource audioSource;
+    private StudioEventEmitter audioSource;
 	private GCHandle gcHandle;
 	private float[] dataBuffer;
 	private int currentDataIndex;
@@ -18,6 +20,7 @@ public class EliasAudioReader
 
     public volatile AudioSpeakerMode unityChannelMode;
 
+    /*
 	public EliasAudioReader(EliasHelper eliasHelper, AudioSource audioSourceTarget, bool useProceduralClip)
 	{
 		elias = eliasHelper;
@@ -31,12 +34,27 @@ public class EliasAudioReader
         // By not having any audio clip, and making sure ELIAS is the first effect on the Audio Source, ELIAS is treated as the "source".
 		audioSource.loop = true;
 		gcHandle = GCHandle.Alloc(dataBuffer, GCHandleType.Pinned);
-	}
+	}*/
 
-	/// <summary>
-	/// Stops the AudioSource and disposes references. DOES NOT stop ELIAS!
-	/// </summary>
-	public void Dispose()
+    public EliasAudioReader(EliasHelper eliasHelper, StudioEventEmitter audioSourceTarget, bool useProceduralClip)
+    {
+        elias = eliasHelper;
+        audioSource = audioSourceTarget;
+        dataBuffer = new float[elias.FramesPerBuffer * elias.ChannelCount];
+        if (useProceduralClip)
+        {
+            AudioClip clip = AudioClip.Create("elias clip", elias.FramesPerBuffer * elias.ChannelCount, elias.ChannelCount, elias.SampleRate, true, PCMReadCallback);
+            //audioSource.clip = clip;
+        }
+        // By not having any audio clip, and making sure ELIAS is the first effect on the Audio Source, ELIAS is treated as the "source".
+        //audioSource.loop = true;
+        gcHandle = GCHandle.Alloc(dataBuffer, GCHandleType.Pinned);
+    }
+
+    /// <summary>
+    /// Stops the AudioSource and disposes references. DOES NOT stop ELIAS!
+    /// </summary>
+    public void Dispose()
 	{
 		audioSource.Stop();
 		audioSource = null;
