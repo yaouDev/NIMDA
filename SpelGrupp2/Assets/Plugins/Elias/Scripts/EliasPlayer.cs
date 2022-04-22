@@ -7,7 +7,7 @@ using FMODUnity;
 /// <summary>
 /// Handles interaction with ELIAS. Plays ELIAS' output through the attached AudioSource.
 /// </summary>
-//[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(AudioSource))]
 public class EliasPlayer : MonoBehaviour
 {
 	[HideInInspector]
@@ -210,14 +210,14 @@ public class EliasPlayer : MonoBehaviour
         {
             if (audioReader == null)
             {
-				//audioReader = new EliasAudioReader(elias, GetComponent<AudioSource>(), useHighLatencyMode);
-				audioReader = new EliasAudioReader(elias, GetComponent<StudioEventEmitter>(), useHighLatencyMode);
+				audioReader = new EliasAudioReader(elias, GetComponent<AudioSource>(), useHighLatencyMode);
+				//audioReader = new EliasAudioReader(elias, GetComponent<StudioEventEmitter>(), useHighLatencyMode);
 				audioReader.unityChannelMode = AudioSettings.speakerMode;
                 AudioSettings.OnAudioConfigurationChanged += OnAudioConfigurationChanged;
             }
             isEliasStarted = true;
-			//GetComponent<AudioSource> ().Play ();
-			GetComponent<StudioEventEmitter>().Play();
+			GetComponent<AudioSource> ().Play ();
+			//GetComponent<StudioEventEmitter>().Play();
         }
 		return startedSucessfully;
 	}
