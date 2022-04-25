@@ -39,7 +39,8 @@ public class Craft
 
             if (recipe.product.name.Equals("Battery"))
             {
-                crafting.batteryUI.AddBattery();
+                //crafting.batteryUI.AddBattery();
+                // TODO [Patrik] Add battery in Health script from here
             }
             else
             {

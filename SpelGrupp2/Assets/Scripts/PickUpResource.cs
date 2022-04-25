@@ -27,11 +27,9 @@ public class PickUpResource : MonoBehaviour
             case (PickUp.Iron):
                 crafting.iron++;
                 break;
-
             case (PickUp.Copper):
                 crafting.copper++;
                 break;
-
             case (PickUp.Transistor):
                 crafting.transistor++;
                 break;

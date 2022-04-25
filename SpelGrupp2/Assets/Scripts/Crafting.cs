@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -15,30 +16,27 @@ public class Crafting : MonoBehaviour
     public Recipe batteryRecipe;
     public Recipe bulletRecipe;
 
-    [SerializeField] 
-    public BatteryUI batteryUI;
-        
-    public enum scrap
+    public enum PickUp
     {
-        copper,
-        transistor,
-        iron
+        Copper,
+        Transistor,
+        Iron
     }
     
-    public static readonly scrap[][] Combos = new scrap[][]
+    private static readonly PickUp[][] Combos = new PickUp[][]
     {
-        new scrap[] {scrap.copper, scrap.transistor, scrap.iron},
-        new scrap[] {scrap.iron, scrap.iron, scrap.iron}
+        new PickUp[] {PickUp.Copper, PickUp.Transistor, PickUp.Iron},
+        new PickUp[] {PickUp.Iron, PickUp.Iron, PickUp.Iron}
     };
     
     private int currentIndex = 0;
     private bool[] validRecipe = {true, true};
-
+    
     public void PressedCopper(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            Combo(scrap.copper);
+            Combo(PickUp.Copper);
         }
     }
     
@@ -46,7 +44,7 @@ public class Crafting : MonoBehaviour
     {
         if (context.performed)
         {
-            Combo(scrap.iron);
+            Combo(PickUp.Iron);
         }
     }
     
@@ -54,11 +52,27 @@ public class Crafting : MonoBehaviour
     {
         if (context.performed)
         {
-            Combo(scrap.transistor);
+            Combo(PickUp.Transistor);
         }
     }
 
-    private void Combo(scrap latestPress)
+    public void PressedBattery(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            craft.CraftRecipe(batteryRecipe, this);
+        }
+    }
+
+    public void PressedBullet(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            craft.CraftRecipe(bulletRecipe, this);
+        }
+    }
+
+    private void Combo(PickUp latestPress)
     {
         bool correctSoFar = false;
         for (int recipee = 0; recipee < validRecipe.Length; recipee++)
