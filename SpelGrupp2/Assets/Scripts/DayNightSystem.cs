@@ -15,6 +15,10 @@ public class DayNightSystem : MonoBehaviour
 
     private float rotationSpeed;
     private float midDay;
+/*    private float morning = 9f;
+    private float evening = 9f;
+    private bool isMorning;
+    private bool isEvening;*/
     private float translateTime;
     string amPm = "AM";
  
@@ -82,12 +86,13 @@ public class DayNightSystem : MonoBehaviour
             currentTime = 0;
         }
 
-        if(currentTime == midDay +-6)
-        {
+        if(currentTime >= midDay / 2 && currentTime <= midDay * 1.5)
+        {   
             isDay = true;
             Debug.Log(isDay);
         }
-        else
+        
+        if(currentTime >= midDay * 1.5)
         {
             isDay = false;
             Debug.Log(isDay);
@@ -106,7 +111,7 @@ public class DayNightSystem : MonoBehaviour
 
         string displayTime = displayHours + ":" + displayMinutes + " " + amPm;
 
-        //timeText.text = displayTime;
+        timeText.text = displayTime;
         
         transform.Rotate(new Vector3(1, 0, 0) * rotationSpeed * Time.deltaTime);
     }
