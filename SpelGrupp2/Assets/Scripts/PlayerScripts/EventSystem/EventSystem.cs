@@ -12,7 +12,7 @@ namespace Callbacks
 
         static private EventSystem _Current;
 
-        void OneEnable()
+        void OnEnable()
         {
             _Current = this;
         }
@@ -44,6 +44,11 @@ namespace Callbacks
             }
             EventListener wrapper = (ei) => { listener((T)ei); };
             eventListeners[etype].Add(wrapper);
+        }
+
+        public void UnregisterListener<T>(System.Action<T> listener) where T : EventInfo
+        {
+            
         }
 
         public void FireEvent(EventInfo ei)

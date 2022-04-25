@@ -15,37 +15,38 @@ namespace Callbacks
         private float respawnTimer;
         private bool inSafeZone = false;
         private bool alive = true;
-        private UnitHealthUpdate healthEvent;
+        private GameObject otherPlayer;
+        [SerializeField] private bool isPlayerOne;
 
+
+        public float GetHealth() { return currHealth; }
         private void Start()
         {
-            currHealth = maxHealth;
-            healthEvent = new UnitHealthUpdate();
-            EventSystem.Current.FireEvent(healthEvent);
+            //currHealth = maxHealth;
+            currHealth = 0.1f;
+            GameObject[] otherPlayers = GameObject.FindGameObjectsWithTag("Player");
+            otherPlayer = otherPlayers[0] == gameObject ? gameObject : otherPlayers[1];
         }
 
         private void Update()
         {
-            if (alive)
+            if (alive && currHealth != maxHealth)
             {
                 UpdateHealthUI();
                 respawnTimer = 0.0f;
             }
             else { respawnTimer += Time.deltaTime; }
 
-            if (!alive && respawnTimer > respawnTime) { Respawn(); }
+            if (!alive && respawnTimer > respawnTime)
+            {
+                Respawn();
+            }
         }
 
         public void TakeDamage(float damage)
         {
             currHealth -= damage;
-            Debug.Log("Took damage");
-
-            DecreaseBatteryEI decreaseUI = new DecreaseBatteryEI();
-            EventSystem.Current.FireEvent(decreaseUI);
-            decreaseUI.healthPercentage = currHealth;
-
-            if (currHealth == 0f) { Die(); }
+            if (currHealth <= 0f) { Die(); }
         }
 
         public void Die()
@@ -61,13 +62,18 @@ namespace Callbacks
             UnitRespawnEI respawnEI = new UnitRespawnEI();
             EventSystem.Current.FireEvent(respawnEI);
             currHealth = maxHealth;
+            if (otherPlayer != null)
+                gameObject.transform.position = otherPlayer.transform.position + Vector3.one;
         }
 
         private void UpdateHealthUI()
         {
             UpdateSafeZoneBuff();
             HealthRegeneration();
+            UnitHealthUpdate healthEvent = new UnitHealthUpdate();
+            EventSystem.Current.FireEvent(healthEvent);
             healthEvent.health = currHealth;
+            healthEvent.isGOPlayerOne = isPlayerOne;
         }
         private void UpdateSafeZoneBuff() // TODO Safe zone regeneration buff 
         {

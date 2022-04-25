@@ -9,34 +9,32 @@ using UnityEngine.UI;
 
 public class BatteryUI : MonoBehaviour
 {
-    [SerializeField]
-    private Image[] batteryUIs;
+    [SerializeField] private Image batteryUI;
 
-    [SerializeField] [Range(.0f, .1f)] private float percentagePerSecondIncrease;
-    //[SerializeField] [Range(0.1f, 1.0f)] private float damageAmount;
-
-    [SerializeField] [Range(1, 6)] private int respawnBatteryAmount = 4;
-    [SerializeField] private Transform player;
-    [SerializeField] private Transform otherPlayer;
-    [SerializeField] private Image laserMeter;
-
-    //[SerializeField] private float[] batteryCharge = { 1.0f, 1.0f, 1.0f, 1.0f, .5f };
-    public float battery = 1f;
     public bool alive = true;
-
-    private void Update()
-    {
-        UpdateBatteryUI();
-    }
 
     public void Respawn()
     {
-        for (int i = 0; i < respawnBatteryAmount; i++)
+        alive = true;
+        batteryUI.gameObject.SetActive(true);
+    }
+
+    public void UpdateBatteryUI(float battery)
+    {
+        if (battery >= 0f)
         {
-            batteryUIs[i].gameObject.SetActive(true);
+            Debug.Log("Battery value: " + battery);
+            batteryUI.fillAmount = Ease.EaseInCirc(battery);
+            batteryUI.color = Color.Lerp(Color.yellow, Color.red, Ease.EaseInCirc(battery));
         }
-        if (otherPlayer != null)
-            player.transform.position = otherPlayer.transform.position + Vector3.one;
+        else
+            Die();
+    }
+
+    private void Die()
+    {
+        batteryUI.gameObject.SetActive(false);
+        alive = false;
     }
 
     /*
@@ -67,7 +65,7 @@ public class BatteryUI : MonoBehaviour
 			batteryCharge[currentBattery] = 1.0f;
 		}
 	}
-	*/
+	
 
     public void LaserBatteryDrain(float newHealth)
     {
@@ -75,18 +73,14 @@ public class BatteryUI : MonoBehaviour
 
         if (battery < 0.0f)
         {
-        //    UpdateBatteryPercentage(Mathf.Abs(battery));
+            //    UpdateBatteryPercentage(Mathf.Abs(battery));
         }
     }
 
-    private void UpdateBatteryUI()
-    {
-        laserMeter.fillAmount = Ease.EaseInCirc(battery);
-        laserMeter.color = Color.Lerp(Color.yellow, Color.red, Ease.EaseInCirc(battery));
-    }
+
 
     //public void UpdateBatteryPercentage() => UpdateBatteryPercentage(damageAmount);
-    /*
+    
     public void UpdateBatteryPercentage(float damageAmount)
     {
 
@@ -113,10 +107,4 @@ public class BatteryUI : MonoBehaviour
         }
     }
     */
-    private void Die()
-    {
-
-        Debug.Log("You Died");
-        alive = false;
-    }
 }

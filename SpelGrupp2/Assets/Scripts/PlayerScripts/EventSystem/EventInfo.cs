@@ -9,29 +9,14 @@ namespace Callbacks
         public string EventDescription;
     }
 
-    public class DecreaseBatteryEI : EventInfo
-    {
-        public bool isPlayerOne;
-        public float healthPercentage;
-    }
-
-    public class UnitDeathEI : EventInfo
-    {
-        public bool isDead;
-    }
-
     public class UnitRespawnEI : EventInfo
     {
-        
-    }
-
-    public class UnitEnteredSafezone : EventInfo
-    {
-        public float batteryRegIncrease;
+        public bool isGOPlayerOne;
     }
 
     public class UnitHealthUpdate : EventInfo
     {
+        public bool isGOPlayerOne;
         public float health;
     }
 }

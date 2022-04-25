@@ -4,19 +4,19 @@ using UnityEngine;
 
 namespace Callbacks
 {
-    public class BatteryUpdateListener
+    public class BatteryUpdateListener : MonoBehaviour
     {
         [SerializeField] private BatteryUI[] playerUIs;
 
-        void Start()
+        public void Start()
         {
-            EventSystem.Current.RegisterListener<DecreaseBatteryEI>(DecreaseBattery);
+            EventSystem.Current.RegisterListener<UnitHealthUpdate>(UpdateBattery);
         }
 
-        void DecreaseBattery(DecreaseBatteryEI buei)
+        private void UpdateBattery(UnitHealthUpdate uhu)
         {   
-            BatteryUI battery = buei.isPlayerOne ? playerUIs[0] : playerUIs[1];
-          //  battery.UpdateBatteryPercentage(buei.healthPercentage);
+            BatteryUI battery = uhu.isGOPlayerOne ? playerUIs[0] : playerUIs[1];
+            battery.UpdateBatteryUI(uhu.health);
         }
     }
 }

@@ -436,6 +436,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19654868}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &28352207 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2501768212987928988, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+  m_PrefabInstance: {fileID: 991466532}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &28352208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 28352207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76429ab6c85dd27478172c9bf1cc63fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerUIs:
+  - {fileID: 582268506}
+  - {fileID: 69539068}
 --- !u!4 &35177602 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4102459122074449044, guid: 44d916e6bd66b1040987517827bf66bd, type: 3}
@@ -1120,6 +1140,10 @@ PrefabInstance:
       propertyPath: health
       value: 
       objectReference: {fileID: 582268506}
+    - target: {fileID: 7031754109267524995, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: isPlayerOne
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8436019334260919835, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: health
       value: 
@@ -16829,6 +16853,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2501768211733857169, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768212046888263, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768212415376233, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768212686436662, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768212687892712, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2501768212922045505, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -16850,6 +16894,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 83950481}
     - target: {fileID: 2501768212922045506, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: batteryUI
+      value: 
+      objectReference: {fileID: 857568458}
+    - target: {fileID: 2501768212922045506, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: laserMeter
       value: 
       objectReference: {fileID: 857568458}
@@ -16865,6 +16913,10 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 261193353}
+    - target: {fileID: 2501768212946325006, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2501768212987928976, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -16969,6 +17021,10 @@ PrefabInstance:
       propertyPath: m_ReferenceResolution.y
       value: 800
       objectReference: {fileID: 0}
+    - target: {fileID: 2501768213147240403, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2501768213181531499, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -16990,6 +17046,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 83950482}
     - target: {fileID: 2501768213181531500, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: batteryUI
+      value: 
+      objectReference: {fileID: 1734151666}
+    - target: {fileID: 2501768213181531500, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: laserMeter
       value: 
       objectReference: {fileID: 1734151666}
@@ -17005,6 +17065,26 @@ PrefabInstance:
       propertyPath: playerController
       value: 
       objectReference: {fileID: 1064620976}
+    - target: {fileID: 2501768213420947974, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768213533201031, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768213578322760, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768213716244112, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768213814942567, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
 --- !u!224 &991466533 stripped
