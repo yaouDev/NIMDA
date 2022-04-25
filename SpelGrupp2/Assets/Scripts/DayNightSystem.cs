@@ -88,11 +88,15 @@ public class DayNightSystem : MonoBehaviour
         {
             isDay = true;
             isNight = false;
+            Debug.Log(isDay);
+            Debug.Log(isNight);
         }
         else
         {
             isDay = false;
-            isNight = true; 
+            isNight = true;
+            Debug.Log(isDay);
+            Debug.Log(isNight);
         }
 
 
