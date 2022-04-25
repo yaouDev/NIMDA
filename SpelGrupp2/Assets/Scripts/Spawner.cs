@@ -4,30 +4,42 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    public GameObject spawnThis;
-    public int spawnCount;
+    [SerializeField] private GameObject spawnThis;
+    [SerializeField] private int spawnCount;
+    [SerializeField] private int maxSpawnCount;
     [SerializeField] private int dayMaxSpawnCount;
     [SerializeField] private int nightMaxSpawnCount;
-    public Transform spawnPos;
-    private DayNightSystem dns;
+    [SerializeField] private Transform spawnPos;
+    [SerializeField] private DayNightSystem dns;
 
+
+    private void Start()
+    {
+        StartCoroutine(SpawnObject());
+    }
 
     private void Update()
     {
         if (dns.isDay == true)
         {
-            if (spawnCount < dayMaxSpawnCount)
-            {
-                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
-            }
-
+            maxSpawnCount = dayMaxSpawnCount;
         }
         else
         {
-            if (spawnCount < nightMaxSpawnCount)
-            {
-                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
-            }
+            maxSpawnCount = nightMaxSpawnCount;
         }
     }
+
+    IEnumerator SpawnObject()
+    {
+
+        while (spawnCount < maxSpawnCount)
+        {
+            Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+            yield return new WaitForSeconds(0.3f);
+            spawnCount += 1;
+        }
+
+    }
+
 }
