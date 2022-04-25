@@ -10,8 +10,8 @@ public class SafeZone : MonoBehaviour
     {
         if (collider.gameObject.tag.Equals("Player"))
         {
-            PlayerHealth player = collider.gameObject.GetComponent<PlayerHealth>();
-            player.inSafeZone = true;
+      //      PlayerHealth player = collider.gameObject.GetComponent<PlayerHealth>();
+   //         player.inSafeZone = true;
             //player.batteryUI.batteryRecharge *= 2
         }
     }
@@ -20,9 +20,9 @@ public class SafeZone : MonoBehaviour
     {
         if (collider.gameObject.tag.Equals("Player"))
         {
-            PlayerHealth player = collider.gameObject.GetComponent<PlayerHealth>();
+  //          PlayerHealth player = collider.gameObject.GetComponent<PlayerHealth>();
             //player.batteryUI.batteryRecharge /= 2;
-            player.inSafeZone = false;
+      //      player.inSafeZone = false;
         }
     }
 
@@ -34,7 +34,7 @@ public class SafeZone : MonoBehaviour
             Vector3 dir = collision.contacts[0].point - transform.position;
             dir = -dir.normalized;
             enemy.GetComponent<Rigidbody>().AddForce(dir * force);
-            enemy.StunEnemy();
+     //       enemy.StunEnemy();
             
         }
     }

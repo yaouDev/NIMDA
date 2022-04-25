@@ -7,75 +7,39 @@ using UnityEditor.UI;
 using UnityEditorInternal;
 using UnityEngine.UI;
 
-public class BatteryUI : MonoBehaviour {
-	[SerializeField]
-	private Image[] batteryUIs;
-	private int currentBattery = 5;
-	
-	[SerializeField] [Range(.0f, .1f)] 
-	private float percentagePerSecondIncrease;
-	
-	[SerializeField] [Range(0.1f, 1.0f)]
-	private float damageAmount;
-	
-	[SerializeField]
-	private float[] batteryCharge = { 1.0f, 1.0f, 1.0f, 1.0f, .5f };
+public class BatteryUI : MonoBehaviour
+{
+    [SerializeField]
+    private Image[] batteryUIs;
 
-	[SerializeField] [Range(1, 6)]
-	private int respawnBatteryAmount = 4;
-	
-	public bool takeDMG;
-	public bool respawn;
-	public bool alive = true;
+    [SerializeField] [Range(.0f, .1f)] private float percentagePerSecondIncrease;
+    //[SerializeField] [Range(0.1f, 1.0f)] private float damageAmount;
 
-	[SerializeField] public Transform player;
-	[SerializeField] private Transform otherPlayer;
-	[SerializeField] private PlayerController playerController;
-    [SerializeField] public PlayerHealth playerHealth;
-	[SerializeField] private float respawnTime = 12.0f;
-	private float respawnTimer;
+    [SerializeField] [Range(1, 6)] private int respawnBatteryAmount = 4;
+    [SerializeField] private Transform player;
+    [SerializeField] private Transform otherPlayer;
+    [SerializeField] private Image laserMeter;
 
-	private void Update() {
-		
-		if (alive) {
-			respawnTimer = 0.0f;
-			RechargeBattery();
-		} else
-			respawnTimer += Time.deltaTime;
-		
-		if (takeDMG) {
-			takeDMG = false;
-			TakeDamage();
-		}
+    //[SerializeField] private float[] batteryCharge = { 1.0f, 1.0f, 1.0f, 1.0f, .5f };
+    public float battery = 1f;
+    public bool alive = true;
 
-		if (!alive && respawnTimer > respawnTime) {
-			respawn = false;
-			Respawn();
-		}
+    private void Update()
+    {
+        UpdateBatteryUI();
+    }
 
-		UpdateLaserUI();
-	}
+    public void Respawn()
+    {
+        for (int i = 0; i < respawnBatteryAmount; i++)
+        {
+            batteryUIs[i].gameObject.SetActive(true);
+        }
+        if (otherPlayer != null)
+            player.transform.position = otherPlayer.transform.position + Vector3.one;
+    }
 
-	public void Respawn() {
-		if (alive) 
-			return;
-		
-		playerHealth.Respawn();
-		
-		alive = true;
-		
-		for (int i = 0; i < respawnBatteryAmount; i++) {
-			batteryCharge[i] = 1.0f;
-			batteryUIs[i].fillAmount = 1.0f;
-			batteryUIs[i].gameObject.SetActive(true);
-		}
-
-		currentBattery = respawnBatteryAmount - 1;
-
-		if (otherPlayer != null)
-			player.transform.position = otherPlayer.transform.position + Vector3.one;
-	}
-	
+    /*
 	private void RechargeBattery() {
 
 		batteryCharge[currentBattery] += Time.deltaTime * percentagePerSecondIncrease;
@@ -83,8 +47,9 @@ public class BatteryUI : MonoBehaviour {
 		batteryCharge[currentBattery] = Mathf.Min(batteryCharge[currentBattery], 1.0f);
 		batteryUIs[currentBattery].fillAmount = batteryCharge[currentBattery];
 	}
+	*/
 
-	public void AddBattery() {
+    /*public void AddBattery() {
 		
 		if (currentBattery < 5) {
 			// move recharging battery-fill up one step 
@@ -102,58 +67,56 @@ public class BatteryUI : MonoBehaviour {
 			batteryCharge[currentBattery] = 1.0f;
 		}
 	}
+	*/
 
-	public float laserBattery = 1.0f;
-	[SerializeField] private float laserBatteryDrain = .2f;
-	public void LaserBatteryDrain()
-	{
-		laserBattery -= laserBatteryDrain;
+    public void LaserBatteryDrain(float newHealth)
+    {
+        battery = newHealth;
 
-		if (laserBattery < 0.0f)
-		{
-			TakeDamage(Mathf.Abs(laserBattery));
-		}
-	}
+        if (battery < 0.0f)
+        {
+        //    UpdateBatteryPercentage(Mathf.Abs(battery));
+        }
+    }
 
-	[SerializeField] private Image laserMeter;
-	[SerializeField] private float laserFillSpeed;
-	private void UpdateLaserUI()
-	{
-		laserBattery += Time.deltaTime * laserFillSpeed;
-		laserBattery = Mathf.Clamp01(laserBattery);
-		laserMeter.fillAmount = Ease.EaseInCirc( laserBattery );
-		laserMeter.color = Color.Lerp(Color.yellow, Color.red, Ease.EaseInCirc(laserBattery));
-	}
+    private void UpdateBatteryUI()
+    {
+        laserMeter.fillAmount = Ease.EaseInCirc(battery);
+        laserMeter.color = Color.Lerp(Color.yellow, Color.red, Ease.EaseInCirc(battery));
+    }
 
-	public void TakeDamage() => TakeDamage(damageAmount);
-	
-	public void TakeDamage(float damageAmount) {
-		
-		if (!alive) 
-			return;
-		
-		batteryCharge[currentBattery] -= damageAmount;
-		
-		// don't empty last battery completely
-		// if (currentBattery == 0) {
-		// 	batteryCharge[currentBattery] = Mathf.Max(0.0f,  batteryCharge[currentBattery]);
-		// }
-		
-		// if battery empty (+ small margin) and isn't last battery — remove current battery 
-		if (batteryCharge[currentBattery] < -0.05f) {
-			batteryUIs[currentBattery].gameObject.SetActive(false);
-			currentBattery--;
-		}
+    //public void UpdateBatteryPercentage() => UpdateBatteryPercentage(damageAmount);
+    /*
+    public void UpdateBatteryPercentage(float damageAmount)
+    {
 
-		if (currentBattery < 0) {
-			Die(); // TODO call UnitDeathEvent
-		}
-	}
+        if (!alive)
+            return;
 
-	private void Die() {
-		
-		Debug.Log("You Died"); 
-		alive = false;
-		playerHealth.Die();
-	}
+        battery -= damageAmount;
+
+        // don't empty last battery completely
+        // if (currentBattery == 0) {
+        // 	batteryCharge[currentBattery] = Mathf.Max(0.0f,  batteryCharge[currentBattery]);
+        // }
+
+        // if battery empty (+ small margin) and isn't last battery — remove current battery 
+        if (batteryCharge[currentBattery] < -0.05f)
+        {
+            batteryUIs[currentBattery].gameObject.SetActive(false);
+            currentBattery--;
+        }
+
+        if (currentBattery < 0)
+        {
+            Die(); // TODO call UnitDeathEvent
+        }
+    }
+    */
+    private void Die()
+    {
+
+        Debug.Log("You Died");
+        alive = false;
+    }
 }

@@ -16,8 +16,7 @@ namespace Callbacks
         void DecreaseBattery(DecreaseBatteryEI buei)
         {   
             BatteryUI battery = buei.isPlayerOne ? playerUIs[0] : playerUIs[1];
-            battery.TakeDamage();
-            buei.healthInfo.TakeDamage();
+          //  battery.UpdateBatteryPercentage(buei.healthPercentage);
         }
     }
 }

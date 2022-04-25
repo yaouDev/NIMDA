@@ -46,7 +46,7 @@ namespace Callbacks
             eventListeners[etype].Add(wrapper);
         }
 
-        public FireEvent(EventInfo ei)
+        public void FireEvent(EventInfo ei)
         {
             System.Type trueEventInfoClass = ei.GetType();
             if(eventListeners == null || eventListeners[trueEventInfoClass] == null){

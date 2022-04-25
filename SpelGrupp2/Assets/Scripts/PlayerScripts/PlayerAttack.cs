@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 public class PlayerAttack : MonoBehaviour
 {
-    private PlayerHealth health;
+   // private PlayerHealth health;
     private Vector3 aimingDirection = Vector3.forward;
 
     [SerializeField] private float laserDrainPerShot = .2f;
@@ -19,7 +19,7 @@ public class PlayerAttack : MonoBehaviour
     private void Awake()
     {
         cam = GetComponentInChildren<Camera>();
-        health = GetComponent<PlayerHealth>();
+      //  health = GetComponent<PlayerHealth>();
     }
     private void Update()
     {
@@ -29,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void Fire(InputAction.CallbackContext context)
     {
-        if (!health.alive) return; // TODO game jam code! 
+   //     if (!health.alive) return; // TODO game jam code! 
 
         if (context.started)
         {
@@ -49,7 +49,7 @@ public class PlayerAttack : MonoBehaviour
     private void ShootLaser()
     {
 
-        health.DrainBattery();
+   //     health.DrainBattery();
 
         Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
         //Debug.Log(hitInfo.collider.transform.name);

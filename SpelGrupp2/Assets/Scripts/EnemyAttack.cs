@@ -17,18 +17,18 @@ public class EnemyAttack : MonoBehaviour
     private bool isShooting = true;
     [SerializeField] private float turnSpeed = 10f;
     private bool stunned = false;
-    private PlayerHealth p1, p2;
+ //   private PlayerHealth p1, p2;
 
     void Awake()
     {
         targets = GameObject.FindGameObjectsWithTag("Player");
-        p1 = targets[0].GetComponent<PlayerHealth>();
-        p2 = targets[1].GetComponent<PlayerHealth>();
+    //    p1 = targets[0].GetComponent<PlayerHealth>();
+     //   p2 = targets[1].GetComponent<PlayerHealth>();
     }
 
     void Update()
     {
-        PlayerHealth closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? p1 : p2;
+   /*     PlayerHealth closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? p1 : p2;
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
         if (dist <= attackRange && closestTarget.inSafeZone == false)
         {
@@ -52,7 +52,7 @@ public class EnemyAttack : MonoBehaviour
             Stunned();
         }
     }
-
+    
     IEnumerator Stunned()
     {
         yield return new WaitForSeconds(5f);
@@ -106,5 +106,7 @@ public class EnemyAttack : MonoBehaviour
 
         lineRenderer.startWidth = 0.0f;
         lineRenderer.endWidth = 0.0f;
+        */
     }
+
 }
