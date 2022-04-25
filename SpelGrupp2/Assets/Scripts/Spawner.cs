@@ -6,15 +6,28 @@ public class Spawner : MonoBehaviour
 {
     public GameObject spawnThis;
     public int spawnCount;
-    public int maxSpawnCount;
+    [SerializeField] private int dayMaxSpawnCount;
+    [SerializeField] private int nightMaxSpawnCount;
     public Transform spawnPos;
+    private DayNightSystem dns;
 
 
     private void Update()
     {
-        if(spawnCount < maxSpawnCount) 
+        if (dns.isDay == true)
         {
-            Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+            if (spawnCount < dayMaxSpawnCount)
+            {
+                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+            }
+
+        }
+        else
+        {
+            if (spawnCount < nightMaxSpawnCount)
+            {
+                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+            }
         }
     }
 }

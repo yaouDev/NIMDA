@@ -10,8 +10,6 @@ public class DayNightSystem : MonoBehaviour
     public TextMeshProUGUI timeText;
 
     public bool isDay;
-    public bool isNight; 
-
 
     //public Material stars;
 
@@ -87,16 +85,12 @@ public class DayNightSystem : MonoBehaviour
         if(currentTime == midDay +-6)
         {
             isDay = true;
-            isNight = false;
             Debug.Log(isDay);
-            Debug.Log(isNight);
         }
         else
         {
             isDay = false;
-            isNight = true;
             Debug.Log(isDay);
-            Debug.Log(isNight);
         }
 
 
@@ -112,7 +106,7 @@ public class DayNightSystem : MonoBehaviour
 
         string displayTime = displayHours + ":" + displayMinutes + " " + amPm;
 
-        timeText.text = displayTime;
+        //timeText.text = displayTime;
         
         transform.Rotate(new Vector3(1, 0, 0) * rotationSpeed * Time.deltaTime);
     }
