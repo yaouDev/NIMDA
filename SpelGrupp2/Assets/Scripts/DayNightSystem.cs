@@ -10,13 +10,15 @@ public class DayNightSystem : MonoBehaviour
     public TextMeshProUGUI timeText;
 
     public bool isDay;
-    public bool isNight; 
-
 
     //public Material stars;
 
     private float rotationSpeed;
     private float midDay;
+/*    private float morning = 9f;
+    private float evening = 9f;
+    private bool isMorning;
+    private bool isEvening;*/
     private float translateTime;
     string amPm = "AM";
  
@@ -84,15 +86,16 @@ public class DayNightSystem : MonoBehaviour
             currentTime = 0;
         }
 
-        if(currentTime == midDay +-6)
-        {
+        if(currentTime >= midDay / 2 && currentTime <= midDay * 1.5)
+        {   
             isDay = true;
-            isNight = false;
+            Debug.Log(isDay);
         }
-        else
+        
+        if(currentTime >= midDay * 1.5)
         {
             isDay = false;
-            isNight = true; 
+            Debug.Log(isDay);
         }
 
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
+  m_IndirectSpecularColor: {r: 0.43667555, g: 0.48427182, b: 0.5645241, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11147,6 +11147,10 @@ PrefabInstance:
     - target: {fileID: 2501768212987928988, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: m_Name
       value: HealthCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2501768212987928991, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 2501768213181531500, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: player
@@ -24095,7 +24099,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2108623926}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.44, y: 4.28, z: 21.16}
+  m_LocalPosition: {x: -6.44, y: 10.79, z: 16.87}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -24114,10 +24118,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnThis: {fileID: 8207682837413986687, guid: 0c2434b96680b6a439fff3d55c9f252c, type: 3}
-  xPos: 0
-  zPos: 0
   spawnCount: 0
-  maxSpawnCount: 10
+  dayMaxSpawnCount: 0
+  nightMaxSpawnCount: 0
+  spawnPos: {fileID: 2108623927}
 --- !u!1 &2130019932
 GameObject:
   m_ObjectHideFlags: 0
