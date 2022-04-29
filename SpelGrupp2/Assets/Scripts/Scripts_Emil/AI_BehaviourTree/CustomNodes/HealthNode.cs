@@ -2,19 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthNode : Node {
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/LowHealthRetreat")]
+public class LowHealthRetreatNode : Node {
 
-    private EnemyHealth health;
-    private float thereshold;
+    public float fleeThereshold;
 
     public override NodeState Evaluate() {
-        nodeState = health.GetCurrentHealth() <= thereshold ? NodeState.SUCCESS : NodeState.FAILURE;
+        nodeState = agent.GetEnemyHealth().GetCurrentHealth() <= fleeThereshold ? NodeState.SUCCESS : NodeState.FAILURE;
         return nodeState;
-    }
-
-    public HealthNode(EnemyHealth health, float thereshold) {
-        this.health = health;
-        this.thereshold = thereshold;
     }
 
 }

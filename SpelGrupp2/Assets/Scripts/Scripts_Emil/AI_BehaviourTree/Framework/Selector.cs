@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "AIBehavior/Framework/Selector")]
+
 public class Selector : Node {
 
-    protected List<Node> nodes = new List<Node>();
+    [SerializeField] protected List<Node> nodes = new List<Node>();
     public override NodeState Evaluate() {
         foreach (Node node in nodes) {
             switch (node.Evaluate()) {
@@ -27,4 +29,9 @@ public class Selector : Node {
     public Selector(List<Node> nodes) {
         this.nodes = nodes;
     }
+
+    public List<Node> GetInnerNodes() {
+        return nodes;
+    }
+    public void SetInnerNodes(List<Node> innerNodes) { nodes = innerNodes; }
 }

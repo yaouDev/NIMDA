@@ -25,7 +25,7 @@ public class EnemyAttack : MonoBehaviour {
     void Update() {
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
-        //CurrentTarget = closestTarget;
+        CurrentTarget = closestTarget;
         if (dist <= attackRange) {
             Vector3 relativePos = closestTarget.transform.position - transform.position;
 
@@ -36,22 +36,28 @@ public class EnemyAttack : MonoBehaviour {
                 rotation,
                 Time.deltaTime * turnSpeed);
 
-            if (isShooting) {
-                isShooting = false;
-                StartCoroutine(AttackDelay());
-            }
+            /*           if (isShooting) {
+                          isShooting = false;
+                          StartCoroutine(AttackDelay());
+                      } */
         }
     }
 
-    public Vector3 getCurrentTarget(){
+    public bool IsShooting() {
+        return isShooting;
+    }
+
+    public void SetShooting(bool shootingStatus) { isShooting = shootingStatus; }
+
+    public Vector3 GetCurrentTarget() {
         return CurrentTarget.transform.position;
     }
 
-    public float getAttackRange(){
+    public float GetAttackRange() {
         return attackRange;
     }
 
-    IEnumerator AttackDelay() {
+    public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(1f);
         Attack();
         StartCoroutine(AnimateLineRenderer());
@@ -63,7 +69,6 @@ public class EnemyAttack : MonoBehaviour {
 
     void Attack() {
         Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f);
-        //Debug.Log(hitInfo.collider.transform.name);
         if (hitInfo.collider != null) {
             PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
             //player.TakeDamage();

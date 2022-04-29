@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/Chase")]
 public class ChaseNode : Node {
 
-    private AI_Controller agent;
-    float distanceFromTargetToStop;
+    public float distanceFromTargetToStop;
     public override NodeState Evaluate() {
-        if (agent.getCurrentPath() == null || agent.getCurrentPathIndex() == agent.getCurrentPath().Count - 1 && distanceFromTargetToStop > agent.getDistanceFromTarget()) {
-            agent.StartCoroutine(agent.updatePath());
+        if (agent.IsPathRequestAllowed()) {
+            agent.StartCoroutine(agent.UpdatePath());
             agent.IsStopped = false;
             nodeState = NodeState.RUNNING;
-        } else if (agent.getCurrentPath() != null && agent.getCurrentPathIndex() != agent.getCurrentPath().Count - 1) {
+        } else if (agent.GetCurrentPath() != null && distanceFromTargetToStop < agent.GetDistanceFromTarget()) {
             nodeState = NodeState.RUNNING;
             agent.IsStopped = false;
         } else {
@@ -19,10 +19,5 @@ public class ChaseNode : Node {
             nodeState = NodeState.SUCCESS;
         }
         return nodeState;
-    }
-
-    public ChaseNode(AI_Controller agent, float distanceToStop) {
-        this.agent = agent;
-        distanceFromTargetToStop = distanceToStop;
     }
 }

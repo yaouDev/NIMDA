@@ -15,7 +15,7 @@ public class PathfinderManager : MonoBehaviour {
     }
 
 
-    public float getAcceptableDistanceFromTarget(){
+    public float getAcceptableDistanceFromTarget() {
         return acceptableDistanceFromTarget;
     }
 
@@ -36,37 +36,25 @@ public class PathfinderManager : MonoBehaviour {
     }
 
 
-    /*     public List<Vector3> requestPath(Vector3 currentPosition, Vector3 endPos) {
-            if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
-                bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0], currentPosition) > 0;
-                if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
-                    List<Vector3> pathToStartOflatest = aStar(currentPosition, latestCalculatedPath[0], false);
-                    pathToStartOflatest.AddRange(latestCalculatedPath);
-                    return pathToStartOflatest;
-                }
-            }
-            return aStar(currentPosition, endPos, true);
-        } */
-
-    public void requestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
+    public void RequestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
-            bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0], currentPosition) > 0;
+            bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0].normalized, agent.getVelocity().normalized) > 0;
             if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
-                List<Vector3> pathToStartOflatest = aStar(currentPosition, latestCalculatedPath[0], false);
+                List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
                 pathToStartOflatest.AddRange(latestCalculatedPath);
-                agent.setPath(pathToStartOflatest);
+                agent.SetPath(pathToStartOflatest);
+                agent.ResetPathIndex();
             }
         }
-        if (!pathQueue.contains(agent) && Vector3.Distance(currentPosition, endPos) >= acceptableDistanceFromTarget)
-            pathQueue.insert(agent, Vector3.Distance(currentPosition, endPos));
-
+        if (!pathQueue.Contains(agent) && Vector3.Distance(currentPosition, endPos) >= acceptableDistanceFromTarget)
+            pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
     }
 
     void Update() {
         try {
             AI_Controller agentToUpdate = pathQueue.deleteMin();
-            agentToUpdate.updateTarget();
-            agentToUpdate.setPath(aStar(agentToUpdate.transform.position, agentToUpdate.getCurrentTarget(), true));
+            agentToUpdate.SetPath(AStar(agentToUpdate.transform.position, agentToUpdate.GetCurrentTarget(), true));
+            agentToUpdate.ResetPathIndex();
         } catch (System.Exception) {
             //Debug.Log("No current requested paths");
         }
@@ -74,15 +62,15 @@ public class PathfinderManager : MonoBehaviour {
 
     }
 
-    private List<Vector3> aStar(Vector3 startPos, Vector3 endPos, bool updateLatestPath) {
+    private List<Vector3> AStar(Vector3 startPos, Vector3 endPos, bool updateLatestPath) {
         PriorityQueue<Vector3> priorityQueue = new PriorityQueue<Vector3>();
         Vector3 node = Vector3.zero;
         int edgesTested = 0;
         HashSet<Vector3> explored = new HashSet<Vector3>();
         Dictionary<Vector3, Vector3> via = new Dictionary<Vector3, Vector3>();
         Dictionary<Vector3, float> cost = new Dictionary<Vector3, float>();
-        Vector3 closestBox = graph.getClosestBox(startPos);
-        priorityQueue.insert(closestBox, 0);
+        Vector3 closestBox = graph.GetClosestNode(startPos);
+        priorityQueue.Insert(closestBox, 0);
         via[closestBox] = closestBox;
         cost[closestBox] = 0;
 
@@ -93,11 +81,11 @@ public class PathfinderManager : MonoBehaviour {
             Dictionary<Vector3, float> currEdges = graph.getNeighbors(node);
             foreach (Vector3 neighbor in currEdges.Keys) {
                 edgesTested++;
-                float tmpCost = cost[node] + graph.getCost(node, neighbor);
-                if ((!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && graph.getBlockedNode(neighbor).Length == 0) {
+                float tmpCost = cost[node] + graph.GetCost(node, neighbor);
+                if ((!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && graph.GetBlockedNode(neighbor).Length == 0) {
                     cost[neighbor] = tmpCost;
                     float heurVal = tmpCost + heuristic(neighbor, endPos);
-                    priorityQueue.insert(neighbor, heurVal);
+                    priorityQueue.Insert(neighbor, heurVal);
                     via[neighbor] = node;
                 }
             }
@@ -121,7 +109,7 @@ public class PathfinderManager : MonoBehaviour {
             contentCheckSet = new HashSet<T>();
         }
 
-        public int getParentIndex(int childToCheck) {
+        public int GetParentIndex(int childToCheck) {
             if (childToCheck > 1) {
                 int parentIndex;
                 if ((childToCheck - 1) % numberOfChildren != 0) {
@@ -133,7 +121,7 @@ public class PathfinderManager : MonoBehaviour {
             throw new System.Exception("Illegal argument: Cannot check parent of root!");
         }
 
-        public bool contains(T element) {
+        public bool Contains(T element) {
             return contentCheckSet.Contains(element);
         }
 
@@ -144,12 +132,12 @@ public class PathfinderManager : MonoBehaviour {
 
         public int size() { return currentSize; }
 
-        public void insert(T element, float priority) {
+        public void Insert(T element, float priority) {
             if (currentSize == array.Length - 1) enlargeArray(array.Length * 2 + 1);
             int hole = ++currentSize;
             KeyValuePair<T, float> insertPair = new KeyValuePair<T, float>(element, priority);
-            for (array[0] = insertPair; hole > 1 && insertPair.Value < array[getParentIndex(hole)].Value; hole = getParentIndex(hole)) {
-                array[hole] = array[getParentIndex(hole)];
+            for (array[0] = insertPair; hole > 1 && insertPair.Value < array[GetParentIndex(hole)].Value; hole = GetParentIndex(hole)) {
+                array[hole] = array[GetParentIndex(hole)];
             }
             array[hole] = insertPair;
             contentCheckSet.Add(element);

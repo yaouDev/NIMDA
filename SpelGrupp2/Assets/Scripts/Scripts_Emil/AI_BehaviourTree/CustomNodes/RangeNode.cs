@@ -2,20 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/TargetInRange")]
+
 public class RangeNode : Node {
 
-    private float range;
-    private Transform target;
-    private Transform agent;
-
-    public RangeNode(float range, Transform target, Transform agent) {
-        this.range = range;
-        this.target = target;
-        this.agent = agent;
-    }
+    public float range;
 
     public override NodeState Evaluate() {
-        nodeState = Vector3.Distance(target.position, agent.position) <= range ? NodeState.SUCCESS : NodeState.FAILURE;
+        nodeState = Vector3.Distance(agent.GetCurrentTarget(), agent.GetPosition()) <= range ? NodeState.SUCCESS : NodeState.FAILURE;
         return nodeState;
     }
 

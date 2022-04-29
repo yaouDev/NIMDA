@@ -6,7 +6,7 @@ public class SimpleGraph : MonoBehaviour {
     private int numberOfNodes;
     private Vector3 worldSize, worldPos;
     [SerializeField] private float nodeHalfextent;
-    [SerializeField] LayerMask colliderMask;
+    [SerializeField] private LayerMask colliderMask;
     private const int POSSIBLE_EDGES = 6;
     private Dictionary<Vector3, Dictionary<Vector3, float>> nodes;
     public static SimpleGraph instance;
@@ -17,30 +17,30 @@ public class SimpleGraph : MonoBehaviour {
         worldSize = gameObject.transform.localScale;
         worldPos.y += worldSize.y / 2;
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
-        initGraph();
+        InitGraph();
         instance ??= this;
     }
 
-    public void connect(Vector3 node1, Vector3 node2, float cost) {
-        if (nodes.ContainsKey(node1) && nodes.ContainsKey(node2) && !isConnected(node1, node2)) {
+    public void Connect(Vector3 node1, Vector3 node2, float cost) {
+        if (nodes.ContainsKey(node1) && nodes.ContainsKey(node2) && !IsConnected(node1, node2)) {
             nodes[node1].Add(node2, cost);
             nodes[node2].Add(node1, cost);
         }
     }
 
-    public float getCost(Vector3 node1, Vector3 node2) {
-        if (isConnected(node1, node2)) return nodes[node1][node2];
+    public float GetCost(Vector3 firstNode, Vector3 secondNode) {
+        if (IsConnected(firstNode, secondNode)) return nodes[firstNode][secondNode];
         return -1;
     }
 
-    public void insert(Vector3 node) {
+    public void Insert(Vector3 node) {
         if (!nodes.ContainsKey(node)) {
             nodes.Add(node, new Dictionary<Vector3, float>());
         }
     }
 
-    public bool isConnected(Vector3 node1, Vector3 node2) {
-        if (nodes.ContainsKey(node1) && nodes.ContainsKey(node2)) return nodes[node1].ContainsKey(node2);
+    public bool IsConnected(Vector3 firstNode, Vector3 secondNode) {
+        if (nodes.ContainsKey(firstNode) && nodes.ContainsKey(secondNode)) return nodes[firstNode].ContainsKey(secondNode);
         return false;
     }
 
@@ -63,8 +63,8 @@ public class SimpleGraph : MonoBehaviour {
         return currentSmallestNode;
     }
 
-    // gives the closest box in constant O(1) time. Much better than above
-    public Vector3 getClosestBox(Vector3 pos) {
+    // gives the closest node in constant O(1) time. Much better than above
+    public Vector3 GetClosestNode(Vector3 pos) {
         Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
         float x = 0, y = x, z = x;
         float[] axis = new float[3] { x, y, z };
@@ -100,33 +100,33 @@ public class SimpleGraph : MonoBehaviour {
         return new Vector3(axis[0], axis[1], axis[2]);
     }
 
-    public Vector3 getClosestBoxNotBlocked(Vector3 target, Vector3 currentPosition) {
+    public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
 
-        Vector3 currentBox = getClosestBox(target);
-        Collider[] cols = getBlockedNode(currentBox);
+        Vector3 currentNode = GetClosestNode(target);
+        Collider[] cols = GetBlockedNode(currentNode);
         if (cols.Length != 0) {
             Vector3 directionToMoveBack = (cols[0].transform.position - currentPosition).normalized;
             float longestExtent = cols[0].bounds.extents.x;
             if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
             else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
             if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2;
-            currentBox += directionToMoveBack * longestExtent;
-            return getClosestBoxNotBlocked(currentBox, currentPosition);
+            currentNode += directionToMoveBack * longestExtent;
+            return GetClosestNodeNotBlocked(currentNode, currentPosition);
         } else {
-            currentBox = getClosestBox(currentBox);
+            currentNode = GetClosestNode(currentNode);
         }
-        return currentBox;
+        return currentNode;
     }
 
     // this is *very* hardcoded and will most likely not work if the the "world" changes
-    private void initGraph() {
+    private void InitGraph() {
         float startXPos = worldPos.x - worldSize.x / 2;
         float startZPos = worldPos.z + worldSize.z / 2;
         Vector3 startPos = new Vector3(startXPos, worldPos.y, startZPos);
         startPos.x += nodeHalfextent;
         startPos.z -= nodeHalfextent;
         startPos.y += nodeHalfextent;
-        insert(startPos);
+        Insert(startPos);
         Vector3 currentPos = startPos;
         Vector3 prevPos = startPos;
         while (nodes.Count < numberOfNodes) {
@@ -143,17 +143,17 @@ public class SimpleGraph : MonoBehaviour {
             } else {
                 currentPos.x += nodeHalfextent * 2;
             }
-            insert(currentPos);
+            Insert(currentPos);
         }
         foreach (Vector3 node in nodes.Keys) {
-            Vector3[] possibleNeighbors = getPossibleNeighbors(node);
+            Vector3[] possibleNeighbors = GetPossibleNeighbors(node);
             foreach (Vector3 pNeighbor in possibleNeighbors) {
-                connect(node, pNeighbor, 1);
+                Connect(node, pNeighbor, 1);
             }
         }
     }
 
-    Vector3[] getPossibleNeighbors(Vector3 node) {
+    Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
@@ -163,25 +163,25 @@ public class SimpleGraph : MonoBehaviour {
         return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleYNeighbor, secondPossibleYNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor };
     }
 
-    public Collider[] getBlockedNode(Vector3 position) {
+    public Collider[] GetBlockedNode(Vector3 position) {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
     }
 
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
-/*      private void OnDrawGizmos() {
-         int count = 0;
-         foreach (Vector3 v in nodes.Keys) {
-             bool blocked = getBlockedNode(v).Length == 0;
-             if (blocked) {
-                 Gizmos.color = Color.green;
-                 Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-             } else {
-                 Gizmos.color = Color.red;
-                 Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-             }
-             count++;
-         }
-     } */
+    /*     private void OnDrawGizmos() {
+            int count = 0;
+            foreach (Vector3 v in nodes.Keys) {
+                bool blocked = getBlockedNode(v).Length == 0;
+                if (blocked) {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                } else {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                }
+                count++;
+            }
+        } */
 
 }
