@@ -16,14 +16,14 @@ public class Sequence : Node {
                 case NodeState.SUCCESS:
                     break;
                 case NodeState.FAILURE:
-                    nodeState = NodeState.FAILURE;
-                    return nodeState;
+                    NodeState = NodeState.FAILURE;
+                    return NodeState;
                 default:
                     break;
             }
         }
-        nodeState = isAnyChildRunning ? NodeState.RUNNING : NodeState.SUCCESS;
-        return nodeState;
+        NodeState = isAnyChildRunning ? NodeState.RUNNING : NodeState.SUCCESS;
+        return NodeState;
     }
 
     public Sequence(List<Node> nodes) {

@@ -11,19 +11,19 @@ public class Selector : Node {
         foreach (Node node in nodes) {
             switch (node.Evaluate()) {
                 case NodeState.RUNNING:
-                    nodeState = NodeState.RUNNING;
-                    return nodeState;
+                    NodeState = NodeState.RUNNING;
+                    return NodeState;
                 case NodeState.SUCCESS:
-                    nodeState = NodeState.SUCCESS;
-                    return nodeState;
+                    NodeState = NodeState.SUCCESS;
+                    return NodeState;
                 case NodeState.FAILURE:
                     break;
                 default:
                     break;
             }
         }
-        nodeState = NodeState.FAILURE;
-        return nodeState;
+        NodeState = NodeState.FAILURE;
+        return NodeState;
     }
 
     public Selector(List<Node> nodes) {

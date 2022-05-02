@@ -15,15 +15,11 @@ public class PathfinderManager : MonoBehaviour {
     }
 
 
-    public float getAcceptableDistanceFromTarget() {
-        return acceptableDistanceFromTarget;
-    }
-
-    private float heuristic(Vector3 currentPos, Vector3 endPos) {
+    private float Heuristic(Vector3 currentPos, Vector3 endPos) {
         return Mathf.Abs(currentPos.x - endPos.x) + Mathf.Abs(currentPos.z - endPos.z);
     }
 
-    private List<Vector3> getPath(Dictionary<Vector3, Vector3> via, Vector3 node, Vector3 end, Vector3 start) {
+    private List<Vector3> GetPath(Dictionary<Vector3, Vector3> via, Vector3 node, Vector3 end, Vector3 start) {
         List<Vector3> path = new List<Vector3>();
         if (node == end) {
             for (; node != start; node = via[node]) {
@@ -38,12 +34,12 @@ public class PathfinderManager : MonoBehaviour {
 
     public void RequestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
-            bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0].normalized, agent.getVelocity().normalized) > 0;
+            bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0].normalized, agent.Velocity.normalized) > 0;
             if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
                 List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
                 pathToStartOflatest.AddRange(latestCalculatedPath);
-                agent.SetPath(pathToStartOflatest);
-                agent.ResetPathIndex();
+                agent.CurrentPath = pathToStartOflatest;
+                agent.CurrentPathIndex = 0;
             }
         }
         if (!pathQueue.Contains(agent) && Vector3.Distance(currentPosition, endPos) >= acceptableDistanceFromTarget)
@@ -52,9 +48,9 @@ public class PathfinderManager : MonoBehaviour {
 
     void Update() {
         try {
-            AI_Controller agentToUpdate = pathQueue.deleteMin();
-            agentToUpdate.SetPath(AStar(agentToUpdate.transform.position, agentToUpdate.GetCurrentTarget(), true));
-            agentToUpdate.ResetPathIndex();
+            AI_Controller agentToUpdate = pathQueue.DeleteMin();
+            agentToUpdate.CurrentPath = AStar(agentToUpdate.Position, agentToUpdate.CurrentTarget, true);
+            agentToUpdate.CurrentPathIndex = 0;
         } catch (System.Exception) {
             //Debug.Log("No current requested paths");
         }
@@ -74,8 +70,8 @@ public class PathfinderManager : MonoBehaviour {
         via[closestBox] = closestBox;
         cost[closestBox] = 0;
 
-        while (!priorityQueue.isEmpty()) {
-            node = priorityQueue.deleteMin();
+        while (!priorityQueue.IsEmpty()) {
+            node = priorityQueue.DeleteMin();
             explored.Add(node);
             if (node == endPos) break;
             Dictionary<Vector3, float> currEdges = graph.getNeighbors(node);
@@ -84,13 +80,13 @@ public class PathfinderManager : MonoBehaviour {
                 float tmpCost = cost[node] + graph.GetCost(node, neighbor);
                 if ((!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && graph.GetBlockedNode(neighbor).Length == 0) {
                     cost[neighbor] = tmpCost;
-                    float heurVal = tmpCost + heuristic(neighbor, endPos);
+                    float heurVal = tmpCost + Heuristic(neighbor, endPos);
                     priorityQueue.Insert(neighbor, heurVal);
                     via[neighbor] = node;
                 }
             }
         }
-        List<Vector3> path = getPath(via, node, endPos, closestBox);
+        List<Vector3> path = GetPath(via, node, endPos, closestBox);
         if (updateLatestPath) latestCalculatedPath = path;
         return path;
     }
@@ -125,15 +121,15 @@ public class PathfinderManager : MonoBehaviour {
             return contentCheckSet.Contains(element);
         }
 
-        public int getFirstChildIndex(int parent) {
+        public int GetFirstChildIndex(int parent) {
             if (parent > 0) return parent * numberOfChildren - (numberOfChildren - 2);
             throw new System.Exception("Illegal argument: Cannot check child of index 0 or below!");
         }
 
-        public int size() { return currentSize; }
+        public int Size() { return currentSize; }
 
         public void Insert(T element, float priority) {
-            if (currentSize == array.Length - 1) enlargeArray(array.Length * 2 + 1);
+            if (currentSize == array.Length - 1) EnlargeArray(array.Length * 2 + 1);
             int hole = ++currentSize;
             KeyValuePair<T, float> insertPair = new KeyValuePair<T, float>(element, priority);
             for (array[0] = insertPair; hole > 1 && insertPair.Value < array[GetParentIndex(hole)].Value; hole = GetParentIndex(hole)) {
@@ -143,7 +139,7 @@ public class PathfinderManager : MonoBehaviour {
             contentCheckSet.Add(element);
         }
 
-        private void enlargeArray(int newSize) {
+        private void EnlargeArray(int newSize) {
             KeyValuePair<T, float>[] old = array;
             array = new KeyValuePair<T, float>[newSize];
             for (int i = 0; i < old.Length; i++) {
@@ -151,37 +147,37 @@ public class PathfinderManager : MonoBehaviour {
             }
         }
 
-        public T findMin() {
-            if (isEmpty()) throw new System.Exception("Underflow, Queue was empty!");
+        public T FindMin() {
+            if (IsEmpty()) throw new System.Exception("Underflow, Queue was empty!");
             return array[1].Key;
         }
 
-        public T deleteMin() {
-            if (isEmpty()) throw new System.Exception("Underflow, Queue was empty!");
-            T minItem = findMin();
+        public T DeleteMin() {
+            if (IsEmpty()) throw new System.Exception("Underflow, Queue was empty!");
+            T minItem = FindMin();
             array[1] = array[currentSize--];
-            percolateDown(1);
+            PercolateDown(1);
             contentCheckSet.Remove(minItem);
             return minItem;
         }
 
-        public bool isEmpty() { return currentSize == 0; }
+        public bool IsEmpty() { return currentSize == 0; }
 
-        public void makeEmpty() { currentSize = 0; }
+        public void MakeEmpty() { currentSize = 0; }
 
-        private void percolateDown(int hole) {
+        private void PercolateDown(int hole) {
             int child = 0;
             KeyValuePair<T, float> tmp = array[hole];
-            for (; getFirstChildIndex(hole) <= currentSize; hole = child) {
-                child = findIndexOfMinChild(hole);
+            for (; GetFirstChildIndex(hole) <= currentSize; hole = child) {
+                child = FindIndexOfMinChild(hole);
                 if (child > -1 && array[child].Value < tmp.Value) array[hole] = array[child];
                 else break;
             }
             array[hole] = tmp;
         }
 
-        private int findIndexOfMinChild(int parent) {
-            int tmpChild = getFirstChildIndex(parent);
+        private int FindIndexOfMinChild(int parent) {
+            int tmpChild = GetFirstChildIndex(parent);
             if (array.Length > tmpChild && !array[tmpChild].Equals(null)) {
                 int child = tmpChild;
                 for (int i = 0; i < numberOfChildren && i + tmpChild <= currentSize; i++) {

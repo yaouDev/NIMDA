@@ -10,14 +10,14 @@ public class ChaseNode : Node {
         if (agent.IsPathRequestAllowed()) {
             agent.StartCoroutine(agent.UpdatePath());
             agent.IsStopped = false;
-            nodeState = NodeState.RUNNING;
-        } else if (agent.GetCurrentPath() != null && distanceFromTargetToStop < agent.GetDistanceFromTarget()) {
-            nodeState = NodeState.RUNNING;
+            NodeState = NodeState.RUNNING;
+        } else if (agent.CurrentPath != null && distanceFromTargetToStop < agent.DistanceFromTarget) {
+            NodeState = NodeState.RUNNING;
             agent.IsStopped = false;
         } else {
             agent.IsStopped = true;
-            nodeState = NodeState.SUCCESS;
+            NodeState = NodeState.SUCCESS;
         }
-        return nodeState;
+        return NodeState;
     }
 }

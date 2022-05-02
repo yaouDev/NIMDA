@@ -56,7 +56,6 @@ GameObject:
   - component: {fileID: 4102459122074449259}
   - component: {fileID: 4102459122074449258}
   - component: {fileID: 4102459122074449045}
-  - component: {fileID: -683842240053658646}
   - component: {fileID: 195881032626777595}
   - component: {fileID: 2243921807618400383}
   - component: {fileID: 4102459122074449257}
@@ -151,21 +150,6 @@ MonoBehaviour:
   - {fileID: 8225117659028540708, guid: e7ad56d6996f9c64bb6401ec34c4212d, type: 3}
   - {fileID: 261070821904542086, guid: c2922308e7764cd4b91ebe0ce96ba599, type: 3}
   fullHealth: 1
---- !u!114 &-683842240053658646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4102459122074449256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3d8072fb01c10a4a82eab8721807e72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 2456728121477429368}
-  attackRange: 15
-  turnSpeed: 100
 --- !u!114 &195881032626777595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +168,6 @@ MonoBehaviour:
   maxCritRange: 20
   minCritRange: 10
   allowedTargetDiscrepancy: 5
-  IsStopped: 1
 --- !u!114 &2243921807618400383
 MonoBehaviour:
   m_ObjectHideFlags: 0

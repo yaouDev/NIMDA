@@ -5,14 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
 public class AttackNode : Node {
     public override NodeState Evaluate() {
-        if (Vector3.Distance(agent.GetPosition(), agent.GetCurrentTarget()) <= agent.GetAttackRange()) {
-            if (agent.GetEnemyAttack().IsShooting()) {
-                agent.GetEnemyAttack().SetShooting(false);
-                agent.GetEnemyAttack().StartCoroutine(agent.GetEnemyAttack().AttackDelay());
+/*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
+            if (agent.Attack.IsShooting()) {
+                agent.Attack.SetShooting(false);
+                agent.Attack.StartCoroutine(agent.Attack.AttackDelay());
             }
             agent.IsStopped = true;
-            nodeState = NodeState.SUCCESS;
-        } else nodeState = NodeState.FAILURE;
-        return nodeState;
+            NodeState = NodeState.SUCCESS;
+        } else NodeState = NodeState.FAILURE; */
+        return NodeState.FAILURE;
     }
 }

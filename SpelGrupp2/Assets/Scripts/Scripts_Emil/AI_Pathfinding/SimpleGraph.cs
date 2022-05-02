@@ -13,7 +13,7 @@ public class SimpleGraph : MonoBehaviour {
 
     void Awake() {
         nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
-        worldPos = gameObject.GetComponent<BoxCollider>().center;
+        worldPos = gameObject.GetComponent<BoxCollider>().center; //transform.TransformPoint(gameObject.GetComponent<BoxCollider>().center);
         worldSize = gameObject.transform.localScale;
         worldPos.y += worldSize.y / 2;
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
@@ -153,7 +153,7 @@ public class SimpleGraph : MonoBehaviour {
         }
     }
 
-    Vector3[] GetPossibleNeighbors(Vector3 node) {
+    private Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
