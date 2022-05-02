@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject spawnThis;
-    [SerializeField] private int spawnCount;
+    [SerializeField] private GameObject spawnThis; 
     [SerializeField] private int maxSpawnCount;
     [SerializeField] private int dayMaxSpawnCount;
     [SerializeField] private int nightMaxSpawnCount;
+    [SerializeField] private float lifeTime = 10f;
+    public int spawnCount;
+    
+
     [SerializeField] private Transform spawnPos;
     [SerializeField] private DayNightSystem dns;
+
 
 
     private void Start()
@@ -28,18 +32,32 @@ public class Spawner : MonoBehaviour
         {
             maxSpawnCount = nightMaxSpawnCount;
         }
+        if (lifeTime > 0)
+        {
+            lifeTime -= Time.deltaTime;
+            if (lifeTime <= 0)
+            {
+                spawnCount--;
+                Detstruction();
+            }
+        }
+    }
+    private void Detstruction()
+    {
+        Destroy(spawnThis.gameObject);
     }
 
     IEnumerator SpawnObject()
     {
-
-        while (spawnCount < maxSpawnCount)
+        while (true)
         {
-            Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+            if (spawnCount < maxSpawnCount)
+            {
+                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+                spawnCount += 1;
+            }
             yield return new WaitForSeconds(0.3f);
-            spawnCount += 1;
         }
-
     }
 
 }
