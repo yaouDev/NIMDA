@@ -78,8 +78,9 @@ public class PlayerController : MonoBehaviour {
 	
 	private Vector2 joyStickLeftInput;
 	private Vector2 joyStickRightInput;
+    private GameObject otherPlayer;
 
-	private Vector3 aimingDirection = Vector3.forward;
+    private Vector3 aimingDirection = Vector3.forward;
 	//[SerializeField] private LineRenderer lineRenderer;
 	//[SerializeField] private LineRenderer aimLineRenderer;
 	//[SerializeField] private LayerMask enemyLayerMask;
@@ -94,7 +95,10 @@ public class PlayerController : MonoBehaviour {
 		stateMachine = new StateMachine(this, states);	// TODO FIXME statemachine
 		_collider = GetComponent<CapsuleCollider>();
 		_camera = GetComponentInChildren<Camera>().transform;
-	}
+        GameObject[] otherPlayers = GameObject.FindGameObjectsWithTag("Player");
+        otherPlayer = (otherPlayers[0] == gameObject) ? gameObject : otherPlayers[1];
+        Debug.Log("other player: " + otherPlayer);
+    }
 
 	private void Start() {
 		crafting = new Crafting();
@@ -106,13 +110,16 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	private void Update() {
-		
-		Grounded();
-		ApplyJoystickMovement();
-		//ApplyJoystickFireDirection();
-		//AimDirection();
-		//AnimateLaserSightLineRenderer(transform.forward);
-		stateMachine.Run();	// TODO FIXME statemachine
+
+        if (alive)
+        {
+            Grounded();
+            ApplyJoystickMovement();
+            //ApplyJoystickFireDirection();
+            //AimDirection();
+            //AnimateLaserSightLineRenderer(transform.forward);
+            stateMachine.Run();	// TODO FIXME statemachine
+        }
 	}
 
 	public void JumpButton(InputAction.CallbackContext context) {
@@ -464,4 +471,14 @@ public class PlayerController : MonoBehaviour {
 	public bool ReleasedJump() => _releasedJump;
 
 	public bool PressedJump() => _pressedJump;
+
+    public void Respawn()
+    {
+        alive = true;
+        if (otherPlayer != null)
+        {
+            gameObject.transform.position = otherPlayer.transform.position + Vector3.one;
+        }
+    }
+    public void Die() => alive = false;
 }

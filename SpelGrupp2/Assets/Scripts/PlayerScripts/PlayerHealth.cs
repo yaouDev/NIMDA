@@ -9,23 +9,20 @@ namespace Callbacks
         [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 5.0f;
 
-        private float healthReg, superReg = 2f, standardReg = 1f; // TODO Safe zone regeneration buff 
+        [SerializeField][Range(0f, 1f)] private float standardRegeneration = 0.25f, safezoneRegeneration = 0.5f;
+        [SerializeField] private bool isPlayerOne;
         private float maxHealth = 1f;
+        private float healthReg;
         private float currHealth;
         private float respawnTimer;
-        private bool inSafeZone = false;
         private bool alive = true;
-        private GameObject otherPlayer;
-        [SerializeField] private bool isPlayerOne;
-
-
-        public float GetHealth() { return currHealth; }
+        private bool inSafeZone = false;
+        
         private void Start()
         {
             //currHealth = maxHealth;
+            healthReg = standardRegeneration;
             currHealth = 0.1f;
-            GameObject[] otherPlayers = GameObject.FindGameObjectsWithTag("Player");
-            otherPlayer = otherPlayers[0] == gameObject ? gameObject : otherPlayers[1];
         }
 
         private void Update()
@@ -39,14 +36,22 @@ namespace Callbacks
 
             if (!alive && respawnTimer > respawnTime)
             {
-                Respawn();
+                UnitRespawnEI respawnEI = new UnitRespawnEI();
+                EventSystem.Current.FireEvent(respawnEI);
+                UIRespawnEI UIrespawnEI = new UIRespawnEI();
+                EventSystem.Current.FireEvent(UIrespawnEI);
             }
         }
 
         public void TakeDamage(float damage)
         {
             currHealth -= damage;
-            if (currHealth <= 0f) { Die(); }
+            if (currHealth <= 0f) {
+                UnitDeathEI dieEI = new UnitDeathEI();
+                EventSystem.Current.FireEvent(dieEI);
+                UIDeathEI UIdieEI = new UIDeathEI();
+                EventSystem.Current.FireEvent(UIdieEI);
+            }
         }
 
         public void Die()
@@ -58,31 +63,29 @@ namespace Callbacks
         public void Respawn()
         {
             alive = true;
-            visuals.SetActive(true);
-            UnitRespawnEI respawnEI = new UnitRespawnEI();
-            EventSystem.Current.FireEvent(respawnEI);
             currHealth = maxHealth;
-            if (otherPlayer != null)
-                gameObject.transform.position = otherPlayer.transform.position + Vector3.one;
+            visuals.SetActive(true);
+            UpdateHealthUI();
         }
 
         private void UpdateHealthUI()
         {
-            UpdateSafeZoneBuff();
+           UpdateSafeZoneBuff();
             HealthRegeneration();
             UnitHealthUpdate healthEvent = new UnitHealthUpdate();
-            EventSystem.Current.FireEvent(healthEvent);
-            healthEvent.health = currHealth;
             healthEvent.isGOPlayerOne = isPlayerOne;
+            healthEvent.health = currHealth;
+            EventSystem.Current.FireEvent(healthEvent);
         }
         private void UpdateSafeZoneBuff() // TODO Safe zone regeneration buff 
         {
-            healthReg = inSafeZone ? superReg : standardReg;
+            healthReg = inSafeZone ? safezoneRegeneration : standardRegeneration;
         }
 
         private void HealthRegeneration()
         {
-            currHealth += Time.deltaTime * healthReg;
+            //Time.deltaTime caused gap between 0.14->0.47 ???
+            currHealth += (Time.deltaTime * healthReg);
             currHealth = Mathf.Min(currHealth, 1f);
 
         }

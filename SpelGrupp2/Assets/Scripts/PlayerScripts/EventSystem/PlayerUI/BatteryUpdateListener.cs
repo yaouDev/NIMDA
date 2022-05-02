@@ -6,16 +6,18 @@ namespace Callbacks
 {
     public class BatteryUpdateListener : MonoBehaviour
     {
-        [SerializeField] private BatteryUI[] playerUIs;
+        [SerializeField] public BatteryUI[] players;
+        //private BatteryUI[] players;
 
         public void Start()
         {
+            //players = GetComponentInParent<UIHolder>().playerUIs;
             EventSystem.Current.RegisterListener<UnitHealthUpdate>(UpdateBattery);
         }
 
         private void UpdateBattery(UnitHealthUpdate uhu)
         {   
-            BatteryUI battery = uhu.isGOPlayerOne ? playerUIs[0] : playerUIs[1];
+            BatteryUI battery = uhu.isGOPlayerOne ? players[0] : players[1];
             battery.UpdateBatteryUI(uhu.health);
         }
     }

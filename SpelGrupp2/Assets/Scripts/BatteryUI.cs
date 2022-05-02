@@ -10,8 +10,19 @@ using UnityEngine.UI;
 public class BatteryUI : MonoBehaviour
 {
     [SerializeField] private Image batteryUI;
+    [SerializeField] private bool alive = true;
 
-    public bool alive = true;
+    public void UpdateBatteryUI(float battery)
+    {
+        if (battery > 0f)
+        {
+           // Debug.Log("Battery value: " + battery);
+            batteryUI.fillAmount = Ease.EaseInCirc(battery);
+            batteryUI.color = Color.Lerp(Color.red, Color.green, Ease.EaseInCirc(battery));
+        }
+        else
+            Die();
+    }
 
     public void Respawn()
     {
@@ -19,19 +30,7 @@ public class BatteryUI : MonoBehaviour
         batteryUI.gameObject.SetActive(true);
     }
 
-    public void UpdateBatteryUI(float battery)
-    {
-        if (battery >= 0f)
-        {
-            Debug.Log("Battery value: " + battery);
-            batteryUI.fillAmount = Ease.EaseInCirc(battery);
-            batteryUI.color = Color.Lerp(Color.yellow, Color.red, Ease.EaseInCirc(battery));
-        }
-        else
-            Die();
-    }
-
-    private void Die()
+    public void Die()
     {
         batteryUI.gameObject.SetActive(false);
         alive = false;

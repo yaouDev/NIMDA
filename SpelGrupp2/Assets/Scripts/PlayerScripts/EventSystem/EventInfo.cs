@@ -7,16 +7,32 @@ namespace Callbacks
     public abstract class EventInfo
     {
         public string EventDescription;
-    }
-
-    public class UnitRespawnEI : EventInfo
-    {
         public bool isGOPlayerOne;
+        public float health;
     }
 
     public class UnitHealthUpdate : EventInfo
     {
-        public bool isGOPlayerOne;
-        public float health;
+
+    }
+
+    public class UnitRespawnEI : EventInfo
+    {
+
+    }
+
+    public class UnitDeathEI : EventInfo
+    {
+
+    }
+
+    public class UIRespawnEI : EventInfo
+    {
+
+    }
+
+    public class UIDeathEI : EventInfo
+    {
+
     }
 }
