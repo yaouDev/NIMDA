@@ -5,11 +5,11 @@ using UnityEngine;
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, distanceFromTargetToStop, maxCritRange, minCritRange, allowedTargetDiscrepancy;
-    //private EnemyAttack enemyAttack;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private PathfinderManager pathfinder;
     private SimpleGraph pathfindingGrid;
+    private LineRenderer lineRenderer;
 
     private List<Vector3> currentPath;
     private Collider col;
@@ -34,9 +34,10 @@ public class AI_Controller : MonoBehaviour {
         Physics.IgnoreLayerCollision(12, 12);
         //enemyAttack = GetComponent<EnemyAttack>();
         enemyHealth = GetComponent<EnemyHealth>();
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
-    Vector3 GetClosestTarget() {
+    public Vector3 GetClosestTarget() {
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
         Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         return closestTarget.transform.position;
@@ -87,7 +88,6 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
-    // public EnemyAttack Attack { get { return enemyAttack; } }
     public EnemyHealth Health { get { return enemyHealth; } }
 
     public Vector3 CurrentTarget {
@@ -103,9 +103,6 @@ public class AI_Controller : MonoBehaviour {
         get { return transform.position; }
     }
 
-    /*     public float AttackRange {
-            get { return enemyAttack.GetAttackRange(); }
-        } */
     public bool IsStopped {
         get { return isStopped; }
         set { isStopped = value; }
@@ -117,6 +114,10 @@ public class AI_Controller : MonoBehaviour {
 
     public Vector3 Velocity {
         get { return rBody.velocity; }
+    }
+
+    public LineRenderer LineRenderer {
+        get { return lineRenderer; }
     }
 
     public bool IsPathRequestAllowed() {
@@ -140,16 +141,16 @@ public class AI_Controller : MonoBehaviour {
     }
 
     private void AvoidOtherEnemies() {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, otherEnemyTrigger.radius);
+        Collider[] colliders = Physics.OverlapSphere(Position, otherEnemyTrigger.radius);
         foreach (Collider collider in colliders) {
             if (collider.tag == "Enemy" && collider.transform.parent.gameObject != gameObject) {
-                Vector3 directionOfOtherEnemy = (collider.transform.position - transform.position).normalized;
+                Vector3 directionOfOtherEnemy = (Position - transform.position).normalized;
                 Vector3 valueToTest = transform.position;
                 if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
                 float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
                 if ((dot >= -0.2f && dot <= 0.5f) || valueToTest == transform.position) {
                     float localSpeeed = speed;
-                    if (valueToTest != transform.position) localSpeeed = speed * 0.33f;
+                    if (valueToTest != Position) localSpeeed = speed * 0.33f;
                     Vector3 forceToAdd = -directionOfOtherEnemy.normalized * localSpeeed;
                     forceToAdd.y = 0;
                     rBody.AddForce(forceToAdd, ForceMode.Force);
