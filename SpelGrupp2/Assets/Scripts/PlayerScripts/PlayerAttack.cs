@@ -16,15 +16,11 @@ namespace Callbacks
         private PlayerHealth health;
         private Camera cam;
         private bool isAlive = true;
-        [SerializeField] [Range(0f, 1f)] private float laserSelfDmg = 0.1f;
+        [SerializeField] [Range(0f, 1f)] private float laserSelfDmg = 0.25f;
 
-        public void Respawn()
-        {
-            isAlive = true;
-            //UnitHealthUpdate healthUpdate = new UnitHealthUpdate();
-            //EventSystem.Current.FireEvent(healthUpdate);
-        }
+        public void Respawn() => isAlive = true;
         public void Die() => isAlive = false;
+
 
         private void Awake()
         {
@@ -35,10 +31,13 @@ namespace Callbacks
         {
             if (isAlive)
             {
-            AimDirection();
-            AnimateLaserSightLineRenderer(transform.forward);
+                aimLineRenderer.enabled = true;
+                AimDirection();
+                AnimateLaserSightLineRenderer(gameObject.transform.forward);
+            } else
+            {
+                aimLineRenderer.enabled = false;
             }
-            aimLineRenderer.enabled = isAlive ? true : false;
         }
 
         public void Fire(InputAction.CallbackContext context)

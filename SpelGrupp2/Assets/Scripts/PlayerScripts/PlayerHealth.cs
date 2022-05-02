@@ -17,9 +17,19 @@ namespace Callbacks
         private float respawnTimer;
         private bool alive = true;
         private bool inSafeZone = false;
-        
+        //private GameObject[] players;
+        //private GameObject otherPlayer;
+        private PlayerAttack attackAbility;
+        private PlayerController movement;
+        //private Vector3 freezeTransformAt;
+
+
         private void Start()
         {
+            movement = GetComponent<PlayerController>();
+            attackAbility = GetComponent<PlayerAttack>();
+            //players = GameObject.FindGameObjectsWithTag("Player");
+            //otherPlayer = players[0] != gameObject ? players[0] : players[1];
             //currHealth = maxHealth;
             healthReg = standardRegeneration;
             currHealth = 0.1f;
@@ -32,14 +42,13 @@ namespace Callbacks
                 UpdateHealthUI();
                 respawnTimer = 0.0f;
             }
-            else { respawnTimer += Time.deltaTime; }
+            else { 
+                respawnTimer += Time.deltaTime;
+            }
 
             if (!alive && respawnTimer > respawnTime)
             {
-                UnitRespawnEI respawnEI = new UnitRespawnEI();
-                EventSystem.Current.FireEvent(respawnEI);
-                UIRespawnEI UIrespawnEI = new UIRespawnEI();
-                EventSystem.Current.FireEvent(UIrespawnEI);
+                Respawn();
             }
         }
 
@@ -47,16 +56,16 @@ namespace Callbacks
         {
             currHealth -= damage;
             if (currHealth <= 0f) {
-                UnitDeathEI dieEI = new UnitDeathEI();
-                EventSystem.Current.FireEvent(dieEI);
-                UIDeathEI UIdieEI = new UIDeathEI();
-                EventSystem.Current.FireEvent(UIdieEI);
+                Die();
             }
         }
 
         public void Die()
         {
+            //freezeTransformAt = otherPlayer.transform.position + Vector3.left;
             alive = false;
+            attackAbility.Die();
+            movement.Die();
             visuals.SetActive(false);
         }
 
@@ -65,6 +74,8 @@ namespace Callbacks
             alive = true;
             currHealth = maxHealth;
             visuals.SetActive(true);
+            attackAbility.Respawn();
+            movement.Respawn();
             UpdateHealthUI();
         }
 

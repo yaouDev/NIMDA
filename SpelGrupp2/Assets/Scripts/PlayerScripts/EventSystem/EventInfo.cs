@@ -20,19 +20,4 @@ namespace Callbacks
     {
 
     }
-
-    public class UnitDeathEI : EventInfo
-    {
-
-    }
-
-    public class UIRespawnEI : EventInfo
-    {
-
-    }
-
-    public class UIDeathEI : EventInfo
-    {
-
-    }
 }
