@@ -5,7 +5,7 @@ using UnityEngine;
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, distanceFromTargetToStop, maxCritRange, minCritRange, allowedTargetDiscrepancy;
-    private EnemyAttack enemyAttack;
+    //private EnemyAttack enemyAttack;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private PathfinderManager pathfinder;
@@ -18,10 +18,13 @@ public class AI_Controller : MonoBehaviour {
     private int currentPathIndex = 0;
     private bool updatingPath = false;
     private BehaviorTree behaviorTree;
-    public bool IsStopped = true;
+    private bool isStopped = true;
+    GameObject[] targets;
 
     // Start is called before the first frame update
     void Start() {
+        targets = GameObject.FindGameObjectsWithTag("Player");
+        activeTarget = targets[0].transform.position;
         col = GetComponent<Collider>();
         behaviorTree = GetComponent<BehaviorTree>();
         otherEnemyTrigger = GetComponentInChildren<SphereCollider>();
@@ -29,34 +32,29 @@ public class AI_Controller : MonoBehaviour {
         pathfindingGrid = SimpleGraph.instance;
         rBody = GetComponent<Rigidbody>();
         Physics.IgnoreLayerCollision(12, 12);
-        enemyAttack = GetComponent<EnemyAttack>();
+        //enemyAttack = GetComponent<EnemyAttack>();
         enemyHealth = GetComponent<EnemyHealth>();
     }
 
-    
+    Vector3 GetClosestTarget() {
+        GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
+        Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
+        return closestTarget.transform.position;
+    }
+
+
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
         // This code is for debugging purposes only, shows current calculated path
-/*         if (currentPath != null && currentPath.Count != 0) {
-            Vector3 prevPos = currentPath[0];
-            foreach (Vector3 pos in currentPath) {
-                if (pos != prevPos)
-                    Debug.DrawLine(prevPos, pos, Color.blue);
-                prevPos = pos;
-            }
-        } */
-    }
-
-    public bool TargetInSight() {
-        RaycastHit hit;
-        Physics.BoxCast(transform.position, transform.lossyScale, (activeTarget - transform.position).normalized, out hit, transform.rotation, Mathf.Infinity);
-        if (hit.collider != null) {
-            if (hit.collider.tag == "Player") {
-                return true;
-            }
-        }
-        return false;
+        /*         if (currentPath != null && currentPath.Count != 0) {
+                    Vector3 prevPos = currentPath[0];
+                    foreach (Vector3 pos in currentPath) {
+                        if (pos != prevPos)
+                            Debug.DrawLine(prevPos, pos, Color.blue);
+                        prevPos = pos;
+                    }
+                } */
     }
 
     public IEnumerator UpdatePath() {
@@ -66,39 +64,59 @@ public class AI_Controller : MonoBehaviour {
         updatingPath = false;
     }
 
-    public void ResetPathIndex() { currentPathIndex = 0; }
-
-    public EnemyAttack GetEnemyAttack() { return enemyAttack; }
-    public EnemyHealth GetEnemyHealth() { return enemyHealth; }
-
-    public Vector3 GetCurrentTarget() {
-        return activeTarget;
+    // getters and setters below
+    public bool TargetInSight {
+        get {
+            RaycastHit hit;
+            Physics.BoxCast(transform.position, transform.lossyScale, (activeTarget - transform.position).normalized, out hit, transform.rotation, Mathf.Infinity);
+            if (hit.collider != null) {
+                if (hit.collider.tag == "Player") {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
-    public void SetPath(List<Vector3> newPath) {
-        currentPath = newPath;
-        currentPathIndex = 0;
+    public int CurrentPathIndex {
+        get { return currentPathIndex; }
+        set {
+            if (value > currentPath.Count) currentPathIndex = currentPath.Count - 1;
+            else if (value < 0) currentPathIndex = 0;
+            else currentPathIndex = value;
+        }
     }
 
-    public List<Vector3> GetCurrentPath() {
-        return currentPath;
+    // public EnemyAttack Attack { get { return enemyAttack; } }
+    public EnemyHealth Health { get { return enemyHealth; } }
+
+    public Vector3 CurrentTarget {
+        get { return activeTarget; }
     }
 
-    public Vector3 GetPosition() {
-        return transform.position;
+    public List<Vector3> CurrentPath {
+        get { return currentPath; }
+        set { currentPath = value; }
     }
 
-
-    public float GetAttackRange() {
-        return enemyAttack.GetAttackRange();
+    public Vector3 Position {
+        get { return transform.position; }
     }
 
-    public float GetDistanceFromTarget() {
-        return Vector3.Distance(activeTarget, transform.position);
+    /*     public float AttackRange {
+            get { return enemyAttack.GetAttackRange(); }
+        } */
+    public bool IsStopped {
+        get { return isStopped; }
+        set { isStopped = value; }
     }
 
-    public Vector3 getVelocity() {
-        return rBody.velocity;
+    public float DistanceFromTarget {
+        get { return Vector3.Distance(activeTarget, transform.position); }
+    }
+
+    public Vector3 Velocity {
+        get { return rBody.velocity; }
     }
 
     public bool IsPathRequestAllowed() {
@@ -111,9 +129,11 @@ public class AI_Controller : MonoBehaviour {
         return (currentPath == null || discrepancyCond || criticalRangeCond || indexCond) && !updatingPath;
     }
 
+
+
     private void FixedUpdate() {
         AvoidOtherEnemies();
-        if (!IsStopped) {
+        if (!isStopped) {
             AdjustForLatePathUpdate();
             Move();
         }
@@ -158,7 +178,7 @@ public class AI_Controller : MonoBehaviour {
                 Vector3 forceTadd = lerpForceToAdd;
                 if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 1) forceTadd = (currentPath[currentPathIndex] - transform.position).normalized * speed * 5;
                 rBody.AddForce(forceTadd, ForceMode.Force);
-                if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], transform.position) < Vector3.Distance(currentPath[currentPathIndex], transform.position)) currentPathIndex++;
+                if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(currentPath[currentPathIndex], Position)) currentPathIndex++;
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
@@ -166,7 +186,7 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public void UpdateTarget() {
-        desiredTarget = enemyAttack.GetCurrentTarget();
+        desiredTarget = GetClosestTarget();
         activeTarget = desiredTarget;
         if (pathfindingGrid.GetBlockedNode(desiredTarget).Length > 0) {
             targetBlocked = pathfindingGrid.GetClosestNodeNotBlocked(desiredTarget, transform.position);

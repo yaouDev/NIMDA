@@ -8,8 +8,8 @@ public class LowHealthRetreatNode : Node {
     public float fleeThereshold;
 
     public override NodeState Evaluate() {
-        nodeState = agent.GetEnemyHealth().GetCurrentHealth() <= fleeThereshold ? NodeState.SUCCESS : NodeState.FAILURE;
-        return nodeState;
+        NodeState = agent.Health.GetCurrentHealth() <= fleeThereshold ? NodeState.SUCCESS : NodeState.FAILURE;
+        return NodeState;
     }
 
 }

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Node : ScriptableObject {
-    protected NodeState nodeState;
+    private NodeState nodeState;
     protected AI_Controller agent;
-    public NodeState NodeState { get { return nodeState; } }
+    public NodeState NodeState {
+        get { return nodeState; }
+        set { nodeState = value; }
+    }
     public abstract NodeState Evaluate();
 
     public void SetAgent(AI_Controller ai) {

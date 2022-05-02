@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class IsCoveredNode : Node {
     public override NodeState Evaluate() {
-        nodeState = NodeState.FAILURE;
-        if (agent.TargetInSight()) nodeState = NodeState.SUCCESS;
-        return nodeState;
+        NodeState = NodeState.FAILURE;
+        if (agent.TargetInSight) NodeState = NodeState.SUCCESS;
+        return NodeState;
     }
 }

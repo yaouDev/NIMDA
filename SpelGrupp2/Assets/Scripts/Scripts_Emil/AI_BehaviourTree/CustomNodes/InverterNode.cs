@@ -8,18 +8,18 @@ public class Inverter : Decorator {
     public override NodeState Evaluate() {
         switch (node.Evaluate()) {
             case NodeState.RUNNING:
-                nodeState = NodeState.RUNNING;
+                NodeState = NodeState.RUNNING;
                 break;
             case NodeState.SUCCESS:
-                nodeState = NodeState.FAILURE;
+                NodeState = NodeState.FAILURE;
                 break;
             case NodeState.FAILURE:
-                nodeState = NodeState.SUCCESS;
+                NodeState = NodeState.SUCCESS;
                 break;
             default:
                 break;
         }
-        return nodeState;
+        return NodeState;
     }
 
     public Inverter(Node node) {

@@ -9,8 +9,8 @@ public class RangeNode : Node {
     public float range;
 
     public override NodeState Evaluate() {
-        nodeState = Vector3.Distance(agent.GetCurrentTarget(), agent.GetPosition()) <= range ? NodeState.SUCCESS : NodeState.FAILURE;
-        return nodeState;
+        NodeState = Vector3.Distance(agent.CurrentTarget, agent.Position) <= range ? NodeState.SUCCESS : NodeState.FAILURE;
+        return NodeState;
     }
 
 }

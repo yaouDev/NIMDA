@@ -15,7 +15,7 @@ public class BehaviorTree : MonoBehaviour {
             List<Node> innerNodes = new List<Node>();
             if (node.GetType() == typeof(Selector)) {
                 innerNodes = ((Selector)node).GetInnerNodes();
-            } else if (node.GetType() == typeof(Selector)) {
+            } else if (node.GetType() == typeof(Sequence)) {
                 innerNodes = ((Sequence)node).GetInnerNodes();
             }
             List<Node> instanceNodes = new List<Node>();
@@ -26,20 +26,19 @@ public class BehaviorTree : MonoBehaviour {
             }
             if (node.GetType() == typeof(Selector)) {
                 ((Selector)node).SetInnerNodes(instanceNodes);
-            } else if (node.GetType() == typeof(Selector)) {
+            } else if (node.GetType() == typeof(Sequence)) {
                 ((Sequence)node).SetInnerNodes(instanceNodes);
             }
         }
         node.SetAgent(agent);
     }
-
-    private void Awake() {
-        agent = GetComponent<AI_Controller>();
-    }
-
     private void Start() {
         rootNode = Instantiate(rootNode);
         InitNode(rootNode);
+    }
+
+    private void Awake() {
+        agent = GetComponent<AI_Controller>();
     }
 
     public void Update() {
