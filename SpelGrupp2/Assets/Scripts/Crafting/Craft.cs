@@ -39,7 +39,7 @@ public class Craft
 
             if (recipe.product.name.Equals("Battery"))
             {
-                crafting.batteryUI.AddBattery();
+       //         crafting.batteryUI.AddBattery();
             }
             else
             {
