@@ -376,6 +376,7 @@ public class PlayerController : MonoBehaviour
     public void Die()
     {
         gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
+        _acceleration = 0f;
         alive = false;
     }
     public void Respawn() => alive = true;
