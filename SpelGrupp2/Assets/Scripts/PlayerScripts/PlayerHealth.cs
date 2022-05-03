@@ -19,8 +19,13 @@ namespace CallbackSystem
         private bool inSafeZone = false;
         private PlayerAttack attackAbility;
         private PlayerController movement;
+        private HealthUpdateEvent healthEvent;
 
 
+        private void Awake()
+        {
+            healthEvent = new HealthUpdateEvent();
+        }
         private void Start()
         {
             movement = GetComponent<PlayerController>();
@@ -76,7 +81,6 @@ namespace CallbackSystem
         {
            UpdateSafeZoneBuff();
             HealthRegeneration();
-            HealthUpdateEvent healthEvent = new HealthUpdateEvent();
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             EventSystem.Current.FireEvent(healthEvent);
