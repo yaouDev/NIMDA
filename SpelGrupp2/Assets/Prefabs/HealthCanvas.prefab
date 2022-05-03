@@ -429,28 +429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21d7e515f13e043f7a737fc1135f9b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  batteryUIs:
-  - {fileID: 2501768211733857171}
-  - {fileID: 2501768213716244114}
-  - {fileID: 2501768213533201273}
-  - {fileID: 2501768213420948216}
-  - {fileID: 2501768213147240405}
-  - {fileID: 2501768212046888249}
-  percentagePerSecondIncrease: 0.1
-  damageAmount: 0.3
-  batteryCharge:
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 0.5
-  respawnBatteryAmount: 4
-  takeDMG: 0
-  respawn: 0
-  player: {fileID: 0}
-  otherPlayer: {fileID: 0}
-  respawnTime: 12
+  batteryUI: {fileID: 0}
+  alive: 1
 --- !u!1 &2501768212946325006
 GameObject:
   m_ObjectHideFlags: 0
@@ -538,6 +518,7 @@ GameObject:
   - component: {fileID: 2501768212987928991}
   - component: {fileID: 2501768212987928990}
   - component: {fileID: 2501768212987928989}
+  - component: {fileID: 5232124022724944915}
   m_Layer: 5
   m_Name: HealthCanvas
   m_TagString: Untagged
@@ -627,6 +608,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5232124022724944915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2501768212987928988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c745fca944a0c0e4eb2d673f990c8cfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerUIs:
+  - {fileID: 2501768212922045506}
+  - {fileID: 2501768213181531500}
 --- !u!1 &2501768213147240403
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,28 +752,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21d7e515f13e043f7a737fc1135f9b7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  batteryUIs:
-  - {fileID: 2501768213578322762}
-  - {fileID: 2501768212946324992}
-  - {fileID: 2501768212686436648}
-  - {fileID: 2501768212415376235}
-  - {fileID: 2501768213814942553}
-  - {fileID: 2501768212687892714}
-  percentagePerSecondIncrease: 0.1
-  damageAmount: 0.3
-  batteryCharge:
-  - 1
-  - 1
-  - 1
-  - 1
-  - 1
-  - 0.5
-  respawnBatteryAmount: 4
-  takeDMG: 0
-  respawn: 0
-  player: {fileID: 0}
-  otherPlayer: {fileID: 0}
-  respawnTime: 12
+  batteryUI: {fileID: 0}
+  alive: 1
 --- !u!1 &2501768213420947974
 GameObject:
   m_ObjectHideFlags: 0

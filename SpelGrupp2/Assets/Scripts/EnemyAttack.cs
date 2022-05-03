@@ -11,41 +11,57 @@ using UnityEngine;
 public class EnemyAttack : MonoBehaviour
 {
     GameObject[] targets;
-    private GameObject CurrentTarget;
     private float dist;
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private float attackRange;
     private bool isShooting = true;
-    [SerializeField] private float turnSpeed = 10.0f;
+    [SerializeField] private float turnSpeed = 10f;
+    private bool stunned = false;
+ //   private PlayerHealth p1, p2;
 
     void Awake()
     {
         targets = GameObject.FindGameObjectsWithTag("Player");
-        CurrentTarget = targets[0];
+    //    p1 = targets[0].GetComponent<PlayerHealth>();
+     //   p2 = targets[1].GetComponent<PlayerHealth>();
     }
 
     void Update()
     {
-        GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
+   /*     PlayerHealth closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) > Vector3.Distance(targets[1].transform.position, transform.position) ? p1 : p2;
         dist = Vector3.Distance(transform.position, closestTarget.transform.position);
-        //CurrentTarget = closestTarget;
-        if (dist <= attackRange)
+        if (dist <= attackRange && closestTarget.inSafeZone == false)
         {
             Vector3 relativePos = closestTarget.transform.position - transform.position;
 
             // the second argument, upwards, defaults to Vector3.up
             Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, 
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
                 rotation,
                 Time.deltaTime * turnSpeed);
-      
+
             if (isShooting)
             {
                 isShooting = false;
                 StartCoroutine(AttackDelay());
             }
         }
+        if (stunned)
+        {
+            Stunned();
+        }
+    }
+    
+    IEnumerator Stunned()
+    {
+        yield return new WaitForSeconds(5f);
+        stunned = false;
+    }
+
+    public void StunEnemy()
+    {
+        stunned = true;
     }
 
     IEnumerator AttackDelay()
@@ -65,8 +81,8 @@ public class EnemyAttack : MonoBehaviour
         //Debug.Log(hitInfo.collider.transform.name);
         if (hitInfo.collider != null)
         {
-            PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
-            //player.TakeDamage();
+            PlayerHealth player = hitInfo.transform.GetComponent<PlayerHealth>();
+            player.TakeDamage();
         }
     }
 
@@ -90,5 +106,7 @@ public class EnemyAttack : MonoBehaviour
 
         lineRenderer.startWidth = 0.0f;
         lineRenderer.endWidth = 0.0f;
+        */
     }
+
 }
