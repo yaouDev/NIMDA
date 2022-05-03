@@ -6,7 +6,7 @@ public class EnemyHealth : MonoBehaviour {
     [SerializeField] private GameObject[] dropList;
     private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
     [Range(0, 3)] public int fullHealth;
-    private float currHealth;
+    public float currHealth;
     private float healthBarLength;
     private GameObject drop;
 
@@ -26,13 +26,12 @@ public class EnemyHealth : MonoBehaviour {
 
     public void TakeDamage() {
         --currHealth;
-        Debug.Log("Damage!");
-        Debug.Log("Player health: " + currHealth);
     }
 
     public void Die() {
         DropLoot();
         Destroy(gameObject);
+
     }
 
     public void DropLoot() {
