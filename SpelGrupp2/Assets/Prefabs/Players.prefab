@@ -50,7 +50,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -179,7 +179,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -325,10 +325,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff23c9b4a438e9f4e92335e50d80f633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inSafeZone: 0
-  alive: 1
-  health: {fileID: 0}
   visuals: {fileID: 326990607699453844}
+  respawnTime: 5
+  standardRegeneration: 0.25
+  safezoneRegeneration: 0.5
+  isPlayerOne: 1
 --- !u!114 &8397479276426667862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,13 +342,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62461b35f802ea14b8da2ef9012e63a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserDrainPerShot: 0.2
   lineRenderer: {fileID: 326990607570548864}
   aimLineRenderer: {fileID: 47074359}
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 4096
-  cam: {fileID: 326990608734731272}
+  laserSelfDmg: 0.25
 --- !u!114 &326990607570548879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,6 +367,12 @@ MonoBehaviour:
   _inputMovement: {x: 0, y: 0, z: 0}
   _jumped: 0
   airControl: 1
+  _debugColor: {r: 10, g: 20, b: 30, a: 1}
+  states:
+  - {fileID: 11400000, guid: ac4bdeb387fc542169c75b6908437625, type: 2}
+  - {fileID: 11400000, guid: 0eea2388582d54eb68258684c0f66464, type: 2}
+  - {fileID: 11400000, guid: 71e198ef025d3440dbafa1356731154e, type: 2}
+  crafting: {fileID: 1021181802951838962}
   _defaultGravity: 0
   jumpFallVelocityMultiplier: 3
   _acceleration: 6.23
@@ -382,13 +388,6 @@ MonoBehaviour:
     m_Bits: 256
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
-  states:
-  - {fileID: 11400000, guid: ac4bdeb387fc542169c75b6908437625, type: 2}
-  - {fileID: 11400000, guid: 0eea2388582d54eb68258684c0f66464, type: 2}
-  - {fileID: 11400000, guid: 71e198ef025d3440dbafa1356731154e, type: 2}
-  crafting: {fileID: 0}
-  cam: {fileID: 326990608734731272}
-  _debugColor: {r: 10, g: 20, b: 30, a: 1}
 --- !u!114 &326990607570548866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,7 +543,6 @@ MonoBehaviour:
   iron: 10
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 0}
-  batteryUI: {fileID: 0}
 --- !u!114 &326990607570548867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -835,10 +833,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff23c9b4a438e9f4e92335e50d80f633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inSafeZone: 0
-  alive: 1
-  health: {fileID: 0}
   visuals: {fileID: 326990609148873030}
+  respawnTime: 5
+  standardRegeneration: 0.25
+  safezoneRegeneration: 0.5
+  isPlayerOne: 0
 --- !u!114 &3037943043123946253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -851,13 +850,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62461b35f802ea14b8da2ef9012e63a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserDrainPerShot: 0.2
   lineRenderer: {fileID: 326990607881322112}
   aimLineRenderer: {fileID: 2121336705}
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 4096
-  cam: {fileID: 326990608769707817}
+  laserSelfDmg: 0.25
 --- !u!114 &326990607881322125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -877,6 +875,12 @@ MonoBehaviour:
   _inputMovement: {x: 0, y: 0, z: 0}
   _jumped: 0
   airControl: 1
+  _debugColor: {r: 10, g: 20, b: 30, a: 1}
+  states:
+  - {fileID: 11400000, guid: ac4bdeb387fc542169c75b6908437625, type: 2}
+  - {fileID: 11400000, guid: 0eea2388582d54eb68258684c0f66464, type: 2}
+  - {fileID: 11400000, guid: 71e198ef025d3440dbafa1356731154e, type: 2}
+  crafting: {fileID: 5657999587282274127}
   _defaultGravity: 0
   jumpFallVelocityMultiplier: 3
   _acceleration: 6.23
@@ -892,13 +896,6 @@ MonoBehaviour:
     m_Bits: 256
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
-  states:
-  - {fileID: 11400000, guid: ac4bdeb387fc542169c75b6908437625, type: 2}
-  - {fileID: 11400000, guid: 0eea2388582d54eb68258684c0f66464, type: 2}
-  - {fileID: 11400000, guid: 71e198ef025d3440dbafa1356731154e, type: 2}
-  crafting: {fileID: 0}
-  cam: {fileID: 326990608769707817}
-  _debugColor: {r: 10, g: 20, b: 30, a: 1}
 --- !u!114 &326990607881322124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1054,7 +1051,6 @@ MonoBehaviour:
   iron: 10
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 0}
-  batteryUI: {fileID: 0}
 --- !u!114 &1652920257267338416
 MonoBehaviour:
   m_ObjectHideFlags: 0

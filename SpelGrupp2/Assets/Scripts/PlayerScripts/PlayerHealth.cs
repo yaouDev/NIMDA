@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,11 @@ namespace Callbacks
         private bool inSafeZone = false;
         private PlayerAttack attackAbility;
         private PlayerController movement;
-
+        private UnitHealthUpdate healthEvent;
+        private void Awake()
+        {
+            healthEvent = new UnitHealthUpdate();
+        }
 
         private void Start()
         {
@@ -27,6 +32,7 @@ namespace Callbacks
             attackAbility = GetComponent<PlayerAttack>();
             healthReg = standardRegeneration;
             currHealth = 0.1f;
+            UpdateHealthUI();
         }
 
         private void Update()
@@ -74,9 +80,8 @@ namespace Callbacks
 
         private void UpdateHealthUI()
         {
-           UpdateSafeZoneBuff();
+            UpdateSafeZoneBuff();
             HealthRegeneration();
-            UnitHealthUpdate healthEvent = new UnitHealthUpdate();
             healthEvent.isGOPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             EventSystem.Current.FireEvent(healthEvent);

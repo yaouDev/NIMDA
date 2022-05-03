@@ -48,7 +48,7 @@ namespace Callbacks
         {
             if (context.started && isAlive)
             {
-                AudioController.instance.TriggerTest();
+                AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                 ShootLaser();
                 StartCoroutine(AnimateLineRenderer(aimingDirection));
             }

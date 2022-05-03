@@ -23,7 +23,7 @@ public class Crafting : MonoBehaviour
         Iron
     }
     
-    private static readonly PickUp[][] Combos = new PickUp[][]
+    private static readonly PickUp[][] Combos =
     {
         new PickUp[] {PickUp.Copper, PickUp.Transistor, PickUp.Iron},
         new PickUp[] {PickUp.Iron, PickUp.Iron, PickUp.Iron}

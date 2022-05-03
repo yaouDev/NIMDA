@@ -16,11 +16,11 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider _collider;
     private Transform _camera;
     private Vector3 _planeNormal;
-    [HideInInspector] public Vector3 _velocity;   // TODO FIXME HACK statemachine
-    [HideInInspector] public Vector3 _jumpVector; // TODO FIXME HACK statemachine
-    [HideInInspector] public Vector3 _inputMovement;  // TODO FIXME HACK statemachine
-    [HideInInspector] public bool _jumped;    // TODO FIXME HACK statemachine
-    [HideInInspector] public float airControl = 1.0f; // TODO ? used here?
+    [HideInInspector] public Vector3 _velocity;
+    [HideInInspector] public Vector3 _jumpVector;
+    [HideInInspector] public Vector3 _inputMovement;
+    [HideInInspector] public bool _jumped;
+    [HideInInspector] public float airControl = 1.0f;
 
     private Vector3 _point1;
     private Vector3 _point2;
@@ -115,7 +115,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        crafting = new Crafting();
         _jumpVector = new Vector3(0.0f, _jumpForce);
         _defaultGravity = -Physics.gravity.y;
         _colliderRadius = _collider.radius;
