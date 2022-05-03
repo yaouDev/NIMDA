@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
         {
             Grounded();
             ApplyJoystickMovement();
-            AimDirection();
+            //AimDirection();
             stateMachine.Run(); 
         }
     }
