@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Callbacks
+namespace CallbackSystem
 {
     public class PlayerHealth : MonoBehaviour
     {
@@ -76,8 +76,8 @@ namespace Callbacks
         {
            UpdateSafeZoneBuff();
             HealthRegeneration();
-            UnitHealthUpdate healthEvent = new UnitHealthUpdate();
-            healthEvent.isGOPlayerOne = isPlayerOne;
+            HealthUpdateEvent healthEvent = new HealthUpdateEvent();
+            healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             EventSystem.Current.FireEvent(healthEvent);
         }

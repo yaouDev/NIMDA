@@ -25,6 +25,10 @@ namespace CallbackSystem {
         public bool isPlayerOne;
     }
 
+    public class RespawnEvent : Event
+    {
+        public bool isGOPlayerOne;
+    }
 }
 
 

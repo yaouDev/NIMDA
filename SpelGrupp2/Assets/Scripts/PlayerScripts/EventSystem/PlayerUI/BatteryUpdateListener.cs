@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Callbacks
+namespace CallbackSystem
 {
     public class BatteryUpdateListener : MonoBehaviour
     {
@@ -10,12 +10,12 @@ namespace Callbacks
 
         public void Start()
         {
-            EventSystem.Current.RegisterListener<UnitHealthUpdate>(UpdateBattery);
+            EventSystem.Current.RegisterListener<HealthUpdateEvent>(UpdateBattery);
         }
 
-        private void UpdateBattery(UnitHealthUpdate uhu)
+        private void UpdateBattery(HealthUpdateEvent uhu)
         {   
-            BatteryUI battery = uhu.isGOPlayerOne ? players[0] : players[1];
+            BatteryUI battery = uhu.isPlayerOne ? players[0] : players[1];
             battery.UpdateBatteryUI(uhu.health);
         }
     }
