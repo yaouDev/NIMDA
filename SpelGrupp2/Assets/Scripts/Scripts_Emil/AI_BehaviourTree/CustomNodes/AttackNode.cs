@@ -15,9 +15,6 @@ public class AttackNode : Node
     private bool isShooting = true;
     private LineRenderer lineRenderer;
 
-    public GameObject bullet;
-    public GameObject muzzleFlash; 
-
     Vector3 closestTarget;
     Vector3 relativePos;
     Quaternion rotation;
@@ -48,8 +45,6 @@ public class AttackNode : Node
                     NodeState = NodeState.SUCCESS;
                 } else NodeState = NodeState.FAILURE; */
 
-
-
         return NodeState.FAILURE;
     }
     public IEnumerator AttackDelay()
@@ -79,7 +74,7 @@ public class AttackNode : Node
         Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instatiate bullet
-        GameObject currentBullet = Instantiate(bullet, agent.transform.position, Quaternion.identity);
+        GameObject currentBullet = Instantiate(AIData.instance.getBullet, agent.transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -91,13 +86,13 @@ public class AttackNode : Node
         //currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
 
         //Recoil
-        //agent.RigidBody.Addforce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
+        agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
         //MuzzleFlash
-        if(muzzleFlash != null)
+     /*   if(AIData.instance.getMuzzleflash != null)
         {
-            Instantiate(muzzleFlash, agent.transform.position, Quaternion.identity);
-        }
+            Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
+        }*/
 
       /*  if (hitInfo.collider != null)
         {
