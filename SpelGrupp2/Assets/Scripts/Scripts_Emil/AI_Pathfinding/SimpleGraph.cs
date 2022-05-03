@@ -102,20 +102,20 @@ public class SimpleGraph : MonoBehaviour {
         return new Vector3(axis[0], axis[1], axis[2]);
     }
 
-/*     public Vector3 GetClosestNode2(Vector3 pos) {
-        Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
-        float x = 0, y = localWorldPos.y, z = x;
-        float xEdge = worldPos.x - (worldPos.x / 2);
-        float zEdge = worldPos.z + (worldPos.z / 2);
+    /*     public Vector3 GetClosestNode2(Vector3 pos) {
+            Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
+            float x = 0, y = localWorldPos.y, z = x;
+            float xEdge = worldPos.x - (worldPos.x / 2);
+            float zEdge = worldPos.z + (worldPos.z / 2);
 
-        int nodesFromCornerX = (int)Mathf.FloorToInt(Mathf.Abs());
-        int nodesFromCornerZ = (int)Mathf.FloorToInt(Mathf.Abs(Mathf.Abs(pos.z) - Mathf.Abs(zEdge)));
+            int nodesFromCornerX = (int)Mathf.FloorToInt(Mathf.Abs());
+            int nodesFromCornerZ = (int)Mathf.FloorToInt(Mathf.Abs(Mathf.Abs(pos.z) - Mathf.Abs(zEdge)));
 
-        x =
+            x =
 
-        if (pos.x < xEdge) x = xEdge + nodeHalfextent;
-        if (pos.z < zEdge) z = zEdge - nodeHalfextent;
-    } */
+            if (pos.x < xEdge) x = xEdge + nodeHalfextent;
+            if (pos.z < zEdge) z = zEdge - nodeHalfextent;
+        } */
 
     public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
 
