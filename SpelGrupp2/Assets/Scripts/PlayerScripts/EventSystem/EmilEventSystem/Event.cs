@@ -17,7 +17,12 @@ namespace CallbackSystem {
         public float TimeToDestroy;
         public List<ParticleSystem> ParticleSystems;
         public Renderer Renderer;
+    }
 
+    public class HealthUpdateEvent : Event
+    {
+        public float health;
+        public bool isPlayerOne;
     }
 
 }
