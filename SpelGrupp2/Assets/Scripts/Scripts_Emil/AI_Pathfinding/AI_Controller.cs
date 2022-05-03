@@ -36,7 +36,7 @@ public class AI_Controller : MonoBehaviour {
         enemyHealth = GetComponent<EnemyHealth>();
     }
 
-    Vector3 GetClosestTarget() {
+    public Vector3 GetClosestTarget() {
         GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
         Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
         return closestTarget.transform.position;
