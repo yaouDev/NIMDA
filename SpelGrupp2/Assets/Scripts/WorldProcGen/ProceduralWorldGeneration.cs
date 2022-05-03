@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.Animations;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(AStar))]
 public class ProceduralWorldGeneration : MonoBehaviour
@@ -42,6 +40,8 @@ public class ProceduralWorldGeneration : MonoBehaviour
 	private GameObject[,] tiles;
 	private SpriteRenderer[,] sr;
 	[SerializeField] private GameObject currentIndicator;
+	[SerializeField] private GameObject pathIndicator;
+	[SerializeField] private Vector2Int[] criticalPoints;
 	private AStar aStar;
 	private void Awake() {
 		aStar = GetComponent<AStar>();
@@ -57,53 +57,16 @@ public class ProceduralWorldGeneration : MonoBehaviour
 		
 		random = new System.Random(worldSeed);
 		graph = new uint[worldSize.x, worldSize.y];
-		CenterCamera();
-		StartCoroutine( MakeMaze() );
+		// StartCoroutine( 
+		MakeMaze();
+		// );
+		TearDownWalls();
+		Path();
+		//ShowMaze();
 	}
-
-	private IEnumerator TearDownWalls() {
-		
-		// randomly remove a number of the map walls
-		for (int i = 0; i < worldSize.x * worldSize.y * eraseFraction; i++) {
-			int x = random.Next(1, worldSize.x - 2);
-			int y = random.Next(1, worldSize.y - 2);
-			Vector2Int current = new Vector2Int(x, y);
-
-			Vector2Int direction = directions[random.Next(directions.Length)];
-
-			// if there is a wall in current direction
-			if ((graph[current.x, current.y] & walls[direction]) != 0) {
-				
-				Vector2Int neighbor = current + direction;
-				
-				// tear down walls
-				graph[current.x, current.y] -= walls[direction];
-				graph[neighbor.x, neighbor.y] -= walls[-direction];
-
-				InstantiateTile(current);
-				InstantiateTile(neighbor);
-				
-				currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
-				if (animate)
-					yield return null;
-				MoveTrail(currentIndicator.transform.position);
-				
-			}
-		}
-		
-		// StartCoroutine(TrailMover());
-		StartCoroutine(Path());
-	}
-
-	private void CenterCamera() {
-		cam ??= FindObjectOfType<Camera>();
-		
-		cam.transform.position = new Vector3(worldSize.x * .5f, 1.0f, worldSize.y * .5f);
-
-		StartCoroutine(CameraBackgroundColorLerp());
-	}
-
-	private IEnumerator MakeMaze() {
+	
+	private void MakeMaze()
+	{
 		int slowAnimate = 0;
 		Stack<Vector2Int> backTracker = new Stack<Vector2Int>();
 		HashSet<Vector2Int> unvisited = new HashSet<Vector2Int>();
@@ -127,8 +90,8 @@ public class ProceduralWorldGeneration : MonoBehaviour
 				graph[current.x, current.y] -= walls[dir];
 				graph[next.x, next.y] -= walls[-dir];
 
-				InstantiateTile(current);
-				InstantiateTile(next);
+				//InstantiateTile(current);
+				//InstantiateTile(next);
 				
 				current = next;
 				unvisited.Remove(current);
@@ -140,34 +103,62 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
 			// animation
 			currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
-			MoveTrail(currentIndicator.transform.position);
+			//MoveTrail(currentIndicator.transform.position);
 			
-			if (animate && slowAnimate++ % 5 == 0)
-				yield return null;
+			// if (false && animate && slowAnimate++ % 5 == 0)
+			// 	yield return null;
 		}
 		
 		// StartCoroutine(TrailMover());
-		StartCoroutine(TearDownWalls());
+		// StartCoroutine(
+		// TearDownWalls();
+		// );
 		// StartCoroutine(FadeTiles());
 	}
+	
+	private void TearDownWalls() {
+		
+		// procedurally remove a number of the map walls
+		for (int i = 0; i < worldSize.x * worldSize.y * eraseFraction; i++) {
+			int x = random.Next(1, worldSize.x - 2);
+			int y = random.Next(1, worldSize.y - 2);
+			Vector2Int current = new Vector2Int(x, y);
 
-	[SerializeField] private GameObject pathIndicator;
-	[SerializeField] private Vector2Int[] criticalPoints;
-	private IEnumerator Path()
+			Vector2Int direction = directions[random.Next(directions.Length)];
+
+			// if there is a wall in current direction
+			if ((graph[current.x, current.y] & walls[direction]) != 0) {
+				
+				Vector2Int neighbor = current + direction;
+				
+				// tear down walls
+				graph[current.x, current.y] -= walls[direction];
+				graph[neighbor.x, neighbor.y] -= walls[-direction];
+
+				//InstantiateTile(current);
+				//InstantiateTile(neighbor);
+				
+				currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
+				// if (false && animate)
+				// 	yield return null;
+			}
+		}
+		
+		// StartCoroutine(
+		// Path();
+		// );
+	}
+
+	private void Path()
 	{
 		HashSet<Vector2Int> allCriticalPathCoordinates = new HashSet<Vector2Int>();
 		Vector2Int[][] connections = new[] {
 			new Vector2Int[]{ criticalPoints[0], criticalPoints[1]},
 			new Vector2Int[]{ criticalPoints[0], criticalPoints[2]},
-			
-			//new Vector2Int[]{ criticalPoints[1], criticalPoints[2]},
 			new Vector2Int[]{ criticalPoints[1], criticalPoints[3]},
-			
-			new Vector2Int[]{ criticalPoints[2], criticalPoints[3]},
-			
-			new Vector2Int[]{ criticalPoints[3], criticalPoints[4]},
+			new Vector2Int[]{ criticalPoints[2], criticalPoints[4]},
 			new Vector2Int[]{ criticalPoints[3], criticalPoints[5]},
-			new Vector2Int[]{ criticalPoints[4], criticalPoints[5]}
+			new Vector2Int[]{ criticalPoints[4], criticalPoints[5]},
 		};
 		Color[] colors = new[] { Color.blue, Color.red, Color.green, Color.cyan, Color.red, Color.magenta, Color.blue };
 
@@ -184,9 +175,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
 				currentIndicator.transform.position = current;
 				SpriteRenderer sr = Instantiate(pathIndicator, current + Vector3.down, tileRotation).GetComponent<SpriteRenderer>();
 				sr.color = colors[paths % colors.Length];
-				MoveTrail(currentIndicator.transform.position + Vector3.up);
-				if (animate)
-					yield return null;
+				//MoveTrail(currentIndicator.transform.position + Vector3.up);
+				//if (false && animate)
+					//yield return null;
 			}
 		} // end animation
 
@@ -196,10 +187,12 @@ public class ProceduralWorldGeneration : MonoBehaviour
 			criticalPaths.Add(aStar.Path(connections[p][0], connections[p][1], graph));
 		}
 
-		StartCoroutine(PutUpWallsAroundCriticalPath(allCriticalPathCoordinates));
+		//StartCoroutine(
+		PutUpWallsAroundCriticalPath(allCriticalPathCoordinates);
+		//);
 	}
 
-	public IEnumerator PutUpWallsAroundCriticalPath(HashSet<Vector2Int> criticalPathCoordinates)
+	public void PutUpWallsAroundCriticalPath(HashSet<Vector2Int> criticalPathCoordinates)
 	{
 		Vector2Int last = -Vector2Int.one;
         for (int circle = 0; circle < 3; circle++)
@@ -216,13 +209,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
                                   new Vector2Int((int)(Mathf.Cos(radians) * radius[circle]), 
 	                                  (int)(Mathf.Sin(radians) * radius[circle]));
 
-                if (animate &&
-                    last != vec2 &&
-                    vec2.x < worldSize.x &&
-                    vec2.y < worldSize.y &&
-                    vec2.x > 0 &&
-                    vec2.y > 0)
-	                yield return null;
+                // if (false && 
+                //     animate &&
+                //     last != vec2 &&
+                //     vec2.x < worldSize.x &&
+                //     vec2.y < worldSize.y &&
+                //     vec2.x > 0 &&
+                //     vec2.y > 0)
+	               //  yield return null;
                 
                 last = vec2;
                 
@@ -241,13 +235,13 @@ public class ProceduralWorldGeneration : MonoBehaviour
 		                if (vec2.y + 1 < worldSize.y)
 		                {
 			                graph[vec2.x, vec2.y + 1] |= S;
-			                InstantiateTile(new Vector2Int(vec2.x, vec2.y + 1));
+			                //InstantiateTile(new Vector2Int(vec2.x, vec2.y + 1));
 		                }
 		                // south
 		                if (vec2.y - 1 > 0 && (graph[vec2.x, vec2.y - 1] & N) != 0)
 		                {
 			                graph[vec2.x, vec2.y - 1] -= N;
-			                InstantiateTile(new Vector2Int(vec2.x, vec2.y - 1));
+			                //InstantiateTile(new Vector2Int(vec2.x, vec2.y - 1));
 		                }
 	                }
 	                else // lower part of circle
@@ -258,22 +252,22 @@ public class ProceduralWorldGeneration : MonoBehaviour
 		                if (vec2.y - 1 >= 0)
 		                {
 			                graph[vec2.x, vec2.y - 1] |= N;
-			                InstantiateTile(new Vector2Int(vec2.x, vec2.y - 1));
+			                //InstantiateTile(new Vector2Int(vec2.x, vec2.y - 1));
 		                }
 		                // North
 		                if (vec2.y + 1 < worldSize.y && (graph[vec2.x, vec2.y + 1] & S) != 0)
 		                {
 			                graph[vec2.x, vec2.y + 1] -= S;
-			                InstantiateTile(new Vector2Int(vec2.x, vec2.y + 1));    
+			                //InstantiateTile(new Vector2Int(vec2.x, vec2.y + 1));    
 		                }
 	                }
-	                InstantiateTile(vec2);
+	                //InstantiateTile(vec2);
 
 	                // West
 	                if (vec2.x - 1 > 0)
 	                {
 		                graph[vec2.x - 1, vec2.y] |= E;
-		                InstantiateTile(new Vector2Int(vec2.x - 1, vec2.y));
+		                //InstantiateTile(new Vector2Int(vec2.x - 1, vec2.y));
 	                }
 
 	                // East
@@ -282,22 +276,23 @@ public class ProceduralWorldGeneration : MonoBehaviour
 		                // if wall to W, remove wall
 		                if ((graph[vec2.x + 1, vec2.y] & W) != 0)
 							graph[vec2.x + 1, vec2.y] -= W;
-		                InstantiateTile(new Vector2Int(vec2.x + 1, vec2.y));
+		                //InstantiateTile(new Vector2Int(vec2.x + 1, vec2.y));
 	                }
 
-	                currentIndicator.transform.position = new Vector3(vec2.x, .1f, vec2.y);
-	                MoveTrail(currentIndicator.transform.position);
+	                //currentIndicator.transform.position = new Vector3(vec2.x, .1f, vec2.y);
+	                //MoveTrail(currentIndicator.transform.position);
                 }
             }
         }
         CheckDeadEnds(criticalPathCoordinates);
         
-        for (int y = 0; y < worldSize.y; y++) {
-	        for (int x = 0; x < worldSize.x; x++) {
-		        Vector2Int pos = new Vector2Int(x, y);
-		        InstantiateTile(pos);
-	        }
-        }
+        // for (int y = 0; y < worldSize.y; y++) {
+	       //  for (int x = 0; x < worldSize.x; x++) {
+		      //   Vector2Int pos = new Vector2Int(x, y);
+		      //   InstantiateTile(pos);
+	       //  }
+        // }
+        
 	}
 	
 	[SerializeField] private GameObject deadEnd;
@@ -377,8 +372,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
 			currDeadEnd = deadEnds.Dequeue();
 			graph[currDeadEnd.x, currDeadEnd.y] = (N|S|E|W);
 
-			if (!animate) continue;
-			Instantiate(deadEnd, new Vector3(currDeadEnd.x, -.01f, currDeadEnd.y), tileRotation, this.gameObject.transform);
+			if (!animate) 
+				continue;
+			//Instantiate(deadEnd, new Vector3(currDeadEnd.x, -.01f, currDeadEnd.y), tileRotation, this.gameObject.transform);
 			if (currDeadEnd.y > 0) 
 				graph[currDeadEnd.x, currDeadEnd.y - 1] |= N;
 			if (currDeadEnd.y < worldSize.y - 1) 
@@ -388,15 +384,15 @@ public class ProceduralWorldGeneration : MonoBehaviour
 			if (animate && currDeadEnd.x < worldSize.x - 1) 
 				graph[currDeadEnd.x + 1, currDeadEnd.y] |= W;
 			
-			InstantiateTile(currDeadEnd);
-			if (currDeadEnd.y + 1 < worldSize.y) 
-				InstantiateTile(currDeadEnd + Vector2Int.up);
-			if (currDeadEnd.y - 1 > 0) 
-				InstantiateTile(currDeadEnd + Vector2Int.down);
-			if (currDeadEnd.x + 1 < worldSize.x) 
-				InstantiateTile(currDeadEnd + Vector2Int.right);
-			if (currDeadEnd.x - 1 > 0) 
-				InstantiateTile(currDeadEnd + Vector2Int.left);
+			//InstantiateTile(currDeadEnd);
+			// if (currDeadEnd.y + 1 < worldSize.y) 
+			// 	InstantiateTile(currDeadEnd + Vector2Int.up);
+			// if (currDeadEnd.y - 1 > 0) 
+			// 	InstantiateTile(currDeadEnd + Vector2Int.down);
+			// if (currDeadEnd.x + 1 < worldSize.x) 
+			// 	InstantiateTile(currDeadEnd + Vector2Int.right);
+			// if (currDeadEnd.x - 1 > 0) 
+			// 	InstantiateTile(currDeadEnd + Vector2Int.left);
 		}
 	}
 
@@ -420,91 +416,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
 		tiles[pos.x, pos.y] = tile;
 	}
 
-	private IEnumerator TrailMover() {
-		float t = 0;
-		while (t < 1.0f) {
-			t += Time.deltaTime;
-			MoveTrail(Vector3.one * 100);
-			yield return null;
-		}
-			
-	}
-
-	private void MoveTrail(Vector3 current) {
-		Vector3 lastPos = trail[0].transform.position;
-		trail[0].transform.position = current + Vector3.down;
-		Vector3 temp = lastPos;
-		for (int t = 1; t < trail.Length; t++) {
-			temp = trail[t].transform.position;
-			trail[t].transform.position = lastPos;
-			lastPos = temp;
-		}
-	}
-	
 	private SpriteRenderer indicator;
-	[SerializeField] private GameObject[] trail;
-	private IEnumerator FadeTiles() {
-		// get all tiles spriteRenderers for fading them out 
-		for (int x = 0; x < worldSize.x; x++) {
-			for (int y = 0; y < worldSize.y; y++) {
-				sr[x, y] = tiles[x, y].GetComponent<SpriteRenderer>();
-			}
-		}
-		indicator = currentIndicator.GetComponent<SpriteRenderer>();
-		
-		yield return new WaitForSeconds(1.0f);
-		
-		float t = 0;
-		Color color = Color.white;
-		while (t < 1.0f) {
-
-			
-			color.a = 1.0f - t;
-			for (int x = 0; x < worldSize.x; x++) {
-				for (int y = 0; y < worldSize.y; y++) {
-					if (sr[x, y] != null)
-						sr[x, y].color = color;
-					Color c = indicator.color;
-					c.a = 1.0f - t;
-					indicator.color = c;
-				}
-			}
-
-			t += Time.deltaTime;
-			yield return null;
-		}
-
-		indicator.color = Color.clear;
-		for (int x = 0; x < worldSize.x; x++) {
-			for (int y = 0; y < worldSize.y; y++) {
-				if (sr[x, y] != null)
-					sr[x, y].color = Color.clear;
-			}
-		}
-		
-	}
-
-	private IEnumerator CameraBackgroundColorLerp() {
-		Color[] colors =
-		{
-			Color.Lerp(Color.black, Color.gray, .75f), Color.Lerp(Color.black, Color.gray, .5f)
-			//Color.blue, Color.cyan, Color.green, Color.magenta, Color.red
-		};
-		int currColor = 0;
-		int targetColor = 1;
-		
-		while (true) {
-			float t = 0.0f;
-			while (t <= 1.0f) {
-				cam.backgroundColor = Color.Lerp(colors[currColor], colors[targetColor], t);
-				t += Time.deltaTime * .5f;
-				yield return null;
-			}
-
-			currColor = (currColor + 1) % colors.Length;
-			targetColor = (targetColor + 1) % colors.Length;
-		}
-	}
 
 	private List<Vector2Int> GetUnvisitedNeighbours(Vector2Int currentCell, HashSet<Vector2Int> unvisited) {
 		List<Vector2Int> neighbours = new List<Vector2Int>();
@@ -525,5 +437,10 @@ public class ProceduralWorldGeneration : MonoBehaviour
 				tiles[x, y] = tile;
 			}
 		}
+	}
+
+	public uint[,] Get()
+	{
+		return graph;
 	}
 }
