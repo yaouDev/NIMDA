@@ -16,20 +16,30 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider _collider;
     private Transform _camera;
     private Vector3 _planeNormal;
-    [HideInInspector]
-    public Vector3 _velocity;   // TODO FIXME HACK statemachine
-    [HideInInspector]
-    public Vector3 _jumpVector; // TODO FIXME HACK statemachine
-    [HideInInspector]
-    public Vector3 _inputMovement;  // TODO FIXME HACK statemachine
+    [HideInInspector] public Vector3 _velocity;   // TODO FIXME HACK statemachine
+    [HideInInspector] public Vector3 _jumpVector; // TODO FIXME HACK statemachine
+    [HideInInspector] public Vector3 _inputMovement;  // TODO FIXME HACK statemachine
+    [HideInInspector] public bool _jumped;    // TODO FIXME HACK statemachine
+    [HideInInspector] public float airControl = 1.0f; // TODO ? used here?
+
     private Vector3 _point1;
     private Vector3 _point2;
-    [HideInInspector]
-    public bool _jumped;    // TODO FIXME HACK statemachine
     private bool _grounded;
     private float _colliderRadius;
-    [HideInInspector]
-    public float airControl = 1.0f; // TODO ? used here?
+    private Vector3 _debugCollider;
+    public Color _debugColor = new Color(10, 20, 30);
+    private StateMachine stateMachine;
+    [SerializeField] public List<State> states;
+
+    private Vector2 joyStickLeftInput;
+    private Vector2 joyStickRightInput;
+    private Vector3 aimingDirection = Vector3.forward;
+
+    protected bool alive = true;
+    public Crafting crafting;
+
+    private GameObject[] players;
+    private GameObject otherPlayer;
 
     [FormerlySerializedAs("_gravity")]
     [SerializeField]
@@ -37,9 +47,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Set default gravity in:\nEdit > Project Settings > Physics > Gravity")]
     public float _defaultGravity;
 
-    [SerializeField]
-    [Range(0.0f, 4.0f)]
-    public float jumpFallVelocityMultiplier = 2.0f;
+    [SerializeField][Range(0.0f, 4.0f)] public float jumpFallVelocityMultiplier = 2.0f;
 
     [Space(10)]
     [Header("Character Design")]
@@ -98,25 +106,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The distance the character should count as being grounded")]
     private float _groundCheckDistance = 0.15f;
 
-    private StateMachine stateMachine;  
-    [SerializeField]
-    public List<State> states;  
-
-    private Vector2 joyStickLeftInput;
-    private Vector2 joyStickRightInput;
-    private Vector3 aimingDirection = Vector3.forward;
-
-    protected bool alive = true;
-    public Crafting crafting;
-
-    private GameObject[] players;
-    private GameObject otherPlayer;
-
-    //[SerializeField] private Camera cam;
-
     private void Awake()
     {
-        stateMachine = new StateMachine(this, states); 
+        stateMachine = new StateMachine(this, states);
         _collider = GetComponent<CapsuleCollider>();
         _camera = GetComponentInChildren<Camera>().transform;
     }
@@ -133,14 +125,7 @@ public class PlayerController : MonoBehaviour
         otherPlayer = players[0] != gameObject ? players[0] : players[1];
     }
 
-    public Vector2 GetRightJoystickInput() { return joyStickRightInput; }
 
-    public void Die()
-    {
-        gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
-        alive = false;
-    }
-    public void Respawn() => alive = true;
 
     private void Update()
     {
@@ -148,8 +133,7 @@ public class PlayerController : MonoBehaviour
         {
             Grounded();
             ApplyJoystickMovement();
-            //AimDirection();
-            stateMachine.Run(); 
+            stateMachine.Run();
         }
     }
 
@@ -167,7 +151,7 @@ public class PlayerController : MonoBehaviour
 
     public void JoystickLeft(InputAction.CallbackContext context)
     {
-        if (!alive) return; 
+        if (!alive) return;
 
         joyStickLeftInput = context.ReadValue<Vector2>();
     }
@@ -189,144 +173,15 @@ public class PlayerController : MonoBehaviour
         _inputMovement.y = 0.0f;
         _inputMovement.z = joyStickLeftInput.y;
 
-        // normalize input for keyboard controls
-        // check is needed so gamepad joystick doesn't get normalized to magnitude of 1
         if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
         _inputMovement = InputToCameraProjection(_inputMovement);
         _inputMovement *= _acceleration * Time.deltaTime;
     }
-    /*  --PlayerAttack--
-	private void ApplyJoystickFireDirection() {
-		
-		if (joyStickRightInput.magnitude > 0.1f) {
-			aimingDirection.x = joyStickRightInput.x;
-			aimingDirection.z = joyStickRightInput.y;
-			aimingDirection.Normalize();
-		}
-	}
-    */
+
     private void AimDirection()
     {
         transform.LookAt(transform.position + aimingDirection);
     }
-    /*
-	[SerializeField] private float laserDrainPerShot = .2f;
-	public void Fire(InputAction.CallbackContext context) {
-		if (!alive) return;	// TODO game jam code! 
-			
-		if (context.started)
-		{
-			AudioController.instance.TriggerTest();
-
-			ShootLaser();
-			StartCoroutine(AnimateLineRenderer(aimingDirection));
-		}
-	}
-
-     --PlayerHealth--
-	[SerializeField] 
-	private BatteryUI health;
-	
-	private bool alive = true;
-	[SerializeField] 
-	private GameObject visuals;
-    public void TakeDamage()
-    {
-	    Debug.Log("Took damage");
-        health.TakeDamage();
-    }
-
-        --PlayerHealth--
-    public void Die() {
-		alive = false;
-		visuals.SetActive(false);
-	}
-
-        --PlayerHealth--
-	public void Respawn() {
-		alive = true;
-		visuals.SetActive(true);
-	} */
-
-    /* --PlayerAttack--
-	private void ShootLaser() {
-		
-		health.LaserBatteryDrain();
-
-		Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
-		//Debug.Log(hitInfo.collider.transform.name);
-		if (hitInfo.collider != null) {
-			EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
-			enemy.TakeDamage();
-			Debug.Log(String.Format("Hit {0}", hitInfo.transform.name));
-		}
-	}
-	    --PlayerAttack--
-	private IEnumerator AnimateLineRenderer(Vector3 direction) {
-		Vector3[] positions = {transform.position + Vector3.up, transform.position + Vector3.up + direction * 30.0f};
-		lineRenderer.SetPositions(positions);
-		float t = 0.0f;
-		while (t < 1.0f) {
-			float e = Mathf.Lerp(Ease.EaseOutQuint(t), Ease.EaseOutBounce(t), t);
-			float lineWidth = Mathf.Lerp(.5f, .0f, e);
-			lineRenderer.startWidth = lineWidth;
-			lineRenderer.endWidth = lineWidth;
-			Color color = Color.Lerp(Color.white, Color.red, Ease.EaseInQuart(t));
-			lineRenderer.startColor = color;
-			lineRenderer.endColor = color;
-			t += Time.deltaTime * 3.0f;
-			yield return null;
-		}
-
-		lineRenderer.startWidth = 0.0f;
-		lineRenderer.endWidth = 0.0f;
-	}
-        --PlayerAttack--
-	private void AnimateLaserSightLineRenderer(Vector3 dir)
-	{
-        Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * 30.0f };
-        aimLineRenderer.SetPositions(positions);
-        float lineWidth = 0.05f;
-        aimLineRenderer.startWidth = lineWidth;
-        aimLineRenderer.endWidth = lineWidth;
-        Color color = new Color(1f, 0.2f, 0.2f);
-        aimLineRenderer.startColor = color;
-        aimLineRenderer.endColor = color;
-    }
-        --PlayerAttack--
-	public void TargetMousePos(InputAction.CallbackContext context) {
-		Vector3 mousePos = context.ReadValue<Vector2>();
-		mousePos.z = 15.0f;
-		Plane plane = new Plane(Vector3.up, transform.position + Vector3.up);
-		Ray ray = cam.ScreenPointToRay(mousePos);
-		
-		if (plane.Raycast(ray, out float enter)) {
-			Vector3 hitPoint = ray.GetPoint(enter);
-			aimingDirection = hitPoint + Vector3.down - transform.position;
-		}
-	}
-	
-    */
-
-    // private void Input() {
-
-    // float right = 0;// TODO UnityEngine.Input.GetAxisRaw(Horizontal);
-    // float forward = 0;// TODO UnityEngine.Input.GetAxisRaw(Vertical);
-    // _inputMovement.x = right;
-    // _inputMovement.y = 0.0f;
-    // _inputMovement.z = forward;
-
-    // if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();	// if using keyboard
-    // _inputMovement = InputToCameraProjection(_inputMovement);
-    // _inputMovement *= _acceleration * Time.deltaTime;
-    // if (!_pressedJump)
-    // 	_pressedJump = false;// TODO UnityEngine.Input.GetButtonDown(Jump);
-    // if (!_releasedJump)
-    // 	_releasedJump = false; // TODO UnityEngine.Input.GetButtonUp(Jump);
-
-    // if (_pressedJump && _grounded)
-    // 	_jumped = true;
-    // }
 
     private Vector3 InputToCameraProjection(Vector3 input)
     {
@@ -378,7 +233,6 @@ public class PlayerController : MonoBehaviour
         int iterations = 0;
         do
         {
-
             hit = CapsuleCasts(_velocity);
 
             if (!hit.collider)
@@ -415,7 +269,6 @@ public class PlayerController : MonoBehaviour
 
         while (count > 0 && exit++ < 10)
         {
-
             for (int i = 0; i < count; i++)
             {
                 if (Physics.ComputePenetration(
@@ -443,8 +296,6 @@ public class PlayerController : MonoBehaviour
                 _collisionMask);
             exit++;
         }
-
-        //if (exit > 10) Debug.Log("EXITED");
     }
 
     private void ApplyFriction(Vector3 normalForce)
@@ -456,15 +307,13 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            _velocity -=
-                _kineticFrictionCoefficient * normalForce.magnitude * _velocity.normalized;
+            _velocity -= _kineticFrictionCoefficient * normalForce.magnitude * _velocity.normalized;
         }
     }
 
     public bool Grounded()
     {
-        _grounded =
-                Physics.SphereCast(transform.position + _point2, _colliderRadius, Vector3.down,
+        _grounded = Physics.SphereCast(transform.position + _point2, _colliderRadius, Vector3.down,
                         out var hit, _groundCheckDistance + _skinWidth, _collisionMask);
 
         _planeNormal = _grounded ? hit.normal : Vector3.up;
@@ -474,7 +323,6 @@ public class PlayerController : MonoBehaviour
 
     private RaycastHit CapsuleCasts(Vector3 direction)
     {
-
         Physics.CapsuleCast(transform.position + _point1,
             transform.position + _point2,
             _colliderRadius,
@@ -485,9 +333,6 @@ public class PlayerController : MonoBehaviour
         return hit;
     }
 
-    //???
-    private Vector3 _debugCollider;
-    public Color _debugColor = new Color(10, 20, 30);
     private void OnDrawGizmos()
     {
         _debugCollider = transform.position + _velocity * Time.deltaTime + Vector3.up * .5f;
@@ -528,6 +373,13 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool ReleasedJump() => _releasedJump;
-
     public bool PressedJump() => _pressedJump;
+    public Vector2 GetRightJoystickInput() { return joyStickRightInput; }
+
+    public void Die()
+    {
+        gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
+        alive = false;
+    }
+    public void Respawn() => alive = true;
 }
