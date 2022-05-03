@@ -27,8 +27,6 @@ public class EnemyHealth : MonoBehaviour
     public void TakeDamage()
     {
         --currHealth;
-        Debug.Log("Damage!");
-        Debug.Log("Player health: " + currHealth);
     }
 
     public void Die()

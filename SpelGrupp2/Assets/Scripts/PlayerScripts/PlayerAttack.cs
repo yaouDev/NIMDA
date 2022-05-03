@@ -74,13 +74,11 @@ namespace Callbacks
         private void ShootLaser()
         {
             health.TakeDamage(laserSelfDmg);
-
-            Physics.Raycast(transform.position + transform.forward + Vector3.up, transform.forward, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
+            Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
             if (hitInfo.collider != null)
             {
                 EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
-                enemy.TakeDamage(); //TODO pickUp-object should not be on enemy-layer/tag!
-                Debug.Log(String.Format("Hit {0}", hitInfo.transform.name));
+                enemy.TakeDamage(); //TODO pickUp-object should not be on enemy-layer!
             }
         }
 
