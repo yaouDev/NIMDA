@@ -8,38 +8,35 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
+    private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
+    private GameObject[] players;
+    private GameObject otherPlayer;
+    private CapsuleCollider _collider;
+    private StateMachine stateMachine;
+    private Transform _camera;
+    private Vector3 aimingDirection = Vector3.forward;
+    private Vector3 _debugCollider;
+    private Vector3 _planeNormal;
+    private Vector3 _point1;
+    private Vector3 _point2;
+    private Vector2 joyStickLeftInput;
+    private Vector2 joyStickRightInput;
+    private bool _grounded;
+    private float _colliderRadius;
 
+    protected bool alive = true;
+
+    [HideInInspector] public Vector3 _velocity;  
+    [HideInInspector] public Vector3 _jumpVector; 
+    [HideInInspector] public Vector3 _inputMovement;
+    [HideInInspector] public float airControl = 1.0f;
+    [HideInInspector] public bool _jumped;    
+    public Color _debugColor = new Color(10, 20, 30);
+    public Crafting crafting;
     public bool _pressedJump;
     public bool _releasedJump;
 
-    private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
-    private CapsuleCollider _collider;
-    private Transform _camera;
-    private Vector3 _planeNormal;
-    [HideInInspector] public Vector3 _velocity;   // TODO FIXME HACK statemachine
-    [HideInInspector] public Vector3 _jumpVector; // TODO FIXME HACK statemachine
-    [HideInInspector] public Vector3 _inputMovement;  // TODO FIXME HACK statemachine
-    [HideInInspector] public bool _jumped;    // TODO FIXME HACK statemachine
-    [HideInInspector] public float airControl = 1.0f; // TODO ? used here?
-
-    private Vector3 _point1;
-    private Vector3 _point2;
-    private bool _grounded;
-    private float _colliderRadius;
-    private Vector3 _debugCollider;
-    public Color _debugColor = new Color(10, 20, 30);
-    private StateMachine stateMachine;
     [SerializeField] public List<State> states;
-
-    private Vector2 joyStickLeftInput;
-    private Vector2 joyStickRightInput;
-    private Vector3 aimingDirection = Vector3.forward;
-
-    protected bool alive = true;
-    public Crafting crafting;
-
-    private GameObject[] players;
-    private GameObject otherPlayer;
 
     [FormerlySerializedAs("_gravity")]
     [SerializeField]
