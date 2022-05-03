@@ -48,11 +48,11 @@ namespace Callbacks
 
         public void UnregisterListener<T>(System.Action<T> listener) where T : EventInfo
         {
-            System.Type etype = typeof(T);
-            if(eventListeners != null && (eventListeners.ContainsKey(etype) || eventListeners [etype] != null))
-            {
-                eventListeners.Remove(etype);
-            }
+            //System.Type etype = typeof(T);
+            //if(eventListeners != null && (eventListeners.ContainsKey(etype) || eventListeners [etype] != null))
+            //{
+            //    eventListeners.Remove(etype);
+            //}
         }
 
         public void FireEvent(EventInfo ei)

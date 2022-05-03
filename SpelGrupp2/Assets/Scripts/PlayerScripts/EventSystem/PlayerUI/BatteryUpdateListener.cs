@@ -7,11 +7,9 @@ namespace Callbacks
     public class BatteryUpdateListener : MonoBehaviour
     {
         [SerializeField] public BatteryUI[] players;
-        //private BatteryUI[] players;
 
         public void Start()
         {
-            //players = GetComponentInParent<UIHolder>().playerUIs;
             EventSystem.Current.RegisterListener<UnitHealthUpdate>(UpdateBattery);
         }
 

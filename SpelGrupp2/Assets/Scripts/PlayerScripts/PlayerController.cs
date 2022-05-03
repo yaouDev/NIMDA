@@ -98,17 +98,13 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The distance the character should count as being grounded")]
     private float _groundCheckDistance = 0.15f;
 
-    private StateMachine stateMachine;  // TODO FIXME statemachine
+    private StateMachine stateMachine;  
     [SerializeField]
-    public List<State> states;  // TODO FIXME statemachine
+    public List<State> states;  
 
     private Vector2 joyStickLeftInput;
     private Vector2 joyStickRightInput;
-
     private Vector3 aimingDirection = Vector3.forward;
-    //[SerializeField] private LineRenderer lineRenderer;
-    //[SerializeField] private LineRenderer aimLineRenderer;
-    //[SerializeField] private LayerMask enemyLayerMask;
 
     protected bool alive = true;
     public Crafting crafting;
@@ -120,7 +116,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        stateMachine = new StateMachine(this, states);  // TODO FIXME statemachine
+        stateMachine = new StateMachine(this, states); 
         _collider = GetComponent<CapsuleCollider>();
         _camera = GetComponentInChildren<Camera>().transform;
     }
@@ -150,10 +146,8 @@ public class PlayerController : MonoBehaviour
         {
             Grounded();
             ApplyJoystickMovement();
-            //ApplyJoystickFireDirection();
-            //AimDirection();
-            //AnimateLaserSightLineRenderer(transform.forward);
-            stateMachine.Run(); // TODO FIXME statemachine
+            AimDirection();
+            stateMachine.Run(); 
         }
     }
 
@@ -211,6 +205,7 @@ public class PlayerController : MonoBehaviour
     */
     private void AimDirection()
     {
+        Debug.Log("Aim direction in controller");
         transform.LookAt(transform.position + aimingDirection);
     }
     /*

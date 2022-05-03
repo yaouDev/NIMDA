@@ -17,20 +17,14 @@ namespace Callbacks
         private float respawnTimer;
         private bool alive = true;
         private bool inSafeZone = false;
-        //private GameObject[] players;
-        //private GameObject otherPlayer;
         private PlayerAttack attackAbility;
         private PlayerController movement;
-        //private Vector3 freezeTransformAt;
 
 
         private void Start()
         {
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
-            //players = GameObject.FindGameObjectsWithTag("Player");
-            //otherPlayer = players[0] != gameObject ? players[0] : players[1];
-            //currHealth = maxHealth;
             healthReg = standardRegeneration;
             currHealth = 0.1f;
         }
@@ -62,7 +56,6 @@ namespace Callbacks
 
         public void Die()
         {
-            //freezeTransformAt = otherPlayer.transform.position + Vector3.left;
             alive = false;
             attackAbility.Die();
             movement.Die();
@@ -95,7 +88,6 @@ namespace Callbacks
 
         private void HealthRegeneration()
         {
-            //Time.deltaTime caused gap between 0.14->0.47 ???
             currHealth += (Time.deltaTime * healthReg);
             currHealth = Mathf.Min(currHealth, 1f);
 
