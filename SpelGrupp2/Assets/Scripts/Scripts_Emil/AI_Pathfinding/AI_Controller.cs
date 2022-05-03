@@ -5,11 +5,11 @@ using UnityEngine;
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, distanceFromTargetToStop, maxCritRange, minCritRange, allowedTargetDiscrepancy;
-    //private EnemyAttack enemyAttack;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private PathfinderManager pathfinder;
     private SimpleGraph pathfindingGrid;
+    private LineRenderer lineRenderer;
 
     private List<Vector3> currentPath;
     private Collider col;
@@ -29,37 +29,33 @@ public class AI_Controller : MonoBehaviour {
         behaviorTree = GetComponent<BehaviorTree>();
         otherEnemyTrigger = GetComponentInChildren<SphereCollider>();
         pathfinder = PathfinderManager.instance;
-        pathfindingGrid = SimpleGraph.instance;
+        pathfindingGrid = SimpleGraph.Instance;
         rBody = GetComponent<Rigidbody>();
         Physics.IgnoreLayerCollision(12, 12);
-        //enemyAttack = GetComponent<EnemyAttack>();
         enemyHealth = GetComponent<EnemyHealth>();
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
-    public Vector3 GetClosestTarget() {
-        GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
-        Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
-        return closestTarget.transform.position;
-    }
+
 
 
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
         // This code is for debugging purposes only, shows current calculated path
-        /*         if (currentPath != null && currentPath.Count != 0) {
-                    Vector3 prevPos = currentPath[0];
-                    foreach (Vector3 pos in currentPath) {
-                        if (pos != prevPos)
-                            Debug.DrawLine(prevPos, pos, Color.blue);
-                        prevPos = pos;
-                    }
-                } */
+        /*      if (currentPath != null && currentPath.Count != 0) {
+                 Vector3 prevPos = currentPath[0];
+                 foreach (Vector3 pos in currentPath) {
+                     if (pos != prevPos)
+                         Debug.DrawLine(prevPos, pos, Color.blue);
+                     prevPos = pos;
+                 }
+             } */
     }
 
     public IEnumerator UpdatePath() {
         updatingPath = true;
-        pathfinder.RequestPath(this, transform.position, activeTarget);
+        pathfinder.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
         updatingPath = false;
     }
@@ -68,7 +64,7 @@ public class AI_Controller : MonoBehaviour {
     public bool TargetInSight {
         get {
             RaycastHit hit;
-            Physics.BoxCast(transform.position, transform.lossyScale, (activeTarget - transform.position).normalized, out hit, transform.rotation, Mathf.Infinity);
+            Physics.BoxCast(Position, transform.lossyScale, (activeTarget - Position).normalized, out hit, transform.rotation, Mathf.Infinity);
             if (hit.collider != null) {
                 if (hit.collider.tag == "Player") {
                     return true;
@@ -76,6 +72,14 @@ public class AI_Controller : MonoBehaviour {
             }
             return false;
         }
+    }
+    public Vector3 ClosestTarget {
+        get {
+            GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
+            Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
+            return closestTarget.transform.position;
+        }
+
     }
 
     public int CurrentPathIndex {
@@ -87,7 +91,6 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
-    // public EnemyAttack Attack { get { return enemyAttack; } }
     public EnemyHealth Health { get { return enemyHealth; } }
 
     public Vector3 CurrentTarget {
@@ -103,20 +106,25 @@ public class AI_Controller : MonoBehaviour {
         get { return transform.position; }
     }
 
-    /*     public float AttackRange {
-            get { return enemyAttack.GetAttackRange(); }
-        } */
     public bool IsStopped {
         get { return isStopped; }
         set { isStopped = value; }
     }
 
     public float DistanceFromTarget {
-        get { return Vector3.Distance(activeTarget, transform.position); }
+        get { return Vector3.Distance(ClosestTarget, Position); }
     }
 
     public Vector3 Velocity {
         get { return rBody.velocity; }
+    }
+
+    public LineRenderer LineRenderer {
+        get { return lineRenderer; }
+    }
+
+    public Vector3 CurrentPathNode {
+        get { return currentPath[currentPathIndex]; }
     }
 
     public bool IsPathRequestAllowed() {
@@ -126,59 +134,60 @@ public class AI_Controller : MonoBehaviour {
         Vector3.Distance(currentPath[currentPath.Count - 1], activeTarget) >= allowedTargetDiscrepancy;
         float distToTarget = Vector3.Distance(transform.position, activeTarget);
         bool criticalRangeCond = nullCond && distToTarget <= maxCritRange && distToTarget > minCritRange;
-        return (currentPath == null || discrepancyCond || criticalRangeCond || indexCond) && !updatingPath;
+        return (currentPath == null || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
     }
 
 
 
     private void FixedUpdate() {
-        AvoidOtherEnemies();
         if (!isStopped) {
             AdjustForLatePathUpdate();
             Move();
         }
     }
 
-    private void AvoidOtherEnemies() {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, otherEnemyTrigger.radius);
-        foreach (Collider collider in colliders) {
-            if (collider.tag == "Enemy" && collider.transform.parent.gameObject != gameObject) {
-                Vector3 directionOfOtherEnemy = (collider.transform.position - transform.position).normalized;
-                Vector3 valueToTest = transform.position;
-                if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
-                float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
-                if ((dot >= -0.2f && dot <= 0.5f) || valueToTest == transform.position) {
-                    float localSpeeed = speed;
-                    if (valueToTest != transform.position) localSpeeed = speed * 0.33f;
-                    Vector3 forceToAdd = -directionOfOtherEnemy.normalized * localSpeeed;
-                    forceToAdd.y = 0;
-                    rBody.AddForce(forceToAdd, ForceMode.Force);
-                }
+    private void OnTriggerStay(Collider other) {
+        if (other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
+            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
+            Vector3 valueToTest = transform.position;
+            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
+            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
+            if ((dot >= 0) || valueToTest == transform.position) {
+                float localSpeed = speed;
+                Vector3 forceToAdd = Vector3.zero;
+                if (isStopped) {
+                    localSpeed = speed * 0.33f;
+                    //directionOfOtherEnemy *= 1000;
+                    forceToAdd = -directionOfOtherEnemy.normalized * localSpeed * 0.2f;
+                } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.2f).normalized * localSpeed * 0.05f;
+                forceToAdd.y = 0;
+                // I have no idea why this suddenly made the force so explosive
+                rBody.AddForce(forceToAdd, ForceMode.Force);
             }
         }
     }
 
     private void AdjustForLatePathUpdate() {
         if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {
-            bool distanceCond = Vector3.Distance(currentPath[currentPathIndex], activeTarget) > Vector3.Distance(transform.position, activeTarget);
+            bool distanceCond = Vector3.Distance(CurrentPathNode, activeTarget) > Vector3.Distance(Position, activeTarget);
             while (currentPathIndex < currentPath.Count - 2 &&
-            Vector3.Distance(currentPath[currentPathIndex], activeTarget) > Vector3.Distance(transform.position, activeTarget) &&
-            Vector3.Dot(currentPath[currentPathIndex + 1] - (currentPath[currentPathIndex]).normalized, (activeTarget - currentPath[currentPathIndex]).normalized) >= 0)
+            Vector3.Distance(CurrentPathNode, activeTarget) > Vector3.Distance(Position, activeTarget) &&
+            Vector3.Dot(currentPath[currentPathIndex + 1] - CurrentPathNode.normalized, (activeTarget - CurrentPathNode).normalized) >= 0)
                 currentPathIndex++;
         }
     }
 
 
     private void Move() {
-        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(transform.position, activeTarget) > distanceFromTargetToStop) {
-            if (Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(transform.position, currentPath[currentPathIndex]) > 2f)) {
+        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(Position, activeTarget) > distanceFromTargetToStop) {
+            if (Vector3.Distance(Position, CurrentPathNode) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(Position, CurrentPathNode) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
-                Vector3 lerpForceToAdd = (Vector3.Lerp(currentPath[currentPathIndex], currentPath[currentPathIndex + indexesToLerp], 0.5F) - transform.position).normalized * speed;
+                Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5F) - Position).normalized * speed;
                 Vector3 forceTadd = lerpForceToAdd;
-                if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 1) forceTadd = (currentPath[currentPathIndex] - transform.position).normalized * speed * 5;
+                if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 1) forceTadd = (CurrentPathNode - Position).normalized * speed * 5;
                 rBody.AddForce(forceTadd, ForceMode.Force);
-                if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(currentPath[currentPathIndex], Position)) currentPathIndex++;
+                if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(CurrentPathNode, Position)) currentPathIndex++;
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
@@ -186,10 +195,10 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public void UpdateTarget() {
-        desiredTarget = GetClosestTarget();
+        desiredTarget = ClosestTarget;
         activeTarget = desiredTarget;
         if (pathfindingGrid.GetBlockedNode(desiredTarget).Length > 0) {
-            targetBlocked = pathfindingGrid.GetClosestNodeNotBlocked(desiredTarget, transform.position);
+            targetBlocked = pathfindingGrid.GetClosestNodeNotBlocked(desiredTarget, Position);
             activeTarget = targetBlocked;
         }
     }

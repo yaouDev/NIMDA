@@ -5,20 +5,21 @@ using UnityEngine;
 public class SimpleGraph : MonoBehaviour {
     private int numberOfNodes;
     private Vector3 worldSize, worldPos;
+    [Header("Has to be in increments of 0.5")]
     [SerializeField] private float nodeHalfextent;
     [SerializeField] private LayerMask colliderMask;
-    private const int POSSIBLE_EDGES = 6;
     private Dictionary<Vector3, Dictionary<Vector3, float>> nodes;
-    public static SimpleGraph instance;
+    public static SimpleGraph Instance;
 
     void Awake() {
         nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
-        worldPos = gameObject.GetComponent<BoxCollider>().center; //transform.TransformPoint(gameObject.GetComponent<BoxCollider>().center);
+        worldPos = transform.position; //gameObject.GetComponent<BoxCollider>().center; //transform.TransformPoint(gameObject.GetComponent<BoxCollider>().center);
+        worldPos.y = gameObject.GetComponent<BoxCollider>().center.y;
         worldSize = gameObject.transform.localScale;
         worldPos.y += worldSize.y / 2;
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
         InitGraph();
-        instance ??= this;
+        Instance ??= this;
     }
 
     public void Connect(Vector3 node1, Vector3 node2, float cost) {
@@ -50,20 +51,21 @@ public class SimpleGraph : MonoBehaviour {
     }
 
     // gives the exact closest box but has to loop through all the nodes in the graph each time. Not effective
-    public Vector3 getClosestBox2(Vector3 pos) {
-        float shortestDistAway = Mathf.Infinity;
-        Vector3 currentSmallestNode = Vector3.zero;
-        foreach (Vector3 node in nodes.Keys) {
-            Vector3 tmpVec = new Vector3(Mathf.Abs(node.x - pos.x), Mathf.Abs(node.y - pos.y), Mathf.Abs(node.z - pos.z));
-            if (tmpVec.magnitude < shortestDistAway) {
-                currentSmallestNode = node;
-                shortestDistAway = tmpVec.magnitude;
+    /*     public Vector3 GetClosestNode2(Vector3 pos) {
+            float shortestDistAway = Mathf.Infinity;
+            Vector3 currentSmallestNode = Vector3.zero;
+            foreach (Vector3 node in nodes.Keys) {
+                Vector3 tmpVec = new Vector3(Mathf.Abs(node.x - pos.x), Mathf.Abs(node.y - pos.y), Mathf.Abs(node.z - pos.z));
+                if (tmpVec.magnitude < shortestDistAway) {
+                    currentSmallestNode = node;
+                    shortestDistAway = tmpVec.magnitude;
+                }
             }
-        }
-        return currentSmallestNode;
-    }
+            return currentSmallestNode;
+        } */
 
     // gives the closest node in constant O(1) time. Much better than above
+    // at the moment it only works when the worldPos is the center of the world. TODO
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
         float x = 0, y = x, z = x;
@@ -91,7 +93,7 @@ public class SimpleGraph : MonoBehaviour {
             float distanceFromCenter = Mathf.Abs(Mathf.Abs(currentWorldAxis) - Mathf.Abs(currentAxis));
             float numberOfNodesToPos = distanceFromCenter / (nodeHalfextent * 2);
             if (numberOfNodesToPos - (int)numberOfNodesToPos <= 0.5f) numberOfNodesToPos += 0.5f;
-            int nodesToMove = nodesToMove = numberOfNodesFromCenter - (int)Mathf.Round(numberOfNodesToPos);
+            int nodesToMove = numberOfNodesFromCenter - (int)Mathf.Round(numberOfNodesToPos);
             if (nodesToMove < 0) nodesToMove = 0;
             float moveDist = nodesToMove * (nodeHalfextent * 2);
             if (currentAxis < 0) axis[i] = currentWorldAxis - (currentWorldAxisSize / 2) + moveDist + nodeHalfextent;
@@ -99,6 +101,21 @@ public class SimpleGraph : MonoBehaviour {
         }
         return new Vector3(axis[0], axis[1], axis[2]);
     }
+
+/*     public Vector3 GetClosestNode2(Vector3 pos) {
+        Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
+        float x = 0, y = localWorldPos.y, z = x;
+        float xEdge = worldPos.x - (worldPos.x / 2);
+        float zEdge = worldPos.z + (worldPos.z / 2);
+
+        int nodesFromCornerX = (int)Mathf.FloorToInt(Mathf.Abs());
+        int nodesFromCornerZ = (int)Mathf.FloorToInt(Mathf.Abs(Mathf.Abs(pos.z) - Mathf.Abs(zEdge)));
+
+        x =
+
+        if (pos.x < xEdge) x = xEdge + nodeHalfextent;
+        if (pos.z < zEdge) z = zEdge - nodeHalfextent;
+    } */
 
     public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
 
@@ -169,19 +186,19 @@ public class SimpleGraph : MonoBehaviour {
 
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
-    /*     private void OnDrawGizmos() {
-            int count = 0;
-            foreach (Vector3 v in nodes.Keys) {
-                bool blocked = getBlockedNode(v).Length == 0;
-                if (blocked) {
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-                } else {
-                    Gizmos.color = Color.red;
-                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+    /*         private void OnDrawGizmos() {
+                int count = 0;
+                foreach (Vector3 v in nodes.Keys) {
+                    bool blocked = GetBlockedNode(v).Length == 0;
+                    if (blocked) {
+                        Gizmos.color = Color.green;
+                        Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                    } else {
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                    }
+                    count++;
                 }
-                count++;
-            }
-        } */
+            } */
 
 }
