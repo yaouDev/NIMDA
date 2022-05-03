@@ -39,10 +39,12 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
 	private GameObject[,] tiles;
 	private SpriteRenderer[,] sr;
-	[SerializeField] private GameObject currentIndicator;
+	//[SerializeField] private GameObject currentIndicator;
 	[SerializeField] private GameObject pathIndicator;
 	[SerializeField] private Vector2Int[] criticalPoints;
 	private AStar aStar;
+	
+	
 	private void Awake() {
 		aStar = GetComponent<AStar>();
 		tiles = new GameObject[worldSize.x, worldSize.y];
@@ -102,7 +104,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
 			}
 
 			// animation
-			currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
+			//currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
 			//MoveTrail(currentIndicator.transform.position);
 			
 			// if (false && animate && slowAnimate++ % 5 == 0)
@@ -138,7 +140,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
 				//InstantiateTile(current);
 				//InstantiateTile(neighbor);
 				
-				currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
+				//currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
 				// if (false && animate)
 				// 	yield return null;
 			}
@@ -172,9 +174,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
 			{
 				allCriticalPathCoordinates.Add(path[node]);
 				Vector3 current = new Vector3(path[node].x, .1f, path[node].y);
-				currentIndicator.transform.position = current;
-				SpriteRenderer sr = Instantiate(pathIndicator, current + Vector3.down, tileRotation).GetComponent<SpriteRenderer>();
-				sr.color = colors[paths % colors.Length];
+				//currentIndicator.transform.position = current;
+				//SpriteRenderer sr = Instantiate(pathIndicator, current + Vector3.down, tileRotation).GetComponent<SpriteRenderer>();
+				//sr.color = colors[paths % colors.Length];
 				//MoveTrail(currentIndicator.transform.position + Vector3.up);
 				//if (false && animate)
 					//yield return null;

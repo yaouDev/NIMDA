@@ -8,20 +8,21 @@ public class WorldGenerator : MonoBehaviour
 {
     private static int width = 200;
     private static int height = 200;
-    [SerializeField] 
-    private GameObject module;
 
-    private Dictionary<Vector2Int, Module> instantiatedModule = new Dictionary<Vector2Int, Module>();
-    private List<Vector2Int> currentChunks = new List<Vector2Int>();
+    private Dictionary<Vector2Int, Module> instantiatedModules = new Dictionary<Vector2Int, Module>();
+    private List<Vector2Int> currentModules = new List<Vector2Int>();
 
-    private Transform player;
+    [SerializeField] private Transform player;
 
-    private int maxVisibleChunkWidth = 4;
+    private int maxVisibleChunkWidth = 2;
+    private int maxDeleteWidth;
     private float counter = 0.0f;
 
     private uint[,] graph;
 
     public GameObject[] Modules;
+
+    public static Queue<GameObject>[] modulePool = new Queue<GameObject>[16]; 
 
     private class Module
     {
@@ -44,43 +45,55 @@ public class WorldGenerator : MonoBehaviour
             if (active)
                 return;
             active = true;
-
-            m = Instantiate(worldGenerator.Modules[module], (Vector2)(pos * 50), Quaternion.identity, worldGenerator.transform);
-            // TODO [Patrik] place the correct module depending on worldGenerator
+            
+            if (m == null)
+            {
+                if (WorldGenerator.modulePool[(int) module].Count > 0)
+                {
+                    m = WorldGenerator.modulePool[(int) module].Dequeue();
+                    m.transform.position = new Vector3(pos.x * 50, 0, pos.y * 50);
+                }
+                else
+                {
+                    m = Instantiate(worldGenerator.Modules[(int)module], new Vector3(pos.x * 50, 0, pos.y * 50), Quaternion.identity, worldGenerator.transform);
+                }
+            }
+            m.SetActive(true); // TODO [Patrik] move into pool deque, ~line 55
+            
+            // TODO [Patrik]
+            // Callback function, send to add to pathfinding, send: Vec2Int, uint 
         }
 
         public void DeactivateModule()
         {
+            m.SetActive(false);
+            active = false;
+            WorldGenerator.modulePool[(int) module].Enqueue(m);
             // TODO [Patrik]
-            // Callback function, send to remove from pathfinding
+            // Killbox for enemies on worldgenerator
+            // Callback function, send to remove from pathfinding, send: Vec2Int, uint 
             // Deactivate this module, return to pool of this particular module
         }
     }
 
     private void Start()
     {
-        graph = GetComponent<ProceduralWorldGeneration>().Get();
-
-        for (int y = 0; y < maxVisibleChunkWidth; y++)
+        for (int i = 0; i < modulePool.Length; i++)
         {
-            for (int x = 0; x < maxVisibleChunkWidth; x++)
-            {
-                Vector2Int pos = new Vector2Int(x, y);
-                Module m = new Module(pos, this, graph[x,y]);
-                instantiatedModule.Add(pos, m);
-                currentChunks.Add(pos);
-            }
+            modulePool[i] = new Queue<GameObject>();
         }
+        
+        graph = GetComponent<ProceduralWorldGeneration>().Get();
     }
     
     private void FixedUpdate()
     {
         counter += Time.fixedDeltaTime;
-        if (counter > .1f)
+        if (true)//counter > .1f)
         {
             counter = 0.0f;
-            RemoveChunks();
             AddChunks();
+            RemoveChunks();
         }
     }
 
@@ -88,45 +101,57 @@ public class WorldGenerator : MonoBehaviour
     {
         List<Vector2Int> toRemove = new List<Vector2Int>();
 
-        for (int i = 0; i < currentChunks.Count; i++)
+        for (int i = 0; i < currentModules.Count; i++)
         {
-            Vector2Int pos = new Vector2Int((int) player.position.x / 10, (int) player.position.z / 10);
-            if (currentChunks[i].x > pos.x + maxVisibleChunkWidth ||
-                currentChunks[i].y > pos.y + maxVisibleChunkWidth ||
-                currentChunks[i].x < pos.x - maxVisibleChunkWidth ||
-                currentChunks[i].y < pos.y - maxVisibleChunkWidth)
+            Vector2Int pos = new Vector2Int((int) (player.position.x - 50) / 50, (int) (player.position.z - 50) / 50);
+            if (currentModules[i].x > pos.x + maxVisibleChunkWidth ||
+                currentModules[i].y > pos.y + maxVisibleChunkWidth ||
+                currentModules[i].x < pos.x ||
+                currentModules[i].y < pos.y )
             {
-                instantiatedModule[currentChunks[i]].DeactivateModule();
-                toRemove.Add(currentChunks[i]);
+                instantiatedModules[currentModules[i]].DeactivateModule();
+                toRemove.Add(currentModules[i]);
             }
         }
 
         for (int i = 0; i < toRemove.Count; i++)
         {
-            if (currentChunks.Contains(toRemove[i]))
-                currentChunks.Remove(toRemove[i]);
+            if (currentModules.Contains(toRemove[i]))
+            {
+                if (instantiatedModules.ContainsKey(toRemove[i]))
+                {
+                    instantiatedModules.Remove(toRemove[i]);
+                }
+                currentModules.Remove(toRemove[i]);
+            }
         }
     }
 
     private void AddChunks()
     {
-        for (int y = -maxVisibleChunkWidth + 1; y < maxVisibleChunkWidth - 1; y++)
+        for (int y = -maxVisibleChunkWidth; y <= maxVisibleChunkWidth; y++)
         {
-            for (int x = -maxVisibleChunkWidth + 1; x < maxVisibleChunkWidth - 1; x++)
+            for (int x = -maxVisibleChunkWidth; x <= maxVisibleChunkWidth; x++)
             {
-                Vector2Int pos = new Vector2Int((int) player.position.x / 10 + x, (int) player.position.z / 10 + y);
-                if (instantiatedModule.ContainsKey(pos))
+                Vector2Int pos = new Vector2Int((int) ((player.position.x - 50) / 50 + x), (int) ((player.position.z - 50) / 50 + y));
+                Debug.Log(pos);
+                if (instantiatedModules.ContainsKey(pos))
                 {
-                    instantiatedModule[pos].ActivateModule();
+                    instantiatedModules[pos].ActivateModule();
                 }
-                else
+                else if (x > 0 && y > 0 && x < graph.GetLength(0) && y < graph.GetLength(1))
                 {
-                    Module c = new Module(pos, this, graph[x,y]);
-                    instantiatedModule.Add(pos, c);
-                    if (!currentChunks.Contains(pos))
-                        currentChunks.Add(pos);
+                    Module c = new Module(pos, this, graph[pos.x, pos.y]);
+                    instantiatedModules.Add(pos, c);
+                    if (!currentModules.Contains(pos))
+                        currentModules.Add(pos);
                 }
             }
         }
+    }
+
+    public void DestroyModule(GameObject go)
+    {
+        Destroy(go);
     }
 }
