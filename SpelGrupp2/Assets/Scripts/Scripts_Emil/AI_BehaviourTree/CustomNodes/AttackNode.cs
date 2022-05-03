@@ -5,14 +5,18 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
 public class AttackNode : Node
 {
-
-    GameObject[] targets;
-    private GameObject CurrentTarget;
-    private float dist;
-    private LineRenderer lineRenderer;
     [SerializeField] private float attackRange;
-    private bool isShooting = true;
     [SerializeField] private float turnSpeed = 10.0f;
+    [SerializeField] private float spread = 1.0f;
+    [SerializeField] private float shootForce = 100.0f;
+    [SerializeField] private float recoilForce = 2.0f;
+    //[SerializeField] private float upwardForce = 10.0f;
+
+    private bool isShooting = true;
+    private LineRenderer lineRenderer;
+
+    public GameObject bullet;
+    public GameObject muzzleFlash; 
 
     Vector3 closestTarget;
     Vector3 relativePos;
@@ -20,7 +24,7 @@ public class AttackNode : Node
 
     public override NodeState Evaluate()
     {
-        closestTarget = agent.GetClosestTarget();
+        closestTarget = agent.ClosestTarget;
         relativePos = closestTarget - agent.transform.position;
 
         // the second argument, upwards, defaults to Vector3.up
@@ -61,13 +65,47 @@ public class AttackNode : Node
 
     void Attack()
     {
-        
+        //Raycast
         Physics.Raycast(agent.transform.position + agent.transform.forward + Vector3.up, agent.transform.forward, out RaycastHit hitInfo, 30.0f);
-        if (hitInfo.collider != null)
+        
+        //Calculate direction from attackpoint to targetpoint
+        Vector3 directionWithoutSpread = closestTarget - agent.transform.position;
+
+        //Calculate spread
+        float x = Random.Range(-spread, spread);
+        float y = Random.Range(-spread, spread);
+
+        //Calculate direction 
+        Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+
+        //Instatiate bullet
+        GameObject currentBullet = Instantiate(bullet, agent.transform.position, Quaternion.identity);
+
+        //Rotate bullet to shoot direction
+        currentBullet.transform.forward = directionWithSpread.normalized;
+
+        //Add force to bullet
+        currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
+
+        //granades
+        //currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
+
+        //Recoil
+        //agent.RigidBody.Addforce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
+
+        //MuzzleFlash
+        if(muzzleFlash != null)
+        {
+            Instantiate(muzzleFlash, agent.transform.position, Quaternion.identity);
+        }
+
+      /*  if (hitInfo.collider != null)
         {
             PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
             //player.TakeDamage();
-        }
+        }*/
+
+
     }
 
     private IEnumerator AnimateLineRenderer()

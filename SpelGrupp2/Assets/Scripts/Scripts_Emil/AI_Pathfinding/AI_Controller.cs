@@ -198,6 +198,7 @@ public class AI_Controller : MonoBehaviour {
         desiredTarget = ClosestTarget;
         activeTarget = desiredTarget;
         if (pathfindingGrid.GetBlockedNode(desiredTarget).Length > 0) {
+
             targetBlocked = pathfindingGrid.GetClosestNodeNotBlocked(desiredTarget, Position);
             activeTarget = targetBlocked;
         }
