@@ -14,6 +14,7 @@ namespace Callbacks
         [SerializeField] private LayerMask enemyLayerMask;
         private Vector3 aimingDirection = Vector3.forward;
         private PlayerHealth health;
+        private PlayerController controller;
         private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 1f)] private float laserSelfDmg = 0.25f;
@@ -24,6 +25,7 @@ namespace Callbacks
 
         private void Awake()
         {
+            controller = GetComponent<PlayerController>();
             cam = GetComponentInChildren<Camera>();
             health = GetComponent<PlayerHealth>();
         }
@@ -34,6 +36,7 @@ namespace Callbacks
             {
                 aimLineRenderer.enabled = true;
                 AimDirection();
+                ApplyJoystickFireDirection();
                 AnimateLaserSightLineRenderer(gameObject.transform.forward);
             } else
             {
@@ -54,6 +57,17 @@ namespace Callbacks
         private void AimDirection()
         {
             transform.LookAt(transform.position + aimingDirection);
+        }
+
+        private void ApplyJoystickFireDirection()
+        {
+
+            if (controller.GetRightJoystickInput().magnitude > 0.1f)
+            {
+                aimingDirection.x = controller.GetRightJoystickInput().x;
+                aimingDirection.z = controller.GetRightJoystickInput().y;
+                aimingDirection.Normalize();
+            }
         }
 
 

@@ -133,6 +133,8 @@ public class PlayerController : MonoBehaviour
         otherPlayer = players[0] != gameObject ? players[0] : players[1];
     }
 
+    public Vector2 GetRightJoystickInput() { return joyStickRightInput; }
+
     public void Die()
     {
         gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
@@ -165,7 +167,7 @@ public class PlayerController : MonoBehaviour
 
     public void JoystickLeft(InputAction.CallbackContext context)
     {
-        if (!alive) return; // TODO game jam code!!!
+        if (!alive) return; 
 
         joyStickLeftInput = context.ReadValue<Vector2>();
     }
@@ -205,7 +207,6 @@ public class PlayerController : MonoBehaviour
     */
     private void AimDirection()
     {
-        Debug.Log("Aim direction in controller");
         transform.LookAt(transform.position + aimingDirection);
     }
     /*
