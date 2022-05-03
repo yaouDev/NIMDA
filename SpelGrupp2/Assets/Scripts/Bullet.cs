@@ -8,8 +8,8 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float damage;
     [SerializeField] private LayerMask enemyLayerMask;
     [SerializeField] private LayerMask environmentLayerMask;
-    [SerializeField] private ParticleSystem particleSystem;
-    [SerializeField] private float bulletSpeed = 20.0f;
+    [SerializeField] private ParticleSystem ricochetParticleSystem;
+    [SerializeField] private float bulletSpeed = 150.0f;
     private bool hit;
     private void Update()
     {
@@ -19,21 +19,32 @@ public class Bullet : MonoBehaviour
 
     private void MoveBullet()
     {
-        Physics.Raycast(transform.position, transform.forward, out RaycastHit hitInfo, bulletSpeed * Time.deltaTime, enemyLayerMask | environmentLayerMask);
-        if (hitInfo.collider != null) {
-            if (hitInfo.collider.gameObject.layer == enemyLayerMask)
+        if (Physics.Raycast(
+                transform.position, 
+                transform.forward, 
+                out RaycastHit hitInfo, 
+                bulletSpeed * Time.deltaTime,
+                environmentLayerMask | enemyLayerMask))
+        {
+            transform.position += hitInfo.distance * transform.forward;
+            
+            if (1 << hitInfo.collider.gameObject.layer == environmentLayerMask)
             {
-                EnemyHealth enemyHealth = hitInfo.transform.GetComponent<EnemyHealth>();
-                DamageEnemy(enemyHealth);    
+                Debug.Log($"hit {hitInfo.transform.name}");
+                Ricochet();
             }
-            else if (hitInfo.collider.gameObject.layer == environmentLayerMask)
+            else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
             {
+                hit = true;
+                // TODO [Patrik] Update to call to IHealth Interface, thus we can shoot each other too <3
+                EnemyHealth enemyHealth = hitInfo.transform.GetComponent<EnemyHealth>();
+                DamageEnemy(enemyHealth);
                 Ricochet();
             }
         }
         else
         {
-            transform.position += transform.forward * bulletSpeed * Time.deltaTime;
+            transform.position += bulletSpeed * Time.deltaTime * transform.forward;
         }
     }
 
@@ -44,7 +55,8 @@ public class Bullet : MonoBehaviour
 
     private void Ricochet()
     {
-        // TODO [Patrik] Play Particlesystem
+        // TODO [Patrik] Play ParticleSystem
+        Debug.Log("ricochet");
         Destroy(gameObject);
     }
 }
