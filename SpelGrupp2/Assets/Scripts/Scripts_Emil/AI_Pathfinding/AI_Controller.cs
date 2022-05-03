@@ -10,7 +10,6 @@ public class AI_Controller : MonoBehaviour {
     private PathfinderManager pathfinder;
     private SimpleGraph pathfindingGrid;
     private LineRenderer lineRenderer;
-
     private List<Vector3> currentPath;
     private Collider col;
     private SphereCollider otherEnemyTrigger;
@@ -127,6 +126,10 @@ public class AI_Controller : MonoBehaviour {
         get { return currentPath[currentPathIndex]; }
     }
 
+    public Rigidbody Rigidbody {
+        get { return rBody; }
+    }
+
     public bool IsPathRequestAllowed() {
         bool nullCond = currentPath != null && currentPath.Count != 0;
         bool indexCond = nullCond && currentPath.Count - currentPathIndex <= 5;
@@ -157,7 +160,6 @@ public class AI_Controller : MonoBehaviour {
                 Vector3 forceToAdd = Vector3.zero;
                 if (isStopped) {
                     localSpeed = speed * 0.33f;
-                    //directionOfOtherEnemy *= 1000;
                     forceToAdd = -directionOfOtherEnemy.normalized * localSpeed * 0.2f;
                 } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.2f).normalized * localSpeed * 0.05f;
                 forceToAdd.y = 0;
