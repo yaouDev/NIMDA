@@ -65,10 +65,10 @@ public class PathfinderManager : MonoBehaviour {
         HashSet<Vector3> explored = new HashSet<Vector3>();
         Dictionary<Vector3, Vector3> via = new Dictionary<Vector3, Vector3>();
         Dictionary<Vector3, float> cost = new Dictionary<Vector3, float>();
-        Vector3 closestBox = graph.GetClosestNode(startPos);
-        priorityQueue.Insert(closestBox, 0);
-        via[closestBox] = closestBox;
-        cost[closestBox] = 0;
+        Vector3 closestNode = graph.GetClosestNode(startPos);
+        priorityQueue.Insert(closestNode, 0);
+        via[closestNode] = closestNode;
+        cost[closestNode] = 0;
 
         while (!priorityQueue.IsEmpty()) {
             node = priorityQueue.DeleteMin();
@@ -86,7 +86,7 @@ public class PathfinderManager : MonoBehaviour {
                 }
             }
         }
-        List<Vector3> path = GetPath(via, node, endPos, closestBox);
+        List<Vector3> path = GetPath(via, node, endPos, closestNode);
         if (updateLatestPath) latestCalculatedPath = path;
         return path;
     }

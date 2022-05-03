@@ -42,14 +42,14 @@ public class AI_Controller : MonoBehaviour {
         UpdateTarget();
         behaviorTree.Update();
         // This code is for debugging purposes only, shows current calculated path
-        /*      if (currentPath != null && currentPath.Count != 0) {
-                 Vector3 prevPos = currentPath[0];
-                 foreach (Vector3 pos in currentPath) {
-                     if (pos != prevPos)
-                         Debug.DrawLine(prevPos, pos, Color.blue);
-                     prevPos = pos;
-                 }
-             } */
+        if (currentPath != null && currentPath.Count != 0) {
+            Vector3 prevPos = currentPath[0];
+            foreach (Vector3 pos in currentPath) {
+                if (pos != prevPos)
+                    Debug.DrawLine(prevPos, pos, Color.blue);
+                prevPos = pos;
+            }
+        }
     }
 
     public IEnumerator UpdatePath() {
@@ -149,7 +149,9 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
-    private void OnTriggerStay(Collider other) {
+    // causes FPS to tank. Needs a better solution
+
+/*     private void OnTriggerStay(Collider other) {
         if (other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
             Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
             Vector3 valueToTest = transform.position;
@@ -167,7 +169,7 @@ public class AI_Controller : MonoBehaviour {
                 rBody.AddForce(forceToAdd, ForceMode.Force);
             }
         }
-    }
+    } */
 
     private void AdjustForLatePathUpdate() {
         if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {
@@ -181,7 +183,7 @@ public class AI_Controller : MonoBehaviour {
 
 
     private void Move() {
-        if (currentPath != null && currentPath.Count != 0 && Vector3.Distance(Position, activeTarget) > distanceFromTargetToStop) {
+        if (currentPath != null && currentPath.Count != 0) {
             if (Vector3.Distance(Position, CurrentPathNode) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(Position, CurrentPathNode) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;

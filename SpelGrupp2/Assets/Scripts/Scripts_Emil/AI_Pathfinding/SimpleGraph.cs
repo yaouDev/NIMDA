@@ -66,56 +66,64 @@ public class SimpleGraph : MonoBehaviour {
 
     // gives the closest node in constant O(1) time. Much better than above
     // at the moment it only works when the worldPos is the center of the world. TODO
-    public Vector3 GetClosestNode(Vector3 pos) {
-        Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
-        float x = 0, y = x, z = x;
-        float[] axis = new float[3] { x, y, z };
-        for (int i = 0; i < 3; i++) {
-            float currentWorldAxis = 0, currentAxis = 0, currentWorldAxisSize = 0;
-            switch (i) {
-                case 0:
-                    currentWorldAxis = localWorldPos.x;
-                    currentWorldAxisSize = worldSize.x;
-                    currentAxis = pos.x;
-                    break;
-                case 1:
-                    currentWorldAxis = localWorldPos.y;
-                    currentWorldAxisSize = worldSize.y;
-                    currentAxis = pos.y;
-                    break;
-                case 2:
-                    currentWorldAxis = localWorldPos.z;
-                    currentWorldAxisSize = worldSize.z;
-                    currentAxis = pos.z;
-                    break;
-            }
-            int numberOfNodesFromCenter = Mathf.Abs((int)((currentWorldAxisSize / 2) / (nodeHalfextent * 2)));
-            float distanceFromCenter = Mathf.Abs(Mathf.Abs(currentWorldAxis) - Mathf.Abs(currentAxis));
-            float numberOfNodesToPos = distanceFromCenter / (nodeHalfextent * 2);
-            if (numberOfNodesToPos - (int)numberOfNodesToPos <= 0.5f) numberOfNodesToPos += 0.5f;
-            int nodesToMove = numberOfNodesFromCenter - (int)Mathf.Round(numberOfNodesToPos);
-            if (nodesToMove < 0) nodesToMove = 0;
-            float moveDist = nodesToMove * (nodeHalfextent * 2);
-            if (currentAxis < 0) axis[i] = currentWorldAxis - (currentWorldAxisSize / 2) + moveDist + nodeHalfextent;
-            else axis[i] = currentWorldAxis + (currentWorldAxisSize / 2) - moveDist - nodeHalfextent;
-        }
-        return new Vector3(axis[0], axis[1], axis[2]);
-    }
-
     /*     public Vector3 GetClosestNode2(Vector3 pos) {
             Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
-            float x = 0, y = localWorldPos.y, z = x;
-            float xEdge = worldPos.x - (worldPos.x / 2);
-            float zEdge = worldPos.z + (worldPos.z / 2);
-
-            int nodesFromCornerX = (int)Mathf.FloorToInt(Mathf.Abs());
-            int nodesFromCornerZ = (int)Mathf.FloorToInt(Mathf.Abs(Mathf.Abs(pos.z) - Mathf.Abs(zEdge)));
-
-            x =
-
-            if (pos.x < xEdge) x = xEdge + nodeHalfextent;
-            if (pos.z < zEdge) z = zEdge - nodeHalfextent;
+            float x = 0, y = x, z = x;
+            float[] axis = new float[3] { x, y, z };
+            for (int i = 0; i < 3; i++) {
+                float currentWorldAxis = 0, currentAxis = 0, currentWorldAxisSize = 0;
+                switch (i) {
+                    case 0:
+                        currentWorldAxis = localWorldPos.x;
+                        currentWorldAxisSize = worldSize.x;
+                        currentAxis = pos.x;
+                        break;
+                    case 1:
+                        currentWorldAxis = localWorldPos.y;
+                        currentWorldAxisSize = worldSize.y;
+                        currentAxis = pos.y;
+                        break;
+                    case 2:
+                        currentWorldAxis = localWorldPos.z;
+                        currentWorldAxisSize = worldSize.z;
+                        currentAxis = pos.z;
+                        break;
+                }
+                int numberOfNodesFromCenter = Mathf.Abs((int)((currentWorldAxisSize / 2) / (nodeHalfextent * 2)));
+                float distanceFromCenter = Mathf.Abs(Mathf.Abs(currentWorldAxis) - Mathf.Abs(currentAxis));
+                float numberOfNodesToPos = distanceFromCenter / (nodeHalfextent * 2);
+                if (numberOfNodesToPos - (int)numberOfNodesToPos <= 0.5f) numberOfNodesToPos += 0.5f;
+                int nodesToMove = numberOfNodesFromCenter - (int)Mathf.Round(numberOfNodesToPos);
+                if (nodesToMove < 0) nodesToMove = 0;
+                float moveDist = nodesToMove * (nodeHalfextent * 2);
+                if (currentAxis < 0) axis[i] = currentWorldAxis - (currentWorldAxisSize / 2) + moveDist + nodeHalfextent;
+                else axis[i] = currentWorldAxis + (currentWorldAxisSize / 2) - moveDist - nodeHalfextent;
+            }
+            return new Vector3(axis[0], axis[1], axis[2]);
         } */
+
+    public Vector3 GetClosestNode(Vector3 pos) {
+        Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
+        float x = 0, y = localWorldPos.y, z = x;
+        float leftMostX = worldPos.x - (worldSize.x / 2) + nodeHalfextent;
+        float topMostZ = worldPos.z + (worldSize.z / 2) - nodeHalfextent;
+        float rightMostX = worldPos.x + (worldSize.x / 2) - nodeHalfextent;
+        float bottomMostZ = worldPos.z - (worldSize.z / 2) + nodeHalfextent;
+
+        int nodesFromLeftEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.x - leftMostX) / (nodeHalfextent * 2));
+        int nodesFromTopEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.z - topMostZ) / (nodeHalfextent * 2));
+
+        x = leftMostX + (nodesFromLeftEdge * (nodeHalfextent * 2));
+        z = topMostZ - (nodesFromTopEdge * (nodeHalfextent * 2));
+
+        // literal edge cases
+        if (pos.x < leftMostX) x = leftMostX;
+        else if (pos.x > rightMostX) x = rightMostX;
+        if (pos.z > topMostZ) z = topMostZ;
+        else if (pos.z < bottomMostZ) z = bottomMostZ;
+
+        return new Vector3(x, y, z);
+    }
 
     public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
 
@@ -186,19 +194,19 @@ public class SimpleGraph : MonoBehaviour {
 
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
-    /*         private void OnDrawGizmos() {
-                int count = 0;
-                foreach (Vector3 v in nodes.Keys) {
-                    bool blocked = GetBlockedNode(v).Length == 0;
-                    if (blocked) {
-                        Gizmos.color = Color.green;
-                        Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-                    } else {
-                        Gizmos.color = Color.red;
-                        Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-                    }
-                    count++;
-                }
-            } */
+    /* private void OnDrawGizmos() {
+        int count = 0;
+        foreach (Vector3 v in nodes.Keys) {
+            bool blocked = GetBlockedNode(v).Length == 0;
+            if (blocked) {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+            } else {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+            }
+            count++;
+        }
+    } */
 
 }
