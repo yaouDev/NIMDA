@@ -134,7 +134,6 @@ public class WorldGenerator : MonoBehaviour
             for (int x = -maxVisibleChunkWidth; x <= maxVisibleChunkWidth; x++)
             {
                 Vector2Int pos = new Vector2Int((int) ((player.position.x - 50) / 50 + x), (int) ((player.position.z - 50) / 50 + y));
-                Debug.Log(pos);
                 if (instantiatedModules.ContainsKey(pos))
                 {
                     instantiatedModules[pos].ActivateModule();
