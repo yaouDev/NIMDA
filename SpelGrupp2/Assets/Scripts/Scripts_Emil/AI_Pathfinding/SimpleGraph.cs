@@ -50,58 +50,6 @@ public class SimpleGraph : MonoBehaviour {
         return null;
     }
 
-    // gives the exact closest box but has to loop through all the nodes in the graph each time. Not effective
-    /*     public Vector3 GetClosestNode2(Vector3 pos) {
-            float shortestDistAway = Mathf.Infinity;
-            Vector3 currentSmallestNode = Vector3.zero;
-            foreach (Vector3 node in nodes.Keys) {
-                Vector3 tmpVec = new Vector3(Mathf.Abs(node.x - pos.x), Mathf.Abs(node.y - pos.y), Mathf.Abs(node.z - pos.z));
-                if (tmpVec.magnitude < shortestDistAway) {
-                    currentSmallestNode = node;
-                    shortestDistAway = tmpVec.magnitude;
-                }
-            }
-            return currentSmallestNode;
-        } */
-
-    // gives the closest node in constant O(1) time. Much better than above
-    // at the moment it only works when the worldPos is the center of the world. TODO
-    /*     public Vector3 GetClosestNode2(Vector3 pos) {
-            Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
-            float x = 0, y = x, z = x;
-            float[] axis = new float[3] { x, y, z };
-            for (int i = 0; i < 3; i++) {
-                float currentWorldAxis = 0, currentAxis = 0, currentWorldAxisSize = 0;
-                switch (i) {
-                    case 0:
-                        currentWorldAxis = localWorldPos.x;
-                        currentWorldAxisSize = worldSize.x;
-                        currentAxis = pos.x;
-                        break;
-                    case 1:
-                        currentWorldAxis = localWorldPos.y;
-                        currentWorldAxisSize = worldSize.y;
-                        currentAxis = pos.y;
-                        break;
-                    case 2:
-                        currentWorldAxis = localWorldPos.z;
-                        currentWorldAxisSize = worldSize.z;
-                        currentAxis = pos.z;
-                        break;
-                }
-                int numberOfNodesFromCenter = Mathf.Abs((int)((currentWorldAxisSize / 2) / (nodeHalfextent * 2)));
-                float distanceFromCenter = Mathf.Abs(Mathf.Abs(currentWorldAxis) - Mathf.Abs(currentAxis));
-                float numberOfNodesToPos = distanceFromCenter / (nodeHalfextent * 2);
-                if (numberOfNodesToPos - (int)numberOfNodesToPos <= 0.5f) numberOfNodesToPos += 0.5f;
-                int nodesToMove = numberOfNodesFromCenter - (int)Mathf.Round(numberOfNodesToPos);
-                if (nodesToMove < 0) nodesToMove = 0;
-                float moveDist = nodesToMove * (nodeHalfextent * 2);
-                if (currentAxis < 0) axis[i] = currentWorldAxis - (currentWorldAxisSize / 2) + moveDist + nodeHalfextent;
-                else axis[i] = currentWorldAxis + (currentWorldAxisSize / 2) - moveDist - nodeHalfextent;
-            }
-            return new Vector3(axis[0], axis[1], axis[2]);
-        } */
-
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
         float x = 0, y = localWorldPos.y, z = x;
