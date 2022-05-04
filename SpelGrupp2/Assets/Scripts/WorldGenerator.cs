@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CallbackSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 public class WorldGenerator : MonoBehaviour
@@ -31,9 +33,13 @@ public class WorldGenerator : MonoBehaviour
         public Vector2Int pos;
         public GameObject m;
         private uint module;
+        private CallbackSystem.ModuleDeSpawnEvent deSpawnEvent = new ModuleDeSpawnEvent();
+        private CallbackSystem.ModuleSpawnEvent spawnEvent = new ModuleSpawnEvent();
 
         public Module(Vector2Int pos, WorldGenerator worldGenerator, uint module)
         {
+            spawnEvent.Position = deSpawnEvent.Position = pos;
+            spawnEvent.Walls = deSpawnEvent.Walls = (int)module;
             this.pos = pos;
             this.worldGenerator = worldGenerator;
             this.module = module;
@@ -61,19 +67,19 @@ public class WorldGenerator : MonoBehaviour
             }
             m.SetActive(true); // TODO [Patrik] move into pool deque, ~line 55
             
-            // TODO [Patrik]
-            // Callback function, send to add to pathfinding, send: Vec2Int, uint 
+            // Callback function, send to add to pathfinding
+            EventSystem.Current.FireEvent(spawnEvent);
         }
 
         public void DeactivateModule()
         {
             m.SetActive(false);
             active = false;
-            WorldGenerator.modulePool[(int) module].Enqueue(m);
+            WorldGenerator.modulePool[(int)module].Enqueue(m);
             // TODO [Patrik]
             // Killbox for enemies on worldgenerator
             // Callback function, send to remove from pathfinding, send: Vec2Int, uint 
-            // Deactivate this module, return to pool of this particular module
+            EventSystem.Current.FireEvent(deSpawnEvent);
         }
     }
 
