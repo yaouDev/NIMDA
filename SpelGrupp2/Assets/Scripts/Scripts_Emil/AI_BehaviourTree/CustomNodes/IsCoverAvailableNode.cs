@@ -7,7 +7,9 @@ using UnityEngine;
 
 public class IsCoverAvailableNode : Node
 {
-    private Cover[] availableCovers;
+    private Transform getBestSpot;
+    private Transform[] availableCoverSpots; 
+/*    private Cover[] availableCovers;
     private Transform target;
 
 
@@ -15,7 +17,7 @@ public class IsCoverAvailableNode : Node
     {
         this.availableCovers = availableCovers;
         this.target = target;
-    }
+    }*/
 
     public override NodeState Evaluate()
     {
@@ -26,20 +28,23 @@ public class IsCoverAvailableNode : Node
 
     private Transform FindBestCoverSpot()
     {
-        if (AIData.instance.GetBestCoverSpot() != null)
+        getBestSpot = AIData.instance.GetBestCoverSpot();
+
+        if (getBestSpot != null)
         {
-            if (CheckIfSpotIsValid(AIData.instance.GetBestCoverSpot()))
+            if (CheckIfSpotIsValid(getBestSpot))
             {
-                return AIData.instance.GetBestCoverSpot();
+                return getBestSpot;
             }
         }
 
         float minAngle = 90;
         Transform bestSpot = null;
+        availableCoverSpots = AIData.instance.GetActiveCovers();
 
-        for (int i = 0; i < availableCovers.Length; i++)
+        for (int i = 0; i < availableCoverSpots.Length; i++)
         {
-            Transform bestSpotInCover = FindBestSpotInCover(availableCovers[i], ref minAngle);
+            Transform bestSpotInCover = FindBestSpotInCover(availableCoverSpots[i], ref minAngle);
             if (bestSpotInCover != null)
             {
                 bestSpot = bestSpotInCover;
@@ -48,14 +53,14 @@ public class IsCoverAvailableNode : Node
         return bestSpot;
     }
 
-    private Transform FindBestSpotInCover(Cover cover, ref float minAngle)
+    private Transform FindBestSpotInCover(Transform cover, ref float minAngle)
     {
-        Transform[] availableSpots = cover.GetCoverSpots();
+        Transform[] availableSpots = availableCoverSpots;
         Transform bestSpot = null;
 
         for (int i = 0; i < availableSpots.Length; i++)
         {
-            Vector3 direction = target.position - availableSpots[i].position;
+            Vector3 direction = agent.ClosestPlayer - availableSpots[i].position;
             if (CheckIfSpotIsValid(availableSpots[i]))
             {
                 float angle = Vector3.Angle(availableSpots[i].forward, direction);
@@ -72,10 +77,10 @@ public class IsCoverAvailableNode : Node
     private bool CheckIfSpotIsValid(Transform spot)
     {
         RaycastHit hit;
-        Vector3 direction = target.position - spot.position;
+        Vector3 direction = agent.ClosestPlayer - spot.position;
         if (Physics.Raycast(spot.position, direction, out hit))
         {
-            if (hit.collider.transform != target)
+            if (hit.collider.transform != agent)
             {
                 return true;
             }

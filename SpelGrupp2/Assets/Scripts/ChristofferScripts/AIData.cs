@@ -10,20 +10,19 @@ public class AIData : MonoBehaviour
 
     private CallbackSystem.EventSystem eventSystem;
     private Transform bestCoverSpot;
-    private Material material;
 
-    private List<Transform> activeCovers = new List<Transform>(); 
-
+    //private List<Transform> activeCovers = new List<Transform>(); 
+    private Transform [] activeCovers;
     //[SerializeField] private GameObject muzzleflash;
 
     private void Start()
     {
-        FindObjectOfType<CallbackSystem.EventSystem>();
+        eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
 
-        //eventSystem.RegisterListener<LoadEvent>();
+        eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(LoadModule);
+        eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(UnLoadModule);
 
         instance ??= this;
-        material = GetComponent<MeshRenderer>().material;
     }
 
     public GameObject getBullet
@@ -39,11 +38,16 @@ public class AIData : MonoBehaviour
     {
         return bestCoverSpot;
     }
-
-    public void SetColor(Color color)
+   /* public List<Transform> GetActiveCovers()
     {
-        material.color = color;
+        return activeCovers;
+    }*/
+   public Transform [] GetActiveCovers()
+    {
+        return activeCovers;
     }
+
+
     /* public GameObject getMuzzleflash
      {
          get { return muzzleflash; }
@@ -51,13 +55,21 @@ public class AIData : MonoBehaviour
  */
     //har en array av olika
 
-    private void LoadModule()//ska ha ett event i paramatern
+    private void LoadModule(CallbackSystem.ModuleSpawnEvent moduleSpawnEvent)//ska ha ett event i paramatern
     {
-        //Covers.GetComponentInChildren<Cover>().coverSpots;
+
+        activeCovers = moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>().GetCoverSpots();
+
     }
-    private void UnLoadModule() //ska ha ett event i paramatern
+    private void UnLoadModule(CallbackSystem.ModuleDeSpawnEvent moduleDeSpawnEvent) //ska ha ett event i paramatern
     {
-        //Covers.GetComponentInChildren<Cover>().coverSpots;
+/*        for (int i = 0; i < activeCovers.size; i++)
+        {
+
+            activeCovers.RemoveRange(moduleDeSpawnEvent.GameObject.GetComponentInChildren<Cover>().GetCoverSpots());
+        }
+*/
+ 
     }
 
 
