@@ -5,14 +5,17 @@ using UnityEngine;
 public class SimpleGraph : MonoBehaviour {
     private int numberOfNodes;
     private Vector3 worldSize, worldPos;
-    [Header("Has to be in increments of 0.5")]
+    [Header("World attributes")]
     [SerializeField] private float nodeHalfextent;
     [SerializeField] private LayerMask colliderMask;
-    private Dictionary<Vector3, Dictionary<Vector3, float>> nodes;
+    [SerializeField] private int moduleSize = 50;
+    private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
     public static SimpleGraph Instance;
+    CallbackSystem.EventSystem eventSystem;
+    private Vector2Int[] loadedModules;
 
     void Awake() {
-        nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
+        masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
         worldPos = transform.position; //gameObject.GetComponent<BoxCollider>().center; //transform.TransformPoint(gameObject.GetComponent<BoxCollider>().center);
         worldPos.y = gameObject.GetComponent<BoxCollider>().center.y;
         worldSize = gameObject.transform.localScale;
@@ -20,87 +23,39 @@ public class SimpleGraph : MonoBehaviour {
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
         InitGraph();
         Instance ??= this;
+        loadedModules = new Vector2Int[6];
+        eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
+        /*       eventSystem.RegisterListener<LoadEvent>(methodHere);
+              eventSystem.RegisterListener<UnloadEvent>(methodHere); */
     }
 
     public void Connect(Vector3 node1, Vector3 node2, float cost) {
-        if (nodes.ContainsKey(node1) && nodes.ContainsKey(node2) && !IsConnected(node1, node2)) {
-            nodes[node1].Add(node2, cost);
-            nodes[node2].Add(node1, cost);
+        if (masterGraph.ContainsKey(node1) && masterGraph.ContainsKey(node2) && !IsConnected(node1, node2)) {
+            masterGraph[node1].Add(node2, cost);
+            masterGraph[node2].Add(node1, cost);
         }
     }
 
     public float GetCost(Vector3 firstNode, Vector3 secondNode) {
-        if (IsConnected(firstNode, secondNode)) return nodes[firstNode][secondNode];
+        if (IsConnected(firstNode, secondNode)) return masterGraph[firstNode][secondNode];
         return -1;
     }
 
     public void Insert(Vector3 node) {
-        if (!nodes.ContainsKey(node)) {
-            nodes.Add(node, new Dictionary<Vector3, float>());
+        if (!masterGraph.ContainsKey(node)) {
+            masterGraph.Add(node, new Dictionary<Vector3, float>());
         }
     }
 
     public bool IsConnected(Vector3 firstNode, Vector3 secondNode) {
-        if (nodes.ContainsKey(firstNode) && nodes.ContainsKey(secondNode)) return nodes[firstNode].ContainsKey(secondNode);
+        if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode)) return masterGraph[firstNode].ContainsKey(secondNode);
         return false;
     }
 
     public Dictionary<Vector3, float> getNeighbors(Vector3 node) {
-        if (nodes.ContainsKey(node)) return nodes[node];
+        if (masterGraph.ContainsKey(node)) return masterGraph[node];
         return null;
     }
-
-    // gives the exact closest box but has to loop through all the nodes in the graph each time. Not effective
-    /*     public Vector3 GetClosestNode2(Vector3 pos) {
-            float shortestDistAway = Mathf.Infinity;
-            Vector3 currentSmallestNode = Vector3.zero;
-            foreach (Vector3 node in nodes.Keys) {
-                Vector3 tmpVec = new Vector3(Mathf.Abs(node.x - pos.x), Mathf.Abs(node.y - pos.y), Mathf.Abs(node.z - pos.z));
-                if (tmpVec.magnitude < shortestDistAway) {
-                    currentSmallestNode = node;
-                    shortestDistAway = tmpVec.magnitude;
-                }
-            }
-            return currentSmallestNode;
-        } */
-
-    // gives the closest node in constant O(1) time. Much better than above
-    // at the moment it only works when the worldPos is the center of the world. TODO
-    /*     public Vector3 GetClosestNode2(Vector3 pos) {
-            Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
-            float x = 0, y = x, z = x;
-            float[] axis = new float[3] { x, y, z };
-            for (int i = 0; i < 3; i++) {
-                float currentWorldAxis = 0, currentAxis = 0, currentWorldAxisSize = 0;
-                switch (i) {
-                    case 0:
-                        currentWorldAxis = localWorldPos.x;
-                        currentWorldAxisSize = worldSize.x;
-                        currentAxis = pos.x;
-                        break;
-                    case 1:
-                        currentWorldAxis = localWorldPos.y;
-                        currentWorldAxisSize = worldSize.y;
-                        currentAxis = pos.y;
-                        break;
-                    case 2:
-                        currentWorldAxis = localWorldPos.z;
-                        currentWorldAxisSize = worldSize.z;
-                        currentAxis = pos.z;
-                        break;
-                }
-                int numberOfNodesFromCenter = Mathf.Abs((int)((currentWorldAxisSize / 2) / (nodeHalfextent * 2)));
-                float distanceFromCenter = Mathf.Abs(Mathf.Abs(currentWorldAxis) - Mathf.Abs(currentAxis));
-                float numberOfNodesToPos = distanceFromCenter / (nodeHalfextent * 2);
-                if (numberOfNodesToPos - (int)numberOfNodesToPos <= 0.5f) numberOfNodesToPos += 0.5f;
-                int nodesToMove = numberOfNodesFromCenter - (int)Mathf.Round(numberOfNodesToPos);
-                if (nodesToMove < 0) nodesToMove = 0;
-                float moveDist = nodesToMove * (nodeHalfextent * 2);
-                if (currentAxis < 0) axis[i] = currentWorldAxis - (currentWorldAxisSize / 2) + moveDist + nodeHalfextent;
-                else axis[i] = currentWorldAxis + (currentWorldAxisSize / 2) - moveDist - nodeHalfextent;
-            }
-            return new Vector3(axis[0], axis[1], axis[2]);
-        } */
 
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
@@ -154,7 +109,7 @@ public class SimpleGraph : MonoBehaviour {
         Insert(startPos);
         Vector3 currentPos = startPos;
         Vector3 prevPos = startPos;
-        while (nodes.Count < numberOfNodes) {
+        while (masterGraph.Count < numberOfNodes) {
             // whole row is done
             if (currentPos.x >= worldPos.x + worldSize.x / 2 - nodeHalfextent) {
                 currentPos.x = startPos.x;
@@ -170,7 +125,7 @@ public class SimpleGraph : MonoBehaviour {
             }
             Insert(currentPos);
         }
-        foreach (Vector3 node in nodes.Keys) {
+        foreach (Vector3 node in masterGraph.Keys) {
             Vector3[] possibleNeighbors = GetPossibleNeighbors(node);
             foreach (Vector3 pNeighbor in possibleNeighbors) {
                 Connect(node, pNeighbor, 1);
@@ -186,6 +141,24 @@ public class SimpleGraph : MonoBehaviour {
         firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
         secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2);
         return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleYNeighbor, secondPossibleYNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor };
+    }
+
+    Dictionary<Vector3, float> GetPossibleNeighborsKV(Vector3 node) {
+        Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
+        secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
+        firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
+        secondPossibleYNeighbor = new Vector3(node.x, node.y - nodeHalfextent * 2, node.z),
+        firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
+        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2);
+
+        Dictionary<Vector3, float> tempNeighbors = new Dictionary<Vector3, float>();
+        tempNeighbors.Add(firstPossibleXNeighbor, 1);
+        tempNeighbors.Add(secondPossibleXNeighbor, 1);
+        tempNeighbors.Add(firstPossibleYNeighbor, 1);
+        tempNeighbors.Add(secondPossibleYNeighbor, 1);
+        tempNeighbors.Add(firstPossibleZNeighbor, 1);
+        tempNeighbors.Add(secondPossibleZNeighbor, 1);
+        return tempNeighbors;
     }
 
     public Collider[] GetBlockedNode(Vector3 position) {
@@ -208,5 +181,26 @@ public class SimpleGraph : MonoBehaviour {
             count++;
         }
     } */
+
+    Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
+        return new Vector2Int((int)worldPos.x / moduleSize, (int)worldPos.z / moduleSize);
+    }
+
+    private bool IsModuleLoaded(Vector2Int modulePos) {
+        foreach (Vector2Int pos in loadedModules) {
+            if (modulePos == pos) return true;
+        }
+        return false;
+    }
+
+    public void CreateNeighbors(Vector3 node) {
+        foreach (Vector3 pNeighbor in GetPossibleNeighborsKV(node).Keys) {
+            if (IsModuleLoaded(GetModulePosFromWorldPos(node))) {
+                masterGraph.Add(pNeighbor, new Dictionary<Vector3, float>());
+                Connect(node, pNeighbor, 1);
+            }
+        }
+    }
+
 
 }
