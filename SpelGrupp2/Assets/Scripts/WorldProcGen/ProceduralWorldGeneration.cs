@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CallbackSystem;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 
 [RequireComponent(typeof(AStar))]
@@ -91,6 +90,11 @@ public class ProceduralWorldGeneration : MonoBehaviour
     private void Debug(ModuleSpawnEvent eve)
     {
         // UnityEngine.Debug.Log($"Spawn {eve.Position} {eve.Walls} ");
+    }
+
+    private void Srr(ModuleDeSpawnEvent e)
+    {
+        
     }
     
     private void MakeMaze()

@@ -18,6 +18,9 @@ namespace CallbackSystem
         private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 1f)] private float laserSelfDmg = 0.25f;
+        [SerializeField] private int bullets = 10;
+        [SerializeField] private GameObject bullet;
+        private bool laserWeapon = true;
 
         public void Respawn() => isAlive = true;
         public void Die() => isAlive = false;
@@ -34,7 +37,7 @@ namespace CallbackSystem
             // TODO joystick laser 
             if (isAlive)
             {
-                aimLineRenderer.enabled = true;
+                aimLineRenderer.enabled = laserWeapon;
                 AimDirection();
                 ApplyJoystickFireDirection();
                 AnimateLaserSightLineRenderer(gameObject.transform.forward);
@@ -48,9 +51,41 @@ namespace CallbackSystem
         {
             if (context.started && isAlive)
             {
-                AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
-                ShootLaser();
-                StartCoroutine(AnimateLineRenderer(aimingDirection));
+                if (laserWeapon)
+                {
+                    AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
+                    ShootLaser();
+                    StartCoroutine(AnimateLineRenderer(aimingDirection));
+                }
+                else
+                {
+                    FireProjectileWeapon();
+                }
+            }
+        }
+
+        public void WeaponSwap(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                laserWeapon = !laserWeapon;
+                Debug.Log($"laserWeapon {laserWeapon.ToString()}");
+                // TODO [Sound] Play weapon swap sound(s)
+            }
+        }
+
+        public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                float scrollDelta = context.ReadValue<float>();
+
+                if (Mathf.Abs(scrollDelta) > 100.0f)
+                {
+                    laserWeapon = scrollDelta > 0;
+                    Debug.Log($"laserWeapon scroll {laserWeapon.ToString()}");
+                    // TODO [Sound] Play weapon swap sound(s)
+                }
             }
         }
 
@@ -105,7 +140,6 @@ namespace CallbackSystem
             lineRenderer.endWidth = 0.0f;
         }
 
-
         private void AnimateLaserSightLineRenderer(Vector3 dir)
         {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * 30.0f };
@@ -129,6 +163,16 @@ namespace CallbackSystem
             {
                 Vector3 hitPoint = ray.GetPoint(enter);
                 aimingDirection = hitPoint + Vector3.down - transform.position;
+            }
+        }
+        
+        public void FireProjectileWeapon()
+        {
+            if (bullets > 0)
+            {
+                AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
+                bullets--;
+                Instantiate(bullet,  transform.position + transform.forward + Vector3.up, transform.rotation, null);
             }
         }
     }
