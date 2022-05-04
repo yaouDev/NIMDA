@@ -68,6 +68,7 @@ public class WorldGenerator : MonoBehaviour
             m.SetActive(true); // TODO [Patrik] move into pool deque, ~line 55
             
             // Callback function, send to add to pathfinding
+            spawnEvent.GameObject = m;
             EventSystem.Current.FireEvent(spawnEvent);
         }
 
@@ -79,6 +80,7 @@ public class WorldGenerator : MonoBehaviour
             // TODO [Patrik]
             // Killbox for enemies on worldgenerator
             // Callback function, send to remove from pathfinding, send: Vec2Int, uint 
+            deSpawnEvent.GameObject = m;
             EventSystem.Current.FireEvent(deSpawnEvent);
         }
     }
