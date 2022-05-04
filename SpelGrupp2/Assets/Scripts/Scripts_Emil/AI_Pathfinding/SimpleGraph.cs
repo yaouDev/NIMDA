@@ -5,13 +5,14 @@ using UnityEngine;
 public class SimpleGraph : MonoBehaviour {
     private int numberOfNodes;
     private Vector3 worldSize, worldPos;
-    [Header("Has to be in increments of 0.5")]
+    [Header("World attributes")]
     [SerializeField] private float nodeHalfextent;
     [SerializeField] private LayerMask colliderMask;
     [SerializeField] private int moduleSize = 50;
     private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
     public static SimpleGraph Instance;
     CallbackSystem.EventSystem eventSystem;
+    private Vector2Int[] loadedModules;
 
     void Awake() {
         masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
@@ -22,6 +23,7 @@ public class SimpleGraph : MonoBehaviour {
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
         InitGraph();
         Instance ??= this;
+        loadedModules = new Vector2Int[6];
         eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
         /*       eventSystem.RegisterListener<LoadEvent>(methodHere);
               eventSystem.RegisterListener<UnloadEvent>(methodHere); */
@@ -141,7 +143,7 @@ public class SimpleGraph : MonoBehaviour {
         return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleYNeighbor, secondPossibleYNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor };
     }
 
-/*     Dictionary<Vector3, float> GetPossibleNeighborsKV(Vector3 node) {
+    Dictionary<Vector3, float> GetPossibleNeighborsKV(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
@@ -150,8 +152,15 @@ public class SimpleGraph : MonoBehaviour {
         secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2);
 
         Dictionary<Vector3, float> tempNeighbors = new Dictionary<Vector3, float>();
+        tempNeighbors.Add(firstPossibleXNeighbor, 1);
+        tempNeighbors.Add(secondPossibleXNeighbor, 1);
+        tempNeighbors.Add(firstPossibleYNeighbor, 1);
+        tempNeighbors.Add(secondPossibleYNeighbor, 1);
+        tempNeighbors.Add(firstPossibleZNeighbor, 1);
+        tempNeighbors.Add(secondPossibleZNeighbor, 1);
+        return tempNeighbors;
     }
- */
+
     public Collider[] GetBlockedNode(Vector3 position) {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
     }
@@ -177,6 +186,21 @@ public class SimpleGraph : MonoBehaviour {
         return new Vector2Int((int)worldPos.x / moduleSize, (int)worldPos.z / moduleSize);
     }
 
+    private bool IsModuleLoaded(Vector2Int modulePos) {
+        foreach (Vector2Int pos in loadedModules) {
+            if (modulePos == pos) return true;
+        }
+        return false;
+    }
+
+    public void CreateNeighbors(Vector3 node) {
+        foreach (Vector3 pNeighbor in GetPossibleNeighborsKV(node).Keys) {
+            if (IsModuleLoaded(GetModulePosFromWorldPos(node))) {
+                masterGraph.Add(pNeighbor, new Dictionary<Vector3, float>());
+                Connect(node, pNeighbor, 1);
+            }
+        }
+    }
 
 
 }
