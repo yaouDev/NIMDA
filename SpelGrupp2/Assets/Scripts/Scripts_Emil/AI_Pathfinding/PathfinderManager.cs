@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PathfinderManager : MonoBehaviour {
-    [SerializeField] float proximityToUseSamePath; //, acceptableDistanceFromTarget;
+    [SerializeField] float proximityToReusePath;
     private List<Vector3> latestCalculatedPath = new List<Vector3>();
-    public static PathfinderManager instance;
+    public static PathfinderManager Instance;
     private PriorityQueue<AI_Controller> pathQueue;
 
     void Awake() {
-        instance ??= this;
+        Instance ??= this;
         pathQueue = new PriorityQueue<AI_Controller>();
     }
 
@@ -34,15 +34,14 @@ public class PathfinderManager : MonoBehaviour {
     public void RequestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
             bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0].normalized, agent.Velocity.normalized) > 0;
-            if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
+            if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToReusePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
                 List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
                 pathToStartOflatest.AddRange(latestCalculatedPath);
                 agent.CurrentPath = pathToStartOflatest;
                 agent.CurrentPathIndex = 0;
             }
         }
-        if (!pathQueue.Contains(agent)) // && Vector3.Distance(currentPosition, endPos) >= acceptableDistanceFromTarget)
-            pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
+        if (!pathQueue.Contains(agent)) pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
     }
 
     void Update() {

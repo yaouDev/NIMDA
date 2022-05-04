@@ -25,8 +25,8 @@ public class DynamicGraph : MonoBehaviour {
         loadedModules.Add(new Vector2Int(0, 2));
         loadedModules.Add(new Vector2Int(1, 2));
         eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
-        /*         eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(OnModuleLoad);
-                eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload); */
+        eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(OnModuleLoad);
+        eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
     }
 
     public void Connect(Vector3 node1, Vector3 node2, float cost) {
@@ -177,5 +177,7 @@ public class DynamicGraph : MonoBehaviour {
     void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
         if (loadedModules.Contains(deSpawnEvent.Position)) loadedModules.Remove(deSpawnEvent.Position);
     }
+
+
 
 }

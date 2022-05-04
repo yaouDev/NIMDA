@@ -7,8 +7,6 @@ public class AI_Controller : MonoBehaviour {
     [SerializeField] private float speed, timeBetweenPathUpdates, maxCritRange, minCritRange, allowedTargetDiscrepancy;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
-    private PathfinderManager pathfinder;
-    private DynamicGraph pathfindingGrid;
     private LineRenderer lineRenderer;
     private List<Vector3> currentPath;
     private Collider col;
@@ -28,8 +26,6 @@ public class AI_Controller : MonoBehaviour {
         col = GetComponent<Collider>();
         behaviorTree = GetComponent<BehaviorTree>();
         otherEnemyTrigger = GetComponentInChildren<SphereCollider>();
-        pathfinder = PathfinderManager.instance;
-        pathfindingGrid = DynamicGraph.Instance;
         rBody = GetComponent<Rigidbody>();
         Physics.IgnoreLayerCollision(12, 12);
         enemyHealth = GetComponent<EnemyHealth>();
@@ -55,7 +51,7 @@ public class AI_Controller : MonoBehaviour {
 
     public IEnumerator UpdatePath() {
         updatingPath = true;
-        pathfinder.RequestPath(this, Position, activeTarget);
+        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
         updatingPath = false;
     }
@@ -152,6 +148,7 @@ public class AI_Controller : MonoBehaviour {
             AdjustForLatePathUpdate();
             Move();
         }
+        Debug.DrawLine(Position, Position + Rigidbody.velocity, Color.red);
     }
 
     // causes FPS to tank. Needs a better solution
@@ -187,16 +184,16 @@ public class AI_Controller : MonoBehaviour {
     }
 
 
+    // Something weird going on with movement jank atm
     private void Move() {
         if (currentPath != null && currentPath.Count != 0) {
             if (Vector3.Distance(Position, CurrentPathNode) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(Position, CurrentPathNode) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
-                Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5F) - Position).normalized * speed;
+                Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5f) - Position).normalized * speed;
+                lerpForceToAdd.y = 0;
                 Vector3 forceTadd = lerpForceToAdd;
-                if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 1) {
-                    forceTadd = (CurrentPathNode - Position).normalized * speed * 5;
-                }
+                if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 0.5f) forceTadd = (CurrentPathNode - Position).normalized * speed * 5;
                 Rigidbody.AddForce(forceTadd, ForceMode.Force);
                 if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(CurrentPathNode, Position)) currentPathIndex++;
 
@@ -210,8 +207,8 @@ public class AI_Controller : MonoBehaviour {
         if (destination == Vector3.zero) desiredTarget = ClosestPlayer;
         else desiredTarget = Destination;
         activeTarget = desiredTarget;
-        if (pathfindingGrid.GetBlockedNode(desiredTarget).Length > 0) {
-            targetBlocked = pathfindingGrid.GetClosestNodeNotBlocked(desiredTarget, Position);
+        if (DynamicGraph.Instance.GetBlockedNode(desiredTarget).Length > 0) {
+            targetBlocked = DynamicGraph.Instance.GetClosestNodeNotBlocked(desiredTarget, Position);
             activeTarget = targetBlocked;
         }
     }
