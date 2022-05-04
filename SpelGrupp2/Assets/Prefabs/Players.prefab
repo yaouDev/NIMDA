@@ -275,6 +275,7 @@ GameObject:
   - component: {fileID: 326990607570548864}
   - component: {fileID: 1021181802951838962}
   - component: {fileID: 326990607570548867}
+  - component: {fileID: 2126111606}
   m_Layer: 10
   m_Name: Player 1
   m_TagString: Player
@@ -330,6 +331,9 @@ MonoBehaviour:
   standardRegeneration: 0.25
   safezoneRegeneration: 0.5
   isPlayerOne: 1
+  batteryCount: 1
+  batteryRespawnCount: 2
+  maxBatteryCount: 3
 --- !u!114 &8397479276426667862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,7 +370,6 @@ MonoBehaviour:
   airControl: 1
   _jumped: 0
   _debugColor: {r: 10, g: 20, b: 30, a: 1}
-  crafting: {fileID: 0}
   _pressedJump: 0
   _releasedJump: 0
   states:
@@ -538,9 +541,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 3
-  transistor: 2
-  iron: 1
+  copper: 0
+  transistor: 0
+  iron: 0
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
 --- !u!114 &326990607570548867
@@ -680,11 +683,32 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 02b17aaa-acdb-4f09-95cb-32b1cb41fcdc
     m_ActionName: Player/PressTransistor[/Keyboard/l,/XInputControllerWindows/dpad/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 21fd4415-3c65-404e-824d-f3f4173ce54b
+    m_ActionName: Player/PressBattery[/Keyboard/e,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b38964ba-3e1c-441e-8098-13d8ef6595ff
+    m_ActionName: Player/PressBullet[/Keyboard/q,/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID1/buttonWest,/DualShock4GamepadHID2/buttonWest]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: MouseKeyboard
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2126111606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326990607570548878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayerOne: 1
 --- !u!1 &326990607699453844
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,6 +807,7 @@ GameObject:
   - component: {fileID: 326990607881322112}
   - component: {fileID: 5657999587282274127}
   - component: {fileID: 1652920257267338416}
+  - component: {fileID: 2122449354}
   m_Layer: 11
   m_Name: Player 2
   m_TagString: Player
@@ -838,6 +863,9 @@ MonoBehaviour:
   standardRegeneration: 0.25
   safezoneRegeneration: 0.5
   isPlayerOne: 0
+  batteryCount: 2
+  batteryRespawnCount: 2
+  maxBatteryCount: 3
 --- !u!114 &3037943043123946253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,7 +902,6 @@ MonoBehaviour:
   airControl: 1
   _jumped: 0
   _debugColor: {r: 10, g: 20, b: 30, a: 1}
-  crafting: {fileID: 0}
   _pressedJump: 0
   _releasedJump: 0
   states:
@@ -1046,9 +1073,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 2
-  transistor: 1
-  iron: 2
+  copper: 0
+  transistor: 0
+  iron: 0
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
 --- !u!114 &1652920257267338416
@@ -1216,11 +1243,32 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 46abe2c4-8412-4bd3-a1ca-9ca4bc6df6bc
     m_ActionName: Player/PressTransistor[/Keyboard/l,/XInputControllerWindows/dpad/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d7970f3e-fb70-42a2-954e-c7eda9fede36
+    m_ActionName: Player/PressBattery[/Keyboard/e,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b45fd4f2-ae3c-461d-aa37-913d249b84ca
+    m_ActionName: Player/PressBullet[/Keyboard/q,/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID1/buttonWest,/DualShock4GamepadHID2/buttonWest]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: GamePad
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2122449354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326990607881322127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayerOne: 0
 --- !u!1 &326990607883718378
 GameObject:
   m_ObjectHideFlags: 0
