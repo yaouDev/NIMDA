@@ -8,6 +8,7 @@ namespace CallbackSystem
     public abstract class Event
     {
         public GameObject GameObject;
+        public bool isPlayerOne;
     }
 
     public class DebugEvent : Event
@@ -26,12 +27,23 @@ namespace CallbackSystem
     public class HealthUpdateEvent : Event
     {
         public float health;
-        public bool isPlayerOne;
+        public int batteries;
+
     }
 
     public class RespawnEvent : Event
     {
-        public bool isGOPlayerOne;
+
+    }
+
+    public class CameraPosUpdateEvent : Event
+    {
+        public Vector3 pos;
+    }
+
+    public class ResourceUpdateEvent : Event
+    {
+        public int c, t, i;
     }
 
     /// <summary>

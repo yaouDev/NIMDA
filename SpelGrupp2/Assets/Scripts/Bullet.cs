@@ -11,8 +11,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] private ParticleSystem ricochetParticleSystem;
     [SerializeField] private float bulletSpeed = 150.0f;
     private bool hit;
+    private float destroyTime = 5.0f;
+    private float timeAlive = 0.0f;
     private void Update()
     {
+        timeAlive += Time.deltaTime;
+        if (timeAlive > destroyTime)
+            Destroy(gameObject);
         if (!hit)
             MoveBullet();
     }
