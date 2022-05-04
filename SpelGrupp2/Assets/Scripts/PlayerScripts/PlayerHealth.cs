@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Callbacks
+namespace CallbackSystem
 {
     public class PlayerHealth : MonoBehaviour
     {
@@ -20,19 +19,19 @@ namespace Callbacks
         private bool inSafeZone = false;
         private PlayerAttack attackAbility;
         private PlayerController movement;
-        private UnitHealthUpdate healthEvent;
+        private HealthUpdateEvent healthEvent;
+
+
         private void Awake()
         {
-            healthEvent = new UnitHealthUpdate();
+            healthEvent = new HealthUpdateEvent();
         }
-
         private void Start()
         {
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             healthReg = standardRegeneration;
             currHealth = 0.1f;
-            UpdateHealthUI();
         }
 
         private void Update()
@@ -80,9 +79,9 @@ namespace Callbacks
 
         private void UpdateHealthUI()
         {
-            UpdateSafeZoneBuff();
+           UpdateSafeZoneBuff();
             HealthRegeneration();
-            healthEvent.isGOPlayerOne = isPlayerOne;
+            healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             EventSystem.Current.FireEvent(healthEvent);
         }

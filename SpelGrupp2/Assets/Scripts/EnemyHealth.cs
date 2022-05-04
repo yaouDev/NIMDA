@@ -11,7 +11,6 @@ public class EnemyHealth : MonoBehaviour
     private float healthBarLength;
     private GameObject drop;
 
-    // Update is called once per frame
     private void Awake()
     {
         currHealth = fullHealth;
@@ -39,7 +38,6 @@ public class EnemyHealth : MonoBehaviour
     public void DropLoot()
     {
         int item = Random.Range(0, dropList.Length);
-        Debug.Log(item);
         drop = dropList[item];
         GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
         loot.transform.parent = null;
