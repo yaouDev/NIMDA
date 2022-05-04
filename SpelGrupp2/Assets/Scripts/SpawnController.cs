@@ -10,7 +10,7 @@ public class SpawnController : MonoBehaviour
     [SerializeField] private int nightMaxSpawnCount;
     [SerializeField] private float lifeTime = 10f;
     public int spawnCount;
-    [SerializeField] private GameObject[] spawners;
+    [SerializeField] private GameObject[] spawnLocations;
     private List<GameObject> nearbySpawners = new List<GameObject>();
     [SerializeField] private GameObject player2;
     private int index;
@@ -22,24 +22,25 @@ public class SpawnController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
         StartCoroutine(SpawnObject());
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Active spawner is " + activeSpawner);
+        //Debug.Log("Active spawner is " + activeSpawner);
     }
 
     IEnumerator SpawnObject()
     {
         while (true)
         {
-            for (int i = 0; i < spawners.Length; i++)
+            for (int i = 0; i < spawnLocations.Length; i++)
             {
-                if (Vector3.Distance(player2.transform.position, spawners[i].transform.position) < spawnDistance)
+                if (Vector3.Distance(player2.transform.position, spawnLocations[i].transform.position) < spawnDistance)
                 {
-                    nearbySpawners.Add(spawners[i]);
+                    nearbySpawners.Add(spawnLocations[i]);
                 }
             }
             if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
