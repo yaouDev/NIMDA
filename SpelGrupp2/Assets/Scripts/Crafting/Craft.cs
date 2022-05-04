@@ -2,49 +2,62 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Craft
+namespace CallbackSystem
 {
-    public void CraftRecipe(Recipe recipe, Crafting crafting)
+    public class Craft
     {
-        //Debug.Log("Available copper: " + crafting.copper);
-        //Debug.Log("Available iron: " + crafting.iron);
-        //Debug.Log("Available transistor(s): " + crafting.transistor);
+        private ResourceUpdateEvent UpdateResources;
 
-        bool canCraft = true;
-
-        if (recipe.product == null) Debug.LogWarning("Trying to craft null");
-
-        //kan bytas ut mot en foreach loop ifall man vill ha many resources/anvaenda resource objekt
-        if (crafting.copper < recipe.copperNeeded)
+        public void CraftRecipe(Recipe recipe, Crafting crafting)
         {
-            Debug.Log("Not enough copper!");
-            canCraft = false;
-        }
-        if (crafting.iron < recipe.ironNeeded)
-        {
-            Debug.Log("Not enough iron!");
-            canCraft = false;
-        }
-        if (crafting.transistor < recipe.transistorNeeded)
-        {
-            Debug.Log("Not enough transistors!");
-            canCraft = false;
-        }
+            //Debug.Log("Available copper: " + crafting.copper);
+            //Debug.Log("Available iron: " + crafting.iron);
+            //Debug.Log("Available transistor(s): " + crafting.transistor);
 
-        if (canCraft)
-        {
-            crafting.copper -= recipe.copperNeeded;
-            crafting.iron -= recipe.ironNeeded;
-            crafting.transistor -= recipe.transistorNeeded;
+            bool canCraft = true;
 
-            if (recipe.product.name.Equals("Battery"))
+            if (recipe.product == null) Debug.LogWarning("Trying to craft null");
+
+            //kan bytas ut mot en foreach loop ifall man vill ha many resources/anvaenda resource objekt
+            if (crafting.copper < recipe.copperNeeded)
             {
-       //         crafting.batteryUI.AddBattery();
+                Debug.Log("Not enough copper!");
+                canCraft = false;
             }
-            else
+            if (crafting.iron < recipe.ironNeeded)
             {
-                Debug.Log("You crafted: " + recipe.product + "!");
-                // TODO: Implement destination for crafted items
+                Debug.Log("Not enough iron!");
+                canCraft = false;
+            }
+            if (crafting.transistor < recipe.transistorNeeded)
+            {
+                Debug.Log("Not enough transistors!");
+                canCraft = false;
+            }
+
+            if (canCraft)
+            {
+                crafting.copper -= recipe.copperNeeded;
+                crafting.iron -= recipe.ironNeeded;
+                crafting.transistor -= recipe.transistorNeeded;
+
+                if (recipe.product.name.Equals("Battery"))
+                {
+                    //         crafting.batteryUI.AddBattery();
+                }
+                else
+                {
+                    Debug.Log("You crafted: " + recipe.product + "!");
+                    // TODO: Implement destination for crafted items
+                }
+                UpdateRes();
+            }
+            void UpdateRes()
+            {
+                UpdateResources.c = crafting.copper;
+                UpdateResources.t = crafting.transistor;
+                UpdateResources.i = crafting.iron;
+                EventSystem.Current.FireEvent(UpdateResources);
             }
         }
     }

@@ -32,7 +32,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float airControl = 1.0f;
     [HideInInspector] public bool _jumped;    
     public Color _debugColor = new Color(10, 20, 30);
-    public Crafting crafting;
     public bool _pressedJump;
     public bool _releasedJump;
 
