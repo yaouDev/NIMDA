@@ -7,22 +7,41 @@ public class AIData : MonoBehaviour
     public static AIData instance;
 
     [SerializeField] private GameObject bullet;
+
+    private Transform bestCoverSpot;
+    private Material material;
+
     //[SerializeField] private GameObject muzzleflash;
 
     private void Start()
     {
         instance ??= this;
+        material = GetComponent<MeshRenderer>().material;
     }
 
     public GameObject getBullet
     {
         get { return bullet; }
     }
-   /* public GameObject getMuzzleflash
+
+    public void SetBestCoverSpot(Transform bestCoverSpot)
     {
-        get { return muzzleflash; }
+        this.bestCoverSpot = bestCoverSpot;
     }
-*/
+    public Transform GetBestCoverSpot()
+    {
+        return bestCoverSpot;
+    }
+
+    public void SetColor(Color color)
+    {
+        material.color = color;
+    }
+    /* public GameObject getMuzzleflash
+     {
+         get { return muzzleflash; }
+     }
+ */
     //har en array av olika
 
 

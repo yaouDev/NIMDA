@@ -3,29 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour {
+
     [SerializeField] private GameObject[] dropList;
-    private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
-    [Range(0, 3)] public int fullHealth;
-    public float currHealth;
+    [SerializeField] private float startingHelath; 
+    [SerializeField] private float healthRestoreRate;
+
     private float healthBarLength;
     private GameObject drop;
+    private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
 
+    //[Range(0, 3)] public int fullHealth;
+    public float currentHealth
+    {
+        get { return currentHealth; }
+        set { currentHealth = Mathf.Clamp(value, 0, startingHelath); }
+    }
+   
     // Update is called once per frame
     private void Awake() {
-        currHealth = fullHealth;
+        currentHealth = startingHelath;
     }
     void Update() {
-        if (currHealth <= 0) {
+        currentHealth += Time.deltaTime * healthRestoreRate;
+
+        if (currentHealth <= 0) {
             Die();
         }
     }
 
     public float GetCurrentHealth(){
-        return currHealth;
+        return currentHealth;
     }
 
     public void TakeDamage() {
-        --currHealth;
+        --currentHealth;
     }
 
     public void Die() {

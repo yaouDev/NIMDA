@@ -28,8 +28,7 @@ public class AttackNode : Node
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
 
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
-            rotation,
-            Time.deltaTime * turnSpeed);
+                                                            rotation, Time.deltaTime * turnSpeed);
 
         if (isShooting)
         {
@@ -62,9 +61,11 @@ public class AttackNode : Node
     {
         //Raycast
         Physics.Raycast(agent.transform.position + agent.transform.forward + Vector3.up, agent.transform.forward, out RaycastHit hitInfo, 30.0f);
-        
+
+        //Check if hit player
+
         //Calculate direction from attackpoint to targetpoint
-        Vector3 directionWithoutSpread = closestTarget - agent.transform.position;
+        Vector3 directionWithoutSpread = hitInfo.transform.position - agent.transform.position;
 
         //Calculate spread
         float x = Random.Range(-spread, spread);
@@ -88,17 +89,19 @@ public class AttackNode : Node
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
-        //MuzzleFlash
-     /*   if(AIData.instance.getMuzzleflash != null)
-        {
-            Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
-        }*/
+        Debug.Log("Shoot");
 
-      /*  if (hitInfo.collider != null)
-        {
-            PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
-            //player.TakeDamage();
-        }*/
+        //MuzzleFlash
+        /*   if(AIData.instance.getMuzzleflash != null)
+           {
+               Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
+           }*/
+
+        /*  if (hitInfo.collider != null)
+          {
+              PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
+              //player.TakeDamage();
+          }*/
 
 
     }

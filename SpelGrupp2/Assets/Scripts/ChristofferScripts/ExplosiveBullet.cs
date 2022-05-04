@@ -16,6 +16,8 @@ public class ExplosiveBullet : MonoBehaviour
     //Damage
     [SerializeField] private int explosionDamage;
     [SerializeField] private float explosionRange;
+    [SerializeField] private float explosionForce;
+
 
     //LifeTime
     [SerializeField] private int maxCollisions;
@@ -58,8 +60,12 @@ public class ExplosiveBullet : MonoBehaviour
         for (int i = 0; i < targets.Length; i++)
         {
             //Get component of player
-
-            targets[i].GetComponent<PlayerController>().TakeDamage(); //sätt en damage parameter i TakeDamage
+            
+            //targets[i].GetComponent<>().TakeDamage(); //sätt en damage parameter i TakeDamage
+            if (targets[i].GetComponent<Rigidbody>())
+            {
+                targets[i].GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRange);
+            }
         }
 
         //Add delay to destroy
