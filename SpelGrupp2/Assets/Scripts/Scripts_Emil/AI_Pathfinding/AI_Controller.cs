@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AI_Controller : MonoBehaviour {
 
-    [SerializeField] private float speed, timeBetweenPathUpdates, distanceFromTargetToStop, maxCritRange, minCritRange, allowedTargetDiscrepancy;
+    [SerializeField] private float speed, timeBetweenPathUpdates, maxCritRange, minCritRange, allowedTargetDiscrepancy;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private PathfinderManager pathfinder;
@@ -43,14 +43,14 @@ public class AI_Controller : MonoBehaviour {
         UpdateTarget();
         behaviorTree.Update();
         // This code is for debugging purposes only, shows current calculated path
-        /*        if (currentPath != null && currentPath.Count != 0) {
-                   Vector3 prevPos = currentPath[0];
-                   foreach (Vector3 pos in currentPath) {
-                       if (pos != prevPos)
-                           Debug.DrawLine(prevPos, pos, Color.blue);
-                       prevPos = pos;
-                   }
-               } */
+        if (currentPath != null && currentPath.Count != 0) {
+            Vector3 prevPos = currentPath[0];
+            foreach (Vector3 pos in currentPath) {
+                if (pos != prevPos)
+                    Debug.DrawLine(prevPos, pos, Color.blue);
+                prevPos = pos;
+            }
+        }
     }
 
     public IEnumerator UpdatePath() {
@@ -116,7 +116,7 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public float DistanceFromTarget {
-        get { return Vector3.Distance(ClosestPlayer, Position); }
+        get { return Vector3.Distance(activeTarget, Position); }
     }
 
     public Vector3 Velocity {
@@ -194,9 +194,12 @@ public class AI_Controller : MonoBehaviour {
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
                 Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5F) - Position).normalized * speed;
                 Vector3 forceTadd = lerpForceToAdd;
-                if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 1) forceTadd = (CurrentPathNode - Position).normalized * speed * 5;
-                rBody.AddForce(forceTadd, ForceMode.Force);
+                if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 1) {
+                    forceTadd = (CurrentPathNode - Position).normalized * speed * 5;
+                }
+                Rigidbody.AddForce(forceTadd, ForceMode.Force);
                 if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(CurrentPathNode, Position)) currentPathIndex++;
+
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }

@@ -150,6 +150,7 @@ MonoBehaviour:
   - {fileID: 8225117659028540708, guid: e7ad56d6996f9c64bb6401ec34c4212d, type: 3}
   - {fileID: 261070821904542086, guid: c2922308e7764cd4b91ebe0ce96ba599, type: 3}
   fullHealth: 1
+  currHealth: 0
 --- !u!114 &195881032626777595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +165,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 12
   timeBetweenPathUpdates: 1.5
-  distanceFromTargetToStop: 7
   maxCritRange: 20
   minCritRange: 10
   allowedTargetDiscrepancy: 5
@@ -318,6 +318,6 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0

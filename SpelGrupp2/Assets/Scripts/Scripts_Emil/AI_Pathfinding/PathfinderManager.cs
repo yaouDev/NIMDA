@@ -50,7 +50,7 @@ public class PathfinderManager : MonoBehaviour {
         try {
             AI_Controller agentToUpdate = pathQueue.DeleteMin();
             // if agent has been deleted through module un-load
-           // while (agentToUpdate == null && !pathQueue.IsEmpty()) agentToUpdate = pathQueue.DeleteMin();
+            // while (agentToUpdate == null && !pathQueue.IsEmpty()) agentToUpdate = pathQueue.DeleteMin();
             agentToUpdate.CurrentPath = AStar2(agentToUpdate.Position, agentToUpdate.CurrentTarget, true);
             agentToUpdate.CurrentPathIndex = 0;
         } catch (System.Exception) {
