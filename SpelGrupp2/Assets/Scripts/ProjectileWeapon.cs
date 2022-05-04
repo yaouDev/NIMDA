@@ -13,6 +13,7 @@ public class ProjectileWeapon : MonoBehaviour
       if (context.performed && bullets > 0)
       {
 	      Instantiate(bullet, transform.forward + Vector3.up, transform.rotation, null);
+         
       }
    }
 }
