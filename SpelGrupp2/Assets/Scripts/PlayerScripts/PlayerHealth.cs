@@ -15,6 +15,7 @@ namespace CallbackSystem
         private float healthReg;
         private float currHealth;
         private float respawnTimer;
+        [SerializeField] private int batteryCount, batteryRespawnCount, maxBatteryCount;
         private bool alive = true;
         private bool inSafeZone = false;
         private PlayerAttack attackAbility;
@@ -28,10 +29,11 @@ namespace CallbackSystem
         }
         private void Start()
         {
+            batteryCount = 2;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             healthReg = standardRegeneration;
-            currHealth = 0.1f;
+            currHealth = 0.75f;
         }
 
         private void Update()
@@ -54,7 +56,12 @@ namespace CallbackSystem
         public void TakeDamage(float damage)
         {
             currHealth -= damage;
-            if (currHealth <= 0f) {
+            if(currHealth <= 0f && batteryCount > 0)
+            {
+                currHealth = maxHealth;
+                batteryCount--;
+            }
+            if (currHealth <= 0f && batteryCount == 0) {
                 Die();
             }
         }
@@ -71,6 +78,7 @@ namespace CallbackSystem
         {
             alive = true;
             currHealth = maxHealth;
+            batteryCount = batteryRespawnCount;
             visuals.SetActive(true);
             attackAbility.Respawn();
             movement.Respawn();
@@ -83,6 +91,7 @@ namespace CallbackSystem
             HealthRegeneration();
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
+            healthEvent.batteries = batteryCount;
             EventSystem.Current.FireEvent(healthEvent);
         }
         private void UpdateSafeZoneBuff() // TODO Safe zone regeneration buff 

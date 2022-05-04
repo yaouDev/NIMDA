@@ -9,13 +9,15 @@ using UnityEngine.UI;
 
 public class BatteryUI : MonoBehaviour
 {
-    [SerializeField] private Image batteryUI;
+    [SerializeField] private Image batteryUI, batteryIcon;
+    [SerializeField] private Text batteryAmount;
     
 
     public void UpdateBatteryUI(float battery)
     {
         if (battery >= float.Epsilon)
         {
+            batteryAmount.gameObject.SetActive(true);
             batteryUI.gameObject.SetActive(true);
             batteryUI.fillAmount = Ease.EaseInCirc(battery);
             batteryUI.color = Color.Lerp(Color.red, Color.green, Ease.EaseInCirc(battery));
@@ -25,78 +27,10 @@ public class BatteryUI : MonoBehaviour
             batteryUI.fillAmount = 0f;
             batteryUI.gameObject.SetActive(false);
         }
-            
-
     }
 
-    /*
-	private void RechargeBattery() {
-
-		batteryCharge[currentBattery] += Time.deltaTime * percentagePerSecondIncrease;
-		// don't fill more than 100%
-		batteryCharge[currentBattery] = Mathf.Min(batteryCharge[currentBattery], 1.0f);
-		batteryUIs[currentBattery].fillAmount = batteryCharge[currentBattery];
-	}
-	*/
-
-    /*public void AddBattery() {
-		
-		if (currentBattery < 5) {
-			// move recharging battery-fill up one step 
-			batteryCharge[currentBattery + 1] = batteryCharge[currentBattery];
-			batteryCharge[currentBattery] = 1.0f;
-			
-			// move recharging battery visually up one step
-			batteryUIs[currentBattery + 1].gameObject.SetActive(true);
-			batteryUIs[currentBattery].fillAmount = batteryCharge[currentBattery];
-			
-			currentBattery++;
-		}
-		else {
-			// no room for more batteries, refill last one instead
-			batteryCharge[currentBattery] = 1.0f;
-		}
-	}
-	
-
-    public void LaserBatteryDrain(float newHealth)
+    public void SetBatteryCount(int count)
     {
-        battery = newHealth;
-
-        if (battery < 0.0f)
-        {
-            //    UpdateBatteryPercentage(Mathf.Abs(battery));
-        }
+        batteryAmount.text = count.ToString();
     }
-
-
-
-    //public void UpdateBatteryPercentage() => UpdateBatteryPercentage(damageAmount);
-    
-    public void UpdateBatteryPercentage(float damageAmount)
-    {
-
-        if (!alive)
-            return;
-
-        battery -= damageAmount;
-
-        // don't empty last battery completely
-        // if (currentBattery == 0) {
-        // 	batteryCharge[currentBattery] = Mathf.Max(0.0f,  batteryCharge[currentBattery]);
-        // }
-
-        // if battery empty (+ small margin) and isn't last battery — remove current battery 
-        if (batteryCharge[currentBattery] < -0.05f)
-        {
-            batteryUIs[currentBattery].gameObject.SetActive(false);
-            currentBattery--;
-        }
-
-        if (currentBattery < 0)
-        {
-            Die(); // TODO call UnitDeathEvent
-        }
-    }
-    */
 }
