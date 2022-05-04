@@ -9,12 +9,13 @@ public class GetToCoverNode : Node
     public override NodeState Evaluate()
     {
 
-        Transform coverSpot = AIData.instance.GetBestCoverSpot();
+     /*   Transform coverSpot = AIData.instance.GetBestCoverSpot();
+
         if (coverSpot == null)
         {
             return NodeState.FAILURE;
         }
-        AIData.instance.SetColor(Color.cyan);
+       
         float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
         if (distance > 0.2f)
         {
@@ -24,14 +25,14 @@ public class GetToCoverNode : Node
                 agent.StartCoroutine(agent.UpdatePath());
                 agent.IsStopped = false;
             }
-                /* agent.isStopped = false;
-                 SetDestination(coverSpot.position);*/
-                return NodeState.RUNNING;
-        }
-        else
-        {
+            agent.IsStopped = false;
+            //agent.SetDestination(coverSpot.position); //Invänta metod från Emil
+            return NodeState.RUNNING;
+        }*/
+        //else
+        //{
             agent.IsStopped = true;
             return NodeState.SUCCESS;
-        }
+        //}
     }
 }

@@ -61,7 +61,7 @@ public class ExplosiveBullet : MonoBehaviour
         {
             //Get component of player
             
-            //targets[i].GetComponent<>().TakeDamage(); //sätt en damage parameter i TakeDamage
+            //targets[i].GetComponent<PlayerHealth>().TakeDamage(explosionDamage); //sätt en damage parameter i TakeDamage
             if (targets[i].GetComponent<Rigidbody>())
             {
                 targets[i].GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRange);

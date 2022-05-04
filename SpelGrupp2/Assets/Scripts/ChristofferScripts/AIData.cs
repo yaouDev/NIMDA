@@ -8,13 +8,20 @@ public class AIData : MonoBehaviour
 
     [SerializeField] private GameObject bullet;
 
+    private CallbackSystem.EventSystem eventSystem;
     private Transform bestCoverSpot;
     private Material material;
+
+    private List<Transform> activeCovers = new List<Transform>(); 
 
     //[SerializeField] private GameObject muzzleflash;
 
     private void Start()
     {
+        FindObjectOfType<CallbackSystem.EventSystem>();
+
+        //eventSystem.RegisterListener<LoadEvent>();
+
         instance ??= this;
         material = GetComponent<MeshRenderer>().material;
     }
@@ -43,6 +50,15 @@ public class AIData : MonoBehaviour
      }
  */
     //har en array av olika
+
+    private void LoadModule() //ska ha ett event i paramatern
+    {
+        //Covers.GetComponentInChildren<Cover>().coverSpots;
+    }
+    private void UnLoadModule() //ska ha ett event i paramatern
+    {
+        //Covers.GetComponentInChildren<Cover>().coverSpots;
+    }
 
 
 }

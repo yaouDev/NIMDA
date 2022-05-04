@@ -33,8 +33,10 @@ public class IsCoverAvailableNode : Node
                 return AIData.instance.GetBestCoverSpot();
             }
         }
+
         float minAngle = 90;
         Transform bestSpot = null;
+
         for (int i = 0; i < availableCovers.Length; i++)
         {
             Transform bestSpotInCover = FindBestSpotInCover(availableCovers[i], ref minAngle);

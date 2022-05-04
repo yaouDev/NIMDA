@@ -11,6 +11,7 @@ public class HealthNode : Node {
     {
 
         NodeState = agent.Health.GetCurrentHealth() <= fleeThereshold ? NodeState.SUCCESS : NodeState.FAILURE;
+
         return NodeState;
     }
 
