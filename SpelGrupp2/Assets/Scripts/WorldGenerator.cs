@@ -40,6 +40,7 @@ public class WorldGenerator : MonoBehaviour
             ActivateModule();
         }
 
+        
         public void ActivateModule()
         {
             if (active)
