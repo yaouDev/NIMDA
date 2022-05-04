@@ -22,8 +22,8 @@ public class WorldGenerator : MonoBehaviour
 
     public GameObject[] Modules;
 
-    public static Queue<GameObject>[] modulePool = new Queue<GameObject>[16]; 
-
+    public static Queue<GameObject>[] modulePool = new Queue<GameObject>[16];
+    
     private class Module
     {
         private WorldGenerator worldGenerator;

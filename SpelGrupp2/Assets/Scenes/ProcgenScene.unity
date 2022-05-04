@@ -123,6 +123,36 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &68094381
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 68094382}
+  m_Layer: 0
+  m_Name: MapHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &68094382
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 68094381}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &318213627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -341,9 +371,9 @@ MonoBehaviour:
   animate: 0
   worldSize: {x: 30, y: 30}
   startPos: {x: 1, y: 1}
-  goalPos: {x: 20, y: 20}
+  goalPos: {x: 25, y: 25}
   eraseFraction: 0.8
-  worldSeed: 0
+  worldSeed: 33
   deadEndMaxDepth: 2
   deadEndMinDepth: 1
   tileTypes:
@@ -364,6 +394,7 @@ MonoBehaviour:
   - {fileID: 154885648882568831, guid: 16d6563d3932250478c02c71e9637946, type: 3}
   - {fileID: 4192898618367525803, guid: daf59decea64db547bccfbba484e4d21, type: 3}
   cam: {fileID: 0}
+  mapHolder: {fileID: 68094382}
   pathIndicator: {fileID: 4192898618367525803, guid: daf59decea64db547bccfbba484e4d21, type: 3}
   criticalPoints:
   - {x: 1, y: 1}
@@ -373,7 +404,6 @@ MonoBehaviour:
   - {x: 15, y: 10}
   - {x: 20, y: 20}
   pointsOfInterest: []
-  deadEnd: {fileID: 4192898618367525803, guid: daf59decea64db547bccfbba484e4d21, type: 3}
 --- !u!114 &1034533412
 MonoBehaviour:
   m_ObjectHideFlags: 0

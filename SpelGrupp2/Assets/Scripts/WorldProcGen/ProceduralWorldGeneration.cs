@@ -38,23 +38,26 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
     [SerializeField] private GameObject[] tileTypes;
 
-    [SerializeField] private Camera cam;
-
     private GameObject[,] tiles;
 
-    private SpriteRenderer[,] sr;
+    [SerializeField] private Transform mapHolder;
 
     //[SerializeField] private GameObject currentIndicator;
     [SerializeField] private GameObject pathIndicator;
     [SerializeField] private Vector2Int[] criticalPoints;
     private AStar aStar;
-    public List<Vector2Int> pointsOfInterest = new List<Vector2Int>();
+    private List<Vector2Int> chokePoints = new List<Vector2Int>();
 
+
+    public List<Vector2Int> GetChokePoints()
+    {
+        return chokePoints;
+    }
+    
     private void Awake()
     {
         aStar = GetComponent<AStar>();
         tiles = new GameObject[worldSize.x, worldSize.y];
-        sr = new SpriteRenderer[worldSize.x, worldSize.y];
         if (instance != null) Destroy(this.transform.gameObject);
         instance ??= this;
 
@@ -163,12 +166,13 @@ public class ProceduralWorldGeneration : MonoBehaviour
         HashSet<Vector2Int> allCriticalPathCoordinates = new HashSet<Vector2Int>();
         Vector2Int[][] connections = new[]
         {
-            new Vector2Int[] {criticalPoints[0], criticalPoints[1]},
-            new Vector2Int[] {criticalPoints[0], criticalPoints[2]},
-            new Vector2Int[] {criticalPoints[1], criticalPoints[3]},
-            new Vector2Int[] {criticalPoints[2], criticalPoints[4]},
-            new Vector2Int[] {criticalPoints[3], criticalPoints[5]},
-            new Vector2Int[] {criticalPoints[4], criticalPoints[5]},
+            // new Vector2Int[] {criticalPoints[0], criticalPoints[1]},
+            // new Vector2Int[] {criticalPoints[0], criticalPoints[2]},
+            // new Vector2Int[] {criticalPoints[1], criticalPoints[3]},
+            // new Vector2Int[] {criticalPoints[2], criticalPoints[4]},
+            // new Vector2Int[] {criticalPoints[3], criticalPoints[5]},
+            // new Vector2Int[] {criticalPoints[4], criticalPoints[5]},
+            new Vector2Int[] {startPos, goalPos}
         };
         Color[] colors = new[] {Color.blue, Color.red, Color.green, Color.cyan, Color.red, Color.magenta, Color.blue};
 
@@ -200,7 +204,8 @@ public class ProceduralWorldGeneration : MonoBehaviour
         }
 
         //StartCoroutine(
-        PutUpWallsAroundCriticalPath(allCriticalPathCoordinates);
+        PutUpWallsInLine(allCriticalPathCoordinates);
+        //PutUpWallsAroundCriticalPath(allCriticalPathCoordinates);
         //);
     }
 
@@ -214,7 +219,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
             {
                 radians += .001f;
 
-                int[] radius = new int[] {15, 27, 35};
+                int[] radius = new int[] {5, 10, 15};
 
                 Vector2Int vec2 = goalPos +
                                   new Vector2Int((int) (Mathf.Cos(radians) * radius[circle]),
@@ -296,36 +301,143 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         //MoveTrail(currentIndicator.transform.position);
                     }
                 }
-                else if (!pointsOfInterest.Contains(vec2))
+                else if (!chokePoints.Contains(vec2))
                 {
-                    pointsOfInterest.Add(vec2);
+                    chokePoints.Add(vec2);
                 }
             }
         }
 
-        for (int i = 0; i < pointsOfInterest.Count; i++)
+        for (int i = 0; i < chokePoints.Count; i++)
         {
             SpriteRenderer sr =
-                Instantiate(tileTypes[15], 
-                    new Vector3(pointsOfInterest[i].x, 0, pointsOfInterest[i].y), 
+                Instantiate(tileTypes[15],
+                    new Vector3(chokePoints[i].x, 0, chokePoints[i].y),
                     tileRotation,
-                    this.transform).GetComponent<SpriteRenderer>();
+                    mapHolder).GetComponent<SpriteRenderer>();
             sr.color = Color.black;
         }
 
         CheckDeadEnds(criticalPathCoordinates);
 
-        for (int y = 0; y < worldSize.y; y++)
-        {
-            for (int x = 0; x < worldSize.x; x++)
-            {
-                Vector2Int pos = new Vector2Int(x, y);
-                InstantiateTile(pos);
-            }
-        }
+        ShowMaze();
+        mapHolder.position += Vector3.up * 13;
+        // for (int y = 0; y < worldSize.y; y++)
+        // {
+        //     for (int x = 0; x < worldSize.x; x++)
+        //     {
+        //         Vector2Int pos = new Vector2Int(x, y);
+        //         InstantiateTile(pos);
+        //     }
+        // }
     }
 
-    [SerializeField] private GameObject deadEnd;
+    private void PutUpWallsInLine(HashSet<Vector2Int> criticalPathCoordinates)
+    {
+        Vector2Int[] wallStartPoints = new[]
+        {
+            new Vector2Int(worldSize.x / 2, worldSize.y), 
+            new Vector2Int(0,worldSize.y), 
+            new Vector2Int(0,worldSize.y / 2)
+        };
+        
+        
+        for (int i = 0; i < 3; i++)
+        {
+            Vector2Int vec2 = wallStartPoints[i];
+
+            while (vec2.y >= 0)
+            {
+                if (vec2.x >= 0 &&
+                    vec2.y >= 0 &&
+                    vec2.x < worldSize.x &&
+                    vec2.y < worldSize.y)
+                {
+                    if (!criticalPathCoordinates.Contains(vec2))
+                    {
+                        graph[vec2.x, vec2.y] = (W | S);
+
+                        // South
+                        if (vec2.y - 1 >= 0)
+                        {
+                            graph[vec2.x, vec2.y - 1] |= N;
+                        }
+
+                        // North
+                        if (vec2.y + 1 < worldSize.y && (graph[vec2.x, vec2.y + 1] & S) != 0)
+                        {
+                            graph[vec2.x, vec2.y + 1] -= S;
+                        }
+                        
+                        // West
+                        if (vec2.x - 1 > 0)
+                        {
+                            graph[vec2.x - 1, vec2.y] |= E;
+                        }
+
+                        // East
+                        if (vec2.x + 1 < worldSize.x)
+                        {
+                            if ((graph[vec2.x + 1, vec2.y] & W) != 0)
+                                graph[vec2.x + 1, vec2.y] -= W;
+                        }
+                    }
+                    else
+                    {
+                        chokePoints.Add(vec2);
+                        // TODO [Patrik] clear path
+                        // South - North corridor
+                        
+                        graph[vec2.x, vec2.y] = (E | W);
+
+                        // South
+                        if (vec2.y - 1 >= 0 && (graph[vec2.x, vec2.y - 1] & N) != 0)
+                        {
+                            graph[vec2.x, vec2.y - 1] -= N;
+                        }
+                        
+                        // North
+                        if (vec2.y + 1 < worldSize.y && (graph[vec2.x, vec2.y + 1] & S) != 0)
+                        {
+                            graph[vec2.x, vec2.y + 1] -= S;
+                        }
+                        
+                        // West
+                        if (vec2.x - 1 > 0)
+                        {
+                            // if ((graph[vec2.x - 1, vec2.y] & E) != 0)
+                                graph[vec2.x - 1, vec2.y] |= E;
+                        }
+                        
+                        // East
+                        if (vec2.x + 1 < worldSize.x)
+                        {
+                            // if ((graph[vec2.x + 1, vec2.y] & W) != 0)
+                                graph[vec2.x + 1, vec2.y] |= W;
+                        }
+                    }
+                }
+                vec2 += new Vector2Int(1, -1);            
+            }
+        }
+
+        for (int i = 0; i < chokePoints.Count; i++)
+        {
+            SpriteRenderer sr =
+                Instantiate(tileTypes[15],
+                    new Vector3(chokePoints[i].x, 0, chokePoints[i].y),
+                    tileRotation,
+                    mapHolder).GetComponent<SpriteRenderer>();
+            sr.color = Color.black;
+        }
+
+        CheckDeadEnds(criticalPathCoordinates);
+
+        ShowMaze();
+        mapHolder.position += Vector3.up * 13;
+    }
+
+    //[SerializeField] private GameObject deadEnd;
 
     private void CheckDeadEnds(HashSet<Vector2Int> criticalPathCoordinates)
     {
@@ -479,7 +591,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
             {
                 int tileType = (int) graph[x, y];
                 GameObject tile = Instantiate(this.tileTypes[tileType], new Vector3(x, 0, y), tileRotation,
-                    this.transform);
+                    mapHolder);
                 tiles[x, y] = tile;
             }
         }
