@@ -21,8 +21,9 @@ namespace CallbackSystem
         private PlayerAttack attackAbility;
         private PlayerController movement;
         private HealthUpdateEvent healthEvent;
+        private bool started = false;
 
-
+        public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake()
         {
             healthEvent = new HealthUpdateEvent();
@@ -35,9 +36,14 @@ namespace CallbackSystem
             healthReg = standardRegeneration;
             currHealth = maxHealth;
         }
-
+        //TODO Rewrite shit-solution so the batteryCount & healthBar is updated at start
         private void Update()
         {
+            if (!started)
+            {
+                UpdateHealthUI();
+                started = true;
+            }
             if (alive && currHealth != maxHealth)
             {
                 UpdateHealthUI();

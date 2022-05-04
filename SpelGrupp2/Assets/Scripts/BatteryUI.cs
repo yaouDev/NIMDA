@@ -13,9 +13,9 @@ public class BatteryUI : MonoBehaviour
     [SerializeField] private Image batteryUI, batteryIcon;
     [SerializeField] private TextMeshProUGUI batteryAmount;
     
-
     public void UpdateBatteryUI(float battery)
     {
+
         if (battery >= float.Epsilon)
         {
             batteryAmount.gameObject.SetActive(true);

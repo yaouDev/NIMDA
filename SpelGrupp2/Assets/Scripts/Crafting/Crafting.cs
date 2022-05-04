@@ -17,7 +17,9 @@ namespace CallbackSystem
         private Craft craft = new Craft();
         public Recipe batteryRecipe;
         public Recipe bulletRecipe;
-        //private ResourceUpdateEvent initializeInventory;
+        private ResourceUpdateEvent initializeInventory;
+        private bool isPlayerOne;
+        private bool started = false;
 
         public enum PickUp
         {
@@ -25,18 +27,25 @@ namespace CallbackSystem
             Transistor,
             Iron
         }
-        /*
+
         private void Start()
         {
-            initializeInventory = new ResourceUpdateEvent();
-            initializeInventory.c = copper;
-            initializeInventory.t = transistor;
-            initializeInventory.i = iron;
-            initializeInventory.isPlayerOne = true;
-            EventSystem.Current.FireEvent(initializeInventory);
-
+            isPlayerOne = GetComponent<PlayerHealth>().IsPlayerOne();
         }
-        */
+        //TODO Rewrite shit-solution so the inventory is updated at start
+        private void Update()
+        {
+            if (!started)
+            {
+                initializeInventory = new ResourceUpdateEvent();
+                initializeInventory.c = copper;
+                initializeInventory.t = transistor;
+                initializeInventory.i = iron;
+                initializeInventory.isPlayerOne = isPlayerOne;
+                EventSystem.Current.FireEvent(initializeInventory);
+            }
+        }
+ 
         private static readonly PickUp[][] Combos =
     {
         new PickUp[] {PickUp.Copper, PickUp.Transistor, PickUp.Iron},
