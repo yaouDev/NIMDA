@@ -1,10 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Callbacks {
-    public class PlayerHealth : MonoBehaviour {
+namespace CallbackSystem
+{
+    public class PlayerHealth : MonoBehaviour
+    {
         [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 5.0f;
 
@@ -18,47 +19,56 @@ namespace Callbacks {
         private bool inSafeZone = false;
         private PlayerAttack attackAbility;
         private PlayerController movement;
-        private UnitHealthUpdate healthEvent;
-        private void Awake() {
-            healthEvent = new UnitHealthUpdate();
-        }
+        private HealthUpdateEvent healthEvent;
 
-        private void Start() {
+
+        private void Awake()
+        {
+            healthEvent = new HealthUpdateEvent();
+        }
+        private void Start()
+        {
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             healthReg = standardRegeneration;
             currHealth = 0.1f;
-            UpdateHealthUI();
         }
 
-        private void Update() {
-            if (alive && currHealth != maxHealth) {
+        private void Update()
+        {
+            if (alive && currHealth != maxHealth)
+            {
                 UpdateHealthUI();
                 respawnTimer = 0.0f;
-            } else {
+            }
+            else { 
                 respawnTimer += Time.deltaTime;
             }
 
-            if (!alive && respawnTimer > respawnTime) {
+            if (!alive && respawnTimer > respawnTime)
+            {
                 Respawn();
             }
         }
 
-        public void TakeDamage(float damage) {
+        public void TakeDamage(float damage)
+        {
             currHealth -= damage;
             if (currHealth <= 0f) {
                 Die();
             }
         }
 
-        public void Die() {
+        public void Die()
+        {
             alive = false;
             attackAbility.Die();
             movement.Die();
             visuals.SetActive(false);
         }
 
-        public void Respawn() {
+        public void Respawn()
+        {
             alive = true;
             currHealth = maxHealth;
             visuals.SetActive(true);
@@ -67,10 +77,11 @@ namespace Callbacks {
             UpdateHealthUI();
         }
 
-        private void UpdateHealthUI() {
-            UpdateSafeZoneBuff();
+        private void UpdateHealthUI()
+        {
+           UpdateSafeZoneBuff();
             HealthRegeneration();
-            healthEvent.isGOPlayerOne = isPlayerOne;
+            healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             EventSystem.Current.FireEvent(healthEvent);
         }
@@ -79,17 +90,20 @@ namespace Callbacks {
             healthReg = inSafeZone ? safezoneRegeneration : standardRegeneration;
         }
 
-        private void HealthRegeneration() {
+        private void HealthRegeneration()
+        {
             currHealth += (Time.deltaTime * healthReg);
             currHealth = Mathf.Min(currHealth, 1f);
 
         }
 
-        public void OnCollisionEnter(Collision collision) {
+        public void OnCollisionEnter(Collision collision)
+        {
             if (collision.gameObject.tag.Equals("Safezone")) { inSafeZone = true; }
         }
 
-        public void OnCollisionExit(Collision collision) {
+        public void OnCollisionExit(Collision collision)
+        {
             if (collision.gameObject.tag.Equals("Safezone")) { inSafeZone = false; }
         }
     }

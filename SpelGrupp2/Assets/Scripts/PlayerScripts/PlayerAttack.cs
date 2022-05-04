@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-namespace Callbacks
+namespace CallbackSystem
 {
     public class PlayerAttack : MonoBehaviour
     {

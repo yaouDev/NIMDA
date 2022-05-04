@@ -2,70 +2,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-namespace Callbacks
-{
-    public class EventSystem : MonoBehaviour
-    {
-        delegate void EventListener(EventInfo ei);
-        Dictionary<System.Type, List<EventListener>> eventListeners;
-
-        static private EventSystem _Current;
-
-        void OnEnable()
-        {
-            _Current = this;
+namespace CallbackSystem {
+    public class EventSystem : MonoBehaviour {
+        Dictionary<System.Type, HashSet<EventListener>> eventListeners;
+        /* ugly solution with too much redundancy. But since the "wrapper" (likely because of its member "Method")
+        in UnregisterListener() doesn't work with HashSet.Contains this is needed
+        to keep track of which listeneres have been added so that they can be removed. 
+        The inner dictionary is for if a target has more than one listener*/
+        Dictionary<System.Object, Dictionary<System.Object, EventListener>> listenersByTarget;
+        void OnEnable() {
+            current = this;
+            eventListeners = new Dictionary<System.Type, HashSet<EventListener>>();
+            listenersByTarget = new Dictionary<System.Object, Dictionary<System.Object, EventListener>>();
         }
 
-        static public EventSystem Current
-        {
-            get
-            {
-                if(_Current == null)
-                {
-                    _Current = GameObject.FindObjectOfType<EventSystem>();
-
+        static private EventSystem current;
+        public static EventSystem Current {
+            get {
+                if (current == null) {
+                    current = GameObject.FindObjectOfType<EventSystem>();
                 }
-                return _Current;
+                return current;
             }
         }
 
-        public void RegisterListener<T>(System.Action<T> listener) where T : EventInfo
-        {
-            System.Type etype = typeof(T);
-            if(eventListeners == null)
-            {
-                eventListeners = new Dictionary<System.Type, List<EventListener>>();
-            }
+        public delegate void EventListener(Event eventToListenFor);
+        public void RegisterListener<T>(System.Action<T> listener) where T : Event {
+            System.Type eventType = typeof(T);
+            if (!eventListeners.ContainsKey(eventType) || eventListeners[eventType] == null) eventListeners[eventType] = new HashSet<EventListener>();
+            EventListener wrapper = (eventToListenFor) => { listener((T)eventToListenFor); };
+            eventListeners[eventType].Add(wrapper);
+            if (!listenersByTarget.ContainsKey(listener.Target)) listenersByTarget.Add(listener.Target, new Dictionary<System.Object, EventListener>());
+            listenersByTarget[listener.Target].Add(listener, wrapper);
+            eventType = eventType.BaseType;
 
-            if(eventListeners.ContainsKey(etype) == false || eventListeners[etype] == null)
-            {
-                eventListeners[etype] = new List<EventListener>();
-            }
-            EventListener wrapper = (ei) => { listener((T)ei); };
-            eventListeners[etype].Add(wrapper);
         }
 
-        public void UnregisterListener<T>(System.Action<T> listener) where T : EventInfo
-        {
-            //System.Type etype = typeof(T);
-            //if(eventListeners != null && (eventListeners.ContainsKey(etype) || eventListeners [etype] != null))
-            //{
-            //    eventListeners.Remove(etype);
-            //}
+        public void UnregisterListener<T>(System.Action<T> listener) where T : Event {
+            System.Type eventType = typeof(T);
+            if (eventListeners.ContainsKey(eventType) && eventListeners[eventType] != null && listenersByTarget.ContainsKey(listener.Target)) {
+                eventListeners[eventType].Remove(listenersByTarget[listener.Target][listener]);
+                if (listenersByTarget[listener.Target].Count == 0) listenersByTarget.Remove(listener.Target);
+                else listenersByTarget[listener.Target].Remove(listener);
+            }
         }
 
-        public void FireEvent(EventInfo ei)
-        {
-            System.Type trueEventInfoClass = ei.GetType();
-            if(eventListeners == null || eventListeners[trueEventInfoClass] == null){
-                return;
-            }
-            foreach(EventListener el in eventListeners[trueEventInfoClass])
-            {
-                el(ei);
-            }
+        public void FireEvent(Event eventToFire) {
+            System.Type eventType = eventToFire.GetType();
+            if (eventListeners[eventType] == null) return;
+            /* walks up the event hierarchy and makes sure that listeners to the superclass of the event also get called */
+            do {
+                foreach (EventListener eventListener in eventListeners[eventType]) {
+                    eventListener(eventToFire);
+                }
+                eventType = eventType.BaseType;
+            } while (eventType != typeof(Event));
+
+
         }
     }
 }
+
 
