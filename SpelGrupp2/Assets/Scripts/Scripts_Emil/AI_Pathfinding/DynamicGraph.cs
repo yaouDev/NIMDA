@@ -13,31 +13,44 @@ public class DynamicGraph : MonoBehaviour {
     public static DynamicGraph Instance;
     CallbackSystem.EventSystem eventSystem;
     private HashSet<Vector2Int> loadedModules;
+    private Queue<Vector3> nodesToRemove;
+    private bool isRemoving = false;
 
     void Start() {
         masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
+        nodesToRemove = new Queue<Vector3>();
         Instance ??= this;
         loadedModules = new HashSet<Vector2Int>();
+
+        // for testing purposes
         loadedModules.Add(new Vector2Int(0, 0));
         loadedModules.Add(new Vector2Int(1, 0));
         loadedModules.Add(new Vector2Int(0, 1));
         loadedModules.Add(new Vector2Int(1, 1));
         loadedModules.Add(new Vector2Int(0, 2));
         loadedModules.Add(new Vector2Int(1, 2));
+
         eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
         eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(OnModuleLoad);
         eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
     }
 
-    public void Connect(Vector3 node1, Vector3 node2, float cost) {
-        if (masterGraph.ContainsKey(node1) && masterGraph.ContainsKey(node2) && !IsConnected(node1, node2)) {
-            masterGraph[node1].Add(node2, cost);
-            masterGraph[node2].Add(node1, cost);
+    void Update() {
+        if (isRemoving && nodesToRemove.Count > 0) StartCoroutine(RemoveUnloadedNodes());
+    }
+
+    public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
+        if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
+            masterGraph[firstNode].Add(secondNode, cost);
+            masterGraph[secondNode].Add(firstNode, cost);
         }
     }
 
     public void Disconnect(Vector3 firstNode, Vector3 secondNode) {
-        //TODO        
+        if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && IsConnected(firstNode, secondNode)) {
+            masterGraph[firstNode].Remove(secondNode);
+            masterGraph[secondNode].Remove(firstNode);
+        }
     }
 
     public bool Contains(Vector3 node) {
@@ -90,7 +103,6 @@ public class DynamicGraph : MonoBehaviour {
     }
 
     public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
-
         Vector3 currentNode = GetClosestNode(target);
         Collider[] cols = GetBlockedNode(currentNode);
         if (cols.Length != 0) {
@@ -133,7 +145,6 @@ public class DynamicGraph : MonoBehaviour {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
     }
 
-
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
     private void OnDrawGizmos() {
         int count = 0;
@@ -170,14 +181,52 @@ public class DynamicGraph : MonoBehaviour {
         }
     }
 
-    void OnModuleLoad(CallbackSystem.ModuleSpawnEvent spawnEvent) {
+    private void OnModuleLoad(CallbackSystem.ModuleSpawnEvent spawnEvent) {
         loadedModules.Add(spawnEvent.Position);
     }
 
-    void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
+    private void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
         if (loadedModules.Contains(deSpawnEvent.Position)) loadedModules.Remove(deSpawnEvent.Position);
+        MarkNodesForDeletion(deSpawnEvent.Position);
+        if (!isRemoving) StartCoroutine(RemoveUnloadedNodes());
+
     }
 
+    private IEnumerator RemoveUnloadedNodes() {
+        isRemoving = true;
+        for (int i = 0; i < 50 || nodesToRemove.Count == 0; i++) {
+            if (nodesToRemove.Count > 0) {
+                Vector3 nodeToRemove = nodesToRemove.Dequeue();
+                if (!loadedModules.Contains(GetModulePosFromWorldPos(nodeToRemove))) {
+                    foreach (Vector3 neighbor in GetNeighbors(nodeToRemove).Keys) {
+                        Disconnect(nodeToRemove, neighbor);
+                    }
+                    masterGraph.Remove(nodeToRemove);
+                }
+            } else break;
+        }
+        yield return new WaitForEndOfFrame();
+        isRemoving = false;
+    }
 
+    // not tested yet
+    private void MarkNodesForDeletion(Vector2Int module) {
+        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2) - 1, 0.55f, module.y + (moduleSize / 2) - 1);
+        float leftMostX = worldPos.x - (moduleSize / 2) + nodeHalfextent;
+        float topMostZ = worldPos.z + (moduleSize / 2) - nodeHalfextent;
+        float rightMostX = worldPos.x + (moduleSize / 2) - nodeHalfextent;
+
+        Vector3 node = new Vector3(leftMostX, worldPos.y, topMostZ);
+
+        for (int i = 0; i <= moduleSize * moduleSize; i++) {
+            nodesToRemove.Enqueue(node);
+            if (node.x == rightMostX) {
+                node.x = leftMostX;
+                node.z -= (nodeHalfextent * 2);
+            } else {
+                node.x += (nodeHalfextent * 2);
+            }
+        }
+    }
 
 }

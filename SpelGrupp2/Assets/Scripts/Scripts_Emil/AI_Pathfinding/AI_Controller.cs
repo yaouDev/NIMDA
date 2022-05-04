@@ -38,6 +38,10 @@ public class AI_Controller : MonoBehaviour {
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
+        if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
+            Destroy(gameObject);
+        }
+
         // This code is for debugging purposes only, shows current calculated path
         if (currentPath != null && currentPath.Count != 0) {
             Vector3 prevPos = currentPath[0];
