@@ -7,16 +7,24 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private GameObject[] dropList;
     private Vector3 dropOffset = new Vector3 (0f, 1f, 0f);
     [Range(0, 3)] public int fullHealth;
-    public float currHealth;
     private float healthBarLength;
     private GameObject drop;
+    [SerializeField] private float healthRestoreRate; 
+
+    public float currHealth
+    {
+        get { return currHealth; }
+        set { currHealth = Mathf.Clamp(currHealth, 0, fullHealth);}
+    }
 
     private void Awake()
     {
         currHealth = fullHealth;
     }
-    void Update()
+    private void Update()
     {
+        currHealth += Time.deltaTime * healthRestoreRate;
+
         if (currHealth <= 0)
         {
             Die();
@@ -44,4 +52,9 @@ public class EnemyHealth : MonoBehaviour
         loot.SetActive(true);
         Destroy(loot, 15f);
     }
+    public float GetCurrentHealth()
+    {
+        return currHealth;
+    }
+
 }
