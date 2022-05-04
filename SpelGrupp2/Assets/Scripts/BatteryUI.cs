@@ -6,11 +6,12 @@ using UnityEngine;
 using UnityEditor.UI;
 using UnityEditorInternal;
 using UnityEngine.UI;
+using TMPro;
 
 public class BatteryUI : MonoBehaviour
 {
     [SerializeField] private Image batteryUI, batteryIcon;
-    [SerializeField] private Text batteryAmount;
+    [SerializeField] private TextMeshProUGUI batteryAmount;
     
 
     public void UpdateBatteryUI(float battery)

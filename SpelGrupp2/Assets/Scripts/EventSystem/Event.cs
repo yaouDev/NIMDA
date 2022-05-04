@@ -36,6 +36,11 @@ namespace CallbackSystem {
     {
         public Vector3 pos;
     }
+
+    public class ResourceUpdateEvent : Event
+    {
+        public int c, t, i;
+    }
 }
 
 

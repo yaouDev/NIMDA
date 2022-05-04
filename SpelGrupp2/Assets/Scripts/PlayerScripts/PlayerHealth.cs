@@ -33,7 +33,7 @@ namespace CallbackSystem
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             healthReg = standardRegeneration;
-            currHealth = 0.75f;
+            currHealth = maxHealth;
         }
 
         private void Update()
@@ -56,7 +56,7 @@ namespace CallbackSystem
         public void TakeDamage(float damage)
         {
             currHealth -= damage;
-            if(currHealth <= 0f && batteryCount > 0)
+            if(currHealth <= float.Epsilon && batteryCount > 0)
             {
                 currHealth = maxHealth;
                 batteryCount--;
