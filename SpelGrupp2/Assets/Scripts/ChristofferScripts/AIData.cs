@@ -51,7 +51,7 @@ public class AIData : MonoBehaviour
  */
     //har en array av olika
 
-    private void LoadModule() //ska ha ett event i paramatern
+    private void LoadModule()//ska ha ett event i paramatern
     {
         //Covers.GetComponentInChildren<Cover>().coverSpots;
     }

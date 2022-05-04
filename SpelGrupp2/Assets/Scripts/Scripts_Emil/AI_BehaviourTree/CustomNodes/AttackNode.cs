@@ -13,15 +13,22 @@ public class AttackNode : Node
     //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
+    private float x;
+    private float y;
+
+    private GameObject currentBullet; 
     private LineRenderer lineRenderer;
 
     Vector3 closestTarget;
     Vector3 relativePos;
+    Vector3 directionWithoutSpread;
+    Vector3 directionWithSpread;
+
     Quaternion rotation;
 
     public override NodeState Evaluate()
     {
-        closestTarget = agent.ClosestTarget;
+        closestTarget = agent.ClosestPlayer;
         relativePos = closestTarget - agent.transform.position;
 
         // the second argument, upwards, defaults to Vector3.up
@@ -65,17 +72,17 @@ public class AttackNode : Node
         //Check if hit player
 
         //Calculate direction from attackpoint to targetpoint
-        Vector3 directionWithoutSpread = hitInfo.transform.position - agent.transform.position;
+        directionWithoutSpread = hitInfo.transform.position - agent.transform.position;
 
         //Calculate spread
-        float x = Random.Range(-spread, spread);
-        float y = Random.Range(-spread, spread);
+        x = Random.Range(-spread, spread);
+        y = Random.Range(-spread, spread);
 
         //Calculate direction 
-        Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+        directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instatiate bullet
-        GameObject currentBullet = Instantiate(AIData.instance.getBullet, agent.transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.instance.getBullet, agent.transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
