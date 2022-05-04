@@ -59,8 +59,8 @@ public class TopDownState : CameraState
 
 		FadeObstacles();
 		
-		if (Vector3.Distance(PlayerThis.position, PlayerOther.position) > thirdPersonSplitDistance)
-			stateMachine.TransitionTo<TransitionToSplitState>();
+		//if (Vector3.Distance(PlayerThis.position, PlayerOther.position) > thirdPersonSplitDistance)
+		//	stateMachine.TransitionTo<TransitionToSplitState>();
 	}
 
 	private void LerpSplitScreenLineWidth(float offsetMagnitude) {

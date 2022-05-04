@@ -7,72 +7,29 @@ using UnityEditor.UI;
 using UnityEditorInternal;
 using UnityEngine.UI;
 
-public class BatteryUI : MonoBehaviour {
-	[SerializeField]
-	private Image[] batteryUIs;
-	private int currentBattery = 5;
-	
-	[SerializeField] [Range(.0f, .1f)] 
-	private float percentagePerSecondIncrease;
-	
-	[SerializeField] [Range(0.1f, 1.0f)]
-	private float damageAmount;
-	
-	[SerializeField]
-	private float[] batteryCharge = { 1.0f, 1.0f, 1.0f, 1.0f, .5f };
+public class BatteryUI : MonoBehaviour
+{
+    [SerializeField] private Image batteryUI;
+    
 
-	[SerializeField] [Range(1, 6)]
-	private int respawnBatteryAmount = 4;
-	
-	public bool takeDMG;
-	public bool respawn;
-	public bool alive = true;
+    public void UpdateBatteryUI(float battery)
+    {
+        if (battery >= float.Epsilon)
+        {
+            batteryUI.gameObject.SetActive(true);
+            batteryUI.fillAmount = Ease.EaseInCirc(battery);
+            batteryUI.color = Color.Lerp(Color.red, Color.green, Ease.EaseInCirc(battery));
+        }
+        else
+        {
+            batteryUI.fillAmount = 0f;
+            batteryUI.gameObject.SetActive(false);
+        }
+            
 
-	[SerializeField] private Transform player;
-	[SerializeField] private Transform otherPlayer;
-	[SerializeField] private PlayerController playerController;
-	[SerializeField] private float respawnTime = 12.0f;
-	private float respawnTimer;
+    }
 
-	private void Update() {
-		
-		if (alive) {
-			respawnTimer = 0.0f;
-			RechargeBattery();
-		} else
-			respawnTimer += Time.deltaTime;
-		
-		if (takeDMG) {
-			takeDMG = false;
-			TakeDamage();
-		}
-
-		if (!alive && respawnTimer > respawnTime) {
-			respawn = false;
-			Respawn();
-		}
-	}
-
-	public void Respawn() {
-		if (alive) 
-			return;
-		
-		playerController.Respawn();
-		
-		alive = true;
-		
-		for (int i = 0; i < respawnBatteryAmount; i++) {
-			batteryCharge[i] = 1.0f;
-			batteryUIs[i].fillAmount = 1.0f;
-			batteryUIs[i].gameObject.SetActive(true);
-		}
-
-		currentBattery = respawnBatteryAmount - 1;
-
-		if (otherPlayer != null)
-			player.transform.position = otherPlayer.transform.position + Vector3.one;
-	}
-	
+    /*
 	private void RechargeBattery() {
 
 		batteryCharge[currentBattery] += Time.deltaTime * percentagePerSecondIncrease;
@@ -80,8 +37,9 @@ public class BatteryUI : MonoBehaviour {
 		batteryCharge[currentBattery] = Mathf.Min(batteryCharge[currentBattery], 1.0f);
 		batteryUIs[currentBattery].fillAmount = batteryCharge[currentBattery];
 	}
+	*/
 
-	public void AddBattery() {
+    /*public void AddBattery() {
 		
 		if (currentBattery < 5) {
 			// move recharging battery-fill up one step 
@@ -100,33 +58,45 @@ public class BatteryUI : MonoBehaviour {
 		}
 	}
 	
-	public void TakeDamage() {
-		
-		if (!alive) 
-			return;
-		
-		batteryCharge[currentBattery] -= damageAmount;
-		
-		// don't empty last battery completely
-		// if (currentBattery == 0) {
-		// 	batteryCharge[currentBattery] = Mathf.Max(0.0f,  batteryCharge[currentBattery]);
-		// }
-		
-		// if battery empty (+ small margin) and isn't last battery — remove current battery 
-		if (batteryCharge[currentBattery] < -0.05f) {
-			batteryUIs[currentBattery].gameObject.SetActive(false);
-			currentBattery--;
-		}
 
-		if (currentBattery < 0) {
-			Die(); // !!!!
-		}
-	}
+    public void LaserBatteryDrain(float newHealth)
+    {
+        battery = newHealth;
 
-	private void Die() {
-		
-		Debug.Log("You Died"); 
-		alive = false;
-		playerController.Die();
-	}
+        if (battery < 0.0f)
+        {
+            //    UpdateBatteryPercentage(Mathf.Abs(battery));
+        }
+    }
+
+
+
+    //public void UpdateBatteryPercentage() => UpdateBatteryPercentage(damageAmount);
+    
+    public void UpdateBatteryPercentage(float damageAmount)
+    {
+
+        if (!alive)
+            return;
+
+        battery -= damageAmount;
+
+        // don't empty last battery completely
+        // if (currentBattery == 0) {
+        // 	batteryCharge[currentBattery] = Mathf.Max(0.0f,  batteryCharge[currentBattery]);
+        // }
+
+        // if battery empty (+ small margin) and isn't last battery — remove current battery 
+        if (batteryCharge[currentBattery] < -0.05f)
+        {
+            batteryUIs[currentBattery].gameObject.SetActive(false);
+            currentBattery--;
+        }
+
+        if (currentBattery < 0)
+        {
+            Die(); // TODO call UnitDeathEvent
+        }
+    }
+    */
 }

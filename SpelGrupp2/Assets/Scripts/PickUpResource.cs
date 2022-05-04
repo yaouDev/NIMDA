@@ -11,12 +11,12 @@ public class PickUpResource : MonoBehaviour
 
     [SerializeField] private PickUp pickUpType;
 
-    private void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.collider.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals("Player"))
         {
-            PlayerController player = other.transform.GetComponent<PlayerController>();
-            pickUpDrop(player.crafting);
+            Crafting crafting = other.transform.GetComponent<Crafting>();
+            pickUpDrop(crafting);
             Destroy(gameObject);
         }
     }
@@ -27,11 +27,9 @@ public class PickUpResource : MonoBehaviour
             case (PickUp.Iron):
                 crafting.iron++;
                 break;
-
             case (PickUp.Copper):
                 crafting.copper++;
                 break;
-
             case (PickUp.Transistor):
                 crafting.transistor++;
                 break;
