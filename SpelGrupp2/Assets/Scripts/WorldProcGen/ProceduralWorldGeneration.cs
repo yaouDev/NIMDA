@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CallbackSystem;
 using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 
@@ -56,6 +57,8 @@ public class ProceduralWorldGeneration : MonoBehaviour
     
     private void Awake()
     {
+      
+
         aStar = GetComponent<AStar>();
         tiles = new GameObject[worldSize.x, worldSize.y];
         if (instance != null) Destroy(this.transform.gameObject);
@@ -76,6 +79,22 @@ public class ProceduralWorldGeneration : MonoBehaviour
         //ShowMaze();
     }
 
+    private void Start()
+    {
+        CallbackSystem.EventSystem.Current.RegisterListener<ModuleDeSpawnEvent>(Debug);
+        CallbackSystem.EventSystem.Current.RegisterListener<ModuleSpawnEvent>(Debug);
+    }
+
+    private void Debug(ModuleDeSpawnEvent eve)
+    {
+        // UnityEngine.Debug.Log($"DeSpawn {eve.Position} {eve.Walls} ");
+    }
+    
+    private void Debug(ModuleSpawnEvent eve)
+    {
+        // UnityEngine.Debug.Log($"Spawn {eve.Position} {eve.Walls} ");
+    }
+    
     private void MakeMaze()
     {
         int slowAnimate = 0;
