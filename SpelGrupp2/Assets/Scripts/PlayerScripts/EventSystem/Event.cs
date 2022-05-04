@@ -35,7 +35,8 @@ namespace CallbackSystem
     }
 
     /// <summary>
-    /// Walls is an integer between 0-15 representing all possible combinations of wall configurations.
+    /// Walls is an integer between 0-15 representing
+    /// all possible combinations of wall configurations.
     /// Bitshifting is involved.
     /// 8 | N - wall to N
     /// 4 | S - wall to S

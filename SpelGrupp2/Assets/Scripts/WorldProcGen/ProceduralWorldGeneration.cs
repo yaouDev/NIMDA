@@ -57,8 +57,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
     
     private void Awake()
     {
-      
-
         aStar = GetComponent<AStar>();
         tiles = new GameObject[worldSize.x, worldSize.y];
         if (instance != null) Destroy(this.transform.gameObject);
