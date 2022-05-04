@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PathfinderManager : MonoBehaviour {
-    [SerializeField] SimpleGraph graph;
     [SerializeField] float proximityToUseSamePath; //, acceptableDistanceFromTarget;
     private List<Vector3> latestCalculatedPath = new List<Vector3>();
     public static PathfinderManager instance;
@@ -36,7 +35,7 @@ public class PathfinderManager : MonoBehaviour {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
             bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0].normalized, agent.Velocity.normalized) > 0;
             if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToUseSamePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
-                List<Vector3> pathToStartOflatest = AStar2(currentPosition, latestCalculatedPath[0], false);
+                List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
                 pathToStartOflatest.AddRange(latestCalculatedPath);
                 agent.CurrentPath = pathToStartOflatest;
                 agent.CurrentPathIndex = 0;
@@ -50,8 +49,8 @@ public class PathfinderManager : MonoBehaviour {
         try {
             AI_Controller agentToUpdate = pathQueue.DeleteMin();
             // if agent has been deleted through module un-load
-            // while (agentToUpdate == null && !pathQueue.IsEmpty()) agentToUpdate = pathQueue.DeleteMin();
-            agentToUpdate.CurrentPath = AStar2(agentToUpdate.Position, agentToUpdate.CurrentTarget, true);
+            while (agentToUpdate == null && !pathQueue.IsEmpty()) agentToUpdate = pathQueue.DeleteMin();
+            agentToUpdate.CurrentPath = AStar(agentToUpdate.Position, agentToUpdate.CurrentTarget, true);
             agentToUpdate.CurrentPathIndex = 0;
         } catch (System.Exception) {
             //Debug.Log("No current requested paths");
@@ -67,42 +66,9 @@ public class PathfinderManager : MonoBehaviour {
         HashSet<Vector3> explored = new HashSet<Vector3>();
         Dictionary<Vector3, Vector3> via = new Dictionary<Vector3, Vector3>();
         Dictionary<Vector3, float> cost = new Dictionary<Vector3, float>();
-        Vector3 closestNode = graph.GetClosestNode(startPos);
-        priorityQueue.Insert(closestNode, 0);
-        via[closestNode] = closestNode;
-        cost[closestNode] = 0;
-
-        while (!priorityQueue.IsEmpty()) {
-            node = priorityQueue.DeleteMin();
-            explored.Add(node);
-            if (node == endPos) break;
-            Dictionary<Vector3, float> currEdges = graph.GetNeighbors(node);
-            foreach (Vector3 neighbor in currEdges.Keys) {
-                edgesTested++;
-                float tmpCost = cost[node] + graph.GetCost(node, neighbor);
-                if ((!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && graph.GetBlockedNode(neighbor).Length == 0) {
-                    cost[neighbor] = tmpCost;
-                    float heurVal = tmpCost + Heuristic(neighbor, endPos);
-                    priorityQueue.Insert(neighbor, heurVal);
-                    via[neighbor] = node;
-                }
-            }
-        }
-        List<Vector3> path = GetPath(via, node, endPos, closestNode);
-        if (updateLatestPath) latestCalculatedPath = path;
-        return path;
-    }
-
-    private List<Vector3> AStar2(Vector3 startPos, Vector3 endPos, bool updateLatestPath) {
-        PriorityQueue<Vector3> priorityQueue = new PriorityQueue<Vector3>();
-        Vector3 node = Vector3.zero;
-        int edgesTested = 0;
-        HashSet<Vector3> explored = new HashSet<Vector3>();
-        Dictionary<Vector3, Vector3> via = new Dictionary<Vector3, Vector3>();
-        Dictionary<Vector3, float> cost = new Dictionary<Vector3, float>();
-        Vector3 closestNode = graph.GetClosestNode(startPos);
-        graph.Insert(closestNode);
-        graph.CreateNeighbors(closestNode, graph.GetPossibleNeighborsKV(closestNode));
+        Vector3 closestNode = DynamicGraph.Instance.GetClosestNode(startPos);
+        DynamicGraph.Instance.Insert(closestNode);
+        DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighborsKV(closestNode));
 
         priorityQueue.Insert(closestNode, 0);
         via[closestNode] = closestNode;
@@ -112,17 +78,12 @@ public class PathfinderManager : MonoBehaviour {
             node = priorityQueue.DeleteMin();
             explored.Add(node);
             if (node == endPos) break;
-            Dictionary<Vector3, float> currEdges = graph.GetPossibleNeighborsKV(node);
-            graph.CreateNeighbors(node, currEdges);
+            Dictionary<Vector3, float> currEdges = DynamicGraph.Instance.GetPossibleNeighborsKV(node);
+            DynamicGraph.Instance.CreateNeighbors(node, currEdges);
             foreach (Vector3 neighbor in currEdges.Keys) {
-                /*        if (!graph.Contains(neighbor) && (graph.IsModuleLoaded(graph.GetModulePosFromWorldPos(neighbor)))) {
-                           graph.Insert(neighbor);
-                           graph.CreateNeighbors(neighbor, graph.GetPossibleNeighborsKV(neighbor));
-                       } */
-
                 edgesTested++;
-                float tmpCost = cost[node] + graph.GetCost(node, neighbor);
-                if (graph.Contains(neighbor) && (!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && graph.GetBlockedNode(neighbor).Length == 0) {
+                float tmpCost = cost[node] + DynamicGraph.Instance.GetCost(node, neighbor);
+                if (DynamicGraph.Instance.Contains(neighbor) && (!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && DynamicGraph.Instance.GetBlockedNode(neighbor).Length == 0) {
                     cost[neighbor] = tmpCost;
                     float heurVal = tmpCost + Heuristic(neighbor, endPos);
                     priorityQueue.Insert(neighbor, heurVal);

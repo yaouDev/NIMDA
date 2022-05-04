@@ -8,7 +8,7 @@ public class AI_Controller : MonoBehaviour {
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private PathfinderManager pathfinder;
-    private SimpleGraph pathfindingGrid;
+    private DynamicGraph pathfindingGrid;
     private LineRenderer lineRenderer;
     private List<Vector3> currentPath;
     private Collider col;
@@ -29,7 +29,7 @@ public class AI_Controller : MonoBehaviour {
         behaviorTree = GetComponent<BehaviorTree>();
         otherEnemyTrigger = GetComponentInChildren<SphereCollider>();
         pathfinder = PathfinderManager.instance;
-        pathfindingGrid = SimpleGraph.Instance;
+        pathfindingGrid = DynamicGraph.Instance;
         rBody = GetComponent<Rigidbody>();
         Physics.IgnoreLayerCollision(12, 12);
         enemyHealth = GetComponent<EnemyHealth>();
