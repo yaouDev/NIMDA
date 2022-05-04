@@ -8,11 +8,13 @@ public class SimpleGraph : MonoBehaviour {
     [Header("Has to be in increments of 0.5")]
     [SerializeField] private float nodeHalfextent;
     [SerializeField] private LayerMask colliderMask;
-    private Dictionary<Vector3, Dictionary<Vector3, float>> nodes;
+    [SerializeField] private int moduleSize = 50;
+    private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
     public static SimpleGraph Instance;
+    CallbackSystem.EventSystem eventSystem;
 
     void Awake() {
-        nodes = new Dictionary<Vector3, Dictionary<Vector3, float>>();
+        masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
         worldPos = transform.position; //gameObject.GetComponent<BoxCollider>().center; //transform.TransformPoint(gameObject.GetComponent<BoxCollider>().center);
         worldPos.y = gameObject.GetComponent<BoxCollider>().center.y;
         worldSize = gameObject.transform.localScale;
@@ -20,33 +22,36 @@ public class SimpleGraph : MonoBehaviour {
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
         InitGraph();
         Instance ??= this;
+        eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
+        /*       eventSystem.RegisterListener<LoadEvent>(methodHere);
+              eventSystem.RegisterListener<UnloadEvent>(methodHere); */
     }
 
     public void Connect(Vector3 node1, Vector3 node2, float cost) {
-        if (nodes.ContainsKey(node1) && nodes.ContainsKey(node2) && !IsConnected(node1, node2)) {
-            nodes[node1].Add(node2, cost);
-            nodes[node2].Add(node1, cost);
+        if (masterGraph.ContainsKey(node1) && masterGraph.ContainsKey(node2) && !IsConnected(node1, node2)) {
+            masterGraph[node1].Add(node2, cost);
+            masterGraph[node2].Add(node1, cost);
         }
     }
 
     public float GetCost(Vector3 firstNode, Vector3 secondNode) {
-        if (IsConnected(firstNode, secondNode)) return nodes[firstNode][secondNode];
+        if (IsConnected(firstNode, secondNode)) return masterGraph[firstNode][secondNode];
         return -1;
     }
 
     public void Insert(Vector3 node) {
-        if (!nodes.ContainsKey(node)) {
-            nodes.Add(node, new Dictionary<Vector3, float>());
+        if (!masterGraph.ContainsKey(node)) {
+            masterGraph.Add(node, new Dictionary<Vector3, float>());
         }
     }
 
     public bool IsConnected(Vector3 firstNode, Vector3 secondNode) {
-        if (nodes.ContainsKey(firstNode) && nodes.ContainsKey(secondNode)) return nodes[firstNode].ContainsKey(secondNode);
+        if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode)) return masterGraph[firstNode].ContainsKey(secondNode);
         return false;
     }
 
     public Dictionary<Vector3, float> getNeighbors(Vector3 node) {
-        if (nodes.ContainsKey(node)) return nodes[node];
+        if (masterGraph.ContainsKey(node)) return masterGraph[node];
         return null;
     }
 
@@ -102,7 +107,7 @@ public class SimpleGraph : MonoBehaviour {
         Insert(startPos);
         Vector3 currentPos = startPos;
         Vector3 prevPos = startPos;
-        while (nodes.Count < numberOfNodes) {
+        while (masterGraph.Count < numberOfNodes) {
             // whole row is done
             if (currentPos.x >= worldPos.x + worldSize.x / 2 - nodeHalfextent) {
                 currentPos.x = startPos.x;
@@ -118,7 +123,7 @@ public class SimpleGraph : MonoBehaviour {
             }
             Insert(currentPos);
         }
-        foreach (Vector3 node in nodes.Keys) {
+        foreach (Vector3 node in masterGraph.Keys) {
             Vector3[] possibleNeighbors = GetPossibleNeighbors(node);
             foreach (Vector3 pNeighbor in possibleNeighbors) {
                 Connect(node, pNeighbor, 1);
@@ -136,6 +141,17 @@ public class SimpleGraph : MonoBehaviour {
         return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleYNeighbor, secondPossibleYNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor };
     }
 
+/*     Dictionary<Vector3, float> GetPossibleNeighborsKV(Vector3 node) {
+        Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
+        secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
+        firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
+        secondPossibleYNeighbor = new Vector3(node.x, node.y - nodeHalfextent * 2, node.z),
+        firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
+        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2);
+
+        Dictionary<Vector3, float> tempNeighbors = new Dictionary<Vector3, float>();
+    }
+ */
     public Collider[] GetBlockedNode(Vector3 position) {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
     }
@@ -156,5 +172,11 @@ public class SimpleGraph : MonoBehaviour {
             count++;
         }
     } */
+
+    Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
+        return new Vector2Int((int)worldPos.x / moduleSize, (int)worldPos.z / moduleSize);
+    }
+
+
 
 }

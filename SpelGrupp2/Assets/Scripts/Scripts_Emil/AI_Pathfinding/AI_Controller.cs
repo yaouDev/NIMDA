@@ -19,6 +19,7 @@ public class AI_Controller : MonoBehaviour {
     private BehaviorTree behaviorTree;
     private bool isStopped = true;
     GameObject[] targets;
+    private Vector3 destination;
 
     // Start is called before the first frame update
     void Start() {
@@ -72,13 +73,17 @@ public class AI_Controller : MonoBehaviour {
             return false;
         }
     }
-    public Vector3 ClosestTarget {
+    public Vector3 ClosestPlayer {
         get {
             GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
             Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
             return closestTarget.transform.position;
         }
+    }
 
+    public Vector3 Destination {
+        get { return destination; }
+        set { destination = value; }
     }
 
     public int CurrentPathIndex {
@@ -111,7 +116,7 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public float DistanceFromTarget {
-        get { return Vector3.Distance(ClosestTarget, Position); }
+        get { return Vector3.Distance(ClosestPlayer, Position); }
     }
 
     public Vector3 Velocity {
@@ -151,25 +156,25 @@ public class AI_Controller : MonoBehaviour {
 
     // causes FPS to tank. Needs a better solution
 
-/*     private void OnTriggerStay(Collider other) {
-        if (other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
-            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
-            Vector3 valueToTest = transform.position;
-            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
-            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
-            if ((dot >= 0) || valueToTest == transform.position) {
-                float localSpeed = speed;
-                Vector3 forceToAdd = Vector3.zero;
-                if (isStopped) {
-                    localSpeed = speed * 0.33f;
-                    forceToAdd = -directionOfOtherEnemy.normalized * localSpeed * 0.2f;
-                } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.2f).normalized * localSpeed * 0.05f;
-                forceToAdd.y = 0;
-                // I have no idea why this suddenly made the force so explosive
-                rBody.AddForce(forceToAdd, ForceMode.Force);
+    /*     private void OnTriggerStay(Collider other) {
+            if (other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
+                Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
+                Vector3 valueToTest = transform.position;
+                if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
+                float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
+                if ((dot >= 0) || valueToTest == transform.position) {
+                    float localSpeed = speed;
+                    Vector3 forceToAdd = Vector3.zero;
+                    if (isStopped) {
+                        localSpeed = speed * 0.33f;
+                        forceToAdd = -directionOfOtherEnemy.normalized * localSpeed * 0.2f;
+                    } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.2f).normalized * localSpeed * 0.05f;
+                    forceToAdd.y = 0;
+                    // I have no idea why this suddenly made the force so explosive
+                    rBody.AddForce(forceToAdd, ForceMode.Force);
+                }
             }
-        }
-    } */
+        } */
 
     private void AdjustForLatePathUpdate() {
         if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {
@@ -199,7 +204,8 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public void UpdateTarget() {
-        desiredTarget = ClosestTarget;
+        if (destination == null) desiredTarget = ClosestPlayer;
+        else desiredTarget = Destination;
         activeTarget = desiredTarget;
         if (pathfindingGrid.GetBlockedNode(desiredTarget).Length > 0) {
             targetBlocked = pathfindingGrid.GetClosestNodeNotBlocked(desiredTarget, Position);
