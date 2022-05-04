@@ -12,7 +12,7 @@ public class SimpleGraph : MonoBehaviour {
     private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
     public static SimpleGraph Instance;
     CallbackSystem.EventSystem eventSystem;
-    private Vector2Int[] loadedModules;
+    private HashSet<Vector2Int> loadedModules;
 
     void Awake() {
         masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
@@ -21,9 +21,15 @@ public class SimpleGraph : MonoBehaviour {
         worldSize = gameObject.transform.localScale;
         worldPos.y += worldSize.y / 2;
         numberOfNodes = (int)((worldSize.x / (nodeHalfextent * 2)) * (worldSize.y / (nodeHalfextent * 2)) * (worldSize.z / (nodeHalfextent * 2)));
-        InitGraph();
+        //InitGraph();
         Instance ??= this;
-        loadedModules = new Vector2Int[6];
+        loadedModules = new HashSet<Vector2Int>();
+        loadedModules.Add(new Vector2Int(0, 0));
+        loadedModules.Add(new Vector2Int(1, 0));
+        loadedModules.Add(new Vector2Int(0, 1));
+        loadedModules.Add(new Vector2Int(1, 1));
+        loadedModules.Add(new Vector2Int(0, 2));
+        loadedModules.Add(new Vector2Int(1, 2));
         eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
         /*       eventSystem.RegisterListener<LoadEvent>(methodHere);
               eventSystem.RegisterListener<UnloadEvent>(methodHere); */
@@ -34,6 +40,14 @@ public class SimpleGraph : MonoBehaviour {
             masterGraph[node1].Add(node2, cost);
             masterGraph[node2].Add(node1, cost);
         }
+    }
+
+    public void Disconnect(Vector3 firstNode, Vector3 secondNode) {
+        //TODO        
+    }
+
+    public bool Contains(Vector3 node) {
+        return masterGraph.ContainsKey(node);
     }
 
     public float GetCost(Vector3 firstNode, Vector3 secondNode) {
@@ -52,15 +66,40 @@ public class SimpleGraph : MonoBehaviour {
         return false;
     }
 
-    public Dictionary<Vector3, float> getNeighbors(Vector3 node) {
+    public Dictionary<Vector3, float> GetNeighbors(Vector3 node) {
         if (masterGraph.ContainsKey(node)) return masterGraph[node];
         return null;
     }
 
-    public Vector3 GetClosestNode(Vector3 pos) {
+    public Vector3 GetClosestNode2(Vector3 pos) {
         Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
         float x = 0, y = localWorldPos.y, z = x;
         float leftMostX = worldPos.x - (worldSize.x / 2) + nodeHalfextent;
+        float topMostZ = worldPos.z + (worldSize.z / 2) - nodeHalfextent;
+        float rightMostX = worldPos.x + (worldSize.x / 2) - nodeHalfextent;
+        float bottomMostZ = worldPos.z - (worldSize.z / 2) + nodeHalfextent;
+
+        int nodesFromLeftEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.x - leftMostX) / (nodeHalfextent * 2));
+        int nodesFromTopEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.z - topMostZ) / (nodeHalfextent * 2));
+
+        x = leftMostX + (nodesFromLeftEdge * (nodeHalfextent * 2));
+        z = topMostZ - (nodesFromTopEdge * (nodeHalfextent * 2));
+
+        // literal edge cases
+        if (pos.x < leftMostX) x = leftMostX;
+        else if (pos.x > rightMostX) x = rightMostX;
+        if (pos.z > topMostZ) z = topMostZ;
+        else if (pos.z < bottomMostZ) z = bottomMostZ;
+
+        return new Vector3(x, y, z);
+    }
+
+    public Vector3 GetClosestNode(Vector3 pos) {
+        //Vector3 localWorldPos = new Vector3(worldPos.x, worldPos.y + (worldSize.y / 2), worldPos.z);
+        Vector2Int modulePos = GetModulePosFromWorldPos(pos);
+        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 0.55f, modulePos.y + (moduleSize / 2) - 1);
+        float x = 0, y = localWorldPos.y, z = x;
+        float leftMostX = localWorldPos.x - (worldSize.x / 2) + nodeHalfextent;
         float topMostZ = worldPos.z + (worldSize.z / 2) - nodeHalfextent;
         float rightMostX = worldPos.x + (worldSize.x / 2) - nodeHalfextent;
         float bottomMostZ = worldPos.z - (worldSize.z / 2) + nodeHalfextent;
@@ -139,17 +178,17 @@ public class SimpleGraph : MonoBehaviour {
         firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
         secondPossibleYNeighbor = new Vector3(node.x, node.y - nodeHalfextent * 2, node.z),
         firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
-        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2);
+        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2);
         return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleYNeighbor, secondPossibleYNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor };
     }
 
-    Dictionary<Vector3, float> GetPossibleNeighborsKV(Vector3 node) {
+    public Dictionary<Vector3, float> GetPossibleNeighborsKV(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleYNeighbor = new Vector3(node.x, node.y + nodeHalfextent * 2, node.z),
         secondPossibleYNeighbor = new Vector3(node.x, node.y - nodeHalfextent * 2, node.z),
         firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
-        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2);
+        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2);
 
         Dictionary<Vector3, float> tempNeighbors = new Dictionary<Vector3, float>();
         tempNeighbors.Add(firstPossibleXNeighbor, 1);
@@ -167,9 +206,9 @@ public class SimpleGraph : MonoBehaviour {
 
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
-    /* private void OnDrawGizmos() {
+/*     private void OnDrawGizmos() {
         int count = 0;
-        foreach (Vector3 v in nodes.Keys) {
+        foreach (Vector3 v in masterGraph.Keys) {
             bool blocked = GetBlockedNode(v).Length == 0;
             if (blocked) {
                 Gizmos.color = Color.green;
@@ -182,25 +221,23 @@ public class SimpleGraph : MonoBehaviour {
         }
     } */
 
-    Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
+    public Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
         return new Vector2Int((int)worldPos.x / moduleSize, (int)worldPos.z / moduleSize);
     }
 
-    private bool IsModuleLoaded(Vector2Int modulePos) {
-        foreach (Vector2Int pos in loadedModules) {
-            if (modulePos == pos) return true;
-        }
-        return false;
+    public bool IsModuleLoaded(Vector2Int modulePos) {
+        return loadedModules.Contains(modulePos);
     }
 
-    public void CreateNeighbors(Vector3 node) {
-        foreach (Vector3 pNeighbor in GetPossibleNeighborsKV(node).Keys) {
-            if (IsModuleLoaded(GetModulePosFromWorldPos(node))) {
-                masterGraph.Add(pNeighbor, new Dictionary<Vector3, float>());
-                Connect(node, pNeighbor, 1);
+    public void CreateNeighbors(Vector3 node, Dictionary<Vector3, float> possibleNeighbors) {
+        foreach (Vector3 pNeighbor in possibleNeighbors.Keys) {
+            if (IsModuleLoaded(GetModulePosFromWorldPos(node)) && !masterGraph.ContainsKey(pNeighbor)) {
+                Insert(pNeighbor);
+                Connect(node, pNeighbor, possibleNeighbors[pNeighbor]);
+                foreach (Vector3 neighborNeighbor in GetPossibleNeighbors(pNeighbor)) {
+                    Connect(neighborNeighbor, pNeighbor, 1);
+                }
             }
         }
     }
-
-
 }

@@ -19,7 +19,7 @@ public class AI_Controller : MonoBehaviour {
     private BehaviorTree behaviorTree;
     private bool isStopped = true;
     GameObject[] targets;
-    private Vector3 destination;
+    private Vector3 destination = Vector3.zero;
 
     // Start is called before the first frame update
     void Start() {
@@ -43,14 +43,14 @@ public class AI_Controller : MonoBehaviour {
         UpdateTarget();
         behaviorTree.Update();
         // This code is for debugging purposes only, shows current calculated path
-        if (currentPath != null && currentPath.Count != 0) {
-            Vector3 prevPos = currentPath[0];
-            foreach (Vector3 pos in currentPath) {
-                if (pos != prevPos)
-                    Debug.DrawLine(prevPos, pos, Color.blue);
-                prevPos = pos;
-            }
-        }
+        /*        if (currentPath != null && currentPath.Count != 0) {
+                   Vector3 prevPos = currentPath[0];
+                   foreach (Vector3 pos in currentPath) {
+                       if (pos != prevPos)
+                           Debug.DrawLine(prevPos, pos, Color.blue);
+                       prevPos = pos;
+                   }
+               } */
     }
 
     public IEnumerator UpdatePath() {
@@ -204,7 +204,7 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public void UpdateTarget() {
-        if (destination == null) desiredTarget = ClosestPlayer;
+        if (destination == Vector3.zero) desiredTarget = ClosestPlayer;
         else desiredTarget = Destination;
         activeTarget = desiredTarget;
         if (pathfindingGrid.GetBlockedNode(desiredTarget).Length > 0) {
