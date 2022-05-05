@@ -107,11 +107,11 @@ public class DynamicGraph : MonoBehaviour {
         Collider[] cols = GetBlockedNode(currentNode);
         if (cols.Length != 0) {
             Vector3 directionToMoveBack = (cols[0].transform.position - currentPosition).normalized;
-            float longestExtent = cols[0].bounds.extents.x;
-            if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
-            else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
-            if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2;
-            currentNode += directionToMoveBack * longestExtent;
+            /*        float longestExtent = cols[0].bounds.extents.x;
+                    if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
+                    else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
+                    if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2; */
+            currentNode += directionToMoveBack * nodeHalfextent * 4f;
             return GetClosestNodeNotBlocked(currentNode, currentPosition);
         } else {
             currentNode = GetClosestNode(currentNode);

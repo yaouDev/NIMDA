@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawnController : MonoBehaviour
-{
+public class EnemySpawnController : MonoBehaviour {
     [SerializeField] private GameObject spawnThis;
     [SerializeField] private int maxSpawnCount;
     private int spawnCount;
@@ -18,40 +17,32 @@ public class EnemySpawnController : MonoBehaviour
     [SerializeField] private int spawnDistanceMin;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
         players = GameObject.FindGameObjectsWithTag("Player");
         StartCoroutine(SpawnObject());
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
 
     }
 
-    IEnumerator SpawnObject()
-    {
-        while (true)
-        {
-            if (spawnLocations.Length == 0)
-            {
+    IEnumerator SpawnObject() {
+        while (true) {
+            if (spawnLocations.Length == 0) {
                 spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
             }
 
-           // Debug.Log("hello");
+            // Debug.Log("hello");
             Debug.Log(spawnLocations.Length);
 
-            for (int i = 0; i < spawnLocations.Length; i++)
-            {
-                if ((Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax) || (Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax))
-                {
+            for (int i = 0; i < spawnLocations.Length; i++) {
+                if ((Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax) || (Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax)) {
                     nearbySpawners.Add(spawnLocations[i]);
                 }
             }
-            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
-            {
+            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount) {
                 index = Random.Range(0, nearbySpawners.Count);
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;
@@ -60,6 +51,7 @@ public class EnemySpawnController : MonoBehaviour
                 spawnCount += 1;
             }
             yield return new WaitForSeconds(spawnCooldown);
+            Debug.Log("Enemy spawn, fps" + 1.0f / Time.deltaTime);
         }
     }
 }
