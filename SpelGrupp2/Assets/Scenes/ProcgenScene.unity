@@ -309,6 +309,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PathfindingManager
       objectReference: {fileID: 0}
+    - target: {fileID: 638510697482265351, guid: f1e0ea23fbbfcf04e807f7813f33e464, type: 3}
+      propertyPath: colliderMask.m_Bits
+      value: 8448
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1e0ea23fbbfcf04e807f7813f33e464, type: 3}
 --- !u!1001 &1567038917
@@ -538,6 +542,18 @@ PrefabInstance:
     - target: {fileID: 326990608535946401, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990608734731272, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990608734731272, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 24439
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990608769707817, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 24503
       objectReference: {fileID: 0}
     - target: {fileID: 1652920257267338416, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.size
