@@ -6,6 +6,7 @@ namespace CallbackSystem
 {
     public class HealthBarUpdateListener : MonoBehaviour
     {
+        [Header("Assign both players BatteryUI component")]
         [SerializeField] private BatteryUI[] players;
 
         public void Start()

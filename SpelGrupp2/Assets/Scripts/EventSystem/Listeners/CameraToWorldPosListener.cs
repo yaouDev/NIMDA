@@ -7,6 +7,7 @@ namespace CallbackSystem
 {
     public class CameraToWorldPosListener : MonoBehaviour
     {
+        [Header("Assign both players BatteryUI component")]
         [SerializeField] private GameObject player1CharUI, player2CharUI;
         private GameObject currCharUI;
         public void Start()

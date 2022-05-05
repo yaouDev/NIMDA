@@ -6,7 +6,7 @@ public class ExplosiveBullet : MonoBehaviour
 {
     //Assignables
     [SerializeField] private Rigidbody rigidBody;
-    [SerializeField] private GameObject explosion;
+    //[SerializeField] private GameObject explosion;
     [SerializeField] private LayerMask whatIsTarget;
     [SerializeField] private GameObject[] players;
 
@@ -52,10 +52,10 @@ public class ExplosiveBullet : MonoBehaviour
     private void Explode()
     {
         //Intantiate Explosion
-        if(explosion != null)
+/*        if(explosion != null)
         {
             Instantiate(explosion, transform.position, Quaternion.identity);
-        }
+        }*/
         //Check for Enemies
         Collider[] targets = Physics.OverlapSphere(transform.position, explosionRange, whatIsTarget);
         for (int i = 0; i < targets.Length; i++)
