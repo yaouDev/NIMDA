@@ -46,6 +46,12 @@ namespace CallbackSystem
         public int c, t, i;
     }
 
+    public class UpdateUIEvent : Event
+    {
+        public bool isAlive;
+
+    }
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.

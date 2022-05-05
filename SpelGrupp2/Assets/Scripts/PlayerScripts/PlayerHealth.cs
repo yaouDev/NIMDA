@@ -21,12 +21,14 @@ namespace CallbackSystem
         private PlayerAttack attackAbility;
         private PlayerController movement;
         private HealthUpdateEvent healthEvent;
+        private UpdateUIEvent UIEvent;
         private bool started = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake()
         {
             healthEvent = new HealthUpdateEvent();
+            UIEvent = new UpdateUIEvent();
         }
         private void Start()
         {
@@ -78,6 +80,9 @@ namespace CallbackSystem
             attackAbility.Die();
             movement.Die();
             visuals.SetActive(false);
+            UIEvent.isPlayerOne = isPlayerOne;
+            UIEvent.isAlive = alive;
+            EventSystem.Current.FireEvent(UIEvent);
         }
 
         public void Respawn()
@@ -86,6 +91,9 @@ namespace CallbackSystem
             currHealth = maxHealth;
             batteryCount = batteryRespawnCount;
             visuals.SetActive(true);
+            UIEvent.isPlayerOne = isPlayerOne;
+            UIEvent.isAlive = alive;
+            EventSystem.Current.FireEvent(UIEvent);
             attackAbility.Respawn();
             movement.Respawn();
             UpdateHealthUI();
