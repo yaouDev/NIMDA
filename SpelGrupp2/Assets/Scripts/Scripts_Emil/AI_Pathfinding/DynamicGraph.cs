@@ -80,7 +80,7 @@ public class DynamicGraph : MonoBehaviour {
 
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector2Int modulePos = GetModulePosFromWorldPos(pos);
-        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 2f, modulePos.y + (moduleSize / 2) - 1);
+        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 1.6f, modulePos.y + (moduleSize / 2) - 1);
         float x = 0, y = localWorldPos.y, z = x;
         float leftMostX = localWorldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = localWorldPos.z + (moduleSize / 2) - nodeHalfextent;
