@@ -69,7 +69,6 @@ namespace CallbackSystem {
         public void WeaponSwap(InputAction.CallbackContext context) {
             if (context.performed) {
                 laserWeapon = !laserWeapon;
-                Debug.Log($"laserWeapon {laserWeapon.ToString()}");
                 // TODO [Sound] Play weapon swap sound(s)
             }
         }
@@ -80,7 +79,6 @@ namespace CallbackSystem {
 
                 if (Mathf.Abs(scrollDelta) > 100.0f) {
                     laserWeapon = scrollDelta > 0;
-                    Debug.Log($"laserWeapon scroll {laserWeapon.ToString()}");
                     // TODO [Sound] Play weapon swap sound(s)
                 }
             }

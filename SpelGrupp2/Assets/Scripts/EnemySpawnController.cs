@@ -40,9 +40,6 @@ public class EnemySpawnController : MonoBehaviour
                 spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
             }
 
-           // Debug.Log("hello");
-            Debug.Log(spawnLocations.Length);
-
             for (int i = 0; i < spawnLocations.Length; i++)
             {
                 if ((Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax) || (Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax))
