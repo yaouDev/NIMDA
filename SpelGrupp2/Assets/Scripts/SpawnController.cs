@@ -6,8 +6,8 @@ public class SpawnController : MonoBehaviour
 {
     [SerializeField] private GameObject spawnThis;
     [SerializeField] private int maxSpawnCount;
-    [SerializeField] private int dayMaxSpawnCount;
-    [SerializeField] private int nightMaxSpawnCount;
+    //[SerializeField] private int dayMaxSpawnCount;
+    //[SerializeField] private int nightMaxSpawnCount;
     [SerializeField] private float lifeTime = 10f;
     public int spawnCount;
     [SerializeField] private GameObject[] spawnLocations;
@@ -41,16 +41,19 @@ public class SpawnController : MonoBehaviour
                 if (Vector3.Distance(player2.transform.position, spawnLocations[i].transform.position) < spawnDistance)
                 {
                     nearbySpawners.Add(spawnLocations[i]);
+                    if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
+                    {
+                        index = Random.Range(0, nearbySpawners.Count);
+                        activeSpawner = nearbySpawners[index];
+                        spawnPos = activeSpawner.transform;
+                        Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+                        spawnCount += 1;
+                    }
                 }
-            }
-            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
-            {
-                index = Random.Range(0, nearbySpawners.Count);
-                activeSpawner = nearbySpawners[index];
-                spawnPos = activeSpawner.transform;
-                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
-                nearbySpawners.Clear();
-                spawnCount += 1;
+                else
+                {
+                    nearbySpawners.Clear();
+                }
             }
             yield return new WaitForSeconds(spawnCooldown);
         }

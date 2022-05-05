@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour {
+public class EnemyHealth : MonoBehaviour
+{
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private float fleeHealthtreshold;
@@ -11,47 +12,57 @@ public class EnemyHealth : MonoBehaviour {
     private float healthBarLength;
     private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
     private GameObject drop;
-
-    private float currentHealth
+    private float currentHealth; 
+    public float CurrentHealth
     {
         get { return currentHealth; }
         set { currentHealth = Mathf.Clamp(value, 0, fullHealth); }
     }
-    private void Awake() {
-        currentHealth = fullHealth;
+    private void Awake()
+    {
+        CurrentHealth = fullHealth;
     }
-    void Update() {
+    void Update()
+    {
 
-        currentHealth += Time.deltaTime * healthRestoreRate;
 
-        if (currentHealth <= 0) {
+        if (CurrentHealth <= 0)
+        {
             Die();
+        }
+        else
+        {
+            CurrentHealth += Time.deltaTime * healthRestoreRate;
+
         }
     }
     public float GetCurrentHealth()
     {
-        return currentHealth;
+        return CurrentHealth;
     }
     public float GetFleeHealthTreshold()
     {
         return fleeHealthtreshold;
     }
 
-    public void TakeDamage() {
-        --currentHealth;
+    public void TakeDamage()
+    {
+        --CurrentHealth;
     }
 
-    public void Die() {
+    public void Die()
+    {
         DropLoot();
         Destroy(gameObject);
 
     }
 
-  /*  public float GetCurrentHealth() {
-        return currHealth;
-    }*/
+    /*  public float GetCurrentHealth() {
+          return currHealth;
+      }*/
 
-    public void DropLoot() {
+    public void DropLoot()
+    {
         int item = Random.Range(0, dropList.Length);
         drop = dropList[item];
         GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
