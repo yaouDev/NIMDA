@@ -41,6 +41,7 @@ public class AttackNode : Node
 
         if (isShooting && CheckIfCoverIsValid() == false)
         {
+            agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
 

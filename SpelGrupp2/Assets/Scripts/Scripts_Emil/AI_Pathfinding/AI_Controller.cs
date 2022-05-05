@@ -221,9 +221,10 @@ public class AI_Controller : MonoBehaviour {
         if (destination == Vector3.zero) desiredTarget = ClosestPlayer;
         else desiredTarget = Destination;
         activeTarget = desiredTarget;
-        if (DynamicGraph.Instance.GetBlockedNode(desiredTarget).Length > 0) {
-            targetBlocked = DynamicGraph.Instance.GetClosestNodeNotBlocked(desiredTarget, Position);
-            activeTarget = targetBlocked;
-        }
+        activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
+        /*      if (DynamicGraph.Instance.GetBlockedNode(desiredTarget).Length > 0) {
+                 targetBlocked = DynamicGraph.Instance.GetClosestNodeNotBlocked(desiredTarget, Position);
+                 activeTarget = targetBlocked;
+             } */
     }
 }

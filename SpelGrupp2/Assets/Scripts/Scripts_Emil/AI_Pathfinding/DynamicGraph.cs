@@ -80,7 +80,7 @@ public class DynamicGraph : MonoBehaviour {
 
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector2Int modulePos = GetModulePosFromWorldPos(pos);
-        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 2f, modulePos.y + (moduleSize / 2) - 1);
+        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 1.6f, modulePos.y + (moduleSize / 2) - 1);
         float x = 0, y = localWorldPos.y, z = x;
         float leftMostX = localWorldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = localWorldPos.z + (moduleSize / 2) - nodeHalfextent;
@@ -102,7 +102,7 @@ public class DynamicGraph : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
-    public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
+  /*   public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
         Vector3 currentNode = GetClosestNode(target);
         Collider[] cols = GetBlockedNode(currentNode);
         if (cols.Length != 0) {
@@ -110,7 +110,7 @@ public class DynamicGraph : MonoBehaviour {
             /*        float longestExtent = cols[0].bounds.extents.x;
                     if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
                     else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
-                    if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2; */
+                    if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2; 
             currentNode += directionToMoveBack * nodeHalfextent * 4f;
             return GetClosestNodeNotBlocked(currentNode, currentPosition);
         } else {
@@ -118,7 +118,7 @@ public class DynamicGraph : MonoBehaviour {
         }
         return currentNode;
     }
-
+ */
     private Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
