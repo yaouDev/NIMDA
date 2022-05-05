@@ -24,27 +24,29 @@ public class AttackNode : Node
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
 
+    RaycastHit checkCover;
+
     Quaternion rotation;
 
     public override NodeState Evaluate()
     {
+        //Find Closest Player
         closestTarget = agent.ClosestPlayer;
         relativePos = closestTarget - agent.transform.position;
 
-        // the second argument, upwards, defaults to Vector3.up
+        // Rotate the Enemy towards the player
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
 
-        if (isShooting)
+        if (isShooting && CheckIfCoverIsValid() == false)
         {
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
-            NodeState = NodeState.RUNNING;
+
         }
 
-         return NodeState.FAILURE;
+         return NodeState.RUNNING;
 
 
         /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
@@ -69,13 +71,9 @@ public class AttackNode : Node
 
     void Attack()
     {
-        //Raycast
-        Physics.Raycast(agent.transform.position + agent.transform.forward + Vector3.up, agent.transform.forward, out RaycastHit hitInfo, 30.0f);
-
-        //Check if hit player
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = hitInfo.transform.position - agent.transform.position;
+        directionWithoutSpread = checkCover.point - agent.transform.position;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -93,9 +91,6 @@ public class AttackNode : Node
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
 
-        //granades
-        //currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
@@ -107,35 +102,25 @@ public class AttackNode : Node
                Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
            }*/
 
-        /*  if (hitInfo.collider != null)
-          {
-              PlayerController player = hitInfo.transform.GetComponent<PlayerController>();
-              //player.TakeDamage();
-          }*/
-
-
     }
 
-/*    private IEnumerator AnimateLineRenderer()
+    bool CheckIfCoverIsValid()
     {
-        lineRenderer = agent.GetComponent<LineRenderer>();
-        Vector3[] positions = { agent.transform.position + Vector3.up, agent.transform.position + Vector3.up + agent.transform.forward * 30.0f };
-        lineRenderer.SetPositions(positions);
-        float t = 0.0f;
-        while (t < 1.0f)
-        {
-            float e = Mathf.Lerp(Ease.EaseOutQuint(t), Ease.EaseOutBounce(t), t);
-            float lineWidth = Mathf.Lerp(.5f, .0f, e);
-            lineRenderer.startWidth = lineWidth;
-            lineRenderer.endWidth = lineWidth;
-            Color color = Color.Lerp(Color.white, Color.blue, Ease.EaseInQuart(t));
-            lineRenderer.startColor = color;
-            lineRenderer.endColor = color;
-            t += Time.deltaTime * 3.0f;
-            yield return null;
-        }
+        //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
 
-        lineRenderer.startWidth = 0.0f;
-        lineRenderer.endWidth = 0.0f;
-    }*/
+        // Create the ray to use
+        Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
+        //Casting a ray against the player
+        if (Physics.Raycast(ray, out checkCover, 30.0f))
+        {
+            //Check if that collider is the player
+            if (checkCover.collider.gameObject.CompareTag("Player"))
+            {
+                //There is no cover
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

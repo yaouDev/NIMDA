@@ -5,9 +5,10 @@ using UnityEngine;
 public class ExplosiveBullet : MonoBehaviour
 {
     //Assignables
-    public Rigidbody rigidBody;
-    public GameObject explosion;
-    public LayerMask whatIsTarget;
+    [SerializeField] private Rigidbody rigidBody;
+    [SerializeField] private GameObject explosion;
+    [SerializeField] private LayerMask whatIsTarget;
+    [SerializeField] private GameObject[] players;
 
     //Stats
     [SerializeField] private float bounciness;
@@ -85,6 +86,7 @@ public class ExplosiveBullet : MonoBehaviour
         //Explode if bullet hits enemy directly
         if(collision.collider.CompareTag("Player") && explodeOnTouch)
         {
+            
             Explode();
         }
     }
