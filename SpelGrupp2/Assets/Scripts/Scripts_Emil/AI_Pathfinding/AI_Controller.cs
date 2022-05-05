@@ -38,9 +38,9 @@ public class AI_Controller : MonoBehaviour {
 
 
     void Update() {
-        UpdateTarget();
+        //UpdateTarget();
         behaviorTree.Update();
-        if(!updatingPath) StartCoroutine(UpdatePathInterval());
+        if (!updatingPath) StartCoroutine(UpdatePathInterval());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
@@ -56,6 +56,7 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public IEnumerator UpdatePath() {
+        UpdateTarget();
         updatingPath = true;
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
@@ -63,9 +64,10 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public IEnumerator UpdatePathInterval() {
+        UpdateTarget();
         updatingPath = true;
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(10f);
         updatingPath = false;
     }
 

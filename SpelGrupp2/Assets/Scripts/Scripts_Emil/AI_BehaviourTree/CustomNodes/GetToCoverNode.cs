@@ -22,16 +22,16 @@ public class GetToCoverNode : Node
 
             if (agent.IsPathRequestAllowed())
             {
-                agent.StartCoroutine(agent.UpdatePath());
+                agent.Destination = coverSpot.position;
                 agent.IsStopped = false;
             }
             agent.IsStopped = false;
-            agent.Destination = coverSpot.position; 
+            agent.StartCoroutine(agent.UpdatePath());
             return NodeState.RUNNING;
         }
         else
         {
-        agent.IsStopped = true;
+            agent.IsStopped = true;
             return NodeState.SUCCESS;
         }
     }

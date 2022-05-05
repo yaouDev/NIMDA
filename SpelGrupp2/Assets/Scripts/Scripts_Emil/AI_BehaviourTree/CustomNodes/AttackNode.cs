@@ -94,8 +94,6 @@ public class AttackNode : Node
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
-        //Debug.Log("Shoot");
-
         //MuzzleFlash
         /*   if(AIData.instance.getMuzzleflash != null)
            {

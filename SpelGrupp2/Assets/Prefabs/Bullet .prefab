@@ -93,7 +93,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1166112263790037858}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -111,10 +111,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidBody: {fileID: 1166112263790037856}
-  explosion: {fileID: 8057317586844642601, guid: 57c72971240943042967f42c55463c95, type: 3}
   whatIsTarget:
     serializedVersion: 2
     m_Bits: 3072
+  players: []
   bounciness: 0.5
   useGravity: 0
   explosionDamage: 10

@@ -14,7 +14,6 @@ public class DynamicGraph : MonoBehaviour {
     CallbackSystem.EventSystem eventSystem;
     private HashSet<Vector2Int> loadedModules;
     private Queue<Vector3> nodesToRemove;
-    private bool isRemoving = false;
     [SerializeField] private bool drawGrid = false;
 
     void Start() {
@@ -37,7 +36,7 @@ public class DynamicGraph : MonoBehaviour {
     }
 
     void Update() {
-        if (isRemoving && nodesToRemove.Count > 0) StartCoroutine(RemoveUnloadedNodes());
+        RemoveUnloadedNodes();
     }
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
@@ -108,11 +107,11 @@ public class DynamicGraph : MonoBehaviour {
         Collider[] cols = GetBlockedNode(currentNode);
         if (cols.Length != 0) {
             Vector3 directionToMoveBack = (cols[0].transform.position - currentPosition).normalized;
-            float longestExtent = cols[0].bounds.extents.x;
-            if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
-            else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
-            if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2;
-            currentNode += directionToMoveBack * longestExtent;
+            /*        float longestExtent = cols[0].bounds.extents.x;
+                    if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
+                    else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
+                    if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2; */
+            currentNode += directionToMoveBack * nodeHalfextent * 4f;
             return GetClosestNodeNotBlocked(currentNode, currentPosition);
         } else {
             currentNode = GetClosestNode(currentNode);
@@ -191,25 +190,23 @@ public class DynamicGraph : MonoBehaviour {
     private void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
         if (loadedModules.Contains(deSpawnEvent.Position)) loadedModules.Remove(deSpawnEvent.Position);
         MarkNodesForDeletion(deSpawnEvent.Position);
-        if (!isRemoving) StartCoroutine(RemoveUnloadedNodes());
+        RemoveUnloadedNodes();
 
     }
 
-    private IEnumerator RemoveUnloadedNodes() {
-        isRemoving = true;
+    private void RemoveUnloadedNodes() {
         for (int i = 0; i < 50 || nodesToRemove.Count == 0; i++) {
             if (nodesToRemove.Count > 0) {
                 Vector3 nodeToRemove = nodesToRemove.Dequeue();
                 if (!loadedModules.Contains(GetModulePosFromWorldPos(nodeToRemove))) {
-                    foreach (Vector3 neighbor in GetNeighbors(nodeToRemove).Keys) {
+                    List<Vector3> connectedNodes = new List<Vector3>(GetNeighbors(nodeToRemove).Keys);
+                    foreach (Vector3 neighbor in connectedNodes) {
                         Disconnect(nodeToRemove, neighbor);
                     }
                     masterGraph.Remove(nodeToRemove);
                 }
             } else break;
         }
-        yield return new WaitForEndOfFrame();
-        isRemoving = false;
     }
 
     // not tested yet

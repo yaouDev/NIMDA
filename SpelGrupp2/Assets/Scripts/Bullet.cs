@@ -35,7 +35,6 @@ public class Bullet : MonoBehaviour
             
             if (1 << hitInfo.collider.gameObject.layer == environmentLayerMask)
             {
-                Debug.Log($"hit {hitInfo.transform.name}");
                 Ricochet();
             }
             else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
@@ -55,13 +54,12 @@ public class Bullet : MonoBehaviour
 
     private void DamageEnemy(EnemyHealth enemyHealth)
     {
-        enemyHealth.TakeDamage();
+        enemyHealth.TakeDamage(damage);
     }
 
     private void Ricochet()
     {
         // TODO [Patrik] Play ParticleSystem
-        Debug.Log("ricochet");
         Destroy(gameObject);
     }
 }

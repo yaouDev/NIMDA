@@ -2,62 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnController : MonoBehaviour
-{
+public class EnemySpawnController : MonoBehaviour {
     [SerializeField] private GameObject spawnThis;
     [SerializeField] private int maxSpawnCount;
-    [SerializeField] private int dayMaxSpawnCount;
-    [SerializeField] private int nightMaxSpawnCount;
-    [SerializeField] private float lifeTime = 10f;
-    public int spawnCount;
-    [SerializeField] private GameObject[] spawnLocations;
+    private int spawnCount;
+    private GameObject[] players;
+    private GameObject[] spawnLocations;
     private List<GameObject> nearbySpawners = new List<GameObject>();
-    [SerializeField] private GameObject player2;
     private int index;
     private GameObject activeSpawner;
     private Transform spawnPos;
     [SerializeField] private float spawnCooldown;
-    [SerializeField] private int spawnDistance;
+    [SerializeField] private int spawnDistanceMax;
+    [SerializeField] private int spawnDistanceMin;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
+        players = GameObject.FindGameObjectsWithTag("Player");
         StartCoroutine(SpawnObject());
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //Debug.Log("Active spawner is " + activeSpawner);
+    void Update() {
+
     }
 
-    IEnumerator SpawnObject()
-    {
-        while (true)
-        {
-            if (spawnLocations.Length == 0)
-            {
+    IEnumerator SpawnObject() {
+        while (true) {
+            if (spawnLocations.Length == 0) {
                 spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
             }
 
-           // Debug.Log("hello");
-          //  Debug.Log(spawnLocations.Length);
+            // Debug.Log("hello");
+            Debug.Log(spawnLocations.Length);
 
-            for (int i = 0; i < spawnLocations.Length; i++)
-            {
-                //Debug.Log("I can see it in your eyes");
-
-                if (Vector3.Distance(player2.transform.position, spawnLocations[i].transform.position) < spawnDistance)
-                {
-                   // Debug.Log("is it me you're looking for?");
-
+            for (int i = 0; i < spawnLocations.Length; i++) {
+                if ((Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax) || (Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax)) {
                     nearbySpawners.Add(spawnLocations[i]);
                 }
             }
-            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
-            {
-              //  Debug.Log("wat");
+            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount) {
                 index = Random.Range(0, nearbySpawners.Count);
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;
@@ -66,6 +51,7 @@ public class SpawnController : MonoBehaviour
                 spawnCount += 1;
             }
             yield return new WaitForSeconds(spawnCooldown);
+            Debug.Log("Enemy spawn, fps" + 1.0f / Time.deltaTime);
         }
     }
 }
