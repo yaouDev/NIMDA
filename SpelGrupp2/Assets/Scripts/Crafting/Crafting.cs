@@ -22,7 +22,7 @@ namespace CallbackSystem
         public Recipe batteryRecipe;
         public Recipe bulletRecipe;
         private ResourceUpdateEvent resourceEvent;
-        private PlayerAttack playerAttackScript;
+        public PlayerAttack playerAttackScript;
         private PlayerHealth playerHealthScript;
         private bool isPlayerOne;
         private bool started = false;
@@ -64,11 +64,6 @@ namespace CallbackSystem
                 isPlayerOne = playerAttackScript.IsPlayerOne();
                 resourceEvent.isPlayerOne = isPlayerOne;
                 UpdateResources();
-                //resourceEvent.c = copper;
-                //resourceEvent.t = transistor;
-                //resourceEvent.i = iron;
-                //resourceEvent.ammoChange = false;
-                //EventSystem.Current.FireEvent(resourceEvent);
                 started = true;
             }
         }
@@ -167,7 +162,7 @@ namespace CallbackSystem
 
         public void CraftAmmunition()
         {
-            playerAttackScript.UpdateBulletCount(1);
+            
         }
 
         private void SuccessfulCombo(int recipee)
@@ -175,9 +170,8 @@ namespace CallbackSystem
             switch (recipee)
             {
                 case (0):
-                    //Debug.Log("crafted battery");
-                    //batteryUI.AddBattery();
                     craft.CraftRecipe(batteryRecipe, this);
+                   // playerAttackScript.UpdateBulletCount(1);
                     break;
                 case (1):
                     //Debug.Log("crafted bullet");

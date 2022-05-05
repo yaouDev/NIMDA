@@ -254,6 +254,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 326990607570548878, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
   m_PrefabInstance: {fileID: 1907047203}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &589152670 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1021181802951838962, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+  m_PrefabInstance: {fileID: 1907047203}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589152667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1557366841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -391,9 +402,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 326990607570548866, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: _firstPerson
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[7].m_ActionId
@@ -412,6 +427,10 @@ PrefabInstance:
       value: 5f86060a-1310-4909-b969-228388296fa5
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_ActionId
+      value: 85cf34fb-3c86-4e96-b4e2-989d9f1ccb1b
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[7].m_ActionName
       value: Player/PressBattery[/Keyboard/e,/XInputControllerWindows/buttonEast]
       objectReference: {fileID: 0}
@@ -428,8 +447,12 @@ PrefabInstance:
       value: Player/ChangeWeapon[/XInputControllerWindows/leftShoulder]
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[11].m_ActionName
+      value: Player/PauseButton[/XInputControllerWindows/start,/Keyboard/escape]
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.size
@@ -441,7 +464,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -451,6 +474,10 @@ PrefabInstance:
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 589152670}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -472,6 +499,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PressedBattery
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: WeaponSwapWithMouseWheel
       objectReference: {fileID: 0}
@@ -480,12 +511,20 @@ PrefabInstance:
       value: WeaponSwap
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CallbackSystem.Crafting, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: CallbackSystem.PlayerAttack, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[10].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: CallbackSystem.PlayerAttack, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 326990607570548867, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: m_ActionEvents.Array.data[9].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -654,6 +693,10 @@ PrefabInstance:
     - target: {fileID: 3037943043123946253, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: laserSightMask.m_Bits
       value: 5376
+      objectReference: {fileID: 0}
+    - target: {fileID: 7031754109267524995, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
+      propertyPath: batteryRespawnCount
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8397479276426667862, guid: d8fd7f9842b8247338367b86414ce09d, type: 3}
       propertyPath: bullet
