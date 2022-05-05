@@ -10,15 +10,15 @@ public class IsCoverAvailableNode : Node
     private Transform getBestSpot;
     //private Transform[] availableCoverSpots;
     private Cover[] availableCovers;
-    private Transform target;
+    //private Transform target;
 
 
-    public IsCoverAvailableNode(Cover[] availableCovers, Transform target)
+/*    public IsCoverAvailableNode(Cover[] availableCovers, Transform target)
     {
         this.availableCovers = availableCovers;
         this.target = target;
     }
-
+*/
     public override NodeState Evaluate()
     {
         availableCovers = AIData.instance.GetActiveCovers();

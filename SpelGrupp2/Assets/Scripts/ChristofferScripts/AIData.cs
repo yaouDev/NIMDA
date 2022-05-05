@@ -59,7 +59,8 @@ public class AIData : MonoBehaviour
     private void LoadModule(CallbackSystem.ModuleSpawnEvent moduleSpawnEvent)//ska ha ett event i paramatern
     {
 
-        activeCovers [0] = moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>();
+        //activeCovers [0] = moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>();
+        
 
     }
     private void UnLoadModule(CallbackSystem.ModuleDeSpawnEvent moduleDeSpawnEvent) //ska ha ett event i paramatern
