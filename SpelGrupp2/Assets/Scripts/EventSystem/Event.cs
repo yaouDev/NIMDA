@@ -43,7 +43,7 @@ namespace CallbackSystem
 
     public class ResourceUpdateEvent : Event
     {
-        public int c, t, i;
+        public int c, t, i, a;
     }
 
     public class UpdateUIEvent : Event

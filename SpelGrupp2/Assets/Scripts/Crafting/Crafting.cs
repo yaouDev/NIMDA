@@ -17,7 +17,7 @@ namespace CallbackSystem
         private Craft craft = new Craft();
         public Recipe batteryRecipe;
         public Recipe bulletRecipe;
-        private ResourceUpdateEvent initializeInventory;
+        private ResourceUpdateEvent resEvent;
         private bool isPlayerOne;
         private bool started = false;
 
@@ -37,12 +37,12 @@ namespace CallbackSystem
         {
             if (!started)
             {
-                initializeInventory = new ResourceUpdateEvent();
-                initializeInventory.c = copper;
-                initializeInventory.t = transistor;
-                initializeInventory.i = iron;
-                initializeInventory.isPlayerOne = isPlayerOne;
-                EventSystem.Current.FireEvent(initializeInventory);
+                resEvent = new ResourceUpdateEvent();
+                resEvent.c = copper;
+                resEvent.t = transistor;
+                resEvent.i = iron;
+                resEvent.isPlayerOne = isPlayerOne;
+                EventSystem.Current.FireEvent(resEvent);
             }
         }
  
@@ -150,7 +150,10 @@ namespace CallbackSystem
                     break;
                 case (1):
                     //Debug.Log("crafted bullet");
-                    craft.CraftRecipe(batteryRecipe, this);
+                    craft.CraftRecipe(bulletRecipe, this);
+                    resEvent.isPlayerOne = isPlayerOne;
+                    resEvent.a++;
+                    EventSystem.Current.FireEvent(resEvent);
                     break;
             }
         }
