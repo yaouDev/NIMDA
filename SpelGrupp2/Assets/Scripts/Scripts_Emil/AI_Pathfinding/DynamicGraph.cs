@@ -15,6 +15,7 @@ public class DynamicGraph : MonoBehaviour {
     private HashSet<Vector2Int> loadedModules;
     private Queue<Vector3> nodesToRemove;
     private bool isRemoving = false;
+    [SerializeField] private bool drawGrid = false;
 
     void Start() {
         masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
@@ -147,17 +148,19 @@ public class DynamicGraph : MonoBehaviour {
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
     private void OnDrawGizmos() {
-        int count = 0;
-        foreach (Vector3 v in masterGraph.Keys) {
-            bool blocked = GetBlockedNode(v).Length == 0;
-            if (blocked) {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
-            } else {
-                Gizmos.color = Color.red;
-                Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+        if (drawGrid) {
+            int count = 0;
+            foreach (Vector3 v in masterGraph.Keys) {
+                bool blocked = GetBlockedNode(v).Length == 0;
+                if (blocked) {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                } else {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                }
+                count++;
             }
-            count++;
         }
     }
 
@@ -219,7 +222,8 @@ public class DynamicGraph : MonoBehaviour {
         Vector3 node = new Vector3(leftMostX, worldPos.y, topMostZ);
 
         for (int i = 0; i <= moduleSize * moduleSize; i++) {
-            nodesToRemove.Enqueue(node);
+            if (masterGraph.ContainsKey(node))
+                nodesToRemove.Enqueue(node);
             if (node.x == rightMostX) {
                 node.x = leftMostX;
                 node.z -= (nodeHalfextent * 2);
