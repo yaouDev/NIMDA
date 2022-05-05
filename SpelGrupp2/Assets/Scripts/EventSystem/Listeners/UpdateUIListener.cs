@@ -6,6 +6,7 @@ namespace CallbackSystem
 {
     public class UpdateUIListener : MonoBehaviour
     {
+        [Header("Assign both players BatteryUI component")]
         [SerializeField] private GameObject[] UIs;
         private GameObject UI;
         void Start()
