@@ -352,6 +352,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   laserSelfDmg: 0.25
+  damage: 75
+  bullets: 10
+  bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
 --- !u!114 &326990607570548879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -541,9 +544,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 0
-  transistor: 0
-  iron: 0
+  copper: 55
+  transistor: 55
+  iron: 55
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
 --- !u!114 &326990607570548867
@@ -684,13 +687,69 @@ MonoBehaviour:
     m_ActionId: 02b17aaa-acdb-4f09-95cb-32b1cb41fcdc
     m_ActionName: Player/PressTransistor[/Keyboard/l,/XInputControllerWindows/dpad/right]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: PressedBattery
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 21fd4415-3c65-404e-824d-f3f4173ce54b
-    m_ActionName: Player/PressBattery[/Keyboard/e,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast]
+    m_ActionName: Player/PressBattery[/Keyboard/e,/XInputControllerWindows/buttonEast]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: PressedBullet
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: b38964ba-3e1c-441e-8098-13d8ef6595ff
-    m_ActionName: Player/PressBullet[/Keyboard/q,/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID1/buttonWest,/DualShock4GamepadHID2/buttonWest]
+    m_ActionName: Player/PressBullet[/Keyboard/q,/XInputControllerWindows/buttonWest]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8397479276426667862}
+        m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
+        m_MethodName: WeaponSwapWithMouseWheel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e0007e93-be16-41ae-b1b3-61551032e97e
+    m_ActionName: Player/ChangeWeaponWithMouseScroll[/Mouse/scroll/y]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8397479276426667862}
+        m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
+        m_MethodName: WeaponSwap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5f86060a-1310-4909-b969-228388296fa5
+    m_ActionName: Player/ChangeWeapon[/XInputControllerWindows/leftShoulder]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: MouseKeyboard
   m_DefaultActionMap: Player
@@ -884,6 +943,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   laserSelfDmg: 0.25
+  damage: 75
+  bullets: 10
+  bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
 --- !u!114 &326990607881322125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1073,9 +1135,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 0
-  transistor: 0
-  iron: 0
+  copper: 3
+  transistor: 3
+  iron: 3
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
 --- !u!114 &1652920257267338416
@@ -1244,13 +1306,69 @@ MonoBehaviour:
     m_ActionId: 46abe2c4-8412-4bd3-a1ca-9ca4bc6df6bc
     m_ActionName: Player/PressTransistor[/Keyboard/l,/XInputControllerWindows/dpad/right]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: PressedBattery
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: d7970f3e-fb70-42a2-954e-c7eda9fede36
-    m_ActionName: Player/PressBattery[/Keyboard/e,/DualShock4GamepadHID/buttonEast,/DualShock4GamepadHID1/buttonEast,/DualShock4GamepadHID2/buttonEast]
+    m_ActionName: Player/PressBattery[/Keyboard/e,/XInputControllerWindows/buttonEast]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: PressedBullet
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: b45fd4f2-ae3c-461d-aa37-913d249b84ca
-    m_ActionName: Player/PressBullet[/Keyboard/q,/DualShock4GamepadHID/buttonWest,/DualShock4GamepadHID1/buttonWest,/DualShock4GamepadHID2/buttonWest]
+    m_ActionName: Player/PressBullet[/Keyboard/q,/XInputControllerWindows/buttonWest]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3037943043123946253}
+        m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
+        m_MethodName: WeaponSwapWithMouseWheel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b1bcd2f3-6d51-4988-b9fe-0d114089ea55
+    m_ActionName: Player/ChangeWeaponWithMouseScroll[/Mouse/scroll/y]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3037943043123946253}
+        m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
+        m_MethodName: WeaponSwap
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 718a1e5b-a66f-4434-9123-2600971421ad
+    m_ActionName: Player/ChangeWeapon[/XInputControllerWindows/leftShoulder]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: GamePad
   m_DefaultActionMap: Player

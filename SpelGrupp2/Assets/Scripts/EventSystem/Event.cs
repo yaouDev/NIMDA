@@ -44,6 +44,7 @@ namespace CallbackSystem
     public class ResourceUpdateEvent : Event
     {
         public int c, t, i, a;
+        public bool ammoChange;
     }
 
     public class ActivationUIEvent : Event

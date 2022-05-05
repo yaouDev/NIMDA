@@ -20,8 +20,8 @@ public class BatteryUI : MonoBehaviour
         {
             batteryAmount.gameObject.SetActive(true);
             batteryUI.gameObject.SetActive(true);
-            batteryUI.fillAmount = Ease.EaseInCirc(battery);
-            batteryUI.color = Color.Lerp(Color.red, Color.green, Ease.EaseInCirc(battery));
+            batteryUI.fillAmount = battery;
+            batteryUI.color = Color.Lerp(Color.red, Color.green, battery);
         }
         else
         {
