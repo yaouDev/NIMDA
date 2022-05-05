@@ -41,23 +41,23 @@ public class SpawnController : MonoBehaviour
                 spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
             }
 
-            Debug.Log("hello");
-            Debug.Log(spawnLocations.Length);
+           // Debug.Log("hello");
+          //  Debug.Log(spawnLocations.Length);
 
             for (int i = 0; i < spawnLocations.Length; i++)
             {
-                Debug.Log("I can see it in your eyes");
+                //Debug.Log("I can see it in your eyes");
 
                 if (Vector3.Distance(player2.transform.position, spawnLocations[i].transform.position) < spawnDistance)
                 {
-                    Debug.Log("is it me you're looking for?");
+                   // Debug.Log("is it me you're looking for?");
 
                     nearbySpawners.Add(spawnLocations[i]);
                 }
             }
             if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
             {
-                Debug.Log("wat");
+              //  Debug.Log("wat");
                 index = Random.Range(0, nearbySpawners.Count);
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;

@@ -28,6 +28,8 @@ namespace CallbackSystem
             Iron
         }
 
+        public bool IsPlayerOne() { return isPlayerOne; }
+
         private void Start()
         {
             isPlayerOne = GetComponent<PlayerHealth>().IsPlayerOne();
@@ -43,6 +45,7 @@ namespace CallbackSystem
                 resEvent.i = iron;
                 resEvent.isPlayerOne = isPlayerOne;
                 EventSystem.Current.FireEvent(resEvent);
+                started = true;
             }
         }
  

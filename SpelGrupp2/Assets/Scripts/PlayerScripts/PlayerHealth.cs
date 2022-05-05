@@ -21,14 +21,14 @@ namespace CallbackSystem
         private PlayerAttack attackAbility;
         private PlayerController movement;
         private HealthUpdateEvent healthEvent;
-        private UpdateUIEvent UIEvent;
+        private ActivationUIEvent UIEvent;
         private bool started = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake()
         {
             healthEvent = new HealthUpdateEvent();
-            UIEvent = new UpdateUIEvent();
+            UIEvent = new ActivationUIEvent();
         }
         private void Start()
         {

@@ -23,6 +23,7 @@ namespace CallbackSystem
             currPlayer[1].text = eve.t.ToString();
             currPlayer[2].text = eve.i.ToString();
             currPlayer[3].text = eve.a.ToString();
+            //Debug.Log("Is Player one: " + eve.isPlayerOne + ". || Copper: " + eve.c + ". Transistor: " + eve.t + ". Iron: " + eve.i);
         }
     }
 }

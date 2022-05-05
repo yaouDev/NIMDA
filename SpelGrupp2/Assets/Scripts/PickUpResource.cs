@@ -22,7 +22,7 @@ namespace CallbackSystem
         {
             if (other.gameObject.tag.Equals("Player"))
             {
-                Crafting crafting = other.transform.GetComponent<Crafting>();
+                Crafting crafting = other.gameObject.GetComponent<Crafting>();
                 pickUpDrop(crafting);
                 Destroy(gameObject);
             }
@@ -33,21 +33,29 @@ namespace CallbackSystem
             {
                 case (PickUp.Iron):
                     crafting.iron++;
+                    Debug.Log("Picked up iron");
                     break;
                 case (PickUp.Copper):
                     crafting.copper++;
+                    Debug.Log("Picked up copper");
                     break;
                 case (PickUp.Transistor):
                     crafting.transistor++;
+                    Debug.Log("Picked up transistor");
                     break;
             }
             UpdateRes();
 
             void UpdateRes()
             {
+            Debug.Log("Updated resources");
+
+                UpdateResources.isPlayerOne = crafting.IsPlayerOne();
                 UpdateResources.c = crafting.copper;
                 UpdateResources.t = crafting.transistor;
                 UpdateResources.i = crafting.iron;
+                //Debug.Log("Copper: " + UpdateResources.c + ". Transistor: " + UpdateResources.t + ". Iron: " + UpdateResources.i);
+
                 EventSystem.Current.FireEvent(UpdateResources);
             }
         }
