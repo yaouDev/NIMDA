@@ -8,19 +8,20 @@ using UnityEngine;
 public class IsCoverAvailableNode : Node
 {
     private Transform getBestSpot;
-    private Transform[] availableCoverSpots; 
-/*    private Cover[] availableCovers;
-    private Transform target;
+    //private Transform[] availableCoverSpots;
+    private Cover[] availableCovers;
+    //private Transform target;
 
 
-    public IsCoverAvailableNode(Cover[] availableCovers, Transform target)
+/*    public IsCoverAvailableNode(Cover[] availableCovers, Transform target)
     {
         this.availableCovers = availableCovers;
         this.target = target;
-    }*/
-
+    }
+*/
     public override NodeState Evaluate()
     {
+        availableCovers = AIData.instance.GetActiveCovers();
         Transform bestSpot = FindBestCoverSpot();
         AIData.instance.SetBestCoverSpot(bestSpot);
         return bestSpot != null ? NodeState.SUCCESS : NodeState.FAILURE;
@@ -40,11 +41,11 @@ public class IsCoverAvailableNode : Node
 
         float minAngle = 90;
         Transform bestSpot = null;
-        availableCoverSpots = AIData.instance.GetActiveCovers();
+        availableCovers = AIData.instance.GetActiveCovers();
 
-        for (int i = 0; i < availableCoverSpots.Length; i++)
+        for (int i = 0; i < availableCovers.Length; i++)
         {
-            Transform bestSpotInCover = FindBestSpotInCover(availableCoverSpots[i], ref minAngle);
+            Transform bestSpotInCover = FindBestSpotInCover(availableCovers[i], ref minAngle);
             if (bestSpotInCover != null)
             {
                 bestSpot = bestSpotInCover;
@@ -53,9 +54,9 @@ public class IsCoverAvailableNode : Node
         return bestSpot;
     }
 
-    private Transform FindBestSpotInCover(Transform cover, ref float minAngle)
+    private Transform FindBestSpotInCover(Cover cover, ref float minAngle)
     {
-        Transform[] availableSpots = availableCoverSpots;
+        Transform[] availableSpots = cover.GetCoverSpots();
         Transform bestSpot = null;
 
         for (int i = 0; i < availableSpots.Length; i++)
