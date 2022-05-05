@@ -12,7 +12,7 @@ public class AIData : MonoBehaviour
     private Transform bestCoverSpot;
 
     //private List<Transform> activeCovers = new List<Transform>(); 
-    private Transform [] activeCovers;
+    private Cover [] activeCovers;
     //[SerializeField] private GameObject muzzleflash;
 
     private void Start()
@@ -36,13 +36,14 @@ public class AIData : MonoBehaviour
     }
     public Transform GetBestCoverSpot()
     {
+        
         return bestCoverSpot;
     }
    /* public List<Transform> GetActiveCovers()
     {
         return activeCovers;
     }*/
-   public Transform [] GetActiveCovers()
+   public Cover [] GetActiveCovers()
     {
         return activeCovers;
     }
@@ -58,7 +59,7 @@ public class AIData : MonoBehaviour
     private void LoadModule(CallbackSystem.ModuleSpawnEvent moduleSpawnEvent)//ska ha ett event i paramatern
     {
 
-        activeCovers = moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>().GetCoverSpots();
+        activeCovers [0] = moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>();
 
     }
     private void UnLoadModule(CallbackSystem.ModuleDeSpawnEvent moduleDeSpawnEvent) //ska ha ett event i paramatern
