@@ -16,7 +16,7 @@ public class AI_Controller : MonoBehaviour {
     private int currentPathIndex = 0;
     private bool updatingPath = false;
     private BehaviorTree behaviorTree;
-    private bool isStopped = true;
+    [SerializeField] public bool isStopped = true;
     GameObject[] targets;
     private Vector3 destination = Vector3.zero;
 
@@ -38,7 +38,7 @@ public class AI_Controller : MonoBehaviour {
 
 
     void Update() {
-        //UpdateTarget();
+        UpdateTarget();
         behaviorTree.Update();
         if (!updatingPath) StartCoroutine(UpdatePathInterval());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
@@ -67,7 +67,7 @@ public class AI_Controller : MonoBehaviour {
         UpdateTarget();
         updatingPath = true;
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(4f);
         updatingPath = false;
     }
 
@@ -154,17 +154,29 @@ public class AI_Controller : MonoBehaviour {
         float distToTarget = Vector3.Distance(transform.position, activeTarget);
         bool criticalRangeCond = distToTarget < minCritRange;
         bool distCond = distToTarget > minCritRange && isStopped;
-        return (currentPath == null || distCond || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
+        return ((currentPath == null) || distCond || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
     }
 
 
 
     private void FixedUpdate() {
+        // MoveAwayFromBlockedNode();
         if (!isStopped) {
             AdjustForLatePathUpdate();
             Move();
         }
         Debug.DrawLine(Position, Position + Rigidbody.velocity, Color.red);
+    }
+
+    void MoveAwayFromBlockedNode() {
+        if (Rigidbody.velocity.magnitude < 0.2f) {
+            Vector3 otherPos = DynamicGraph.Instance.GetClosestNode(Position);
+            Collider[] cols = DynamicGraph.Instance.GetBlockedNode(otherPos);
+            if (cols.Length > 0) {
+                Rigidbody.AddForce((otherPos - Position).normalized * speed, ForceMode.Force);
+            }
+        }
+
     }
 
     // causes FPS to tank with many enemies. Needs a better solution

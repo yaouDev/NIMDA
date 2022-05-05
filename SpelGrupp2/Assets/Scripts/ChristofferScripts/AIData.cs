@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIData : MonoBehaviour
-{
+public class AIData : MonoBehaviour {
     public static AIData instance;
 
     [SerializeField] private GameObject bullet;
@@ -12,11 +11,10 @@ public class AIData : MonoBehaviour
     private Transform bestCoverSpot;
 
     //private List<Transform> activeCovers = new List<Transform>(); 
-    private Cover [] activeCovers;
+    private List<Cover> activeCovers = new List<Cover>();
     //[SerializeField] private GameObject muzzleflash;
 
-    private void Start()
-    {
+    private void Start() {
         eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
 
         eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(LoadModule);
@@ -25,26 +23,22 @@ public class AIData : MonoBehaviour
         instance ??= this;
     }
 
-    public GameObject getBullet
-    {
+    public GameObject getBullet {
         get { return bullet; }
     }
 
-    public void SetBestCoverSpot(Transform bestCoverSpot)
-    {
+    public void SetBestCoverSpot(Transform bestCoverSpot) {
         this.bestCoverSpot = bestCoverSpot;
     }
-    public Transform GetBestCoverSpot()
-    {
-        
+    public Transform GetBestCoverSpot() {
+
         return bestCoverSpot;
     }
-   /* public List<Transform> GetActiveCovers()
-    {
-        return activeCovers;
-    }*/
-   public Cover [] GetActiveCovers()
-    {
+    /* public List<Transform> GetActiveCovers()
+     {
+         return activeCovers;
+     }*/
+    public List<Cover> GetActiveCovers() {
         return activeCovers;
     }
 
@@ -58,20 +52,18 @@ public class AIData : MonoBehaviour
 
     private void LoadModule(CallbackSystem.ModuleSpawnEvent moduleSpawnEvent)//ska ha ett event i paramatern
     {
-
-        //activeCovers [0] = moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>();
-        
-
+        activeCovers.Add(moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>());
     }
+
     private void UnLoadModule(CallbackSystem.ModuleDeSpawnEvent moduleDeSpawnEvent) //ska ha ett event i paramatern
     {
-/*        for (int i = 0; i < activeCovers.size; i++)
-        {
+        /*        for (int i = 0; i < activeCovers.size; i++)
+                {
 
-            activeCovers.RemoveRange(moduleDeSpawnEvent.GameObject.GetComponentInChildren<Cover>().GetCoverSpots());
-        }
-*/
- 
+                    activeCovers.RemoveRange(moduleDeSpawnEvent.GameObject.GetComponentInChildren<Cover>().GetCoverSpots());
+                }
+        */
+
     }
 
 

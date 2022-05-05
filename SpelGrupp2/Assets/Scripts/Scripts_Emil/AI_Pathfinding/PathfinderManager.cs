@@ -74,7 +74,11 @@ public class PathfinderManager : MonoBehaviour {
         cost[closestNode] = 0;
 
         while (!priorityQueue.IsEmpty()) {
+
             node = priorityQueue.DeleteMin();
+            if (node.x == 48.5) {
+                Debug.Log("Fak this shit");
+            }
             explored.Add(node);
             if (node == endPos) break;
             Dictionary<Vector3, float> currEdges = DynamicGraph.Instance.GetPossibleNeighborsKV(node);
@@ -82,7 +86,8 @@ public class PathfinderManager : MonoBehaviour {
             foreach (Vector3 neighbor in currEdges.Keys) {
                 edgesTested++;
                 float tmpCost = cost[node] + DynamicGraph.Instance.GetCost(node, neighbor);
-                if (DynamicGraph.Instance.Contains(neighbor) && (!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) && DynamicGraph.Instance.GetBlockedNode(neighbor).Length == 0) {
+                if (DynamicGraph.Instance.Contains(neighbor) && (!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) &&
+                (DynamicGraph.Instance.GetBlockedNode(neighbor).Length == 0) || neighbor == endPos) {
                     cost[neighbor] = tmpCost;
                     float heurVal = tmpCost + Heuristic(neighbor, endPos);
                     priorityQueue.Insert(neighbor, heurVal);

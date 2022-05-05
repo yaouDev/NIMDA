@@ -36,7 +36,7 @@ public class DynamicGraph : MonoBehaviour {
     }
 
     void Update() {
-        RemoveUnloadedNodes();
+        //RemoveUnloadedNodes();
     }
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
@@ -80,7 +80,11 @@ public class DynamicGraph : MonoBehaviour {
 
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector2Int modulePos = GetModulePosFromWorldPos(pos);
-        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 1.6f, modulePos.y + (moduleSize / 2) - 1);
+        Vector3 localWorldPos = new Vector3(0, 1.6f, 0);
+        if (modulePos.x == 0) localWorldPos.x = modulePos.x + (moduleSize / 2);
+        else localWorldPos.x = (modulePos.x * moduleSize - (moduleSize / 2)) + moduleSize;
+        if (modulePos.y == 0) localWorldPos.z = modulePos.y + (moduleSize / 2);
+        else localWorldPos.z = (modulePos.y * moduleSize - (moduleSize / 2)) + moduleSize;
         float x = 0, y = localWorldPos.y, z = x;
         float leftMostX = localWorldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = localWorldPos.z + (moduleSize / 2) - nodeHalfextent;
@@ -102,23 +106,23 @@ public class DynamicGraph : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
-  /*   public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
-        Vector3 currentNode = GetClosestNode(target);
-        Collider[] cols = GetBlockedNode(currentNode);
-        if (cols.Length != 0) {
-            Vector3 directionToMoveBack = (cols[0].transform.position - currentPosition).normalized;
-            /*        float longestExtent = cols[0].bounds.extents.x;
-                    if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
-                    else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
-                    if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2; 
-            currentNode += directionToMoveBack * nodeHalfextent * 4f;
-            return GetClosestNodeNotBlocked(currentNode, currentPosition);
-        } else {
-            currentNode = GetClosestNode(currentNode);
-        }
-        return currentNode;
-    }
- */
+    /*   public Vector3 GetClosestNodeNotBlocked(Vector3 target, Vector3 currentPosition) {
+          Vector3 currentNode = GetClosestNode(target);
+          Collider[] cols = GetBlockedNode(currentNode);
+          if (cols.Length != 0) {
+              Vector3 directionToMoveBack = (cols[0].transform.position - currentPosition).normalized;
+              /*        float longestExtent = cols[0].bounds.extents.x;
+                      if (longestExtent < cols[0].bounds.extents.y) longestExtent = cols[0].bounds.extents.y;
+                      else if (longestExtent < cols[0].bounds.extents.z) longestExtent = cols[0].bounds.extents.z;
+                      if (longestExtent < nodeHalfextent * 2) longestExtent = nodeHalfextent * 2; 
+              currentNode += directionToMoveBack * nodeHalfextent * 4f;
+              return GetClosestNodeNotBlocked(currentNode, currentPosition);
+          } else {
+              currentNode = GetClosestNode(currentNode);
+          }
+          return currentNode;
+      }
+   */
     private Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),

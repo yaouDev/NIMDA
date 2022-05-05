@@ -33,7 +33,6 @@ public class EnemySpawnController : MonoBehaviour {
             if (spawnLocations.Length == 0) {
                 spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
             }
-
             // Debug.Log("hello");
             Debug.Log(spawnLocations.Length);
 
