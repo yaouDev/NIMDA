@@ -6,10 +6,10 @@ using UnityEngine;
 public class AttackNode : Node
 {
     [SerializeField] private float attackRange;
-    [SerializeField] private float turnSpeed = 10.0f;
+    [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float spread = 1.0f;
     [SerializeField] private float shootForce = 100.0f;
-    [SerializeField] private float recoilForce = 2.0f;
+    [SerializeField] private float recoilForce = 0.2f;
     //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
@@ -41,7 +41,12 @@ public class AttackNode : Node
         {
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
+            NodeState = NodeState.RUNNING;
         }
+
+         return NodeState.FAILURE;
+
+
         /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
                     if (agent.Attack.IsShooting()) {
                         agent.Attack.SetShooting(false);
@@ -50,14 +55,12 @@ public class AttackNode : Node
                     agent.IsStopped = true;
                     NodeState = NodeState.SUCCESS;
                 } else NodeState = NodeState.FAILURE; */
-
-        return NodeState.FAILURE;
     }
     public IEnumerator AttackDelay()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         Attack();
-        agent.StartCoroutine(AnimateLineRenderer());
+        //agent.StartCoroutine(AnimateLineRenderer());
         isShooting = true;
 
         yield return new WaitForSeconds(3f);
@@ -113,7 +116,7 @@ public class AttackNode : Node
 
     }
 
-    private IEnumerator AnimateLineRenderer()
+/*    private IEnumerator AnimateLineRenderer()
     {
         lineRenderer = agent.GetComponent<LineRenderer>();
         Vector3[] positions = { agent.transform.position + Vector3.up, agent.transform.position + Vector3.up + agent.transform.forward * 30.0f };
@@ -134,5 +137,5 @@ public class AttackNode : Node
 
         lineRenderer.startWidth = 0.0f;
         lineRenderer.endWidth = 0.0f;
-    }
+    }*/
 }
