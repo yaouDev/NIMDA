@@ -157,8 +157,8 @@ public class AI_Controller : MonoBehaviour {
     }
 
     // causes FPS to tank with many enemies. Needs a better solution
-    private void OnTriggerStay(Collider other) {
-        if (other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
+/*     private void OnTriggerStay(Collider other) {
+        if (other != null && other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
             Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
             Vector3 valueToTest = transform.position;
             if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
@@ -174,7 +174,7 @@ public class AI_Controller : MonoBehaviour {
                 rBody.AddForce(forceToAdd, ForceMode.Force);
             }
         }
-    }
+    } */
 
     private void AdjustForLatePathUpdate() {
         if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {
