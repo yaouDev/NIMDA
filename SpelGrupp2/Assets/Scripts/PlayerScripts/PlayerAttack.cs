@@ -16,6 +16,7 @@ namespace CallbackSystem {
         private Camera cam;
         private bool isAlive = true;
         [SerializeField][Range(0f, 1f)] private float laserSelfDmg = 0.25f;
+        [SerializeField] private float damage = 75.0f;
         [SerializeField] private int bullets = 10;
         [SerializeField] private GameObject bullet;
         private ResourceUpdateEvent ammoEvent;
@@ -69,7 +70,6 @@ namespace CallbackSystem {
         public void WeaponSwap(InputAction.CallbackContext context) {
             if (context.performed) {
                 laserWeapon = !laserWeapon;
-                Debug.Log($"laserWeapon {laserWeapon.ToString()}");
                 // TODO [Sound] Play weapon swap sound(s)
             }
         }
@@ -80,7 +80,6 @@ namespace CallbackSystem {
 
                 if (Mathf.Abs(scrollDelta) > 100.0f) {
                     laserWeapon = scrollDelta > 0;
-                    Debug.Log($"laserWeapon scroll {laserWeapon.ToString()}");
                     // TODO [Sound] Play weapon swap sound(s)
                 }
             }
@@ -106,7 +105,10 @@ namespace CallbackSystem {
             if (hitInfo.collider != null) {
                 EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
                 if (enemy != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
-                    enemy.TakeDamage(); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                {
+                    enemy.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                    Debug.Log($"enemyHealth {enemy.CurrentHealth}");
+                }
             }
         }
 
