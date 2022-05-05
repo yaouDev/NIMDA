@@ -214,7 +214,7 @@ public class DynamicGraph : MonoBehaviour {
 
     // not tested yet
     private void MarkNodesForDeletion(Vector2Int module) {
-        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2) - 1, 0.55f, module.y + (moduleSize / 2) - 1);
+        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2) - 1, 2f, module.y + (moduleSize / 2) - 1);
         float leftMostX = worldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = worldPos.z + (moduleSize / 2) - nodeHalfextent;
         float rightMostX = worldPos.x + (moduleSize / 2) - nodeHalfextent;
