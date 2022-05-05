@@ -6,8 +6,6 @@ namespace CallbackSystem
 {
     public class Craft
     {
-        private ResourceUpdateEvent UpdateResources;
-
         public void CraftRecipe(Recipe recipe, Crafting crafting)
         {
             //Debug.Log("Available copper: " + crafting.copper);
@@ -37,27 +35,25 @@ namespace CallbackSystem
 
             if (canCraft)
             {
-                crafting.copper -= recipe.copperNeeded;
-                crafting.iron -= recipe.ironNeeded;
-                crafting.transistor -= recipe.transistorNeeded;
-
                 if (recipe.product.name.Equals("Battery"))
                 {
-                    //         crafting.batteryUI.AddBattery();
+                    crafting.copper -= recipe.copperNeeded;
+                    crafting.iron -= recipe.ironNeeded;
+                    crafting.transistor -= recipe.transistorNeeded;
+                    crafting.CraftBattery();
+                }
+
+                if (recipe.product.name.Equals("Bullet"))
+                {
+                    crafting.iron -= 3;
+                    crafting.playerAttackScript.UpdateBulletCount(1);
                 }
                 else
                 {
                     Debug.Log("You crafted: " + recipe.product + "!");
                     // TODO: Implement destination for crafted items
                 }
-                UpdateRes();
-            }
-            void UpdateRes()
-            {
-                UpdateResources.c = crafting.copper;
-                UpdateResources.t = crafting.transistor;
-                UpdateResources.i = crafting.iron;
-                EventSystem.Current.FireEvent(UpdateResources);
+                crafting.UpdateResources();
             }
         }
     }

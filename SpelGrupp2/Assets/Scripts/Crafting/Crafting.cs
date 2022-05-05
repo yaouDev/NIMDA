@@ -8,16 +8,22 @@ using UnityEngine.InputSystem;
 
 namespace CallbackSystem
 {
+    /*
+     * Where the players inventory is instantiated, stored and managed.
+     * Calls on method in PlayerAttack when bullet is crafted. 
+     */
     public class Crafting : MonoBehaviour
     {
-        public int copper = 1;
-        public int transistor = 1;
-        public int iron = 1;
+        public int copper;
+        public int transistor;
+        public int iron;
 
         private Craft craft = new Craft();
         public Recipe batteryRecipe;
         public Recipe bulletRecipe;
-        private ResourceUpdateEvent resEvent;
+        private ResourceUpdateEvent resourceEvent;
+        public PlayerAttack playerAttackScript;
+        private PlayerHealth playerHealthScript;
         private bool isPlayerOne;
         private bool started = false;
 
@@ -28,23 +34,36 @@ namespace CallbackSystem
             Iron
         }
 
+        public void UpdateResources()
+        {
+            resourceEvent.c = copper;
+            resourceEvent.t = transistor;
+            resourceEvent.i = iron;
+            resourceEvent.ammoChange = false;
+            EventSystem.Current.FireEvent(resourceEvent);
+        }
+
+
         public bool IsPlayerOne() { return isPlayerOne; }
 
-        private void Start()
+        private void Awake()
         {
-            isPlayerOne = GetComponent<PlayerHealth>().IsPlayerOne();
+            playerAttackScript = GetComponent<PlayerAttack>();
+            playerHealthScript = GetComponent<PlayerHealth>();
+            resourceEvent = new ResourceUpdateEvent();
         }
-        //TODO Rewrite shit-solution so the inventory is updated at start
+
+        public void CraftBattery()
+        {
+            playerHealthScript.IncreaseBattery();
+        }
         private void Update()
         {
             if (!started)
             {
-                resEvent = new ResourceUpdateEvent();
-                resEvent.c = copper;
-                resEvent.t = transistor;
-                resEvent.i = iron;
-                resEvent.isPlayerOne = isPlayerOne;
-                EventSystem.Current.FireEvent(resEvent);
+                isPlayerOne = playerAttackScript.IsPlayerOne();
+                resourceEvent.isPlayerOne = isPlayerOne;
+                UpdateResources();
                 started = true;
             }
         }
@@ -139,7 +158,11 @@ namespace CallbackSystem
             {
                 validRecipe[recipe] = true;
             }
+        }
 
+        public void CraftAmmunition()
+        {
+            
         }
 
         private void SuccessfulCombo(int recipee)
@@ -147,16 +170,12 @@ namespace CallbackSystem
             switch (recipee)
             {
                 case (0):
-                    //Debug.Log("crafted battery");
-                    //batteryUI.AddBattery();
                     craft.CraftRecipe(batteryRecipe, this);
+                   // playerAttackScript.UpdateBulletCount(1);
                     break;
                 case (1):
                     //Debug.Log("crafted bullet");
                     craft.CraftRecipe(bulletRecipe, this);
-                    resEvent.isPlayerOne = isPlayerOne;
-                    resEvent.a++;
-                    EventSystem.Current.FireEvent(resEvent);
                     break;
             }
         }

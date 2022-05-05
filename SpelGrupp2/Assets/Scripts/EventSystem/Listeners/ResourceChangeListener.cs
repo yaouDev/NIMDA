@@ -19,11 +19,16 @@ namespace CallbackSystem
         private void UpdateResources(ResourceUpdateEvent eve)
         {
             currPlayer = eve.isPlayerOne ? player1 : player2;
-            currPlayer[0].text= eve.c.ToString();
-            currPlayer[1].text = eve.t.ToString();
-            currPlayer[2].text = eve.i.ToString();
-            currPlayer[3].text = eve.a.ToString();
-            //Debug.Log("Is Player one: " + eve.isPlayerOne + ". || Copper: " + eve.c + ". Transistor: " + eve.t + ". Iron: " + eve.i);
+            if (eve.ammoChange)
+                currPlayer[3].text = eve.a.ToString();
+            else
+            {
+                currPlayer[0].text = eve.c.ToString();
+                currPlayer[1].text = eve.t.ToString();
+                currPlayer[2].text = eve.i.ToString();
+                //Debug.Log("Is Player one: " + eve.isPlayerOne + ". || Copper: " + eve.c + ". Transistor: " + eve.t + ". Iron: " + eve.i);
+            }
+
         }
     }
 }

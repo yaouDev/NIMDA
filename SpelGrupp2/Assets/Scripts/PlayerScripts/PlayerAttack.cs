@@ -15,24 +15,36 @@ namespace CallbackSystem {
         private PlayerController controller;
         private Camera cam;
         private bool isAlive = true;
-        [SerializeField][Range(0f, 1f)] private float laserSelfDmg = 0.25f;
+        [SerializeField][Range(0f, 1f)] private float laserSelfDmg = 0.1f;
         [SerializeField] private float damage = 75.0f;
         [SerializeField] private int bullets = 10;
         [SerializeField] private GameObject bullet;
-        private ResourceUpdateEvent ammoEvent;
+        private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne;
 
-
+        /*
+         * From where the players weapon and ammunition is instantiated, stored and managed.
+         * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
+         */
         public void Respawn() => isAlive = true;
         public void Die() => isAlive = false;
 
+        public bool IsPlayerOne() { return isPlayerOne; }
+        public void UpdateBulletCount(int amount)
+        {
+            bullets += amount;
+            //resourceEvent.isPlayerOne = isPlayerOne;
+            resourceEvent.ammoChange = true;
+            resourceEvent.a = bullets;
+            EventSystem.Current.FireEvent(resourceEvent);
+        }
 
         private void Awake() {
             controller = GetComponent<PlayerController>();
             cam = GetComponentInChildren<Camera>();
             health = GetComponent<PlayerHealth>();
-            ammoEvent = new ResourceUpdateEvent();
+            resourceEvent = new ResourceUpdateEvent();
             isPlayerOne = health.IsPlayerOne();
 
         }
@@ -40,11 +52,13 @@ namespace CallbackSystem {
             // TODO joystick laser 
             if (!activated)
             {
-                ammoEvent.isPlayerOne = isPlayerOne;
-                ammoEvent.a = bullets;
-                EventSystem.Current.FireEvent(ammoEvent);
+                resourceEvent.ammoChange = true;
+                resourceEvent.isPlayerOne = isPlayerOne;
+                resourceEvent.a = bullets;
+                EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
             }
+
 
             if (isAlive) {
                 aimLineRenderer.enabled = laserWeapon;
@@ -160,10 +174,12 @@ namespace CallbackSystem {
         public void FireProjectileWeapon() {
             if (bullets > 0) {
                 AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
-                bullets--;
-                ammoEvent.isPlayerOne = isPlayerOne;
-                ammoEvent.a = bullets;
-                EventSystem.Current.FireEvent(ammoEvent);
+                UpdateBulletCount(-1);
+                //bullets--;
+                //resourceEvent.isPlayerOne = isPlayerOne;
+                //resourceEvent.a = bullets;
+                //resourceEvent.ammoChange = true;
+                //EventSystem.Current.FireEvent(resourceEvent);
                 Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
 
             }

@@ -12,10 +12,10 @@ namespace CallbackSystem
         }
 
         [SerializeField] private PickUp pickUpType;
-        private ResourceUpdateEvent UpdateResources;
+        private ResourceUpdateEvent resourceEvent;
         private void Awake()
         {
-            UpdateResources = new ResourceUpdateEvent();
+            resourceEvent = new ResourceUpdateEvent();
         }
 
         void OnTriggerEnter(Collider other)
@@ -50,13 +50,14 @@ namespace CallbackSystem
             {
             Debug.Log("Updated resources");
 
-                UpdateResources.isPlayerOne = crafting.IsPlayerOne();
-                UpdateResources.c = crafting.copper;
-                UpdateResources.t = crafting.transistor;
-                UpdateResources.i = crafting.iron;
-                //Debug.Log("Copper: " + UpdateResources.c + ". Transistor: " + UpdateResources.t + ". Iron: " + UpdateResources.i);
+                resourceEvent.isPlayerOne = crafting.IsPlayerOne();
+                resourceEvent.ammoChange = false;
+                resourceEvent.c = crafting.copper;
+                resourceEvent.t = crafting.transistor;
+                resourceEvent.i = crafting.iron;
+                Debug.Log("Copper: " + resourceEvent.c + ". Transistor: " + resourceEvent.t + ". Iron: " + resourceEvent.i);
 
-                EventSystem.Current.FireEvent(UpdateResources);
+                EventSystem.Current.FireEvent(resourceEvent);
             }
         }
     }
