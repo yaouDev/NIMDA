@@ -41,6 +41,11 @@ public class TopDownState : CameraState
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
 	}
 
+	private float smoothDollyTime;
+	private float smoothDampMinVal = .5f;
+	private float smoothDampMaxVal = 2.0f;
+	private Vector3 smoothDampCurrentVelocity;
+	private Vector3 lerpOffset;
 	public override void Run() {
 		Input();
 		
@@ -53,7 +58,42 @@ public class TopDownState : CameraState
 		// both cameras follow the centroid point between the players, split when necessary
 		Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
 		centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, splitMagnitude );
-		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
+		
+		
+		
+		// TODO hack
+		
+		Vector3 offsetDirection = (abovePlayer + thisTransform.position) - Camera.transform.position;
+		
+		Physics.SphereCast(abovePlayer, 
+			.5f, 
+			offsetDirection.normalized, 
+			out  RaycastHit  hit, 
+			offsetDirection.magnitude, 
+			collisionMask);
+		
+		Vector3 offset;
+		if (hit.collider)
+		{
+			offset = topDownOffset.normalized * hit.distance;
+			Debug.Log(hit.collider.name);
+		}
+		else
+		{
+			offset = topDownOffset;
+		}
+		
+		smoothDollyTime = hit.collider ? smoothDampMinVal : smoothDampMaxVal;
+		lerpOffset = Vector3.SmoothDamp(lerpOffset, offset, ref smoothDampCurrentVelocity, smoothDollyTime);
+		
+		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * lerpOffset;
+
+		// TODO hack
+		
+		// CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset; // TODO HACK!!
+		
+		
+		
 		
 		LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude);
 
