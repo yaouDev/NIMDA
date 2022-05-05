@@ -87,7 +87,6 @@ public class ExplosiveBullet : MonoBehaviour
     {
         //Count up colissions
         colissions++;
-        Debug.Log("COLLAAAAJDER?! I barely know her!");
         //Explode if bullet hits enemy directly
         if(other.gameObject.CompareTag("Player") && explodeOnTouch)
         {
