@@ -18,7 +18,10 @@ namespace CallbackSystem {
         [SerializeField][Range(0f, 1f)] private float laserSelfDmg = 0.25f;
         [SerializeField] private int bullets = 10;
         [SerializeField] private GameObject bullet;
+        private ResourceUpdateEvent ammoEvent;
         private bool laserWeapon = true;
+        private bool activated = false, isPlayerOne;
+
 
         public void Respawn() => isAlive = true;
         public void Die() => isAlive = false;
@@ -28,9 +31,19 @@ namespace CallbackSystem {
             controller = GetComponent<PlayerController>();
             cam = GetComponentInChildren<Camera>();
             health = GetComponent<PlayerHealth>();
+            ammoEvent = new ResourceUpdateEvent();
+            isPlayerOne = health.IsPlayerOne();
+
         }
         private void Update() {
             // TODO joystick laser 
+            if (!activated)
+            {
+                ammoEvent.isPlayerOne = isPlayerOne;
+                ammoEvent.a = bullets;
+                EventSystem.Current.FireEvent(ammoEvent);
+            }
+
             if (isAlive) {
                 aimLineRenderer.enabled = laserWeapon;
                 AimDirection();
@@ -145,7 +158,11 @@ namespace CallbackSystem {
             if (bullets > 0) {
                 AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                 bullets--;
+                ammoEvent.isPlayerOne = isPlayerOne;
+                ammoEvent.a = bullets;
+                EventSystem.Current.FireEvent(ammoEvent);
                 Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+
             }
         }
     }
