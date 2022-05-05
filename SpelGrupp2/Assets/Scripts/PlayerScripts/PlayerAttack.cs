@@ -43,6 +43,7 @@ namespace CallbackSystem {
                 ammoEvent.isPlayerOne = isPlayerOne;
                 ammoEvent.a = bullets;
                 EventSystem.Current.FireEvent(ammoEvent);
+                activated = true;
             }
 
             if (isAlive) {

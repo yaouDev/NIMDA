@@ -11,10 +11,10 @@ namespace CallbackSystem
         private GameObject UI;
         void Start()
         {
-            EventSystem.Current.RegisterListener<UpdateUIEvent>(UpdateUI);
+            EventSystem.Current.RegisterListener<ActivationUIEvent>(UpdateUI);
         }
 
-        private void UpdateUI(UpdateUIEvent eve)
+        private void UpdateUI(ActivationUIEvent eve)
         {
             UI = eve.isPlayerOne ? UIs[0] : UIs[1];
             if (eve.isAlive)

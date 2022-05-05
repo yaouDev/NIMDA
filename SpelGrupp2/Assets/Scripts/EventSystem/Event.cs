@@ -46,7 +46,7 @@ namespace CallbackSystem
         public int c, t, i, a;
     }
 
-    public class UpdateUIEvent : Event
+    public class ActivationUIEvent : Event
     {
         public bool isAlive;
 
