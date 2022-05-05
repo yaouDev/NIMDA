@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using CallbackSystem;
 using UnityEngine;
 
 public class ExplosiveBullet : MonoBehaviour
@@ -8,7 +11,7 @@ public class ExplosiveBullet : MonoBehaviour
     [SerializeField] private Rigidbody rigidBody;
     //[SerializeField] private GameObject explosion;
     [SerializeField] private LayerMask whatIsTarget;
-    [SerializeField] private GameObject[] players;
+    //[SerializeField] private GameObject[] players;
 
     //Stats
     [SerializeField] private float bounciness;
@@ -25,6 +28,8 @@ public class ExplosiveBullet : MonoBehaviour
     [SerializeField] private float maxLifeTime;
     [SerializeField] private bool explodeOnTouch = true;
 
+    [SerializeField] private float damage = .1f;
+    
     private int colissions;
 
     PhysicMaterial physicsMat;
@@ -77,17 +82,17 @@ public class ExplosiveBullet : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
-    private void OnCollisionEnter(Collision collision)
+    
+    private void OnTriggerEnter(Collider other)
     {
         //Count up colissions
         colissions++;
-
+        Debug.Log("COLLAAAAJDER?! I barely know her!");
         //Explode if bullet hits enemy directly
-        if(collision.collider.CompareTag("Player") && explodeOnTouch)
+        if(other.gameObject.CompareTag("Player") && explodeOnTouch)
         {
-            
             Explode();
+            other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
         }
     }
 
