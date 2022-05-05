@@ -1,30 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PauseGame : MonoBehaviour
 {
 
     [SerializeField] private GameObject pauseScreen;
-
-    // Start is called before the first frame update
+    private bool isPaused = false;
+    
     void Start()
     {
         pauseScreen.SetActive(false);
     }
+    
+    // // Update is called once per frame
+    // void Update()
+    // {
+    //     if (Input.GetKeyDown("HELP"))
+    //     {
+    //         if (pauseScreen.activeInHierarchy)
+    //         {
+    //             Unpause();
+    //         }
+    //         if (!pauseScreen.activeInHierarchy)
+    //         {
+    //             Pause();
+    //         }
+    //     }
+    // }
 
-    // Update is called once per frame
-    void Update()
+    public void PauseButton(InputAction.CallbackContext context)
     {
-        if (Input.GetKeyDown("HELP"))
+        if (context.performed)
         {
-            if (pauseScreen.activeInHierarchy)
-            {
-                Unpause();
-            }
-            if (!pauseScreen.activeInHierarchy)
+            isPaused = !isPaused;
+            
+            if (isPaused)
             {
                 Pause();
+            }
+            else
+            {
+                Unpause();
             }
         }
     }
