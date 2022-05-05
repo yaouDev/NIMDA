@@ -40,7 +40,7 @@ public class AI_Controller : MonoBehaviour {
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
-        if (!updatingPath) StartCoroutine(UpdatePathInterval());
+        //if (!updatingPath) StartCoroutine(UpdatePathInterval());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
