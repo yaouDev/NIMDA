@@ -141,8 +141,9 @@ public class AI_Controller : MonoBehaviour {
         bool discrepancyCond = nullCond && currentPath[currentPath.Count - 1] != activeTarget &&
         Vector3.Distance(currentPath[currentPath.Count - 1], activeTarget) >= allowedTargetDiscrepancy;
         float distToTarget = Vector3.Distance(transform.position, activeTarget);
-        bool criticalRangeCond = nullCond && distToTarget <= maxCritRange && distToTarget > minCritRange;
-        return (currentPath == null || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
+        bool criticalRangeCond = distToTarget < minCritRange;
+        bool distCond = distToTarget > minCritRange && isStopped;
+        return (currentPath == null || distCond || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
     }
 
 
