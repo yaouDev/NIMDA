@@ -22,6 +22,7 @@ public class AI_Controller : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+
         targets = GameObject.FindGameObjectsWithTag("Player");
         activeTarget = targets[0].transform.position;
         col = GetComponent<Collider>();
@@ -39,6 +40,7 @@ public class AI_Controller : MonoBehaviour {
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
+        if(!updatingPath) StartCoroutine(UpdatePathInterval());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
@@ -57,6 +59,13 @@ public class AI_Controller : MonoBehaviour {
         updatingPath = true;
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
+        updatingPath = false;
+    }
+
+    public IEnumerator UpdatePathInterval() {
+        updatingPath = true;
+        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
+        yield return new WaitForSeconds(5f);
         updatingPath = false;
     }
 
@@ -157,24 +166,24 @@ public class AI_Controller : MonoBehaviour {
     }
 
     // causes FPS to tank with many enemies. Needs a better solution
-    private void OnTriggerStay(Collider other) {
-        if (other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
-            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
-            Vector3 valueToTest = transform.position;
-            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
-            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
-            if ((dot >= 0) || valueToTest == transform.position) {
-                Vector3 forceToAdd = Vector3.zero;
-                if (isStopped) {
-                    //forceToAdd = -directionOfOtherEnemy.normalized * speed * 0.33f;
-                    forceToAdd = Vector3.Lerp(-directionOfOtherEnemy, activeTarget, 0.9f).normalized * speed * 0.15f;
-                } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.85f).normalized * speed * 0.05f;
-                forceToAdd.y = 0;
-                // I have no idea why this suddenly made the force so explosive
-                rBody.AddForce(forceToAdd, ForceMode.Force);
+    /*     private void OnTriggerStay(Collider other) {
+            if (other != null && other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
+                Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
+                Vector3 valueToTest = transform.position;
+                if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
+                float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
+                if ((dot >= 0) || valueToTest == transform.position) {
+                    Vector3 forceToAdd = Vector3.zero;
+                    if (isStopped) {
+                        //forceToAdd = -directionOfOtherEnemy.normalized * speed * 0.33f;
+                        forceToAdd = Vector3.Lerp(-directionOfOtherEnemy, activeTarget, 0.9f).normalized * speed * 0.15f;
+                    } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.85f).normalized * speed * 0.05f;
+                    forceToAdd.y = 0;
+                    // I have no idea why this suddenly made the force so explosive
+                    rBody.AddForce(forceToAdd, ForceMode.Force);
+                }
             }
-        }
-    }
+        } */
 
     private void AdjustForLatePathUpdate() {
         if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {

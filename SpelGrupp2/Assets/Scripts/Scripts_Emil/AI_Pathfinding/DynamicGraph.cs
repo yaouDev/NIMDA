@@ -81,7 +81,7 @@ public class DynamicGraph : MonoBehaviour {
 
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector2Int modulePos = GetModulePosFromWorldPos(pos);
-        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 0.55f, modulePos.y + (moduleSize / 2) - 1);
+        Vector3 localWorldPos = new Vector3(modulePos.x + (moduleSize / 2) - 1, 2f, modulePos.y + (moduleSize / 2) - 1);
         float x = 0, y = localWorldPos.y, z = x;
         float leftMostX = localWorldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = localWorldPos.z + (moduleSize / 2) - nodeHalfextent;
@@ -214,7 +214,7 @@ public class DynamicGraph : MonoBehaviour {
 
     // not tested yet
     private void MarkNodesForDeletion(Vector2Int module) {
-        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2) - 1, 0.55f, module.y + (moduleSize / 2) - 1);
+        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2) - 1, 2f, module.y + (moduleSize / 2) - 1);
         float leftMostX = worldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = worldPos.z + (moduleSize / 2) - nodeHalfextent;
         float rightMostX = worldPos.x + (moduleSize / 2) - nodeHalfextent;
