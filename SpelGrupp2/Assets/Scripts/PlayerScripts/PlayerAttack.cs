@@ -16,6 +16,7 @@ namespace CallbackSystem {
         private Camera cam;
         private bool isAlive = true;
         [SerializeField][Range(0f, 1f)] private float laserSelfDmg = 0.25f;
+        [SerializeField] private float damage = 75.0f;
         [SerializeField] private int bullets = 10;
         [SerializeField] private GameObject bullet;
         private ResourceUpdateEvent ammoEvent;
