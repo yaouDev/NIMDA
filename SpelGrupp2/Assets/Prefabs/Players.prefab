@@ -328,12 +328,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visuals: {fileID: 326990607699453844}
   respawnTime: 5
-  standardRegeneration: 0.25
-  safezoneRegeneration: 0.5
   isPlayerOne: 1
   batteryCount: 1
   batteryRespawnCount: 2
   maxBatteryCount: 3
+  healthReg: 1
 --- !u!114 &8397479276426667862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,11 +543,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 55
-  transistor: 55
-  iron: 55
+  copper: 9
+  transistor: 9
+  iron: 9
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
+  playerAttackScript: {fileID: 0}
 --- !u!114 &326990607570548867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -750,6 +750,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5f86060a-1310-4909-b969-228388296fa5
     m_ActionName: Player/ChangeWeapon[/XInputControllerWindows/leftShoulder]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PauseGame, Assembly-CSharp
+        m_MethodName: PauseButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 85cf34fb-3c86-4e96-b4e2-989d9f1ccb1b
+    m_ActionName: Player/PauseButton[/XInputControllerWindows/start,/Keyboard/escape]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: MouseKeyboard
   m_DefaultActionMap: Player
@@ -919,12 +935,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visuals: {fileID: 326990609148873030}
   respawnTime: 5
-  standardRegeneration: 0.25
-  safezoneRegeneration: 0.5
   isPlayerOne: 0
   batteryCount: 2
   batteryRespawnCount: 2
   maxBatteryCount: 3
+  healthReg: 1
 --- !u!114 &3037943043123946253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1135,11 +1150,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 3
-  transistor: 3
-  iron: 3
+  copper: 9
+  transistor: 9
+  iron: 9
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
+  playerAttackScript: {fileID: 0}
 --- !u!114 &1652920257267338416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1369,6 +1385,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 718a1e5b-a66f-4434-9123-2600971421ad
     m_ActionName: Player/ChangeWeapon[/XInputControllerWindows/leftShoulder]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PauseGame, Assembly-CSharp
+        m_MethodName: PauseButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d9f45120-61ff-4ea9-9de2-a9f84371e0fb
+    m_ActionName: Player/PauseButton[/Keyboard/escape,/XInputControllerWindows/start]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: GamePad
   m_DefaultActionMap: Player
