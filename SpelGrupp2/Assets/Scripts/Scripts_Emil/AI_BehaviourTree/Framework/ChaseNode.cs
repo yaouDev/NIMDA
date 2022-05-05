@@ -8,6 +8,7 @@ public class ChaseNode : Node {
     public float distanceFromTargetToStop;
     public override NodeState Evaluate() {
         if (agent.IsPathRequestAllowed()) {
+            agent.Destination = Vector3.zero;
             agent.StartCoroutine(agent.UpdatePath());
             agent.IsStopped = false;
             NodeState = NodeState.RUNNING;
