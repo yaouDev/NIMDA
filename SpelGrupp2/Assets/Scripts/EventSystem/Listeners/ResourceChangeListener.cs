@@ -7,6 +7,8 @@ namespace CallbackSystem
 {
     public class ResourceChangeListener : MonoBehaviour
     {
+        [Header("Each array consists of the players resources. Hover elements for tooltip")]
+        [Tooltip("'Copper', 'Transistor' and 'Iron' can be found under ResourceUI and 'AmmoCount' under BatteryUI \n Element 0 = Copper \n Element 1 = Transistor \n Element 2 = Iron \n Element 3 = AmmoCount")]
         [SerializeField] private TextMeshProUGUI[] player1, player2;
         private TextMeshProUGUI[] currPlayer;
         void Start()
