@@ -81,10 +81,10 @@ public class DynamicGraph : MonoBehaviour {
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector2Int modulePos = GetModulePosFromWorldPos(pos);
         Vector3 localWorldPos = new Vector3(0, 1.6f, 0);
-        if (modulePos.x == 0) localWorldPos.x = modulePos.x + (moduleSize / 2);
-        else localWorldPos.x = (modulePos.x * moduleSize - (moduleSize / 2)) + moduleSize;
-        if (modulePos.y == 0) localWorldPos.z = modulePos.y + (moduleSize / 2);
-        else localWorldPos.z = (modulePos.y * moduleSize - (moduleSize / 2)) + moduleSize;
+        if (modulePos.x == 0) localWorldPos.x = modulePos.x;
+        else localWorldPos.x = (modulePos.x * moduleSize);
+        if (modulePos.y == 0) localWorldPos.z = modulePos.y;
+        else localWorldPos.z = (modulePos.y * moduleSize);
         float x = 0, y = localWorldPos.y, z = x;
         float leftMostX = localWorldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = localWorldPos.z + (moduleSize / 2) - nodeHalfextent;
@@ -167,8 +167,16 @@ public class DynamicGraph : MonoBehaviour {
         }
     }
 
+    // doesn't really work properly
     public Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
-        return new Vector2Int((int)worldPos.x / moduleSize, (int)worldPos.z / moduleSize);
+        int xOffset = (int)worldPos.x % moduleSize, yOffset = (int)worldPos.z % moduleSize;
+        int xAdd = 0, yAdd = 0;
+        if (xOffset < -(moduleSize / 2)) xAdd = -1;
+        if (xOffset > (moduleSize / 2)) xAdd = 1;
+        if (yOffset < -(moduleSize / 2)) yAdd = -1;
+        if (yOffset > (moduleSize / 2)) yAdd = +1;
+        return new Vector2Int((int)worldPos.x / moduleSize + xAdd, (int)worldPos.z / moduleSize + yAdd);
+
     }
 
     public bool IsModuleLoaded(Vector2Int modulePos) {
@@ -233,5 +241,4 @@ public class DynamicGraph : MonoBehaviour {
             }
         }
     }
-
 }
