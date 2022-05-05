@@ -20,6 +20,7 @@ namespace CallbackSystem
             currPlayer[0].text= eve.c.ToString();
             currPlayer[1].text = eve.t.ToString();
             currPlayer[2].text = eve.i.ToString();
+            currPlayer[3].text = eve.a.ToString();
         }
     }
 }
