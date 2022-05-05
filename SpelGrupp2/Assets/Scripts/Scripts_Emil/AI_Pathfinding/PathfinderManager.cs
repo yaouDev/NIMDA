@@ -76,9 +76,9 @@ public class PathfinderManager : MonoBehaviour {
         while (!priorityQueue.IsEmpty()) {
 
             node = priorityQueue.DeleteMin();
-            if (node.x == 48.5) {
-                Debug.Log("Fak this shit");
-            }
+            // if (node.x == 48.5) {
+            //     Debug.Log("Fak this shit");
+            // }
             explored.Add(node);
             if (node == endPos) break;
             Dictionary<Vector3, float> currEdges = DynamicGraph.Instance.GetPossibleNeighborsKV(node);

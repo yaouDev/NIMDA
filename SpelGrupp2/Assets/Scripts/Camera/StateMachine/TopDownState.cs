@@ -66,15 +66,17 @@ public class TopDownState : CameraState
 		
 		
 		// TODO hack
+
+		Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
 		
-		Vector3 offsetDirection = (abovePlayer + thisTransform.position) - Camera.transform.position;
-		
-		Physics.SphereCast(abovePlayer, 
-			.5f, 
-			offsetDirection.normalized, 
+		Physics.SphereCast((Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
+			.5f,
+			offsetDirection.normalized,
 			out  RaycastHit  hit, 
 			offsetDirection.magnitude, 
 			collisionMask);
+		
+		Debug.DrawRay(centroidOffsetPosition + thisTransform.position + abovePlayer, offsetDirection, Color.magenta);
 		
 		Vector3 offset;
 		if (hit.collider)
