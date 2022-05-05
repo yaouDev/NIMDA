@@ -116,6 +116,16 @@ namespace CallbackSystem
             currHealth = Mathf.Min(currHealth, 1f);
 
         }
+
+        public float ReturnHealth()
+        {
+            return currHealth;
+        }
+
+        public int ReturnBatteries()
+        {
+            return batteryCount;
+        }
     }
 }
 

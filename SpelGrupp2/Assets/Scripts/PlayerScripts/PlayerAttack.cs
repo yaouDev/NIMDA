@@ -15,13 +15,14 @@ namespace CallbackSystem {
         private PlayerController controller;
         private Camera cam;
         private bool isAlive = true;
-        [SerializeField][Range(0f, 1f)] private float laserSelfDmg = 0.1f;
+        [SerializeField] [Range(0f, 1f)] private float laserSelfDmg = 0.1f;
         [SerializeField] private float damage = 75.0f;
         [SerializeField] private int bullets = 10;
         [SerializeField] private GameObject bullet;
         private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne;
+        private bool canShootLaser;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -49,6 +50,16 @@ namespace CallbackSystem {
 
         }
         private void Update() {
+
+            if (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0)
+            {
+                canShootLaser = true;
+            }
+            else
+            {
+                canShootLaser = false;
+            }
+
             // TODO joystick laser 
             if (!activated)
             {
@@ -72,11 +83,11 @@ namespace CallbackSystem {
 
         public void Fire(InputAction.CallbackContext context) {
             if (context.started && isAlive) {
-                if (laserWeapon) {
+                if (laserWeapon && canShootLaser) {
                     AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
-                } else {
+                } else if (!laserWeapon) {
                     FireProjectileWeapon();
                 }
             }
@@ -115,14 +126,18 @@ namespace CallbackSystem {
 
 
         private void ShootLaser() {
-            health.TakeDamage(laserSelfDmg);
-            Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
-            if (hitInfo.collider != null) {
-                EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
-                if (enemy != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
+            if (canShootLaser)
+            {
+                health.TakeDamage(laserSelfDmg);
+                Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
+                if (hitInfo.collider != null)
                 {
-                    enemy.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
-                    Debug.Log($"enemyHealth {enemy.CurrentHealth}");
+                    EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
+                    if (enemy != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
+                    {
+                        enemy.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                        Debug.Log($"enemyHealth {enemy.CurrentHealth}");
+                    }
                 }
             }
         }
