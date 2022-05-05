@@ -12,6 +12,10 @@ public class AudioController : MonoBehaviour
      * AudioController.instance.PlayerOneShotAttached(player1.fire1, gameObject); //call upon the audio controller, choose how to trigger the audio, and send the event through the container
     */
 
+    [Range(0, 24)]
+    [SerializeField]
+    private float night;
+
     public EventReference testReference;
     public Transform testPosition;
 
@@ -20,6 +24,12 @@ public class AudioController : MonoBehaviour
     private void Awake()
     {
         instance ??= this;
+    }
+
+    private void Update()
+    {
+        //is there a better way to update this?
+        RuntimeManager.StudioSystem.setParameterByName("Night", night);
     }
 
     public void PlayOneShot(EventReference audioEvent, Vector3 pos)
