@@ -36,10 +36,11 @@ public class EnemyAttack : MonoBehaviour {
                 rotation,
                 Time.deltaTime * turnSpeed);
 
-            /*           if (isShooting) {
-                          isShooting = false;
-                          StartCoroutine(AttackDelay());
-                      } */
+            if (isShooting)
+            {
+                isShooting = false;
+                StartCoroutine(AttackDelay());
+            }
         }
     }
 
