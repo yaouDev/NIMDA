@@ -24,12 +24,12 @@ public class DynamicGraph : MonoBehaviour {
         loadedModules = new HashSet<Vector2Int>();
 
         // for testing purposes
-        loadedModules.Add(new Vector2Int(0, 0));
-        loadedModules.Add(new Vector2Int(1, 0));
-        loadedModules.Add(new Vector2Int(0, 1));
-        loadedModules.Add(new Vector2Int(1, 1));
-        loadedModules.Add(new Vector2Int(0, 2));
-        loadedModules.Add(new Vector2Int(1, 2));
+        // loadedModules.Add(new Vector2Int(0, 0));
+        // loadedModules.Add(new Vector2Int(1, 0));
+        // loadedModules.Add(new Vector2Int(0, 1));
+        // loadedModules.Add(new Vector2Int(1, 1));
+        // loadedModules.Add(new Vector2Int(0, 2));
+        // loadedModules.Add(new Vector2Int(1, 2));
 
         eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
         eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(OnModuleLoad);
