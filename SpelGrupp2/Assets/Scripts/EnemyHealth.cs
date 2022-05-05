@@ -2,41 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
-{
+public class EnemyHealth : MonoBehaviour {
     [SerializeField] private GameObject[] dropList;
-    private Vector3 dropOffset = new Vector3 (0f, 1f, 0f);
+    private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
     [Range(0, 3)] public int fullHealth;
     public float currHealth;
     private float healthBarLength;
     private GameObject drop;
 
-    private void Awake()
-    {
+    private void Awake() {
         currHealth = fullHealth;
     }
-    void Update()
-    {
-        if (currHealth <= 0)
-        {
+    void Update() {
+        if (currHealth <= 0) {
             Die();
         }
     }
 
-    public void TakeDamage()
-    {
+    public void TakeDamage() {
         --currHealth;
     }
 
-    public void Die()
-    {
+    public void Die() {
         DropLoot();
         Destroy(gameObject);
 
     }
 
-    public void DropLoot()
-    {
+    public float GetCurrentHealth() {
+        return currHealth;
+    }
+
+    public void DropLoot() {
         int item = Random.Range(0, dropList.Length);
         drop = dropList[item];
         GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
