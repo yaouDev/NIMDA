@@ -54,7 +54,8 @@ public class Bullet : MonoBehaviour
 
     private void DamageEnemy(EnemyHealth enemyHealth)
     {
-        enemyHealth.TakeDamage();
+        enemyHealth.TakeDamage(damage);
+        Debug.Log($"enemyHealth {enemyHealth.CurrentHealth}");
     }
 
     private void Ricochet()

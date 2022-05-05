@@ -39,7 +39,11 @@ public class EnemyHealth : MonoBehaviour {
     public void TakeDamage() {
         --currentHealth;
     }
-
+    
+    public void TakeDamage(float damage) {
+        currentHealth -= damage;
+    }
+    
     public void Die() {
         DropLoot();
         Destroy(gameObject);
