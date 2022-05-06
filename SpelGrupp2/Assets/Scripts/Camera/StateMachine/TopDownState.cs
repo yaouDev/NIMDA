@@ -65,38 +65,39 @@ public class TopDownState : CameraState
 		
 		
 		
-		// TODO hack
-
-		Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
+		// // TODO hack
+		//
+		// Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
+		//
+		// Physics.SphereCast((Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
+		// 	.5f,
+		// 	offsetDirection.normalized,
+		// 	out  RaycastHit  hit, 
+		// 	offsetDirection.magnitude, 
+		// 	collisionMask);
+		//
+		// Debug.DrawRay(centroidOffsetPosition + thisTransform.position + abovePlayer, offsetDirection, Color.magenta);
+		//
+		// Vector3 offset;
+		// if (hit.collider)
+		// {
+		// 	offset = topDownOffset.normalized * hit.distance;
+		// }
+		// else
+		// {
+		// 	offset = topDownOffset;
+		// }
+		//
+		// smoothDollyTime = hit.collider ? smoothDampMinVal : smoothDampMaxVal;
+		// lerpOffset = Vector3.SmoothDamp(lerpOffset, offset, ref smoothDampCurrentVelocity, smoothDollyTime);
+		//
+		// CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * lerpOffset;
+		//
+		// // TODO hack
+		//
 		
-		Physics.SphereCast((Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
-			.5f,
-			offsetDirection.normalized,
-			out  RaycastHit  hit, 
-			offsetDirection.magnitude, 
-			collisionMask);
 		
-		Debug.DrawRay(centroidOffsetPosition + thisTransform.position + abovePlayer, offsetDirection, Color.magenta);
-		
-		Vector3 offset;
-		if (hit.collider)
-		{
-			offset = topDownOffset.normalized * hit.distance;
-			Debug.Log(hit.collider.name);
-		}
-		else
-		{
-			offset = topDownOffset;
-		}
-		
-		smoothDollyTime = hit.collider ? smoothDampMinVal : smoothDampMaxVal;
-		lerpOffset = Vector3.SmoothDamp(lerpOffset, offset, ref smoothDampCurrentVelocity, smoothDollyTime);
-		
-		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * lerpOffset;
-
-		// TODO hack
-		
-		// CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset; // TODO HACK!!
+		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 
 		
 		
