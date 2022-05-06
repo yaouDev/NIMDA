@@ -55,7 +55,7 @@ public class IsCoverAvailableNode : Node {
             Vector3 direction = agent.ClosestPlayer - availableSpots[i].position;
             if (CheckIfSpotIsValid(availableSpots[i])) {
                 float angle = Vector3.Angle(availableSpots[i].forward, direction);
-                if (
+                if (angle < minAngle && 
                 (bestSpot != null && Vector3.Distance(agent.Position, availableSpots[i].position) < Vector3.Distance(agent.Position, bestSpot.position)
                  || !CheckIfSpotIsValid(bestSpot))) {
                     minAngle = angle;
