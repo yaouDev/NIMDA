@@ -12,6 +12,7 @@ public class EnemyHealth : MonoBehaviour {
     private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
     private GameObject drop;
     private float currentHealth;
+    [SerializeField] private int dropAmount;
     public float CurrentHealth {
         get { return currentHealth; }
         set { currentHealth = Mathf.Clamp(value, 0, fullHealth); }
@@ -55,11 +56,15 @@ public class EnemyHealth : MonoBehaviour {
       }*/
 
     public void DropLoot() {
-        int item = Random.Range(0, dropList.Length);
-        drop = dropList[item];
-        GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-        loot.transform.parent = null;
-        loot.SetActive(true);
-        Destroy(loot, 15f);
+        for (int i = 0; i < dropAmount; i++)
+        {
+            int item = Random.Range(0, dropList.Length);
+            //if (dropRoll > 0 && )
+            drop = dropList[item];
+            GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
+            loot.transform.parent = null;
+            loot.SetActive(true);
+            Destroy(loot, 15f);
+        }
     }
 }

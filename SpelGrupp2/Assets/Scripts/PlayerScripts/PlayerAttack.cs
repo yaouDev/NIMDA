@@ -28,7 +28,7 @@ namespace CallbackSystem {
          * From where the players weapon and ammunition is instantiated, stored and managed.
          * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
          */
-        public void Respawn() => isAlive = true;
+   
         public void Die() => isAlive = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
@@ -75,12 +75,7 @@ namespace CallbackSystem {
             }
 
             if (isAlive) {
-                //aimLineRenderer.enabled = laserWeapon;
-                aimLineRenderer.material = laserWeapon ? laserMat : bulletMat;
-                
-                AimDirection();
-                ApplyJoystickFireDirection();
-                AnimateLaserSightLineRenderer(gameObject.transform.forward);
+                AnimateLasers();
             } else {
                 aimLineRenderer.enabled = false;
             }
@@ -189,16 +184,26 @@ namespace CallbackSystem {
                 aimingDirection = hitPoint + Vector3.down - transform.position;
             }
         }
+        public void Respawn()
+        {
+            isAlive = true;
+            AnimateLasers();
+        }
+
+        private void AnimateLasers()
+        {
+            aimLineRenderer.enabled = true;
+            aimLineRenderer.material = laserWeapon ? laserMat : bulletMat;
+
+            AimDirection();
+            ApplyJoystickFireDirection();
+            AnimateLaserSightLineRenderer(gameObject.transform.forward);
+        }
 
         public void FireProjectileWeapon() {
             if (bullets > 0) {
                 AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                 UpdateBulletCount(-1);
-                //bullets--;
-                //resourceEvent.isPlayerOne = isPlayerOne;
-                //resourceEvent.a = bullets;
-                //resourceEvent.ammoChange = true;
-                //EventSystem.Current.FireEvent(resourceEvent);
                 Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
             }
         }

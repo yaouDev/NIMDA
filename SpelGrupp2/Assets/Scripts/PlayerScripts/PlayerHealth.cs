@@ -103,7 +103,10 @@ namespace CallbackSystem
 
         private void UpdateHealthUI()
         {
-            HealthRegeneration();
+            if (batteryCount < 1)
+            {
+                HealthRegeneration();
+            }            
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             healthEvent.batteries = batteryCount;
