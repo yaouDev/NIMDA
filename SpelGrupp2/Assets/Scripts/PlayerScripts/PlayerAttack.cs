@@ -47,18 +47,22 @@ namespace CallbackSystem {
             health = GetComponent<PlayerHealth>();
             resourceEvent = new ResourceUpdateEvent();
             isPlayerOne = health.IsPlayerOne();
-
         }
-        private void Update() {
 
-            if (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0)
-            {
-                canShootLaser = true;
-            }
-            else
-            {
-                canShootLaser = false;
-            }
+        [SerializeField] private Material bulletMat;
+        [SerializeField] private Material laserMat;
+        
+        private void Update()
+        {
+            canShootLaser = (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0);
+            // if (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0)
+            // {
+            //     canShootLaser = true;
+            // }
+            // else
+            // {
+            //     canShootLaser = false;
+            // }
 
             // TODO joystick laser 
             if (!activated)
@@ -70,9 +74,10 @@ namespace CallbackSystem {
                 activated = true;
             }
 
-
             if (isAlive) {
-                aimLineRenderer.enabled = laserWeapon;
+                //aimLineRenderer.enabled = laserWeapon;
+                aimLineRenderer.material = laserWeapon ? laserMat : bulletMat;
+                
                 AimDirection();
                 ApplyJoystickFireDirection();
                 AnimateLaserSightLineRenderer(gameObject.transform.forward);
@@ -111,20 +116,20 @@ namespace CallbackSystem {
             }
         }
 
-        private void AimDirection() {
+        private void AimDirection()
+        {
             transform.LookAt(transform.position + aimingDirection);
         }
 
-        private void ApplyJoystickFireDirection() {
-
+        private void ApplyJoystickFireDirection() 
+        {
             if (controller.GetRightJoystickInput().magnitude > 0.1f) {
                 aimingDirection.x = controller.GetRightJoystickInput().x;
                 aimingDirection.z = controller.GetRightJoystickInput().y;
                 aimingDirection.Normalize();
             }
         }
-
-
+        
         private void ShootLaser() {
             if (canShootLaser)
             {
@@ -141,7 +146,6 @@ namespace CallbackSystem {
                 }
             }
         }
-
 
         private IEnumerator AnimateLineRenderer(Vector3 direction) {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + direction * 30.0f };
@@ -196,7 +200,6 @@ namespace CallbackSystem {
                 //resourceEvent.ammoChange = true;
                 //EventSystem.Current.FireEvent(resourceEvent);
                 Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-
             }
         }
     }
