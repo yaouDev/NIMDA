@@ -14,7 +14,7 @@ public class AudioController : MonoBehaviour
 
     [Range(0, 24)]
     [SerializeField]
-    private float night;
+    public float night;
 
     public EventReference testReference;
     public Transform testPosition;
