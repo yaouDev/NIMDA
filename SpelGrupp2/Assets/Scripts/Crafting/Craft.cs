@@ -45,7 +45,7 @@ namespace CallbackSystem
 
                 if (recipe.product.name.Equals("Bullet"))
                 {
-                    crafting.iron -= 3;
+                    crafting.iron--;
                     crafting.playerAttackScript.UpdateBulletCount(1);
                 }
                 else
