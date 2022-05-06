@@ -13,15 +13,14 @@ public class GetToCoverNode : Node {
             return NodeState.FAILURE;
         }
 
-        float distance = Vector3.Distance(coverSpot.position, agent.transform.position);
+        float distance = Vector3.Distance(coverSpot.position, agent.Position);
         if (distance > 0.2f) {
 
-            if (agent.IsPathRequestAllowed()) {
+            if (agent.IsPathRequestAllowed() || Vector3.Distance(coverSpot.position, agent.CurrentTarget) > 5f) {
                 agent.Destination = coverSpot.position;
                 agent.IsStopped = false; agent.IsStopped = false;
                 agent.StartCoroutine(agent.UpdatePath());
             }
-
             return NodeState.RUNNING;
         } else {
             agent.IsStopped = true;

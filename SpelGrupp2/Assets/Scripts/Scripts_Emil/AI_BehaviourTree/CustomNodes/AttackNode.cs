@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
-public class AttackNode : Node
-{
+public class AttackNode : Node {
     [SerializeField] private float attackRange;
     [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float spread = 1.0f;
@@ -16,7 +15,7 @@ public class AttackNode : Node
     private float x;
     private float y;
 
-    private GameObject currentBullet; 
+    private GameObject currentBullet;
     private LineRenderer lineRenderer;
 
     Vector3 closestTarget;
@@ -28,8 +27,7 @@ public class AttackNode : Node
 
     Quaternion rotation;
 
-    public override NodeState Evaluate()
-    {
+    public override NodeState Evaluate() {
         //Find Closest Player
         closestTarget = agent.ClosestPlayer;
         relativePos = closestTarget - agent.transform.position;
@@ -39,15 +37,14 @@ public class AttackNode : Node
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
 
-        if (isShooting && CheckIfCoverIsValid() == false)
-        {
+        if (isShooting && CheckIfCoverIsValid() == false) {
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
-
+            return NodeState.RUNNING;
         }
+        return NodeState.FAILURE;
 
-         return NodeState.RUNNING;
 
 
         /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
@@ -59,8 +56,7 @@ public class AttackNode : Node
                     NodeState = NodeState.SUCCESS;
                 } else NodeState = NodeState.FAILURE; */
     }
-    public IEnumerator AttackDelay()
-    {
+    public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(0.5f);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
@@ -70,8 +66,7 @@ public class AttackNode : Node
     }
 
 
-    void Attack()
-    {
+    void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
         directionWithoutSpread = checkCover.point - agent.transform.position;
@@ -103,18 +98,15 @@ public class AttackNode : Node
 
     }
 
-    bool CheckIfCoverIsValid()
-    {
+    bool CheckIfCoverIsValid() {
         //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
 
         // Create the ray to use
         Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
         //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f))
-        {
+        if (Physics.Raycast(ray, out checkCover, 30.0f)) {
             //Check if that collider is the player
-            if (checkCover.collider.gameObject.CompareTag("Player"))
-            {
+            if (checkCover.collider.gameObject.CompareTag("Player")) {
                 //There is no cover
                 return false;
             }

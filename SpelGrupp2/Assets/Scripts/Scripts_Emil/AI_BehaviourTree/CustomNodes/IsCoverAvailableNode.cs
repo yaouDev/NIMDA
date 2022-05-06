@@ -49,13 +49,15 @@ public class IsCoverAvailableNode : Node {
 
     private Transform FindBestSpotInCover(Cover cover, ref float minAngle) {
         Transform[] availableSpots = cover.GetCoverSpots();
-        Transform bestSpot = null;
+        Transform bestSpot = availableSpots[0];
 
         for (int i = 0; i < availableSpots.Length; i++) {
             Vector3 direction = agent.ClosestPlayer - availableSpots[i].position;
             if (CheckIfSpotIsValid(availableSpots[i])) {
                 float angle = Vector3.Angle(availableSpots[i].forward, direction);
-                if (angle < minAngle) {
+                if (
+                (bestSpot != null && Vector3.Distance(agent.Position, availableSpots[i].position) < Vector3.Distance(agent.Position, bestSpot.position)
+                 || !CheckIfSpotIsValid(bestSpot))) {
                     minAngle = angle;
                     bestSpot = availableSpots[i];
                 }

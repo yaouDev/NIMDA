@@ -6,6 +6,7 @@ public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, maxCritRange, minCritRange, allowedTargetDiscrepancy;
     [SerializeField] private bool drawPath = false;
+    [SerializeField] private LayerMask targetLayerMask;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private LineRenderer lineRenderer;
@@ -75,7 +76,11 @@ public class AI_Controller : MonoBehaviour {
     public bool TargetInSight {
         get {
             RaycastHit hit;
-            Physics.BoxCast(Position, transform.lossyScale, (activeTarget - Position).normalized, out hit, transform.rotation, Mathf.Infinity);
+            Vector3 dir = (ClosestPlayer - Position).normalized;
+            Physics.Raycast(Position + dir, dir, out hit, Mathf.Infinity);
+
+            Debug.DrawLine(Position, (ClosestPlayer - Position).normalized * 10 + Position, Color.blue);
+
             if (hit.collider != null) {
                 if (hit.collider.tag == "Player") {
                     return true;
@@ -154,7 +159,7 @@ public class AI_Controller : MonoBehaviour {
         float distToTarget = Vector3.Distance(transform.position, activeTarget);
         bool criticalRangeCond = distToTarget < minCritRange;
         bool distCond = distToTarget > minCritRange && isStopped;
-        return ((currentPath == null) || distCond || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
+        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
     }
 
 
