@@ -22,7 +22,7 @@ namespace CallbackSystem
         public Recipe batteryRecipe;
         public Recipe bulletRecipe;
         private ResourceUpdateEvent resourceEvent;
-        public PlayerAttack playerAttackScript;
+        [HideInInspector] public PlayerAttack playerAttackScript;
         private PlayerHealth playerHealthScript;
         private bool isPlayerOne;
         private bool started = false;
