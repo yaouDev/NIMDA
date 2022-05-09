@@ -12,11 +12,11 @@ GameObject:
   - component: {fileID: 5332315945964378469}
   m_Layer: 0
   m_Name: AvoidTrigger
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1305682498595103695
 Transform:
   m_ObjectHideFlags: 0
@@ -149,7 +149,7 @@ MonoBehaviour:
   - {fileID: 1583934146152314497, guid: 834e6e1ee2a1a8e408bed4dfae71d1cb, type: 3}
   - {fileID: 8225117659028540708, guid: e7ad56d6996f9c64bb6401ec34c4212d, type: 3}
   - {fileID: 261070821904542086, guid: c2922308e7764cd4b91ebe0ce96ba599, type: 3}
-  healthRestoreRate: 25
+  healthRestoreRate: 1
   fleeHealthtreshold: 50
   fullHealth: 100
   dropAmount: 5
@@ -170,7 +170,7 @@ MonoBehaviour:
   maxCritRange: 20
   minCritRange: 10
   allowedTargetDiscrepancy: 5
-  drawPath: 0
+  drawPath: 1
   targetLayerMask:
     serializedVersion: 2
     m_Bits: 3328

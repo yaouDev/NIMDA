@@ -21,13 +21,10 @@ public class EnemyHealth : MonoBehaviour {
         CurrentHealth = fullHealth;
     }
     void Update() {
-
-
         if (CurrentHealth <= 0) {
             Die();
         } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
-
         }
     }
     public float GetCurrentHealth() {
@@ -40,11 +37,11 @@ public class EnemyHealth : MonoBehaviour {
     public void TakeDamage() {
         --currentHealth;
     }
-    
+
     public void TakeDamage(float damage) {
         currentHealth -= damage;
     }
-    
+
     public void Die() {
         DropLoot();
         Destroy(gameObject);
@@ -56,8 +53,7 @@ public class EnemyHealth : MonoBehaviour {
       }*/
 
     public void DropLoot() {
-        for (int i = 0; i < dropAmount; i++)
-        {
+        for (int i = 0; i < dropAmount; i++) {
             int item = Random.Range(0, dropList.Length);
             //if (dropRoll > 0 && )
             drop = dropList[item];

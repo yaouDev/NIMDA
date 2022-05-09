@@ -79,7 +79,7 @@ public class AttackNode : Node {
         directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.instance.getBullet, agent.transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.getBullet, agent.transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;

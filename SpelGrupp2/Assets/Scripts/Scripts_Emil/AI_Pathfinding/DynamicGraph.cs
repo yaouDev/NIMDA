@@ -123,6 +123,22 @@ public class DynamicGraph : MonoBehaviour {
           return currentNode;
       }
    */
+
+    public Vector3 GetClosestNodeNotBlocked(Vector3 target) {
+        Vector3[] pNeighbors = GetPossibleNeighbors(target);
+        Vector3 closestNode = Vector3.zero;
+        foreach (Vector3 pNeighbor in pNeighbors) {
+            if (GetBlockedNode(pNeighbor).Length == 0 && (closestNode == Vector3.zero || Vector3.Distance(closestNode, target) > Vector3.Distance(pNeighbor, closestNode)))
+                closestNode = pNeighbor;
+            else {
+                foreach (Vector3 nPNeighbor in GetPossibleNeighbors(pNeighbor)) {
+                    if (GetBlockedNode(nPNeighbor).Length == 0 && (closestNode == Vector3.zero || Vector3.Distance(closestNode, target) > Vector3.Distance(nPNeighbor, closestNode)))
+                        closestNode = nPNeighbor;
+                }
+            }
+        }
+        return closestNode;
+    }
     private Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
@@ -167,7 +183,6 @@ public class DynamicGraph : MonoBehaviour {
         }
     }
 
-    // doesn't really work properly
     public Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
         int xOffset = (int)worldPos.x % moduleSize, yOffset = (int)worldPos.z % moduleSize;
         int xAdd = 0, yAdd = 0;
@@ -181,6 +196,10 @@ public class DynamicGraph : MonoBehaviour {
 
     public bool IsModuleLoaded(Vector2Int modulePos) {
         return loadedModules.Contains(modulePos);
+    }
+
+    public HashSet<Vector2Int> GetLoadedModules() {
+        return loadedModules;
     }
 
     public void CreateNeighbors(Vector3 node, Dictionary<Vector3, float> possibleNeighbors) {
@@ -221,7 +240,7 @@ public class DynamicGraph : MonoBehaviour {
         }
     }
 
-    // not tested yet
+    // Does not work
     private void MarkNodesForDeletion(Vector2Int module) {
         Vector3 worldPos = new Vector3(module.x + (moduleSize / 2) - 1, 2f, module.y + (moduleSize / 2) - 1);
         float leftMostX = worldPos.x - (moduleSize / 2) + nodeHalfextent;

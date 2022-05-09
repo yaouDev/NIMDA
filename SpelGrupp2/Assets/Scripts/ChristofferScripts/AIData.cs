@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AIData : MonoBehaviour {
-    public static AIData instance;
+    public static AIData Instance;
 
     [SerializeField] private GameObject bullet;
 
     private CallbackSystem.EventSystem eventSystem;
-    private Transform bestCoverSpot;
+    //private Transform bestCoverSpot;
+    private Vector3 bestCoverSpot;
+
+
 
     //private List<Transform> activeCovers = new List<Transform>(); 
     private List<Cover> activeCovers = new List<Cover>();
@@ -20,18 +23,28 @@ public class AIData : MonoBehaviour {
         eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(LoadModule);
         eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(UnLoadModule);
 
-        instance ??= this;
+        Instance ??= this;
     }
 
     public GameObject getBullet {
         get { return bullet; }
     }
 
-    public void SetBestCoverSpot(Transform bestCoverSpot) {
+    /*     public void SetBestCoverSpot(Transform bestCoverSpot) {
+            this.bestCoverSpot = bestCoverSpot;
+        } */
+
+    public void SetBestCoverSpot(Vector3 bestCoverSpot) {
         this.bestCoverSpot = bestCoverSpot;
     }
-    public Transform GetBestCoverSpot() {
 
+
+    /*     public Transform GetBestCoverSpot() {
+
+            return bestCoverSpot;
+        } */
+
+    public Vector3 GetBestCoverSpot() {
         return bestCoverSpot;
     }
     /* public List<Transform> GetActiveCovers()
@@ -65,6 +78,25 @@ public class AIData : MonoBehaviour {
         */
 
     }
+
+    private Dictionary<Vector2Int, HashSet<Vector3>> potentialCoverSpots = new Dictionary<Vector2Int, HashSet<Vector3>>();
+
+    public void AddCoverSpot(Vector3 coverSpot) {
+        Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(coverSpot);
+        if (!potentialCoverSpots.ContainsKey(modulePos)) {
+            potentialCoverSpots.Add(modulePos, new HashSet<Vector3>());
+        }
+        if (!potentialCoverSpots[modulePos].Contains(coverSpot)) {
+            potentialCoverSpots[modulePos].Add(coverSpot);
+        }
+    }
+
+
+    public HashSet<Vector3> GetNearbyCoverSpots(Vector2Int module) {
+        if (potentialCoverSpots.ContainsKey(module)) return potentialCoverSpots[module];
+        return null;
+    }
+
 
 
 }

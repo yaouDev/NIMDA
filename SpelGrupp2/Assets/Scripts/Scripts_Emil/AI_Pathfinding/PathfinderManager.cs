@@ -42,18 +42,22 @@ public class PathfinderManager : MonoBehaviour {
             }
         }
         if (!pathQueue.Contains(agent)) pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
+        Debug.Log("Pathrequest! " + Time.deltaTime);
     }
 
     void Update() {
-        try {
+        //try {
+        if (!pathQueue.IsEmpty()) {
             AI_Controller agentToUpdate = pathQueue.DeleteMin();
             // if agent has been deleted through module un-load
             while (agentToUpdate == null && !pathQueue.IsEmpty()) agentToUpdate = pathQueue.DeleteMin();
             agentToUpdate.CurrentPath = AStar(agentToUpdate.Position, agentToUpdate.CurrentTarget, true);
             agentToUpdate.CurrentPathIndex = 0;
-        } catch (System.Exception) {
-            //Debug.Log("No current requested paths");
         }
+
+        /* } catch (System.Exception) {
+            //Debug.Log("No current requested paths");
+        } */
 
 
     }
@@ -76,9 +80,7 @@ public class PathfinderManager : MonoBehaviour {
         while (!priorityQueue.IsEmpty()) {
 
             node = priorityQueue.DeleteMin();
-            // if (node.x == 48.5) {
-            //     Debug.Log("Fak this shit");
-            // }
+
             explored.Add(node);
             if (node == endPos) break;
             Dictionary<Vector3, float> currEdges = DynamicGraph.Instance.GetPossibleNeighborsKV(node);
@@ -86,13 +88,18 @@ public class PathfinderManager : MonoBehaviour {
             foreach (Vector3 neighbor in currEdges.Keys) {
                 edgesTested++;
                 float tmpCost = cost[node] + DynamicGraph.Instance.GetCost(node, neighbor);
+                bool nodeIsFree = DynamicGraph.Instance.GetBlockedNode(neighbor).Length == 0;
                 if (DynamicGraph.Instance.Contains(neighbor) && (!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) &&
-                (DynamicGraph.Instance.GetBlockedNode(neighbor).Length == 0) || neighbor == endPos) {
+                nodeIsFree || neighbor == endPos) {
                     cost[neighbor] = tmpCost;
                     float heurVal = tmpCost + Heuristic(neighbor, endPos);
                     priorityQueue.Insert(neighbor, heurVal);
                     via[neighbor] = node;
                 }
+                if (!nodeIsFree) {
+
+                }
+                AIData.Instance.AddCoverSpot(DynamicGraph.Instance.GetClosestNodeNotBlocked(neighbor));
             }
         }
         List<Vector3> path = GetPath(via, node, endPos, closestNode);

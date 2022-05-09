@@ -7,9 +7,8 @@ public class ChaseNode : Node {
 
     public float distanceFromTargetToStop;
     public override NodeState Evaluate() {
-        if (agent.IsPathRequestAllowed()) {
-            agent.Destination = Vector3.zero;
-            agent.StartCoroutine(agent.UpdatePath());
+        if (agent.Destination != agent.ClosestPlayer) {
+            agent.Destination = agent.ClosestPlayer;
             agent.IsStopped = false;
             NodeState = NodeState.RUNNING;
         } else if (agent.CurrentPath != null && distanceFromTargetToStop < agent.DistanceFromTarget) {

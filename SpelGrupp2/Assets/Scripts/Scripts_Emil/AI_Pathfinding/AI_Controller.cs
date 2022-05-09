@@ -23,7 +23,6 @@ public class AI_Controller : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-
         targets = GameObject.FindGameObjectsWithTag("Player");
         activeTarget = targets[0].transform.position;
         col = GetComponent<Collider>();
@@ -33,6 +32,7 @@ public class AI_Controller : MonoBehaviour {
         Physics.IgnoreLayerCollision(12, 12);
         enemyHealth = GetComponent<EnemyHealth>();
         lineRenderer = GetComponent<LineRenderer>();
+        Destination = ClosestPlayer;
     }
 
 
@@ -41,7 +41,7 @@ public class AI_Controller : MonoBehaviour {
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
-        //if (!updatingPath) StartCoroutine(UpdatePathInterval());
+        if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
@@ -56,19 +56,11 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
-    public IEnumerator UpdatePath() {
+    private IEnumerator UpdatePath() {
         UpdateTarget();
         updatingPath = true;
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
-        updatingPath = false;
-    }
-
-    public IEnumerator UpdatePathInterval() {
-        UpdateTarget();
-        updatingPath = true;
-        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
-        yield return new WaitForSeconds(4f);
         updatingPath = false;
     }
 
@@ -77,9 +69,7 @@ public class AI_Controller : MonoBehaviour {
         get {
             RaycastHit hit;
             Vector3 dir = (ClosestPlayer - Position).normalized;
-            Physics.Raycast(Position + dir, dir, out hit, Mathf.Infinity);
-
-            Debug.DrawLine(Position, (ClosestPlayer - Position).normalized * 10 + Position, Color.blue);
+            Physics.Raycast(Position, dir, out hit, Mathf.Infinity);
 
             if (hit.collider != null) {
                 if (hit.collider.tag == "Player") {
@@ -151,15 +141,15 @@ public class AI_Controller : MonoBehaviour {
         get { return rBody; }
     }
 
-    public bool IsPathRequestAllowed() {
+    private bool IsPathRequestAllowed() {
         bool nullCond = currentPath != null && currentPath.Count != 0;
         bool indexCond = nullCond && currentPath.Count - currentPathIndex <= 5;
         bool discrepancyCond = nullCond && currentPath[currentPath.Count - 1] != activeTarget &&
         Vector3.Distance(currentPath[currentPath.Count - 1], activeTarget) >= allowedTargetDiscrepancy;
-        float distToTarget = Vector3.Distance(transform.position, activeTarget);
-        bool criticalRangeCond = distToTarget < minCritRange;
+        float distToTarget = Vector3.Distance(Position, activeTarget);
+        bool criticalRangeCond = distToTarget < minCritRange && Destination == ClosestPlayer;
         bool distCond = distToTarget > minCritRange && isStopped;
-        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && !discrepancyCond) || indexCond) && !updatingPath;
+        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && !updatingPath;
     }
 
 
@@ -235,13 +225,15 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public void UpdateTarget() {
-        if (destination == Vector3.zero) desiredTarget = ClosestPlayer;
-        else desiredTarget = Destination;
-        activeTarget = desiredTarget;
+        /*         if (destination == Vector3.zero) desiredTarget = ClosestPlayer;
+                else desiredTarget = Destination; */
+
+        //activeTarget = desiredTarget;
+        activeTarget = Destination;
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
-        /*      if (DynamicGraph.Instance.GetBlockedNode(desiredTarget).Length > 0) {
-                 targetBlocked = DynamicGraph.Instance.GetClosestNodeNotBlocked(desiredTarget, Position);
-                 activeTarget = targetBlocked;
-             } */
+        /*         if (desiredTarget = Destination && DynamicGraph.Instance.GetBlockedNode(activeTarget).Length > 0) {
+                    targetBlocked = DynamicGraph.Instance.GetClosestNodeNotBlocked(desiredTarget);
+                    activeTarget = targetBlocked;
+                } */
     }
 }
