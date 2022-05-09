@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 
 public class AIData : MonoBehaviour {
@@ -79,20 +80,19 @@ public class AIData : MonoBehaviour {
 
     }
 
-    private Dictionary<Vector2Int, HashSet<Vector3>> potentialCoverSpots = new Dictionary<Vector2Int, HashSet<Vector3>>();
-
+    private ConcurrentDictionary<Vector2Int, ConcurrentBag<Vector3>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentBag<Vector3>>();
     public void AddCoverSpot(Vector3 coverSpot) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(coverSpot);
         if (!potentialCoverSpots.ContainsKey(modulePos)) {
-            potentialCoverSpots.Add(modulePos, new HashSet<Vector3>());
+            potentialCoverSpots.TryAdd(modulePos, new ConcurrentBag<Vector3>());
         }
-        if (!potentialCoverSpots[modulePos].Contains(coverSpot)) {
+        if (!potentialCoverSpots[modulePos].TryPeek(out coverSpot)) {
             potentialCoverSpots[modulePos].Add(coverSpot);
         }
     }
 
 
-    public HashSet<Vector3> GetNearbyCoverSpots(Vector2Int module) {
+    public ConcurrentBag<Vector3> GetNearbyCoverSpots(Vector2Int module) {
         if (potentialCoverSpots.ContainsKey(module)) return potentialCoverSpots[module];
         return null;
     }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 
 public class DynamicGraph : MonoBehaviour {
@@ -9,7 +10,8 @@ public class DynamicGraph : MonoBehaviour {
     [SerializeField] private float nodeHalfextent;
     [SerializeField] private int moduleSize = 50;
     [SerializeField] private LayerMask colliderMask;
-    private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
+    // private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
+    private ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>> masterGraph;
     public static DynamicGraph Instance;
     CallbackSystem.EventSystem eventSystem;
     private HashSet<Vector2Int> loadedModules;
@@ -17,7 +19,7 @@ public class DynamicGraph : MonoBehaviour {
     [SerializeField] private bool drawGrid = false;
 
     void Start() {
-        masterGraph = new Dictionary<Vector3, Dictionary<Vector3, float>>();
+        masterGraph = new ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>>();
         nodesToRemove = new Queue<Vector3>();
         Instance ??= this;
         loadedModules = new HashSet<Vector2Int>();
@@ -41,15 +43,16 @@ public class DynamicGraph : MonoBehaviour {
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
-            masterGraph[firstNode].Add(secondNode, cost);
-            masterGraph[secondNode].Add(firstNode, cost);
+            masterGraph[firstNode].TryAdd(secondNode, cost);
+            masterGraph[secondNode].TryAdd(firstNode, cost);
         }
     }
 
     public void Disconnect(Vector3 firstNode, Vector3 secondNode) {
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && IsConnected(firstNode, secondNode)) {
-            masterGraph[firstNode].Remove(secondNode);
-            masterGraph[secondNode].Remove(firstNode);
+            float outVal;
+            masterGraph[firstNode].TryRemove(secondNode, out outVal);
+            masterGraph[secondNode].TryRemove(firstNode, out outVal);
         }
     }
 
@@ -64,7 +67,7 @@ public class DynamicGraph : MonoBehaviour {
 
     public void Insert(Vector3 node) {
         if (!masterGraph.ContainsKey(node)) {
-            masterGraph.Add(node, new Dictionary<Vector3, float>());
+            masterGraph.TryAdd(node, new ConcurrentDictionary<Vector3, float>());
         }
     }
 
@@ -73,7 +76,7 @@ public class DynamicGraph : MonoBehaviour {
         return false;
     }
 
-    public Dictionary<Vector3, float> GetNeighbors(Vector3 node) {
+    public ConcurrentDictionary<Vector3, float> GetNeighbors(Vector3 node) {
         if (masterGraph.ContainsKey(node)) return masterGraph[node];
         return null;
     }
@@ -234,7 +237,8 @@ public class DynamicGraph : MonoBehaviour {
                     foreach (Vector3 neighbor in connectedNodes) {
                         Disconnect(nodeToRemove, neighbor);
                     }
-                    masterGraph.Remove(nodeToRemove);
+                    ConcurrentDictionary<Vector3, float> outVal;
+                    masterGraph.TryRemove(nodeToRemove, out outVal);
                 }
             } else break;
         }

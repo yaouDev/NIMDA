@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/IsCoverAvailable")]
@@ -84,7 +85,7 @@ public class IsCoverAvailableNode : Node {
     }
 
     private Vector3 GetValidCoverFromModule(Vector2Int module) {
-        HashSet<Vector3> possibleCovers = AIData.Instance.GetNearbyCoverSpots(module);
+        ConcurrentBag<Vector3> possibleCovers = AIData.Instance.GetNearbyCoverSpots(module);
         Vector3 bestCoverSpot = new Vector3(Mathf.Infinity, 0, 0);
         if (possibleCovers != null) {
             foreach (Vector3 cover in possibleCovers) {

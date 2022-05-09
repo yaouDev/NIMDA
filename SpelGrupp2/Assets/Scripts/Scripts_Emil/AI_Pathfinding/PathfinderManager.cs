@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Jobs;
+using UnityEngine.Jobs;
+using Unity.Mathematics;
+using Unity.Collections;
 
 public class PathfinderManager : MonoBehaviour {
     [SerializeField] float proximityToReusePath;
