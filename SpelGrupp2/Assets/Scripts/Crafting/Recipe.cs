@@ -5,9 +5,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Recipe", menuName = "Crafting/Recipe")]
 public class Recipe : ScriptableObject
 {
-    public int copperNeeded;
-    public int ironNeeded;
-    public int transistorNeeded;
+    public int copperNeeded, transistorNeeded, ironNeeded;
+    [HideInInspector] public int[] ResNeededArr;
+    public CallbackSystem.CraftableObject co;
 
-    public Resource product;
+
+    private void Awake(){ ResNeededArr = new int[]{copperNeeded, transistorNeeded, ironNeeded}; }
 }
