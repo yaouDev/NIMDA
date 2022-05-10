@@ -54,7 +54,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
     {
         return chokePoints;
     }
-    
+
     private void Awake()
     {
         aStar = GetComponent<AStar>();
@@ -71,14 +71,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
         graph = new uint[worldSize.x, worldSize.y];
 
         List<Vector2Int> setTiles = new List<Vector2Int>();
-        setTiles.Add(new Vector2Int(1,1));
-        graph[1, 1] = (N | E);
-        
-        StartCoroutine( WaveFunctionCollapse(setTiles));
+        setTiles.Add(new Vector2Int(1, 1));
+        graph[1, 1] = (S | W);
+        UnityEngine.Debug.Log(graph[2,2]);
+        StartCoroutine(WaveFunctionCollapse(setTiles));
         // MakeMaze();
         // TearDownWalls();
         // Path();
-        
+
         // StartCoroutine( 
         // );
         //ShowMaze();
@@ -93,9 +93,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
     private IEnumerator WaveFunctionCollapse(List<Vector2Int> setTiles)
     {
         int debug = 0;
-        List<uint> possibilities = new List<uint>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+        List<uint> possibilities = new List<uint>() {0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15};
         Queue<Vector2Int> queue = new Queue<Vector2Int>(setTiles);
         HashSet<Vector2Int> seen = new HashSet<Vector2Int>(setTiles);
+        
+        int tType = (int) graph[1, 1];
+        GameObject t = Instantiate(this.tileTypes[tType], new Vector3(1, 14, 1),
+            tileRotation,
+            mapHolder);
 
         while (queue.Count > 0)
         {
@@ -109,19 +114,31 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 for (int dir = 0; dir < directions.Length; dir++)
                 {
                     Vector2Int neighbor = current + directions[dir];
-                    if (neighbor.x >= 0 &&
-                        neighbor.y >= 0 &&
-                        neighbor.x < worldSize.x &&
-                        neighbor.y < worldSize.y &&
-                        (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) > 0) // neighbor does have a wall towards current
+
+                    // UnityEngine.Debug.Log($"seen contains {(seen.Contains(neighbor) && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) > 0)}");
+                    if (
+                        neighbor.x < 0 ||
+                        neighbor.y < 0 ||
+                        neighbor.x >= worldSize.x ||
+                        neighbor.y >= worldSize.y ||
+                        
+                        (//seen.Contains(neighbor) &&
+                        (possibilities[i] & walls[directions[dir]]) == 0 &&                 // possible hasn't a wall towards neighbor 
+                        (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) != 0) ||   // neighbor has a wall towards current
+                        ((possibilities[i] & walls[directions[dir]]) != 0 &&                  // possible has a wall towards neighbor
+                        (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0)       // neighbor hasn't a wall towards current
+                        )
                     {
                         possible = false;
+                        //UnityEngine.Debug.Log($"neighbor & walls[-dir] {(graph[neighbor.x, neighbor.y] & walls[-directions[dir]])}");
                     }
                 }
+                UnityEngine.Debug.Log($"possible {possible}");
+
                 if (possible)
                     currentPossibilities.Add(possibilities[i]);
             }
-            
+
             debug++;
             // give random module to current if it not already has one
             if (!seen.Contains(current))
@@ -129,36 +146,51 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 int randomModule = 0;
                 if (currentPossibilities.Count > 0)
                 {
-                    randomModule = random.Next(0, currentPossibilities.Count - 1);
+                    randomModule = random.Next(currentPossibilities.Count);
+                    // UnityEngine.Debug.Log(
+                    //     $"randomModule {randomModule} currentPossibilities count {currentPossibilities.Count}");
                     graph[current.x, current.y] = currentPossibilities[randomModule];
-                    UnityEngine.Debug.Log($"random module {currentPossibilities[randomModule]} debug {debug}");
                 }
                 else
                 {
                     graph[current.x, current.y] = 15;
-                    UnityEngine.Debug.Log($"no possibilities debug {debug}");
+                    // UnityEngine.Debug.Log($"no possibilities debug {debug}");
                 }
+
+                // if (currentPossibilities.Count > 0)
+                // {
+                //     randomModule = random.Next(0, currentPossibilities.Count - 1);
+                //     graph[current.x, current.y] = currentPossibilities[randomModule];
+                //     // UnityEngine.Debug.Log($"random module {currentPossibilities[randomModule]} debug {debug}");
+                // }
+                // else
+                // {
+                //     graph[current.x, current.y] = 15;
+                //     UnityEngine.Debug.Log($"no possibilities debug {debug}");
+                // }
                 int tileType = (int) graph[current.x, current.y];
-                GameObject tile = Instantiate(this.tileTypes[tileType], new Vector3(current.x, 14, current.y), tileRotation,
+                GameObject tile = Instantiate(this.tileTypes[tileType], 
+                    new Vector3(current.x, 14, current.y),
+                    tileRotation,
                     mapHolder);
                 yield return null;
             }
 
             // add current to seen
             seen.Add(current);
-            
+
             // check adjacent tiles if they've been processed
             for (int dir = 0; dir < 4; dir++)
             {
                 Vector2Int neighbor = current + directions[dir];
 
-                if (!seen.Contains(neighbor) &&                                     // not already seen
+                if (!seen.Contains(neighbor) && // not already seen
                     !queue.Contains(neighbor) &&
                     neighbor.x >= 0 &&
                     neighbor.y >= 0 &&
                     neighbor.x < worldSize.x &&
-                    neighbor.y < worldSize.y &&                                     // within worldSize
-                    (graph[current.x, current.y] & walls[ directions[dir] ]) > 0)   // this tile has an opening out to a neighbor
+                    neighbor.y < worldSize.y && // within worldSize
+                    (graph[current.x, current.y] & walls[directions[dir]]) > 0) // this tile has an opening out to a neighbor
                 {
                     // add neighbor to queue
                     queue.Enqueue(neighbor);
@@ -173,7 +205,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
     {
         // UnityEngine.Debug.Log($"DeSpawn {eve.Position} {eve.Walls} ");
     }
-    
+
     private void Debug(ModuleSpawnEvent eve)
     {
         // UnityEngine.Debug.Log($"Spawn {eve.Position} {eve.Walls} ");
@@ -181,9 +213,8 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
     private void Srr(ModuleDeSpawnEvent e)
     {
-        
     }
-    
+
     private void MakeMaze()
     {
         int slowAnimate = 0;
@@ -444,12 +475,12 @@ public class ProceduralWorldGeneration : MonoBehaviour
     {
         Vector2Int[] wallStartPoints = new[]
         {
-            new Vector2Int(worldSize.x / 2, worldSize.y), 
-            new Vector2Int(0,worldSize.y), 
-            new Vector2Int(0,worldSize.y / 2)
+            new Vector2Int(worldSize.x / 2, worldSize.y),
+            new Vector2Int(0, worldSize.y),
+            new Vector2Int(0, worldSize.y / 2)
         };
-        
-        
+
+
         for (int i = 0; i < 3; i++)
         {
             Vector2Int vec2 = wallStartPoints[i];
@@ -476,7 +507,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         {
                             graph[vec2.x, vec2.y + 1] -= S;
                         }
-                        
+
                         // West
                         if (vec2.x - 1 > 0)
                         {
@@ -495,7 +526,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         chokePoints.Add(vec2);
                         // TODO [Patrik] clear path
                         // South - North corridor
-                        
+
                         graph[vec2.x, vec2.y] = (E | W);
 
                         // South
@@ -503,29 +534,30 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         {
                             graph[vec2.x, vec2.y - 1] -= N;
                         }
-                        
+
                         // North
                         if (vec2.y + 1 < worldSize.y && (graph[vec2.x, vec2.y + 1] & S) != 0)
                         {
                             graph[vec2.x, vec2.y + 1] -= S;
                         }
-                        
+
                         // West
                         if (vec2.x - 1 > 0)
                         {
                             // if ((graph[vec2.x - 1, vec2.y] & E) != 0)
-                                graph[vec2.x - 1, vec2.y] |= E;
+                            graph[vec2.x - 1, vec2.y] |= E;
                         }
-                        
+
                         // East
                         if (vec2.x + 1 < worldSize.x)
                         {
                             // if ((graph[vec2.x + 1, vec2.y] & W) != 0)
-                                graph[vec2.x + 1, vec2.y] |= W;
+                            graph[vec2.x + 1, vec2.y] |= W;
                         }
                     }
                 }
-                vec2 += new Vector2Int(1, -1);            
+
+                vec2 += new Vector2Int(1, -1);
             }
         }
 
@@ -703,7 +735,8 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 tiles[x, y] = tile;
             }
         }
-        mapHolder.position += Vector3.up * 15; 
+
+        mapHolder.position += Vector3.up * 15;
     }
 
     public uint[,] Get()
