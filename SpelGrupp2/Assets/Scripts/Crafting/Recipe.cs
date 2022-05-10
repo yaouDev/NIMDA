@@ -7,8 +7,6 @@ public class Recipe : ScriptableObject
 {
     public int copperNeeded, transistorNeeded, ironNeeded;
     [HideInInspector] public int[] ResNeededArr;
-    public CallbackSystem.CraftableObject co;
-
 
     private void Awake(){ ResNeededArr = new int[]{copperNeeded, transistorNeeded, ironNeeded}; }
 }

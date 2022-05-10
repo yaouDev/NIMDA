@@ -6,7 +6,7 @@ namespace CallbackSystem
 {
     public class Craft
     {
-        public void CraftRecipe(Recipe recipe, Crafting crafting)
+        public bool TryCraftRecipe(Recipe recipe, Crafting crafting)
         {
             bool canCraft = true;
             if (recipe == null) Debug.LogWarning("Trying to craft null");
@@ -17,17 +17,18 @@ namespace CallbackSystem
                 if (playerResources[i] < recipe.ResNeededArr[i])
                 {
                     Debug.Log("Not enough resources");
+                    return false;
                 }
             }
 
             if(canCraft)
             {
-                recipe.co.PerformAction(crafting);
                 crafting.copper -= recipe.copperNeeded;
                 crafting.iron -= recipe.ironNeeded;
                 crafting.transistor -= recipe.transistorNeeded;
+                crafting.UpdateResources();
             }
-
+            return true;
         }
     }
 }

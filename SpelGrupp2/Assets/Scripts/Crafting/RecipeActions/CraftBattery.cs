@@ -8,7 +8,7 @@ namespace CallbackSystem
     {
         override public void PerformAction(Crafting crafting)
         {
-            crafting.CraftBattery();
+            //crafting.CraftBattery();
         }
     }
 }

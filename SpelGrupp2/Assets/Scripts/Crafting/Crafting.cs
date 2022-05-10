@@ -15,13 +15,20 @@ namespace CallbackSystem
     public class Crafting : MonoBehaviour
     {
         [HideInInspector] public PlayerAttack playerAttackScript;
+        [SerializeField] private Recipe batteryRecipe, bulletRecipe;
+        [SerializeField] private LayerMask layerMask;
+        [SerializeField] private GameObject craftingTable;
+        private float sphereRadius = 1f; 
+        private float maxSphereDistance = 3f;
+
         //public Recipe batteryRecipe, bulletRecipe;
         public int copper, transistor, iron;
 
         private ResourceUpdateEvent resourceEvent;
         private PlayerHealth playerHealthScript;
         private Craft craft = new Craft();
-        private bool isPlayerOne, started = false;
+        private bool isPlayerOne, started = false, isCrafting = false;
+        private PlayerInput playerInput;
 
         public void UpdateResources()
         {
@@ -39,15 +46,14 @@ namespace CallbackSystem
         {
             playerAttackScript = GetComponent<PlayerAttack>();
             playerHealthScript = GetComponent<PlayerHealth>();
+            playerInput = GetComponent<PlayerInput>();
             resourceEvent = new ResourceUpdateEvent();
+            craftingTable.SetActive(false);
         }
 
         public int[] GetResourceArray(){ return new int[] {copper, transistor, iron}; }
 
-        public void CraftBattery()
-        {
-            playerHealthScript.IncreaseBattery();
-        }
+
         private void Update()
         {
             if (!started)
@@ -59,15 +65,66 @@ namespace CallbackSystem
             }
         }
 
-        public void PressedBattery(InputAction.CallbackContext context, Recipe recipe)
+        //Priority on interactions
+        //Interaction function should not be in Crafting script!
+        public void Interact(InputAction.CallbackContext context)
         {
-            if (context.performed)
+            RaycastHit hit;
+            Physics.SphereCast(transform.position, sphereRadius, transform.forward, out hit, maxSphereDistance, layerMask);
+            if (hit.collider != null)
             {
-                craft.CraftRecipe(recipe, this);
+                Debug.Log("Collided with: " + hit.collider.gameObject.name);
+                EnterCraftingUI();
             }
         }
 
+        private void EnterCraftingUI()
+        {
+            isCrafting = !isCrafting;
+
+            if (!isCrafting)
+            {
+                craftingTable.SetActive(false);
+                //playerInput.SwitchCurrentActionMap("Player");
+            } 
+            else
+            {
+                craftingTable.SetActive(true);
+                //playerInput.SwitchCurrentActionMap("CraftingTable");
+            }
+        }
+
+
+        public void CraftBullet(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                if(craft.TryCraftRecipe(bulletRecipe, this))
+                    playerAttackScript.UpdateBulletCount(1);
+
+            }
+        }
+        public void CraftBattery(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                if(craft.TryCraftRecipe(batteryRecipe, this))
+                    playerHealthScript.IncreaseBattery();
+            }
+        }
+
+
         /*
+
+        public void CraftPlayerRecipe(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+               craft.CraftRecipe(recipe, this);
+            }
+        }
+
+
         public void PressedBullet(InputAction.CallbackContext context)
         {
             if (context.performed)
