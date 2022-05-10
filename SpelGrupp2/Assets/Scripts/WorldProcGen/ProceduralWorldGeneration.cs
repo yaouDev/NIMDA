@@ -72,8 +72,13 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
         List<Vector2Int> setTiles = new List<Vector2Int>();
         setTiles.Add(new Vector2Int(1, 1));
+        setTiles.Add(new Vector2Int(5, 5));
+        setTiles.Add(new Vector2Int(10, 10));
+        
         graph[1, 1] = (S | W);
-        UnityEngine.Debug.Log(graph[2,2]);
+        graph[5, 5] = (E | W);
+        graph[10, 10] = (E | W);
+
         StartCoroutine(WaveFunctionCollapse(setTiles));
         // MakeMaze();
         // TearDownWalls();
@@ -94,18 +99,36 @@ public class ProceduralWorldGeneration : MonoBehaviour
     {
         int debug = 0;
         List<uint> possibilities = new List<uint>() {
-            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
-            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
-            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
-            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
-            7, 11, 13, 14}; // dead ends
+            7, 11, 13, 14,  // dead ends
+            0,              // 4-way
+            0,              // 4-way
+            0,              // 4-way
+            1, 2, 4, 8,     // 3-way
+            1, 2, 4, 8,     // 3-way
+            1, 2, 4, 8,     // 3-way
+            3, 12,          // 2-way straight
+            5, 6, 10, 9,    // 2-way elbow
+            
+            0,              // 4-way
+            0,              // 4-way
+            0,              // 4-way
+            1, 2, 4, 8,     // 3-way
+            1, 2, 4, 8,     // 3-way
+            1, 2, 4, 8,     // 3-way
+            3, 12,          // 2-way straight
+            5, 6, 10, 9     // 2-way elbow
+            };
         Queue<Vector2Int> queue = new Queue<Vector2Int>(setTiles);
         HashSet<Vector2Int> seen = new HashSet<Vector2Int>(setTiles);
+
+        for (int i = 0; i < setTiles.Count; i++)
+        {
+            int tType = (int) graph[setTiles[i].x, setTiles[i].y];
+            GameObject t = Instantiate(this.tileTypes[tType], new Vector3(setTiles[i].x, 14, setTiles[i].y),
+                tileRotation,
+                mapHolder);    
+        }
         
-        int tType = (int) graph[1, 1];
-        GameObject t = Instantiate(this.tileTypes[tType], new Vector3(1, 14, 1),
-            tileRotation,
-            mapHolder);
 
         while (queue.Count > 0)
         {
