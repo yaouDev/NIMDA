@@ -53,4 +53,9 @@ public class EnemySpawnController : MonoBehaviour {
             Debug.Log("Enemy spawn, fps" + 1.0f / Time.deltaTime);
         }
     }
+
+    public void reduceSpawnCount(int amount)
+    {
+        spawnCount -= amount;
+    }
 }
