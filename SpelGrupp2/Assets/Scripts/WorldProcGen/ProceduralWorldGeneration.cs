@@ -93,7 +93,12 @@ public class ProceduralWorldGeneration : MonoBehaviour
     private IEnumerator WaveFunctionCollapse(List<Vector2Int> setTiles)
     {
         int debug = 0;
-        List<uint> possibilities = new List<uint>() {0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15};
+        List<uint> possibilities = new List<uint>() {
+            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
+            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
+            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
+            0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15,
+            7, 11, 13, 14}; // dead ends
         Queue<Vector2Int> queue = new Queue<Vector2Int>(setTiles);
         HashSet<Vector2Int> seen = new HashSet<Vector2Int>(setTiles);
         
@@ -115,46 +120,37 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 {
                     Vector2Int neighbor = current + directions[dir];
 
-                    // UnityEngine.Debug.Log($"seen contains {(seen.Contains(neighbor) && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) > 0)}");
                     if (
-                        neighbor.x < 0 ||
-                        neighbor.y < 0 ||
-                        neighbor.x >= worldSize.x ||
-                        neighbor.y >= worldSize.y ||
+                        neighbor.x < 0 && (possibilities[i] & W) == 0 ||
+                        neighbor.y < 0 && (possibilities[i] & S) == 0 ||
+                        neighbor.x >= worldSize.x && (possibilities[i] & E) == 0 ||
+                        neighbor.y >= worldSize.y && (possibilities[i] & N) == 0 ||
                         
-                        (//seen.Contains(neighbor) &&
-                        (possibilities[i] & walls[directions[dir]]) == 0 &&                 // possible hasn't a wall towards neighbor 
-                        (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) != 0) ||   // neighbor has a wall towards current
-                        ((possibilities[i] & walls[directions[dir]]) != 0 &&                  // possible has a wall towards neighbor
-                        (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0)       // neighbor hasn't a wall towards current
-                        )
+                        (seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) == 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) != 0 ||   
+                         seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) != 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0))
                     {
                         possible = false;
-                        //UnityEngine.Debug.Log($"neighbor & walls[-dir] {(graph[neighbor.x, neighbor.y] & walls[-directions[dir]])}");
                     }
                 }
-                UnityEngine.Debug.Log($"possible {possible}");
 
                 if (possible)
                     currentPossibilities.Add(possibilities[i]);
             }
 
             debug++;
+            
             // give random module to current if it not already has one
             if (!seen.Contains(current))
             {
-                int randomModule = 0;
                 if (currentPossibilities.Count > 0)
                 {
-                    randomModule = random.Next(currentPossibilities.Count);
-                    // UnityEngine.Debug.Log(
-                    //     $"randomModule {randomModule} currentPossibilities count {currentPossibilities.Count}");
+                    int randomModule = random.Next(currentPossibilities.Count);
                     graph[current.x, current.y] = currentPossibilities[randomModule];
                 }
                 else
                 {
+                    UnityEngine.Debug.Log(15);
                     graph[current.x, current.y] = 15;
-                    // UnityEngine.Debug.Log($"no possibilities debug {debug}");
                 }
 
                 // if (currentPossibilities.Count > 0)
@@ -173,6 +169,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                     new Vector3(current.x, 14, current.y),
                     tileRotation,
                     mapHolder);
+                UnityEngine.Debug.Log(tileType);
                 yield return null;
             }
 
@@ -183,14 +180,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
             for (int dir = 0; dir < 4; dir++)
             {
                 Vector2Int neighbor = current + directions[dir];
-
+                
                 if (!seen.Contains(neighbor) && // not already seen
                     !queue.Contains(neighbor) &&
                     neighbor.x >= 0 &&
                     neighbor.y >= 0 &&
                     neighbor.x < worldSize.x &&
                     neighbor.y < worldSize.y && // within worldSize
-                    (graph[current.x, current.y] & walls[directions[dir]]) > 0) // this tile has an opening out to a neighbor
+                    (graph[current.x, current.y] & walls[directions[dir]]) == 0) // this tile has an opening out to a neighbor
                 {
                     // add neighbor to queue
                     queue.Enqueue(neighbor);
