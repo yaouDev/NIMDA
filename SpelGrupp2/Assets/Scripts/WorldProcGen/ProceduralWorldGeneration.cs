@@ -97,7 +97,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
     private IEnumerator WaveFunctionCollapse(List<Vector2Int> setTiles)
     {
-        int debug = 0;
         List<uint> possibilities = new List<uint>() {
             7, 11, 13, 14,  // dead ends
             0,              // 4-way
@@ -160,8 +159,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
                     currentPossibilities.Add(possibilities[i]);
             }
 
-            debug++;
-            
             // give random module to current if it not already has one
             if (!seen.Contains(current))
             {
@@ -192,7 +189,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
                     new Vector3(current.x, 14, current.y),
                     tileRotation,
                     mapHolder);
-                UnityEngine.Debug.Log(tileType);
                 yield return null;
             }
 
@@ -217,8 +213,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 }
             }
         }
-
-        UnityEngine.Debug.Log($"DONE {debug}");
     }
 
     private void Debug(ModuleDeSpawnEvent eve)
