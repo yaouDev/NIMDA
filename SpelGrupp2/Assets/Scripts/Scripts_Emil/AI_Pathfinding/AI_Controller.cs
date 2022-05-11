@@ -155,7 +155,7 @@ public class AI_Controller : MonoBehaviour {
 
 
     private void FixedUpdate() {
-        // MoveAwayFromBlockedNode();
+        MoveAwayFromBlockedNode();
         if (!isStopped) {
             AdjustForLatePathUpdate();
             Move();
@@ -166,12 +166,10 @@ public class AI_Controller : MonoBehaviour {
     void MoveAwayFromBlockedNode() {
         if (Rigidbody.velocity.magnitude < 0.2f) {
             Vector3 otherPos = DynamicGraph.Instance.GetClosestNode(Position);
-            Collider[] cols = DynamicGraph.Instance.GetBlockedNode(otherPos);
-            if (cols.Length > 0) {
+            if (DynamicGraph.Instance.IsNodeBlocked(otherPos)) {
                 Rigidbody.AddForce((otherPos - Position).normalized * speed, ForceMode.Force);
             }
         }
-
     }
 
     // causes FPS to tank with many enemies. Needs a better solution
@@ -225,15 +223,7 @@ public class AI_Controller : MonoBehaviour {
     }
 
     public void UpdateTarget() {
-        /*         if (destination == Vector3.zero) desiredTarget = ClosestPlayer;
-                else desiredTarget = Destination; */
-
-        //activeTarget = desiredTarget;
         activeTarget = Destination;
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
-        /*         if (desiredTarget = Destination && DynamicGraph.Instance.GetBlockedNode(activeTarget).Length > 0) {
-                    targetBlocked = DynamicGraph.Instance.GetClosestNodeNotBlocked(desiredTarget);
-                    activeTarget = targetBlocked;
-                } */
     }
 }

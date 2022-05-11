@@ -85,10 +85,10 @@ public class IsCoverAvailableNode : Node {
     }
 
     private Vector3 GetValidCoverFromModule(Vector2Int module) {
-        ConcurrentBag<Vector3> possibleCovers = AIData.Instance.GetNearbyCoverSpots(module);
+        ConcurrentDictionary<Vector3, byte> possibleCovers = AIData.Instance.GetNearbyCoverSpots(module);
         Vector3 bestCoverSpot = new Vector3(Mathf.Infinity, 0, 0);
         if (possibleCovers != null) {
-            foreach (Vector3 cover in possibleCovers) {
+            foreach (Vector3 cover in possibleCovers.Keys) {
                 bool distCond = Vector3.Distance(agent.Position, cover) < Vector3.Distance(agent.Position, bestCoverSpot);
                 if (CheckIfSpotIsValid(cover) && (bestCoverSpot.x == Mathf.Infinity || distCond)) {
                     bestCoverSpot = cover;

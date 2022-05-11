@@ -80,19 +80,18 @@ public class AIData : MonoBehaviour {
 
     }
 
-    private ConcurrentDictionary<Vector2Int, ConcurrentBag<Vector3>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentBag<Vector3>>();
+    private ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>>();
     public void AddCoverSpot(Vector3 coverSpot) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(coverSpot);
         if (!potentialCoverSpots.ContainsKey(modulePos)) {
-            potentialCoverSpots.TryAdd(modulePos, new ConcurrentBag<Vector3>());
+            potentialCoverSpots.TryAdd(modulePos, new ConcurrentDictionary<Vector3, byte>());
         }
-        if (!potentialCoverSpots[modulePos].TryPeek(out coverSpot)) {
-            potentialCoverSpots[modulePos].Add(coverSpot);
+        if (!potentialCoverSpots[modulePos].ContainsKey(coverSpot)) {
+            potentialCoverSpots[modulePos].TryAdd(coverSpot, 0);
         }
     }
 
-
-    public ConcurrentBag<Vector3> GetNearbyCoverSpots(Vector2Int module) {
+    public ConcurrentDictionary<Vector3, byte> GetNearbyCoverSpots(Vector2Int module) {
         if (potentialCoverSpots.ContainsKey(module)) return potentialCoverSpots[module];
         return null;
     }
