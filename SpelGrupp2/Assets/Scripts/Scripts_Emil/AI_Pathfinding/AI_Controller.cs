@@ -155,42 +155,55 @@ public class AI_Controller : MonoBehaviour {
 
 
     private void FixedUpdate() {
-        MoveAwayFromBlockedNode();
         if (!isStopped) {
-            AdjustForLatePathUpdate();
+            //AdjustForLatePathUpdate();
             Move();
         }
-        Debug.DrawLine(Position, Position + Rigidbody.velocity, Color.red);
+        MoveAwayFromBlockedNode();
     }
 
+    // Should stop most of the weird cases where the enemies get stuck
     void MoveAwayFromBlockedNode() {
-        if (Rigidbody.velocity.magnitude < 0.2f) {
-            Vector3 otherPos = DynamicGraph.Instance.GetClosestNode(Position);
-            if (DynamicGraph.Instance.IsNodeBlocked(otherPos)) {
-                Rigidbody.AddForce((otherPos - Position).normalized * speed, ForceMode.Force);
+        if (Rigidbody.velocity.magnitude < 0.05f && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
+            Vector3 blockedNode = Vector3.zero;
+            foreach (Vector3 node in DynamicGraph.Instance.GetPossibleNeighborsKV(CurrentPathNode).Keys) {
+                if (DynamicGraph.Instance.IsNodeBlocked(node)) blockedNode = node;
             }
+            // the enemy is stuck on a collider, like a wall
+            if (blockedNode != Vector3.zero) {
+
+                Vector3 dirToMove;
+
+                if (Vector3.Dot(blockedNode, Rigidbody.velocity.normalized) >= -0.1f) dirToMove = (Position - blockedNode).normalized;
+                else dirToMove = (Vector3.Lerp(Position, Rigidbody.velocity.normalized, 0.5f) - blockedNode).normalized;
+
+                Rigidbody.AddForce(dirToMove * speed * 5f, ForceMode.Force);
+                Debug.DrawLine(Position, Position + dirToMove * speed, Color.red);
+            }
+            // the enemy is stuck between two modules
+            else if (Vector3.Distance(Position, currentPath[0]) > 1f) {
+                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + 0.1f, Position.z));
+            }
+
         }
     }
 
-    // causes FPS to tank with many enemies. Needs a better solution
-    /*     private void OnTriggerStay(Collider other) {
-            if (other != null && other.tag == "Enemy" && other.transform.parent.gameObject != gameObject) {
-                Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
-                Vector3 valueToTest = transform.position;
-                if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
-                float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
-                if ((dot >= 0) || valueToTest == transform.position) {
-                    Vector3 forceToAdd = Vector3.zero;
-                    if (isStopped) {
-                        //forceToAdd = -directionOfOtherEnemy.normalized * speed * 0.33f;
-                        forceToAdd = Vector3.Lerp(-directionOfOtherEnemy, activeTarget, 0.9f).normalized * speed * 0.15f;
-                    } else forceToAdd = Vector3.Lerp(rBody.velocity.normalized, -directionOfOtherEnemy, 0.85f).normalized * speed * 0.05f;
-                    forceToAdd.y = 0;
-                    // I have no idea why this suddenly made the force so explosive
-                    rBody.AddForce(forceToAdd, ForceMode.Force);
-                }
+    // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
+    private void OnTriggerStay(Collider other) {
+        if (other != null && other.tag == "Enemy") {
+            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
+            Vector3 valueToTest = transform.position;
+            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
+            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
+            if ((dot >= 0) || valueToTest == transform.position) {
+                Vector3 forceToAdd = -directionOfOtherEnemy * speed;
+                float multiplier = 0.15f;
+                if (!isStopped) multiplier = 0.05f;
+                forceToAdd.y = 0;
+                rBody.AddForce(forceToAdd * multiplier, ForceMode.Force);
             }
-        } */
+        }
+    }
 
     private void AdjustForLatePathUpdate() {
         if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {
@@ -203,7 +216,6 @@ public class AI_Controller : MonoBehaviour {
     }
 
 
-    // Something weird going on with movement jank atm
     private void Move() {
         if (currentPath != null && currentPath.Count != 0) {
             if (Vector3.Distance(Position, CurrentPathNode) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(Position, CurrentPathNode) > 2f)) {
@@ -219,6 +231,8 @@ public class AI_Controller : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
+            // ensure enemies stay at their max speed
+            Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, speed);
         }
     }
 

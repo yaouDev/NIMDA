@@ -34,6 +34,8 @@ public class DynamicGraph : MonoBehaviour {
 
     void Update() {
         //RemoveUnloadedNodes();
+        /*  Debug.Log(GetModulePosFromWorldPos(new Vector3(76, 1.5f, 10)));
+         Debug.Log(IsModuleLoaded(GetModulePosFromWorldPos(new Vector3(76, 1.5f, 10)))); */
     }
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
@@ -175,12 +177,11 @@ public class DynamicGraph : MonoBehaviour {
     public Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
         int xOffset = (int)worldPos.x % moduleSize, yOffset = (int)worldPos.z % moduleSize;
         int xAdd = 0, yAdd = 0;
-        if (xOffset < -((float)moduleSize / 2)) xAdd = -1;
-        if (xOffset > ((float)moduleSize / 2)) xAdd = 1;
-        if (yOffset < -((float)moduleSize / 2)) yAdd = -1;
-        if (yOffset > ((float)moduleSize / 2)) yAdd = +1;
+        if (xOffset <= -((float)moduleSize / 2) + nodeHalfextent) xAdd = -1;
+        if (xOffset >= ((float)moduleSize / 2) - nodeHalfextent) xAdd = 1;
+        if (yOffset <= -((float)moduleSize / 2) + nodeHalfextent) yAdd = -1;
+        if (yOffset >= ((float)moduleSize / 2) - nodeHalfextent) yAdd = +1;
         return new Vector2Int((int)worldPos.x / moduleSize + xAdd, (int)worldPos.z / moduleSize + yAdd);
-
     }
 
     public bool IsModuleLoaded(Vector2Int modulePos) {
@@ -194,15 +195,6 @@ public class DynamicGraph : MonoBehaviour {
     public void CreateNeighbors(Vector3 node, Dictionary<Unity.Mathematics.float3, float> possibleNeighbors) {
         foreach (Vector3 pNeighbor in possibleNeighbors.Keys) {
             if (IsModuleLoaded(GetModulePosFromWorldPos(node)) && !masterGraph.ContainsKey(pNeighbor)) {
-                
-                
-                
-                
-                if (pNeighbor.x > 75) {
-                    Debug.Log("Wat");
-                }
-
-
 
                 Insert(pNeighbor);
                 Connect(node, pNeighbor, possibleNeighbors[pNeighbor]);

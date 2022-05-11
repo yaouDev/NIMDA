@@ -9,7 +9,6 @@ public class AttackNode : Node {
     [SerializeField] private float spread = 1.0f;
     [SerializeField] private float shootForce = 100.0f;
     [SerializeField] private float recoilForce = 0.2f;
-    //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
     private float x;

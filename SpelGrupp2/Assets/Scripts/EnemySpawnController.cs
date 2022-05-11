@@ -50,7 +50,6 @@ public class EnemySpawnController : MonoBehaviour {
                 spawnCount += 1;
             }
             yield return new WaitForSeconds(spawnCooldown);
-            Debug.Log("Enemy spawn, fps" + 1.0f / Time.deltaTime);
         }
     }
 }

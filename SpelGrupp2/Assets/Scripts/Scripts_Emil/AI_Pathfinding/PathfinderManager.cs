@@ -53,7 +53,6 @@ public class PathfinderManager : MonoBehaviour {
             }
         }
         if (!pathQueue.Contains(agent)) pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
-        Debug.Log("Pathrequest! " + Time.deltaTime);
     }
 
 

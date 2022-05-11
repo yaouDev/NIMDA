@@ -7,11 +7,8 @@ public class HealthNode : Node {
 
     //public float fleeThereshold;
 
-    public override NodeState Evaluate() 
-    {
-
+    public override NodeState Evaluate() {
         NodeState = agent.Health.GetCurrentHealth() <= agent.Health.GetFleeHealthTreshold() ? NodeState.SUCCESS : NodeState.FAILURE;
-
         return NodeState;
     }
 
