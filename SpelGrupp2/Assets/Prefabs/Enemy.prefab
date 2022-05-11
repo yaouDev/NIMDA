@@ -146,13 +146,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropList:
-  - {fileID: 1583934146152314497, guid: 834e6e1ee2a1a8e408bed4dfae71d1cb, type: 3}
   - {fileID: 8225117659028540708, guid: e7ad56d6996f9c64bb6401ec34c4212d, type: 3}
+  - {fileID: 1583934146152314497, guid: 834e6e1ee2a1a8e408bed4dfae71d1cb, type: 3}
   - {fileID: 261070821904542086, guid: c2922308e7764cd4b91ebe0ce96ba599, type: 3}
   healthRestoreRate: 1
   fleeHealthtreshold: 50
   fullHealth: 100
-  dropAmount: 5
+  ironRange: 65
+  copperRange: 90
+  transitorRange: 100
+  dropMin: 5
+  dropMax: 9
 --- !u!114 &195881032626777595
 MonoBehaviour:
   m_ObjectHideFlags: 0
