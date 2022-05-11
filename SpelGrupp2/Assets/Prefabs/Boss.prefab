@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2418336442777586954}
   - component: {fileID: 8858542653002222249}
-  m_Layer: 12
+  m_Layer: 25
   m_Name: RotatingShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotation: {x: 0, y: 20, z: 0}
   rotationSpeed: 4
+  rotationSpeedMultiplier: 2
 --- !u!1 &1274372418050059003
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,7 +62,7 @@ GameObject:
   - component: {fileID: 3661373166523236847}
   - component: {fileID: 2587431160740330493}
   - component: {fileID: 6650878370107802748}
-  m_Layer: 12
+  m_Layer: 25
   m_Name: Shield4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +223,7 @@ Transform:
   m_GameObject: {fileID: 1870368713256031486}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 2, z: 1.5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 3676214834398691929}
   - {fileID: 6233189819612214209}
@@ -296,7 +297,6 @@ MonoBehaviour:
   - {fileID: 8225117659028540708, guid: e7ad56d6996f9c64bb6401ec34c4212d, type: 3}
   - {fileID: 261070821904542086, guid: c2922308e7764cd4b91ebe0ce96ba599, type: 3}
   healthRestoreRate: 0
-  fleeHealthtreshold: 0
   firePoint: {fileID: 9039189002825709897}
   fullHealth: 1000
   dropAmount: 5
@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 2918547770628618168}
   - component: {fileID: 1866367805201444525}
   - component: {fileID: 5760776984149488660}
-  m_Layer: 12
+  m_Layer: 25
   m_Name: Shield2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -579,7 +579,7 @@ GameObject:
   - component: {fileID: 1412787196616293779}
   - component: {fileID: 5549020245496446591}
   - component: {fileID: 2505833134943294491}
-  m_Layer: 12
+  m_Layer: 25
   m_Name: Shield1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 9094174201247750769}
   - component: {fileID: 6695714742426660469}
   - component: {fileID: 7690135778272190923}
-  m_Layer: 12
+  m_Layer: 25
   m_Name: Shield3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -31,7 +31,7 @@ public class AttackNode : Node
     public override NodeState Evaluate()
     {
         //Find Closest Player
-        closestTarget = agent.ClosestPlayer;
+        closestTarget = agent.ClosestPlayer + Vector3.up;
         relativePos = closestTarget - agent.transform.position;
 
         // Rotate the Enemy towards the player
