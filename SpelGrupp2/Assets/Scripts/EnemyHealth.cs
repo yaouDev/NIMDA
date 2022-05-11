@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour, IDamageable
 {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
@@ -54,16 +54,6 @@ public class EnemyHealth : MonoBehaviour
         return firePoint;
     }
 
-    public void TakeDamage()
-    {
-        --currentHealth;
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        Debug.Log(currentHealth);
-    }
 
     public void Die()
     {
@@ -103,5 +93,12 @@ public class EnemyHealth : MonoBehaviour
             loot.SetActive(true);
             Destroy(loot, 15f);
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        Debug.Log(currentHealth);
+        
     }
 }
