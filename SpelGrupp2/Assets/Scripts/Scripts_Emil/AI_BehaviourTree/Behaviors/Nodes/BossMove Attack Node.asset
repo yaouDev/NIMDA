@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
-  m_Name: BossPhase3AttackSequence
+  m_Script: {fileID: 11500000, guid: 6796d7f5ab07ec24788677f92fefce18, type: 3}
+  m_Name: BossMove Attack Node
   m_EditorClassIdentifier: 
-  nodes:
-  - {fileID: 11400000, guid: c834c8426b6b451439917c5150c8a655, type: 2}
-  - {fileID: 11400000, guid: 0dd9baed2a74f9348ad5ab56535d23a0, type: 2}
+  turnSpeed: 70
+  spread: 0
+  shootForce: 20
+  recoilForce: 0
+  attackDelay: 1

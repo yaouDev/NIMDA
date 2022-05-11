@@ -6,10 +6,7 @@ public class RotatingShield : MonoBehaviour
 {
     [SerializeField] private Vector3 rotation;
     [SerializeField] private float rotationSpeed;
-    /*    [SerializeField] private GameObject shield1;
-        [SerializeField] private GameObject shield2;
-        [SerializeField] private GameObject shield3;
-        [SerializeField] private GameObject shield4;*/
+    [SerializeField] private float rotationSpeedMultiplier = 2.0f;
 
     private EnemyHealth enemyHealth;
     private float health;
@@ -27,7 +24,7 @@ public class RotatingShield : MonoBehaviour
         //If health is under 700, spin faster
         if (health < 700)
         {
-            transform.Rotate(rotation * (rotationSpeed * 2) * Time.deltaTime);
+            transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);
             
         }
         else
@@ -35,8 +32,8 @@ public class RotatingShield : MonoBehaviour
             if (health < 400)
             {
                 gameObject.layer = LayerMask.NameToLayer("Bouncing");
-                transform.Rotate(rotation * (rotationSpeed * 2) * Time.deltaTime);
-                Debug.Log("Hej och hå");
+                transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);
+                Debug.Log("Hej och hå" + rotation);
             }
 
         }

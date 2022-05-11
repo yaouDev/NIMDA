@@ -18,7 +18,6 @@ public class AttackNode : Node
     private float y;
 
     private GameObject currentBullet; 
-    private LineRenderer lineRenderer;
 
     Vector3 closestTarget;
     Vector3 relativePos;
