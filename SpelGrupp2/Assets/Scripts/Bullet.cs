@@ -25,14 +25,14 @@ public class Bullet : MonoBehaviour
     private void MoveBullet()
     {
         if (Physics.Raycast(
-                transform.position, 
-                transform.forward, 
-                out RaycastHit hitInfo, 
+                transform.position,
+                transform.forward,
+                out RaycastHit hitInfo,
                 bulletSpeed * Time.deltaTime,
                 environmentLayerMask | enemyLayerMask))
         {
             transform.position += hitInfo.distance * transform.forward;
-            
+
             if (1 << hitInfo.collider.gameObject.layer == environmentLayerMask)
             {
                 Ricochet();
@@ -41,8 +41,8 @@ public class Bullet : MonoBehaviour
             {
                 hit = true;
                 // TODO [Patrik] Update to call to IHealth Interface, thus we can shoot each other too <3
-                EnemyHealth enemyHealth = hitInfo.transform.GetComponent<EnemyHealth>();
-                DamageEnemy(enemyHealth);
+                IDamageable health = hitInfo.transform.GetComponent<IDamageable>();
+                DamageEnemy(health);
                 Ricochet();
             }
         }
@@ -52,9 +52,12 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void DamageEnemy(EnemyHealth enemyHealth)
+    private void DamageEnemy(IDamageable health)
     {
-        enemyHealth.TakeDamage(damage);
+        if (health != null)
+        {
+            health.TakeDamage(damage);
+        }
     }
 
     private void Ricochet()
