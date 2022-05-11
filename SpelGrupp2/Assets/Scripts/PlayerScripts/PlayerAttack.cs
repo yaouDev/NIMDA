@@ -132,25 +132,21 @@ namespace CallbackSystem {
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)
                 {
-                    IDamageable health = hitInfo.transform.GetComponent<IDamageable>();
-                    DamageEnemy(health);
-                    //Debug.Log($"enemyHealth {health}");
-
-                    /*    EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
+                    if (hitInfo.transform.tag == "Enemy") 
+                    {
+                        EnemyHealth enemy = hitInfo.transform.GetComponent<EnemyHealth>();
                         if (enemy != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
                         {
                             enemy.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
                             Debug.Log($"enemyHealth {enemy.CurrentHealth}");
-                        }*/
+                        }
+                    }
+                    else if (hitInfo.transform.tag == "BreakableObject")
+                    {
+                        BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
+                        breakable.DropBoxLoot();
+                    }
                 }
-            }
-        }
-
-        private void DamageEnemy(IDamageable health)
-        {
-            if (health != null)
-            {
-                health.TakeDamage(damage);
             }
         }
 
