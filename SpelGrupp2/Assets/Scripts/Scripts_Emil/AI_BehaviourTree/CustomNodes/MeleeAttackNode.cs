@@ -5,13 +5,16 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/MeleeAttack")]
 public class MeleeAttackNode : Node
 {
-    [SerializeField] private float attackRange;
     [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float attackCoolDown = 1.0f;
     [SerializeField] private float damage = 5.0f;
     [SerializeField] private LayerMask whatAreTargets;
 
     private bool isAttacking = true;
+
+    IDamageable damageable;
+
+    Collider[] colliders;
 
     Vector3 closestTarget;
     Vector3 relativePos;
@@ -23,7 +26,7 @@ public class MeleeAttackNode : Node
     public override NodeState Evaluate()
     {
         //Find Closest Player
-        closestTarget = agent.ClosestPlayer;
+        closestTarget = agent.ClosestPlayer + Vector3.up;
         relativePos = closestTarget - agent.transform.position;
 
         // Rotate the Enemy towards the player
@@ -62,12 +65,21 @@ public class MeleeAttackNode : Node
 
     private void CheckForPlayers()
     {
-        Collider[] colliders = Physics.OverlapSphere(agent.transform.position, 1f, whatAreTargets);
+        //Check with a overlapsphere what colliders are in the area
+        colliders = Physics.OverlapSphere(agent.transform.position, 4f, whatAreTargets);
         foreach (Collider coll in colliders)
         {
-            if (coll.CompareTag("Player"))
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject"))
             {
-                coll.GetComponent<CallbackSystem.PlayerHealth>().TakeDamage(damage);
+                damageable = coll.transform.GetComponent<IDamageable>();
+                Debug.Log("MeleeAttack");
+
+                if (damageable != null)
+                {
+                    damageable.TakeDamage(damage);
+
+                }
+
             }
         }
     }

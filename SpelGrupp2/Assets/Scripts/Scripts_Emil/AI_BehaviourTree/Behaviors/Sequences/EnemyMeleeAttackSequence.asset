@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 193a1f168ef85a74db4470574a5db7f7, type: 3}
-  m_Name: ChaseNode
+  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
+  m_Name: EnemyMeleeAttackSequence
   m_EditorClassIdentifier: 
-  distanceFromTargetToStop: 0
+  nodes:
+  - {fileID: 11400000, guid: 59ba2f75fb074e84f8a26b5d7ced05f8, type: 2}
+  - {fileID: 11400000, guid: e563eed3ceb076841b8bcbccd1ca403e, type: 2}

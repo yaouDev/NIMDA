@@ -57,7 +57,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void Die()
     {
-        enemySpawnController.reduceSpawnCount(1);
+        //enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         Destroy(gameObject);
     }

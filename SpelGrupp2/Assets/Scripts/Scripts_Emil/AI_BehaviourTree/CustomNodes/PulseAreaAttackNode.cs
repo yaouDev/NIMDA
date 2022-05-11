@@ -10,8 +10,13 @@ public class PulseAreaAttackNode : Node
     [SerializeField] private float attackCoolDown = 1.0f;
     [SerializeField] private float damage = 10.0f;
     [SerializeField] private LayerMask whatAreTargets;
+    [SerializeField] private ParticleSystem pulseParticles;
 
     private bool isAttacking = true;
+
+    IDamageable damageable;
+
+    Collider[] colliders;
 
     Vector3 closestTarget;
     Vector3 relativePos;
@@ -62,18 +67,20 @@ public class PulseAreaAttackNode : Node
 
     private void CheckForPlayers()
     {
-        Collider[] colliders = Physics.OverlapSphere(agent.transform.position, 5f, whatAreTargets);
+        colliders = Physics.OverlapSphere(agent.transform.position, 5f, whatAreTargets);
         Debug.Log("PulseAttack");
         foreach (Collider coll in colliders)
         {
-            if (coll.CompareTag("Player"))
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject"))
             {
-                coll.GetComponent<CallbackSystem.PlayerHealth>().TakeDamage(damage);
-                
-            }
-            if (coll.GetComponent<ExplosiveBarrel>())
-            {
-                coll.GetComponent<ExplosiveBarrel>().StartExplosion();
+                damageable = coll.transform.GetComponent<IDamageable>();
+
+                if (damageable != null) 
+                {
+                    damageable.TakeDamage(damage); 
+
+                }
+
             }
         }
     }
