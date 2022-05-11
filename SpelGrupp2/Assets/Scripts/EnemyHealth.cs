@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour {
+public class EnemyHealth : MonoBehaviour, IDamageable
+{
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
-    [SerializeField] private float fleeHealthtreshold;
-    [SerializeField][Range(0, 100)] private int fullHealth;
+    [SerializeField] private GameObject firePoint;
+    [SerializeField] [Range(0, 100)] private int fullHealth;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -21,40 +22,42 @@ public class EnemyHealth : MonoBehaviour {
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
 
-    public float CurrentHealth {
+    public float CurrentHealth
+    {
         get { return currentHealth; }
         set { currentHealth = Mathf.Clamp(value, 0, fullHealth); }
     }
-    private void Awake() {
+    private void Awake()
+    {
         CurrentHealth = fullHealth;
-        enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        //enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
     }
-    void Update() {
+    void Update()
+    {
 
-        if (CurrentHealth <= 0) {
+        if (CurrentHealth <= 0)
+        {
             Die();
-        } else {
+        }
+        else
+        {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
 
         }
     }
-    public float GetCurrentHealth() {
+    public float GetCurrentHealth()
+    {
         return CurrentHealth;
     }
-    public float GetFleeHealthTreshold() {
-        return fleeHealthtreshold;
+    public GameObject GetFirePoint()
+    {
+        return firePoint;
     }
 
-    public void TakeDamage() {
-        --currentHealth;
-    }
-    
-    public void TakeDamage(float damage) {
-        currentHealth -= damage;
-    }
-    
-    public void Die() {
-        enemySpawnController.reduceSpawnCount(1);
+
+    public void Die()
+    {
+        //enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         Destroy(gameObject);
     }
@@ -63,7 +66,8 @@ public class EnemyHealth : MonoBehaviour {
           return currHealth;
       }*/
 
-    public void DropLoot() {
+    public void DropLoot()
+    {
 
         int dropAmount = Random.Range(dropMin, dropMax);
         for (int i = 0; i < dropAmount; i++)
@@ -89,5 +93,12 @@ public class EnemyHealth : MonoBehaviour {
             loot.SetActive(true);
             Destroy(loot, 15f);
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        Debug.Log(currentHealth);
+        
     }
 }
