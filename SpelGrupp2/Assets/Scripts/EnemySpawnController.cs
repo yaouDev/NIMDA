@@ -58,4 +58,20 @@ public class EnemySpawnController : MonoBehaviour {
     {
         spawnCount -= amount;
     }
+
+    public void GeneratorRunning(bool on)
+    {
+        if (on)
+        {
+            spawnCooldown = 1;
+            maxSpawnCount = 50;
+            spawnDistanceMax = 50;
+        }
+        if (!on)
+        {
+            spawnCooldown = 3;
+            maxSpawnCount = 20;
+            spawnDistanceMax = 35;
+        }
+    }
 }
