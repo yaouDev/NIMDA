@@ -15,14 +15,15 @@ namespace CallbackSystem {
         private PlayerController controller;
         private Camera cam;
         private bool isAlive = true;
-        [SerializeField] [Range(0f, 1f)] private float laserSelfDmg = 0.1f;
-        [SerializeField] private float damage = 75.0f;
+        [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
+        [SerializeField] private float damage = 75f, teamDamage = 30f;
         [SerializeField] private int bullets = 10;
-        [SerializeField] private GameObject bullet;
+        [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne;
-        private bool canShootLaser;
+        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded;
+        private float reducedSelfDmg;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -47,6 +48,7 @@ namespace CallbackSystem {
             health = GetComponent<PlayerHealth>();
             resourceEvent = new ResourceUpdateEvent();
             isPlayerOne = health.IsPlayerOne();
+            reducedSelfDmg = laserSelfDmg/2; 
         }
 
         [SerializeField] private Material bulletMat;
@@ -128,18 +130,23 @@ namespace CallbackSystem {
         private void ShootLaser() {
             if (canShootLaser)
             {
+                if (laserWeaponUpgraded)
+                    laserSelfDmg = reducedSelfDmg;
+
                 health.TakeDamage(laserSelfDmg);
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)
                 {
-                    if (hitInfo.transform.tag == "Enemy") 
+                    if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player") 
                     {
                         IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
                         
                         if (damageable != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
                         {
+                            if(hitInfo.transform.tag == "Player")
+                                damageable.TakeDamage(teamDamage);
+                            else
                             damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
-                           
                         }
                     }
                     else if (hitInfo.transform.tag == "BreakableObject")
@@ -209,12 +216,30 @@ namespace CallbackSystem {
             AnimateLaserSightLineRenderer(gameObject.transform.forward);
         }
 
-        public void FireProjectileWeapon() {
-            if (bullets > 0) {
+        private void FireProjectileWeapon()
+        {
+            if (bullets > 0)
+            {
+                Debug.Log("Standard projectile weapon fired!");
                 AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                 UpdateBulletCount(-1);
-                Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                if(projectionWeaponUpgraded)
+                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                else
+                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
             }
+        }
+
+        public void UpgradeProjectileWeapon()
+        {
+            Debug.Log("Projectile weapon upgraded!");
+            projectionWeaponUpgraded = true;
+        }
+
+        public void UpgradeLaserWeapon()
+        {
+            Debug.Log("Projectile weapon upgraded!");
+            laserWeaponUpgraded = true;
         }
     }
 }

@@ -30,7 +30,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     private void Awake()
     {
         CurrentHealth = fullHealth;
-        //enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
     }
     void Update()
     {
@@ -49,6 +49,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     {
         return CurrentHealth;
     }
+    public float GetFullHealth()
+    {
+        return fullHealth;
+    }
     public GameObject GetFirePoint()
     {
         return firePoint;
@@ -57,7 +61,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
 
     public void Die()
     {
-        //enemySpawnController.reduceSpawnCount(1);
+        enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         Destroy(gameObject);
     }

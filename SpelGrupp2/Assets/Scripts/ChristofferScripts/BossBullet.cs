@@ -71,10 +71,10 @@ public class BossBullet : MonoBehaviour
             currentBullet3 = Instantiate(AIData.instance.getBossBullet, transform.position, Quaternion.identity);
             currentBullet4 = Instantiate(AIData.instance.getBossBullet, transform.position, Quaternion.identity);
         }*/
-        currentBullet1 = Instantiate(AIData.instance.getSmallBullet, transform.position, Quaternion.identity);
-        currentBullet2 = Instantiate(AIData.instance.getSmallBullet, transform.position, Quaternion.identity);
-        currentBullet3 = Instantiate(AIData.instance.getSmallBullet, transform.position, Quaternion.identity);
-        currentBullet4 = Instantiate(AIData.instance.getSmallBullet, transform.position, Quaternion.identity);
+        currentBullet1 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
+        currentBullet2 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
+        currentBullet3 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
+        currentBullet4 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
         //AddForce to bullets
         currentBullet1.GetComponent<Rigidbody>().AddForce(Vector3.forward * shootForce, ForceMode.Impulse);
         currentBullet2.GetComponent<Rigidbody>().AddForce(Vector3.right * shootForce, ForceMode.Impulse);
@@ -88,7 +88,7 @@ public class BossBullet : MonoBehaviour
         {
             //Get component of player
 
-            //targets[i].GetComponent<PlayerHealth>().TakeDamage(explosionDamage); //sätt en damage parameter i TakeDamage
+            //targets[i].GetComponent<PlayerHealth>().TakeDamage(explosionDamage); //sï¿½tt en damage parameter i TakeDamage
             if (targets[i].GetComponent<Rigidbody>())
             {
                 targets[i].GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRange);

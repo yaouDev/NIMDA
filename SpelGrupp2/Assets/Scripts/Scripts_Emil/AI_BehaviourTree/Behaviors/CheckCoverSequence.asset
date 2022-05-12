@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 193a1f168ef85a74db4470574a5db7f7, type: 3}
-  m_Name: ChaseNode
+  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
+  m_Name: CheckCoverSequence
   m_EditorClassIdentifier: 
-  distanceFromTargetToStop: 0
+  nodes:
+  - {fileID: 11400000, guid: bbf92409b1b7086499c9de9aa52eea02, type: 2}
+  - {fileID: 11400000, guid: 2cc8dbb84dfc01540b45201cd71ef2e2, type: 2}
