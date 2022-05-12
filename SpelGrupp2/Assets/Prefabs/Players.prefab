@@ -354,6 +354,9 @@ MonoBehaviour:
   damage: 75
   bullets: 10
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
+  upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  bulletMat: {fileID: 2100000, guid: 61b3e88432baf31448b1e0c5f1d358aa, type: 2}
+  laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607570548879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,12 +546,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 9
-  transistor: 9
-  iron: 9
+  playerAttackScript: {fileID: 0}
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
-  playerAttackScript: {fileID: 0}
+  UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
+  UpgradedLaserWeaponRecipe: {fileID: 11400000, guid: d0ce47cee0731ef42806714666e68e9b, type: 2}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1048576
+  craftingTable: {fileID: 0}
+  craftingButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  copper: 10
+  transistor: 10
+  iron: 10
 --- !u!114 &326990607570548867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -641,56 +653,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1021181802951838962}
-        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
-        m_MethodName: PressedCopper
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 0885f003-c53f-4a54-8ff0-f768a381b832
-    m_ActionName: Player/CraftBattery[/Keyboard/q]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1021181802951838962}
-        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
-        m_MethodName: PressedIron
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 32993aca-4892-4fd0-847a-c1b515e885cf
-    m_ActionName: Player/PressIron[/Keyboard/i,/XInputControllerWindows/dpad/up]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1021181802951838962}
-        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
-        m_MethodName: PressedTransistor
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 02b17aaa-acdb-4f09-95cb-32b1cb41fcdc
-    m_ActionName: Player/PressTransistor[/Keyboard/l,/XInputControllerWindows/dpad/right]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1021181802951838962}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: PressedBattery
+        m_MethodName: CraftBattery
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -706,7 +670,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1021181802951838962}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: PressedBullet
+        m_MethodName: CraftBullet
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -766,6 +730,86 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 85cf34fb-3c86-4e96-b4e2-989d9f1ccb1b
     m_ActionName: Player/PauseButton[/XInputControllerWindows/start,/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 617959a1-a766-417a-993c-7fb5b744dd76
+    m_ActionName: Player/Interact[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: NextButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b40caa7d-e8e7-41de-8707-d0c7e739112b
+    m_ActionName: Crafting/Next[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow,/XInputControllerWindows/dpad/up,/XInputControllerWindows/dpad/down]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4727cb7a-6c96-4c05-88be-8a7d723a54fe
+    m_ActionName: Crafting/Interact[/Keyboard/f,/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: SelectButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 334f5b80-f104-4c5e-bd42-ab1cd0535c6e
+    m_ActionName: Crafting/Select[/Keyboard/enter,/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1021181802951838962}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: PreviousButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 64aa5f3f-cebc-40c9-9e0f-edf748513fcb
+    m_ActionName: Crafting/Previous[/Keyboard/w,/Keyboard/upArrow,/XInputControllerWindows/dpad/up]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: MouseKeyboard
   m_DefaultActionMap: Player
@@ -961,6 +1005,9 @@ MonoBehaviour:
   damage: 75
   bullets: 10
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
+  upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  bulletMat: {fileID: 2100000, guid: 61b3e88432baf31448b1e0c5f1d358aa, type: 2}
+  laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607881322125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1150,12 +1197,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 938c82af2f1c44754970503bab1c6466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  copper: 9
-  transistor: 9
-  iron: 9
+  playerAttackScript: {fileID: 0}
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
-  playerAttackScript: {fileID: 0}
+  UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
+  UpgradedLaserWeaponRecipe: {fileID: 11400000, guid: d0ce47cee0731ef42806714666e68e9b, type: 2}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 1048576
+  craftingTable: {fileID: 0}
+  craftingButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  copper: 10
+  transistor: 10
+  iron: 10
 --- !u!114 &1652920257267338416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1276,56 +1332,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
-        m_MethodName: PressedCopper
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 49d8984a-b12c-46a0-af6f-fd10b54dbe59
-    m_ActionName: Player/PressCopper[/Keyboard/j,/XInputControllerWindows/dpad/left]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
-        m_MethodName: PressedIron
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 5c187239-68b5-4e25-a0c2-3bd2195849c9
-    m_ActionName: Player/PressIron[/Keyboard/i,/XInputControllerWindows/dpad/up]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: Crafting, Assembly-CSharp
-        m_MethodName: PressedTransistor
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 46abe2c4-8412-4bd3-a1ca-9ca4bc6df6bc
-    m_ActionName: Player/PressTransistor[/Keyboard/l,/XInputControllerWindows/dpad/right]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: PressedBattery
+        m_MethodName: CraftBattery
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1341,7 +1349,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5657999587282274127}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: PressedBullet
+        m_MethodName: CraftBullet
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1401,6 +1409,86 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d9f45120-61ff-4ea9-9de2-a9f84371e0fb
     m_ActionName: Player/PauseButton[/Keyboard/escape,/XInputControllerWindows/start]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1caed3ad-0efe-4e3f-97aa-c087ded56323
+    m_ActionName: Player/Interact[/Keyboard/f]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: NextButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 30d8afce-739f-49ee-a571-26a85db7a67a
+    m_ActionName: Crafting/Next[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow,/XInputControllerWindows/dpad/up,/XInputControllerWindows/dpad/down]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d255f17d-4e4a-4738-b3e2-44f0fd8050df
+    m_ActionName: Crafting/Interact[/Keyboard/f,/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: SelectButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 825579d9-fbef-4e42-b790-626cad010d28
+    m_ActionName: Crafting/Select[/Keyboard/enter,/XInputControllerWindows/buttonSouth]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: PreviousButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 3c8efc56-8cc3-4c4a-8b78-8f3579a8f579
+    m_ActionName: Crafting/Previous[/Keyboard/w,/Keyboard/upArrow,/XInputControllerWindows/dpad/up]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: GamePad
   m_DefaultActionMap: Player
@@ -1749,7 +1837,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 24439
+    m_Bits: 1073015
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1874,7 +1962,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 24503
+    m_Bits: 1073079
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
