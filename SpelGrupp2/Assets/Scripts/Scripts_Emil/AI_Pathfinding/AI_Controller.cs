@@ -32,6 +32,7 @@ public class AI_Controller : MonoBehaviour {
         enemyHealth = GetComponent<EnemyHealth>();
         lineRenderer = GetComponent<LineRenderer>();
         Destination = ClosestPlayer;
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
     }
 
 
@@ -234,5 +235,15 @@ public class AI_Controller : MonoBehaviour {
     public void UpdateTarget() {
         activeTarget = Destination;
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
+    }
+
+    private void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
+        if (!isBoss) {
+            Health.Die();
+        }
+    }
+
+    private void OnDestroy() {
+        CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
     }
 }
