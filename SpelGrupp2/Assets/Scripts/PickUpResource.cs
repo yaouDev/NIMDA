@@ -56,6 +56,7 @@ namespace CallbackSystem
                     Debug.Log("Picked up Battery");
                     break;
             }
+            crafting.UpdateResources();
             UpdateRes();
 
             void UpdateRes()
@@ -67,7 +68,7 @@ namespace CallbackSystem
                 resourceEvent.c = crafting.copper;
                 resourceEvent.t = crafting.transistor;
                 resourceEvent.i = crafting.iron;
-                Debug.Log("Copper: " + resourceEvent.c + ". Transistor: " + resourceEvent.t + ". Iron: " + resourceEvent.i);
+               // Debug.Log("Copper: " + resourceEvent.c + ". Transistor: " + resourceEvent.t + ". Iron: " + resourceEvent.i);
 
                 EventSystem.Current.FireEvent(resourceEvent);
             }

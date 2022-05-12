@@ -102,7 +102,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
-        Debug.Log(currentHealth);
+        //Debug.Log(currentHealth);
         
     }
 }

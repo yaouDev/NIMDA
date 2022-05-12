@@ -32,6 +32,7 @@ public class AI_Controller : MonoBehaviour {
         enemyHealth = GetComponent<EnemyHealth>();
         lineRenderer = GetComponent<LineRenderer>();
         Destination = ClosestPlayer;
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
     }
 
 
@@ -156,7 +157,6 @@ public class AI_Controller : MonoBehaviour {
         bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
         if (isBoss) {
             velocityCond = Rigidbody.velocity.magnitude < 0.01f;
-            jumpHeight = 0.5f;
         }
 
         if (velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
@@ -176,7 +176,7 @@ public class AI_Controller : MonoBehaviour {
                 Debug.DrawLine(Position, Position + dirToMove * speed, Color.red);
             }
             // the enemy is stuck between two modules
-            else if (Vector3.Distance(Position, currentPath[0]) > 1f) {
+            else if (Vector3.Distance(Position, currentPath[0]) > 0.5f) {
                 Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
             }
 
@@ -234,5 +234,15 @@ public class AI_Controller : MonoBehaviour {
     public void UpdateTarget() {
         activeTarget = Destination;
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
+    }
+
+    private void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
+        if (!isBoss) {
+            Health.Die();
+        }
+    }
+
+    private void OnDestroy() {
+        CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
     }
 }
