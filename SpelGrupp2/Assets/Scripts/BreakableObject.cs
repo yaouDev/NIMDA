@@ -13,6 +13,7 @@ public class BreakableObject : MonoBehaviour
 
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
+    [SerializeField] private Vector3 rotatationRate;
     private Vector3 dropOffset;
     private GameObject drop;
 
@@ -25,7 +26,7 @@ public class BreakableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        transform.Rotate(rotatationRate);
     }
 
     public void DropBoxLoot()
