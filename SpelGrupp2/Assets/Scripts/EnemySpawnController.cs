@@ -37,7 +37,9 @@ public class EnemySpawnController : MonoBehaviour {
             // Debug.Log(spawnLocations.Length);
 
             for (int i = 0; i < spawnLocations.Length; i++) {
-                if ((Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax) || (Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax)) {
+                float distanceP1 = Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position);
+                float distanceP2 = Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position);
+                if ((distanceP1 < spawnDistanceMax && distanceP1 > spawnDistanceMin) || (distanceP2 < spawnDistanceMax && distanceP2 > spawnDistanceMin)) {
                     nearbySpawners.Add(spawnLocations[i]);
                 }
             }
@@ -62,15 +64,17 @@ public class EnemySpawnController : MonoBehaviour {
     {
         if (on)
         {
-            spawnCooldown = 1;
-            maxSpawnCount = 50;
+            spawnCooldown = 3;
+            maxSpawnCount = 40;
             spawnDistanceMax = 50;
+            spawnDistanceMin = 15;
         }
         if (!on)
         {
-            spawnCooldown = 3;
-            maxSpawnCount = 20;
+            spawnCooldown = 5;
+            maxSpawnCount = 25;
             spawnDistanceMax = 35;
+            spawnDistanceMin = 5;
         }
     }
 }
