@@ -10,7 +10,7 @@ public class HealthNode : Node {
     public override NodeState Evaluate() {
 
         NodeState = agent.Health.GetCurrentHealth() <= healthThreashold ? NodeState.SUCCESS : NodeState.FAILURE;
-        Debug.Log("HealthNode: " + NodeState);
+        //Debug.Log("HealthNode: " + NodeState);
         //Debug.Log(agent.Health.GetCurrentHealth());
         return NodeState;
     }
