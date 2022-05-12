@@ -37,23 +37,23 @@ namespace CallbackSystem
             {
                 case (PickUp.Iron):
                     crafting.iron++;
-                    Debug.Log("Picked up iron");
+                    //Debug.Log("Picked up iron");
                     break;
                 case (PickUp.Copper):
                     crafting.copper++;
-                    Debug.Log("Picked up copper");
+                    //Debug.Log("Picked up copper");
                     break;
                 case (PickUp.Transistor):
                     crafting.transistor++;
-                    Debug.Log("Picked up transistor");
+                    //Debug.Log("Picked up transistor");
                     break;
                 case (PickUp.Bullet):
                     playerAttack.UpdateBulletCount(1);
-                    Debug.Log("Picked up bullet");
+                    //Debug.Log("Picked up bullet");
                     break;
                 case (PickUp.Battery):
                     playerHealth.IncreaseBattery();
-                    Debug.Log("Picked up Battery");
+                    //Debug.Log("Picked up Battery");
                     break;
             }
             crafting.UpdateResources();
