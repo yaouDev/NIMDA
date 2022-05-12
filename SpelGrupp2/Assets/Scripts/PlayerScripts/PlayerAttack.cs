@@ -21,9 +21,9 @@ namespace CallbackSystem {
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
-        private bool activated = false, isPlayerOne;
+        private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded;
-        private float reducedSelfDmg;
+        private float reducedSelfDmg, weaponCooldown;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -48,7 +48,8 @@ namespace CallbackSystem {
             health = GetComponent<PlayerHealth>();
             resourceEvent = new ResourceUpdateEvent();
             isPlayerOne = health.IsPlayerOne();
-            reducedSelfDmg = laserSelfDmg/2; 
+            reducedSelfDmg = laserSelfDmg/2;
+            weaponCooldown = 0f;
         }
 
         [SerializeField] private Material bulletMat;
@@ -75,6 +76,10 @@ namespace CallbackSystem {
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
             }
+            if (recentlyFired && weaponCooldown < 0.5f)
+                weaponCooldown += Time.deltaTime;
+            else
+                recentlyFired = false;
 
             if (isAlive) {
                 AnimateLasers();
@@ -84,7 +89,7 @@ namespace CallbackSystem {
         }
 
         public void Fire(InputAction.CallbackContext context) {
-            if (context.started && isAlive) {
+            if (context.started && isAlive && !recentlyFired) {
                 if (laserWeapon && canShootLaser) {
                     AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                     ShootLaser();
@@ -92,6 +97,8 @@ namespace CallbackSystem {
                 } else if (!laserWeapon) {
                     FireProjectileWeapon();
                 }
+                recentlyFired = true;
+                weaponCooldown = 0f;
             }
         }
 

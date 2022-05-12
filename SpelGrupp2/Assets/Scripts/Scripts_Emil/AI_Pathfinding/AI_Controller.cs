@@ -42,7 +42,7 @@ public class AI_Controller : MonoBehaviour {
         if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
         //if (!updatingPath) StartCoroutine(UpdatePath());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
-            Destroy(gameObject);
+            Health.DieNoLoot();
         }
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -238,7 +238,7 @@ public class AI_Controller : MonoBehaviour {
 
     private void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
         if (!isBoss) {
-            Health.Die();
+            Health.DieNoLoot();
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour {
-    [SerializeField] private GameObject spawnThis;
+    [SerializeField] private GameObject[] spawnThis;
     [SerializeField] private int maxSpawnCount;
     private int spawnCount;
     private GameObject[] players;
@@ -37,7 +37,9 @@ public class EnemySpawnController : MonoBehaviour {
             // Debug.Log(spawnLocations.Length);
 
             for (int i = 0; i < spawnLocations.Length; i++) {
-                if ((Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax) || (Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position) < spawnDistanceMax)) {
+                float distanceP1 = Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position);
+                float distanceP2 = Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position);
+                if ((distanceP1 < spawnDistanceMax && distanceP1 > spawnDistanceMin) || (distanceP2 < spawnDistanceMax && distanceP2 > spawnDistanceMin)) {
                     nearbySpawners.Add(spawnLocations[i]);
                 }
             }
@@ -45,7 +47,7 @@ public class EnemySpawnController : MonoBehaviour {
                 index = Random.Range(0, nearbySpawners.Count);
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;
-                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+                Instantiate(spawnThis[Random.Range(0, 2)], spawnPos.position, spawnPos.rotation);
                 nearbySpawners.Clear();
                 spawnCount += 1;
             }
@@ -53,24 +55,22 @@ public class EnemySpawnController : MonoBehaviour {
         }
     }
 
-    public void reduceSpawnCount(int amount)
-    {
+    public void reduceSpawnCount(int amount) {
         spawnCount -= amount;
     }
 
-    public void GeneratorRunning(bool on)
-    {
-        if (on)
-        {
-            spawnCooldown = 1;
-            maxSpawnCount = 50;
-            spawnDistanceMax = 50;
-        }
-        if (!on)
-        {
+    public void GeneratorRunning(bool on) {
+        if (on) {
             spawnCooldown = 3;
-            maxSpawnCount = 20;
+            maxSpawnCount = 40;
+            spawnDistanceMax = 50;
+            spawnDistanceMin = 15;
+        }
+        if (!on) {
+            spawnCooldown = 5;
+            maxSpawnCount = 25;
             spawnDistanceMax = 35;
+            spawnDistanceMin = 5;
         }
     }
 }
