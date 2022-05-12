@@ -36,6 +36,7 @@ public class MoveAttackNode : Node {
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
+        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
 
         if (isShooting && CheckIfCoverIsValid() == false) {
             //agent.IsStopped = true;

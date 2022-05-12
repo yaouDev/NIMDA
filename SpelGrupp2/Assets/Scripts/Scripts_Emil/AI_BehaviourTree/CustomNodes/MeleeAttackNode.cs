@@ -33,6 +33,7 @@ public class MeleeAttackNode : Node
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
+        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
 
         if (isAttacking && CheckIfCoverIsValid() == false)
         {
@@ -66,7 +67,7 @@ public class MeleeAttackNode : Node
     private void CheckForPlayers()
     {
         //Check with a overlapsphere what colliders are in the area
-        colliders = Physics.OverlapSphere(agent.transform.position, 4f, whatAreTargets);
+        colliders = Physics.OverlapSphere(agent.transform.position, 1.5f, whatAreTargets);
         foreach (Collider coll in colliders)
         {
             if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject"))

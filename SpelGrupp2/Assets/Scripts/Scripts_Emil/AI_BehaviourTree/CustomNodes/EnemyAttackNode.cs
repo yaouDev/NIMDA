@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
-public class AttackNode : Node
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyRangeAttack")]
+public class EnemyAttackNode : Node
 {
 
     [SerializeField] private float turnSpeed = 70.0f;
-    [SerializeField] private float spread;
+    [SerializeField] private float spread = 0.1f;
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
     [SerializeField] private float attackDelay = 1.0f;
@@ -45,23 +45,14 @@ public class AttackNode : Node
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
-            return NodeState.RUNNING;
+            NodeState = NodeState.RUNNING;
+            return NodeState;
         }
-        return NodeState.FAILURE;
 
+        NodeState = NodeState.FAILURE;
+        return NodeState;
 
-
-        /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
-                    if (agent.Attack.IsShooting()) {
-                        agent.Attack.SetShooting(false);
-                        agent.Attack.StartCoroutine(agent.Attack.AttackDelay());
-                    }
-                    agent.IsStopped = true;
-                    NodeState = NodeState.SUCCESS;
-                } else NodeState = NodeState.FAILURE; */
     }
-
-
     public IEnumerator AttackDelay()
     {
         yield return new WaitForSeconds(attackDelay);
@@ -87,7 +78,7 @@ public class AttackNode : Node
         directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.getBossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.getBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -124,4 +115,5 @@ public class AttackNode : Node
         }
         return true;
     }
+
 }

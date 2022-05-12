@@ -11,7 +11,7 @@ public class HealthNode : Node {
 
         NodeState = agent.Health.GetCurrentHealth() <= healthThreashold ? NodeState.SUCCESS : NodeState.FAILURE;
         Debug.Log("HealthNode: " + NodeState);
-        Debug.Log(agent.Health.GetCurrentHealth());
+        //Debug.Log(agent.Health.GetCurrentHealth());
         return NodeState;
     }
 
