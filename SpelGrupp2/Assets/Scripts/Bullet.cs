@@ -41,8 +41,8 @@ public class Bullet : MonoBehaviour
             {
                 hit = true;
                 // TODO [Patrik] Update to call to IHealth Interface, thus we can shoot each other too <3
-                IDamageable health = hitInfo.transform.GetComponent<IDamageable>();
-                DamageEnemy(health);
+                IDamageable target = hitInfo.transform.GetComponent<IDamageable>();
+                DamageEnemy(target);
                 Ricochet();
             }
         }
@@ -52,11 +52,11 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void DamageEnemy(IDamageable health)
+    private void DamageEnemy(IDamageable target)
     {
-        if (health != null)
+        if (target != null)
         {
-            health.TakeDamage(damage);
+            target.TakeDamage(damage);
         }
     }
 
