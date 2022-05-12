@@ -6,8 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
-public class WorldGenerator : MonoBehaviour
-{
+public class WorldGenerator : MonoBehaviour {
     private static int width = 200;
     private static int height = 200;
 
@@ -25,9 +24,8 @@ public class WorldGenerator : MonoBehaviour
     public GameObject[] Modules;
 
     public static Queue<GameObject>[] modulePool = new Queue<GameObject>[16];
-    
-    private class Module
-    {
+
+    private class Module {
         private WorldGenerator worldGenerator;
         public bool active;
         public Vector2Int pos;
@@ -36,8 +34,7 @@ public class WorldGenerator : MonoBehaviour
         private CallbackSystem.ModuleDeSpawnEvent deSpawnEvent = new ModuleDeSpawnEvent();
         private CallbackSystem.ModuleSpawnEvent spawnEvent = new ModuleSpawnEvent();
 
-        public Module(Vector2Int pos, WorldGenerator worldGenerator, uint module)
-        {
+        public Module(Vector2Int pos, WorldGenerator worldGenerator, uint module) {
             spawnEvent.Position = deSpawnEvent.Position = pos;
             spawnEvent.Walls = deSpawnEvent.Walls = (int)module;
             this.pos = pos;
@@ -46,34 +43,28 @@ public class WorldGenerator : MonoBehaviour
             ActivateModule();
         }
 
-        
-        public void ActivateModule()
-        {
+
+        public void ActivateModule() {
             if (active)
                 return;
             active = true;
-            
-            if (m == null)
-            {
-                if (WorldGenerator.modulePool[(int) module].Count > 0)
-                {
-                    m = WorldGenerator.modulePool[(int) module].Dequeue();
+
+            if (m == null) {
+                if (WorldGenerator.modulePool[(int)module].Count > 0) {
+                    m = WorldGenerator.modulePool[(int)module].Dequeue();
                     m.transform.position = new Vector3(pos.x * 50, 0, pos.y * 50);
-                }
-                else
-                {
+                } else {
                     m = Instantiate(worldGenerator.Modules[(int)module], new Vector3(pos.x * 50, 0, pos.y * 50), Quaternion.identity, worldGenerator.transform);
                 }
             }
             m.SetActive(true); // TODO [Patrik] move into pool deque, ~line 55
-            
+
             // Callback function, send to add to pathfinding
             spawnEvent.GameObject = m;
             EventSystem.Current.FireEvent(spawnEvent);
         }
 
-        public void DeactivateModule()
-        {
+        public void DeactivateModule() {
             m.SetActive(false);
             active = false;
             WorldGenerator.modulePool[(int)module].Enqueue(m);
@@ -85,18 +76,15 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        for (int i = 0; i < modulePool.Length; i++)
-        {
+    private void Start() {
+        for (int i = 0; i < modulePool.Length; i++) {
             modulePool[i] = new Queue<GameObject>();
         }
-        
+
         graph = GetComponent<ProceduralWorldGeneration>().Get();
     }
-    
-    private void FixedUpdate()
-    {
+
+    private void FixedUpdate() {
         counter += Time.fixedDeltaTime;
         if (true)//counter > .1f)
         {
@@ -106,29 +94,23 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    private void RemoveChunks()
-    {
+    private void RemoveChunks() {
         List<Vector2Int> toRemove = new List<Vector2Int>();
 
-        for (int i = 0; i < currentModules.Count; i++)
-        {
-            Vector2Int pos = new Vector2Int((int) (player.position.x - 50) / 50, (int) (player.position.z - 50) / 50);
+        for (int i = 0; i < currentModules.Count; i++) {
+            Vector2Int pos = new Vector2Int((int)(player.position.x - 50) / 50, (int)(player.position.z - 50) / 50);
             if (currentModules[i].x > pos.x + maxVisibleChunkWidth ||
                 currentModules[i].y > pos.y + maxVisibleChunkWidth ||
                 currentModules[i].x < pos.x ||
-                currentModules[i].y < pos.y )
-            {
+                currentModules[i].y < pos.y) {
                 instantiatedModules[currentModules[i]].DeactivateModule();
                 toRemove.Add(currentModules[i]);
             }
         }
 
-        for (int i = 0; i < toRemove.Count; i++)
-        {
-            if (currentModules.Contains(toRemove[i]))
-            {
-                if (instantiatedModules.ContainsKey(toRemove[i]))
-                {
+        for (int i = 0; i < toRemove.Count; i++) {
+            if (currentModules.Contains(toRemove[i])) {
+                if (instantiatedModules.ContainsKey(toRemove[i])) {
                     instantiatedModules.Remove(toRemove[i]);
                 }
                 currentModules.Remove(toRemove[i]);
@@ -136,19 +118,13 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    private void AddChunks()
-    {
-        for (int y = -maxVisibleChunkWidth; y <= maxVisibleChunkWidth; y++)
-        {
-            for (int x = -maxVisibleChunkWidth; x <= maxVisibleChunkWidth; x++)
-            {
-                Vector2Int pos = new Vector2Int((int) ((player.position.x - 50) / 50 + x), (int) ((player.position.z - 50) / 50 + y));
-                if (instantiatedModules.ContainsKey(pos))
-                {
+    private void AddChunks() {
+        for (int y = -maxVisibleChunkWidth; y <= maxVisibleChunkWidth; y++) {
+            for (int x = -maxVisibleChunkWidth; x <= maxVisibleChunkWidth; x++) {
+                Vector2Int pos = new Vector2Int((int)((player.position.x - 50) / 50 + x), (int)((player.position.z - 50) / 50 + y));
+                if (instantiatedModules.ContainsKey(pos)) {
                     instantiatedModules[pos].ActivateModule();
-                }
-                else if (x > 0 && y > 0 && x < graph.GetLength(0) && y < graph.GetLength(1))
-                {
+                } else if (x > 0 && y > 0 && x < graph.GetLength(0) && y < graph.GetLength(1)) {
                     Module c = new Module(pos, this, graph[pos.x, pos.y]);
                     instantiatedModules.Add(pos, c);
                     if (!currentModules.Contains(pos))
@@ -158,8 +134,7 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    public void DestroyModule(GameObject go)
-    {
+    public void DestroyModule(GameObject go) {
         Destroy(go);
     }
 }

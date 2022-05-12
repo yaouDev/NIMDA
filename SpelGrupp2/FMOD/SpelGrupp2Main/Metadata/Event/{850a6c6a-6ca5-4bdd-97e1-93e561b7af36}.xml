@@ -98,6 +98,12 @@
 		<property name="length">
 			<value>24</value>
 		</property>
+		<property name="startOffset">
+			<value>49.5</value>
+		</property>
+		<relationship name="modulators">
+			<destination>{4dd85a5e-8bb3-4cd4-8b6a-fb057deb9f2c}</destination>
+		</relationship>
 		<relationship name="triggerConditions">
 			<destination>{d0f1e38e-dbb4-4c06-9bd3-fcc24dddf809}</destination>
 		</relationship>
@@ -146,6 +152,14 @@
 	</object>
 	<object class="MixerBusPanner" id="{d9be8e26-a489-4ddf-a1df-3c96398f955e}" />
 	<object class="MixerBusFader" id="{fd2b9d44-e3d4-4efa-9dfc-44c925a7026e}" />
+	<object class="RandomizerModulator" id="{4dd85a5e-8bb3-4cd4-8b6a-fb057deb9f2c}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>startOffset</value>
+		</property>
+		<property name="amount">
+			<value>100</value>
+		</property>
+	</object>
 	<object class="ParameterCondition" id="{d0f1e38e-dbb4-4c06-9bd3-fcc24dddf809}">
 		<property name="minimum">
 			<value>8</value>

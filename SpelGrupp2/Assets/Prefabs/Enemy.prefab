@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5332315945964378469}
   m_Layer: 0
   m_Name: AvoidTrigger
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,7 +42,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.45
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4102459122074449256
 GameObject:
@@ -112,7 +112,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a1d8eda0ad59b534fb7ced5a33a3f74e, type: 2}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -172,10 +172,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 13.5
   timeBetweenPathUpdates: 1.5
-  maxCritRange: 20
-  minCritRange: 10
+  critRange: 10
   allowedTargetDiscrepancy: 5
-  drawPath: 0
+  drawPath: 1
   isStopped: 1
 --- !u!114 &2243921807618400383
 MonoBehaviour:
