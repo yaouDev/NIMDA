@@ -23,14 +23,6 @@ public class TreeFader : MonoBehaviour
     
     private void Update()
     {
-        // float sin = Mathf.Max(minTransparency, Mathf.Abs( Mathf.Sin(Time.time)));
-        // transparency = sin;
-        // for (int i = 0; i < materials.Length; i++)
-        // {
-        //     materials[i].SetFloat("_transparency", Mathf.Lerp(.5f, 1.5f, transparency));
-        // }
-        // return;
-        
         if (fadingOut)
         {
             transparency -= Time.deltaTime;

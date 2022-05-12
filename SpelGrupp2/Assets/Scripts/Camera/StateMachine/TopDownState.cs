@@ -46,7 +46,8 @@ public class TopDownState : CameraState
 	private float smoothDampMinVal = .1f;
 	private float smoothDampMaxVal = 1.0f;
 	private Vector3 smoothDampCurrentVelocity;
-	
+	private RaycastHit[] hits = new RaycastHit[4];
+
 	public override void Run() {
 		Input();
 		
@@ -69,16 +70,17 @@ public class TopDownState : CameraState
 		
 		
 		// // TODO hack
-		
-		
+
 		Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
+		hits = new RaycastHit[4];
 		
-		Physics.SphereCast(
+		Physics.SphereCastNonAlloc(
 			PlayerThis.position,
 			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
 			.5f,
 			offsetDirection.normalized,
-			out  RaycastHit  hit, 
+			hits,
+			//out  RaycastHit  hit, 
 			offsetDirection.magnitude, 
 			collisionMask);
 		
@@ -89,15 +91,19 @@ public class TopDownState : CameraState
 			Color.magenta);
 		
 		//Vector3 offset;
-		if (hit.collider)
+		for (int i = 0; i < hits.Length; i++)
 		{
-			TreeFader tf = hit.transform.GetComponent<TreeFader>();
-			if (tf != null)
+			if (hits[i].collider)
 			{
-				tf.FadeOut();
+				TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
+				if (tf != null)
+				{
+					tf.FadeOut();
+				}
+				//offset = topDownOffset.normalized * hit.distance;
 			}
-			//offset = topDownOffset.normalized * hit.distance;
 		}
+
 		// else
 		// {
 		// 	offset = topDownOffset;
