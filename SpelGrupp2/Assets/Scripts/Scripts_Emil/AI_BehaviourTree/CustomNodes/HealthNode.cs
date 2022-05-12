@@ -6,9 +6,12 @@ using UnityEngine;
 public class HealthNode : Node {
 
     //public float fleeThereshold;
-
+    [SerializeField] private float healthThreashold;
     public override NodeState Evaluate() {
-        NodeState = agent.Health.GetCurrentHealth() <= agent.Health.GetFleeHealthTreshold() ? NodeState.SUCCESS : NodeState.FAILURE;
+
+        NodeState = agent.Health.GetCurrentHealth() <= healthThreashold ? NodeState.SUCCESS : NodeState.FAILURE;
+        Debug.Log("HealthNode: " + NodeState);
+        Debug.Log(agent.Health.GetCurrentHealth());
         return NodeState;
     }
 
