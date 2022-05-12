@@ -5,7 +5,7 @@ using UnityEngine;
 public class GeneratorEvent : MonoBehaviour
 {
 
-    [SerializeField] private float openHeight = -13.2f;
+    [SerializeField] private float openHeight;
     [SerializeField] private float eventDuration = 60;
     [SerializeField] private GameObject door;
     [SerializeField] private GameObject textPopup;
@@ -25,7 +25,7 @@ public class GeneratorEvent : MonoBehaviour
         if (col.CompareTag("Player"))
         {
             textPopup.SetActive(true);
-            Debug.Log("Starting Generator");
+            //Debug.Log("Starting Generator");
             StartGenerator();
         }
     }
