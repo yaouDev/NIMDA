@@ -152,7 +152,6 @@ namespace CallbackSystem
                 if(selectedButton.interactable != false)
                 {
                     selectedButton.onClick.Invoke();
-                    selectedButton.interactable = false;
                 }
                 else
                     Debug.Log("Upgrade has already been applied");
@@ -206,6 +205,7 @@ namespace CallbackSystem
 
             if (!missingResources)
             {
+                selectedButton.interactable = false;
                 copper -= recipe.copperNeeded;
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;
