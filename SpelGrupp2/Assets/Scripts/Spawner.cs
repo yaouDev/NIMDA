@@ -4,26 +4,60 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    public GameObject spawnThis;
-    public float xPos;
-    public float zPos;
+    [SerializeField] private GameObject spawnThis; 
+    [SerializeField] private int maxSpawnCount;
+    [SerializeField] private int dayMaxSpawnCount;
+    [SerializeField] private int nightMaxSpawnCount;
+    [SerializeField] private float lifeTime = 10f;
     public int spawnCount;
-    public int maxSpawnCount;
+    
+
+    [SerializeField] private Transform spawnPos;
+    [SerializeField] private DayNightSystem dns;
+
 
 
     private void Start()
     {
-        StartCoroutine(SpawnDrop());
+        StartCoroutine(SpawnObject());
     }
-    IEnumerator SpawnDrop()
+
+    private void Update()
     {
-        while(spawnCount < maxSpawnCount)
+        if (dns.isDay == true)
         {
-            xPos = Random.Range(-48, 48);
-            zPos = Random.Range(-48, 48);
-            Instantiate(spawnThis, new Vector3(xPos, 1.5f, zPos), Quaternion.identity);
-            yield return new WaitForSeconds(0.1f);
-            spawnCount += 1;
+            maxSpawnCount = dayMaxSpawnCount;
+        }
+        else
+        {
+            maxSpawnCount = nightMaxSpawnCount;
+        }
+        if (lifeTime > 0)
+        {
+            lifeTime -= Time.deltaTime;
+            if (lifeTime <= 0)
+            {
+                spawnCount--;
+                Detstruction();
+            }
         }
     }
+    private void Detstruction()
+    {
+        Destroy(spawnThis.gameObject);
+    }
+
+    IEnumerator SpawnObject()
+    {
+        while (true)
+        {
+            if (spawnCount < maxSpawnCount)
+            {
+                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+                spawnCount += 1;
+            }
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
 }

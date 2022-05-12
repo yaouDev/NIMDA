@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 261070821904542084}
   - component: {fileID: 4245761420426746530}
   - component: {fileID: -2479858657165381458}
+  - component: {fileID: -599362881292977209}
   m_Layer: 12
   m_Name: transistor
   m_TagString: Untagged
@@ -127,3 +128,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickUpType: 2
+--- !u!65 &-599362881292977209
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261070821904542086}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}

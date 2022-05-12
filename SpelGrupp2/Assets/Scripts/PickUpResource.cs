@@ -2,39 +2,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUpResource : MonoBehaviour
+namespace CallbackSystem
 {
-    private enum PickUp
+    public class PickUpResource : MonoBehaviour
     {
-        Iron, Copper, Transistor
-    }
-
-    [SerializeField] private PickUp pickUpType;
-
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.collider.tag.Equals("Player"))
+        private enum PickUp
         {
-            PlayerController player = other.transform.GetComponent<PlayerController>();
-            pickUpDrop(player.crafting);
-            Destroy(gameObject);
+            Iron, Copper, Transistor
         }
-    }
-    private void pickUpDrop(Crafting crafting)
-    {
-        switch (pickUpType)
+
+        [SerializeField] private PickUp pickUpType;
+        private ResourceUpdateEvent resourceEvent;
+        private void Awake()
         {
-            case (PickUp.Iron):
-                crafting.iron++;
-                break;
+            resourceEvent = new ResourceUpdateEvent();
+        }
 
-            case (PickUp.Copper):
-                crafting.copper++;
-                break;
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.tag.Equals("Player"))
+            {
+                Crafting crafting = other.gameObject.GetComponent<Crafting>();
+                pickUpDrop(crafting);
+                Destroy(gameObject);
+            }
+        }
+        private void pickUpDrop(Crafting crafting)
+        {
+            switch (pickUpType)
+            {
+                case (PickUp.Iron):
+                    crafting.iron++;
+                    Debug.Log("Picked up iron");
+                    break;
+                case (PickUp.Copper):
+                    crafting.copper++;
+                    Debug.Log("Picked up copper");
+                    break;
+                case (PickUp.Transistor):
+                    crafting.transistor++;
+                    Debug.Log("Picked up transistor");
+                    break;
+            }
+            crafting.UpdateResources();
+            UpdateRes();
 
-            case (PickUp.Transistor):
-                crafting.transistor++;
-                break;
+            void UpdateRes()
+            {
+            Debug.Log("Updated resources");
+
+                resourceEvent.isPlayerOne = crafting.IsPlayerOne();
+                resourceEvent.ammoChange = false;
+                resourceEvent.c = crafting.copper;
+                resourceEvent.t = crafting.transistor;
+                resourceEvent.i = crafting.iron;
+               // Debug.Log("Copper: " + resourceEvent.c + ". Transistor: " + resourceEvent.t + ". Iron: " + resourceEvent.i);
+
+                EventSystem.Current.FireEvent(resourceEvent);
+            }
         }
     }
 }
+
