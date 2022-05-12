@@ -124,6 +124,8 @@ namespace CallbackSystem {
                 aimingDirection.x = controller.GetRightJoystickInput().x;
                 aimingDirection.z = controller.GetRightJoystickInput().y;
                 aimingDirection.Normalize();
+                aimingDirection = Quaternion.Euler(0, 45, 0) * aimingDirection;
+
             }
         }
         
