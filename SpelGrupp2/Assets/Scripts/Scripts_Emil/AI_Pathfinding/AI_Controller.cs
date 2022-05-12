@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class AI_Controller : MonoBehaviour {
 
-    [SerializeField] private float speed, timeBetweenPathUpdates, maxCritRange, minCritRange, allowedTargetDiscrepancy;
+    [SerializeField] private float speed, timeBetweenPathUpdates, critRange, allowedTargetDiscrepancy;
     [SerializeField] private bool drawPath = false;
-    [SerializeField] private LayerMask targetLayerMask;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private LineRenderer lineRenderer;
@@ -36,12 +35,11 @@ public class AI_Controller : MonoBehaviour {
     }
 
 
-
-
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
         if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
+        //if (!updatingPath) StartCoroutine(UpdatePath());
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
@@ -95,51 +93,41 @@ public class AI_Controller : MonoBehaviour {
     public int CurrentPathIndex {
         get { return currentPathIndex; }
         set {
-            if (value > currentPath.Count) currentPathIndex = currentPath.Count - 1;
-            else if (value < 0) currentPathIndex = 0;
-            else currentPathIndex = value;
+            if (currentPath != null) {
+                if (value > currentPath.Count) currentPathIndex = currentPath.Count - 1;
+                else if (value < 0) currentPathIndex = 0;
+                else currentPathIndex = value;
+                return;
+            }
+            currentPathIndex = 0;
         }
     }
 
     public EnemyHealth Health { get { return enemyHealth; } }
 
-    public Vector3 CurrentTarget {
-        get { return activeTarget; }
-    }
+    public Vector3 CurrentTarget { get { return activeTarget; } }
 
     public List<Vector3> CurrentPath {
         get { return currentPath; }
         set { currentPath = value; }
     }
 
-    public Vector3 Position {
-        get { return transform.position; }
-    }
+    public Vector3 Position { get { return transform.position; } }
 
     public bool IsStopped {
         get { return isStopped; }
         set { isStopped = value; }
     }
 
-    public float DistanceFromTarget {
-        get { return Vector3.Distance(activeTarget, Position); }
-    }
+    public float DistanceFromTarget { get { return Vector3.Distance(activeTarget, Position); } }
 
-    public Vector3 Velocity {
-        get { return rBody.velocity; }
-    }
+    public Vector3 Velocity { get { return rBody.velocity; } }
 
-    public LineRenderer LineRenderer {
-        get { return lineRenderer; }
-    }
+    public LineRenderer LineRenderer { get { return lineRenderer; } }
 
-    public Vector3 CurrentPathNode {
-        get { return currentPath[currentPathIndex]; }
-    }
+    public Vector3 CurrentPathNode { get { return currentPath[currentPathIndex]; } }
 
-    public Rigidbody Rigidbody {
-        get { return rBody; }
-    }
+    public Rigidbody Rigidbody { get { return rBody; } }
 
     private bool IsPathRequestAllowed() {
         bool nullCond = currentPath != null && currentPath.Count != 0;
@@ -147,8 +135,8 @@ public class AI_Controller : MonoBehaviour {
         bool discrepancyCond = nullCond && currentPath[currentPath.Count - 1] != activeTarget &&
         Vector3.Distance(currentPath[currentPath.Count - 1], activeTarget) >= allowedTargetDiscrepancy;
         float distToTarget = Vector3.Distance(Position, activeTarget);
-        bool criticalRangeCond = distToTarget < minCritRange && Destination == ClosestPlayer;
-        bool distCond = distToTarget > minCritRange && isStopped;
+        bool criticalRangeCond = distToTarget < critRange && Destination == ClosestPlayer;
+        bool distCond = distToTarget > critRange && isStopped;
         return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && !updatingPath;
     }
 

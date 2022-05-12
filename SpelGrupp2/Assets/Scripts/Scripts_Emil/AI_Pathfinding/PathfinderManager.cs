@@ -44,7 +44,9 @@ public class PathfinderManager : MonoBehaviour {
 
     public void RequestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
-            bool wrongDirectionCond = Vector3.Dot(latestCalculatedPath[0].normalized, agent.Velocity.normalized) > 0;
+
+            bool wrongDirectionCond = Vector3.Dot((latestCalculatedPath[0] - agent.Position).normalized, (endPos - agent.Position).normalized) > 0;
+
             if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToReusePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
                 List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
                 pathToStartOflatest.AddRange(latestCalculatedPath);
@@ -57,6 +59,7 @@ public class PathfinderManager : MonoBehaviour {
 
 
     void Update() {
+        
         if (!pathQueue.IsEmpty() && job.IsCompleted) {
             job.Complete();
 

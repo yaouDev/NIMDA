@@ -13,7 +13,7 @@ public class IsCoverAvailableNode : Node {
     private bool CheckIfSpotIsValid(Vector3 spot) {
         RaycastHit hit;
         Vector3 direction = agent.ClosestPlayer - spot;
-        if (Physics.Raycast(spot, direction, out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Ignore)) {
+        if (Physics.Raycast(spot, direction, out hit, Mathf.Infinity, layerMask)) {
             if (!hit.collider.CompareTag("Player") && Vector3.Distance(spot, agent.ClosestPlayer) > 4f && DynamicGraph.Instance.Contains(spot)) {
                 return true;
             }
