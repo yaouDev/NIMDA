@@ -179,7 +179,7 @@ namespace CallbackSystem
 
         public void CraftUpgradedProjectileWeapon()
         {
-            if (TryCraftRecipe(UpgradedLaserWeaponRecipe))
+            if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
                 playerAttackScript.UpgradeProjectileWeapon();
         }
 

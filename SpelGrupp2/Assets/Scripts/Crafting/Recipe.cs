@@ -6,7 +6,7 @@ using UnityEngine;
 public class Recipe : ScriptableObject
 {
     public int copperNeeded, transistorNeeded, ironNeeded;
-    [HideInInspector] public int[] ResNeededArr;
+    public int[] ResNeededArr;
     private void Awake(){ 
         ResNeededArr = new int[]{copperNeeded, transistorNeeded, ironNeeded}; 
     }
