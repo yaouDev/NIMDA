@@ -7,8 +7,6 @@ public class AIData : MonoBehaviour {
     public static AIData Instance;
 
     [SerializeField] private GameObject bullet;
-    [SerializeField] private GameObject bossBigBullet;
-    [SerializeField] private GameObject bossSmallBullet;
 
     private CallbackSystem.EventSystem eventSystem;
     //private Transform bestCoverSpot;
@@ -31,14 +29,6 @@ public class AIData : MonoBehaviour {
 
     public GameObject getBullet {
         get { return bullet; }
-    }
-    public GameObject getBossBullet
-    {
-        get { return bossBigBullet; }
-    }
-    public GameObject getSmallBullet
-    {
-        get { return bossSmallBullet; }
     }
 
     /*     public void SetBestCoverSpot(Transform bestCoverSpot) {

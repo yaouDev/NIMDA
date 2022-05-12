@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CallbackSystem;
-using UnityEditor.UIElements;
 using UnityEngine;
 
 [RequireComponent(typeof(AStar))]
@@ -81,54 +80,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
     {
         CallbackSystem.EventSystem.Current.RegisterListener<ModuleDeSpawnEvent>(Debug);
         CallbackSystem.EventSystem.Current.RegisterListener<ModuleSpawnEvent>(Debug);
-    }
-
-    private void WaveFunctionCollapse(List<Vector2Int> setTiles)
-    {
-        Queue<Vector2Int> queue = new Queue<Vector2Int>(setTiles);
-        HashSet<Vector2Int> seen = new HashSet<Vector2Int>(setTiles);
-
-        while (queue.Count > 0)
-        {
-            Vector2Int current = queue.Dequeue();
-
-            List<uint> possibilities = new List<uint>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-            List<uint> currentPossibilities = new List<uint>();
-            // add posibilities to currentPosibilities
-
-            // give random module to current if it not already has one
-            if (!seen.Contains(current))
-            {
-                int randomModule = random.Next(0, 16);
-                graph[current.x, current.y] = (uint)randomModule;
-            }
-            
-            // check adjacent tiles for possible  module
-
-            for (int neighbor = 0; neighbor < 4; neighbor++)
-            {
-                if (!seen.Contains(current + directions[neighbor] ) && (graph[current.x, current.y] & walls[ directions[neighbor] ]) > 0) // this tile has an opening out to a neighbor
-                {
-                    // add neighbor to queue
-                    queue.Enqueue(current + directions[neighbor]);
-                }
-            }
-            
-            Vector2Int dir = Vector2Int.down;
-            if ((graph[1, 1] & graph[dir.x, dir.y]) == 0)
-            {
-                
-            }
-            // bool array[16]
-            // loop through numbers 0-16 and set bool to false if doesn't match a neighbor
-            // choose a random tile of the possibilities (weighted?)    
-        }
-        // seed nodes in graph - the modules to begin with
-        // add adjacent tiles to queue
-
-        // dequeue while queue.count > 0 
-        
-        // 
     }
 
     private void Debug(ModuleDeSpawnEvent eve)

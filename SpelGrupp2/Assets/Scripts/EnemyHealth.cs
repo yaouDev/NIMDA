@@ -2,103 +2,65 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour, IDamageable
-{
+public class EnemyHealth : MonoBehaviour {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
-    [SerializeField] private GameObject firePoint;
-    [SerializeField] [Range(0, 100)] private int fullHealth;
+    [SerializeField] private float fleeHealthtreshold;
+    [SerializeField][Range(0, 100)] private int fullHealth;
     //public float currHealth;
     private float healthBarLength;
-    private Vector3 dropOffset;
+    private Vector3 dropOffset = new Vector3(0f, 1f, 0f);
     private GameObject drop;
     private float currentHealth;
-    //[SerializeField] private int dropAmount;
-    private EnemySpawnController enemySpawnController;
-
-    [SerializeField] private int ironRange;
-    [SerializeField] private int copperRange;
-    [SerializeField] private int transitorRange;
-    [SerializeField] private int dropMin;
-    [SerializeField] private int dropMax;
-
-    public float CurrentHealth
-    {
+    [SerializeField] private int dropAmount;
+    public float CurrentHealth {
         get { return currentHealth; }
         set { currentHealth = Mathf.Clamp(value, 0, fullHealth); }
     }
-    private void Awake()
-    {
+    private void Awake() {
         CurrentHealth = fullHealth;
-        //enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
     }
-    void Update()
-    {
-
-        if (CurrentHealth <= 0)
-        {
+    void Update() {
+        if (CurrentHealth <= 0) {
             Die();
-        }
-        else
-        {
+        } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
-
         }
     }
-    public float GetCurrentHealth()
-    {
+    public float GetCurrentHealth() {
         return CurrentHealth;
     }
-    public GameObject GetFirePoint()
-    {
-        return firePoint;
+    public float GetFleeHealthTreshold() {
+        return fleeHealthtreshold;
     }
 
+    public void TakeDamage() {
+        --currentHealth;
+    }
 
-    public void Die()
-    {
-        //enemySpawnController.reduceSpawnCount(1);
+    public void TakeDamage(float damage) {
+        currentHealth -= damage;
+    }
+
+    public void Die() {
         DropLoot();
         Destroy(gameObject);
+
     }
 
     /*  public float GetCurrentHealth() {
           return currHealth;
       }*/
 
-    public void DropLoot()
-    {
-
-        int dropAmount = Random.Range(dropMin, dropMax);
-        for (int i = 0; i < dropAmount; i++)
-        {
-            dropOffset = new Vector3(Random.Range(-1.3f, 1.3f), 1f, Random.Range(-1.3f, 1.3f));
-            int dropRoll = Random.Range(0, 100);
-            if (dropRoll <= ironRange)
-            {
-                drop = dropList[0];
-            }
-            else if (dropRoll <= copperRange)
-            {
-                drop = dropList[1];
-            }
-            else if (dropRoll <= transitorRange)
-            {
-                drop = dropList[2];
-            }
-            //int item = Random.Range(0, dropList.Length);
-            //drop = dropList[item];
+    public void DropLoot() {
+        for (int i = 0; i < dropAmount; i++) {
+            int item = Random.Range(0, dropList.Length);
+            //if (dropRoll > 0 && )
+            drop = dropList[item];
             GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
             loot.transform.parent = null;
             loot.SetActive(true);
             Destroy(loot, 15f);
         }
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        Debug.Log(currentHealth);
-        
     }
 }
