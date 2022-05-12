@@ -46,7 +46,7 @@ public class TopDownState : CameraState
 	private float smoothDampMinVal = .1f;
 	private float smoothDampMaxVal = 1.0f;
 	private Vector3 smoothDampCurrentVelocity;
-	private RaycastHit[] hits = new RaycastHit[4];
+	private RaycastHit[] hits;
 
 	public override void Run() {
 		Input();
@@ -72,16 +72,16 @@ public class TopDownState : CameraState
 		// // TODO hack
 
 		Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
-		hits = new RaycastHit[4];
+		hits = new RaycastHit[10];
 		
 		Physics.SphereCastNonAlloc(
 			PlayerThis.position,
 			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
-			.5f,
+			2.0f,
 			offsetDirection.normalized,
 			hits,
 			//out  RaycastHit  hit, 
-			offsetDirection.magnitude, 
+			25.0f, 
 			collisionMask);
 		
 		Debug.DrawRay(
