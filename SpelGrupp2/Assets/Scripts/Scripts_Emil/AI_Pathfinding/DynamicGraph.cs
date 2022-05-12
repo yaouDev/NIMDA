@@ -60,6 +60,7 @@ public class DynamicGraph : MonoBehaviour {
             Vector2Int module23 = new Vector2Int(100, 500);
             Vector2Int module24 = new Vector2Int(50, 500);
             Vector2Int module26 = new Vector2Int(50, 450);
+            Vector2Int bossmod = new Vector2Int(150, 550);
 
             loadedModules.Add(module1);
             loadedModules.Add(module2);
@@ -87,6 +88,7 @@ public class DynamicGraph : MonoBehaviour {
             loadedModules.Add(module24);
             loadedModules.Add(module25);
             loadedModules.Add(module26);
+            loadedModules.Add(bossmod);
 
             AddBlockedNodes(module1);
             AddBlockedNodes(module2);
@@ -114,6 +116,7 @@ public class DynamicGraph : MonoBehaviour {
             AddBlockedNodes(module24);
             AddBlockedNodes(module25);
             AddBlockedNodes(module26);
+            AddBlockedNodes(bossmod);
         }
     }
 
