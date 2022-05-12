@@ -115,7 +115,7 @@ namespace CallbackSystem
 
         private void HealthRegeneration()
         {
-            currHealth += (Time.deltaTime * healthReg * 0.1f);
+            currHealth += (Time.deltaTime * healthReg * 1f);
             currHealth = Mathf.Min(currHealth, 100f);
 
         }
