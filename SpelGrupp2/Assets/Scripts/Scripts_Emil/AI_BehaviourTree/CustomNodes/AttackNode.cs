@@ -3,19 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
+<<<<<<< HEAD
 public class AttackNode : Node {
     [SerializeField] private float attackRange;
     [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float spread = 1.0f;
     [SerializeField] private float shootForce = 100.0f;
     [SerializeField] private float recoilForce = 0.2f;
+=======
+public class AttackNode : Node
+{
+    
+    [SerializeField] private float turnSpeed = 70.0f;
+    [SerializeField] private float spread;
+    [SerializeField] private float shootForce = 20.0f;
+    [SerializeField] private float recoilForce = 0f;
+    [SerializeField] private float attackDelay = 1.0f;
+    //[SerializeField] private float upwardForce = 10.0f;
+>>>>>>> main
 
     private bool isShooting = true;
     private float x;
     private float y;
 
+<<<<<<< HEAD
     private GameObject currentBullet;
     private LineRenderer lineRenderer;
+=======
+    private GameObject currentBullet; 
+>>>>>>> main
 
     Vector3 closestTarget;
     Vector3 relativePos;
@@ -28,7 +44,7 @@ public class AttackNode : Node {
 
     public override NodeState Evaluate() {
         //Find Closest Player
-        closestTarget = agent.ClosestPlayer;
+        closestTarget = agent.ClosestPlayer + Vector3.up;
         relativePos = closestTarget - agent.transform.position;
 
         // Rotate the Enemy towards the player
@@ -96,6 +112,7 @@ public class AttackNode : Node {
            }*/
 
     }
+<<<<<<< HEAD
 
     bool CheckIfCoverIsValid() {
         //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
@@ -108,6 +125,67 @@ public class AttackNode : Node {
             if (checkCover.collider.gameObject.CompareTag("Player")) {
                 //There is no cover
                 return false;
+=======
+        public IEnumerator AttackDelay()
+        {
+            yield return new WaitForSeconds(attackDelay);
+            Attack();
+            isShooting = true;
+            //agent.StartCoroutine(AnimateLineRenderer());
+
+            //yield return new WaitForSeconds(3f);
+        }
+
+
+        void Attack()
+        {
+
+            //Calculate direction from attackpoint to targetpoint
+            directionWithoutSpread = checkCover.point - agent.Health.GetFirePoint().transform.position;
+
+            //Calculate spread
+            x = Random.Range(-spread, spread);
+            y = Random.Range(-spread, spread);
+
+            //Calculate direction 
+            directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+
+            //Instatiate bullet
+            currentBullet = Instantiate(AIData.instance.getBossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+
+            //Rotate bullet to shoot direction
+            currentBullet.transform.forward = directionWithSpread.normalized;
+
+            //Add force to bullet
+            currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
+
+            //Recoil
+            agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
+
+/*            //MuzzleFlash
+            if (AIData.instance.getMuzzleflash != null)
+            {
+                Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
+            }*/
+
+        }
+
+        bool CheckIfCoverIsValid()
+        {
+            //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
+
+            // Create the ray to use
+            Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
+            //Casting a ray against the player
+            if (Physics.Raycast(ray, out checkCover, 30.0f))
+            {
+                //Check if that collider is the player
+                if (checkCover.collider.gameObject.CompareTag("Player"))
+                {
+                    //There is no cover
+                    return false;
+                }
+>>>>>>> main
             }
         }
         return true;
