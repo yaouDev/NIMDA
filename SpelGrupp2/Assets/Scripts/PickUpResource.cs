@@ -44,6 +44,7 @@ namespace CallbackSystem
                     Debug.Log("Picked up transistor");
                     break;
             }
+            crafting.UpdateResources();
             UpdateRes();
 
             void UpdateRes()

@@ -50,12 +50,27 @@ public class EnemySpawnController : MonoBehaviour {
                 spawnCount += 1;
             }
             yield return new WaitForSeconds(spawnCooldown);
-            Debug.Log("Enemy spawn, fps" + 1.0f / Time.deltaTime);
         }
     }
 
     public void reduceSpawnCount(int amount)
     {
         spawnCount -= amount;
+    }
+
+    public void GeneratorRunning(bool on)
+    {
+        if (on)
+        {
+            spawnCooldown = 1;
+            maxSpawnCount = 50;
+            spawnDistanceMax = 50;
+        }
+        if (!on)
+        {
+            spawnCooldown = 3;
+            maxSpawnCount = 20;
+            spawnDistanceMax = 35;
+        }
     }
 }

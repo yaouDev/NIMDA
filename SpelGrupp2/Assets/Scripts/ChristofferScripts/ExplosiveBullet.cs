@@ -24,8 +24,8 @@ public class ExplosiveBullet : MonoBehaviour
 
 
     //LifeTime
-    [SerializeField] private int maxCollisions;
-    [SerializeField] private float maxLifeTime;
+    [SerializeField] private int maxCollisions = 2;
+    [SerializeField] private float maxLifeTime = 500.0f;
     [SerializeField] private bool explodeOnTouch = true;
 
     [SerializeField] private float damage = .1f;
@@ -61,7 +61,7 @@ public class ExplosiveBullet : MonoBehaviour
         {
             Instantiate(explosion, transform.position, Quaternion.identity);
         }*/
-        //Check for Enemies
+/*        //Check for Enemies
         Collider[] targets = Physics.OverlapSphere(transform.position, explosionRange, whatIsTarget);
         for (int i = 0; i < targets.Length; i++)
         {
@@ -72,7 +72,7 @@ public class ExplosiveBullet : MonoBehaviour
             {
                 targets[i].GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRange);
             }
-        }
+        }*/
 
         //Add delay to destroy
         Invoke("Delay", 0.05f);
