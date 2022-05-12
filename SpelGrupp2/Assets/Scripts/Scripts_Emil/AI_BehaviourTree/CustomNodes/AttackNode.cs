@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
-public class AttackNode : Node {
+public class AttackNode : Node
+{
 
     [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float spread;
@@ -27,7 +28,8 @@ public class AttackNode : Node {
 
     Quaternion rotation;
 
-    public override NodeState Evaluate() {
+    public override NodeState Evaluate()
+    {
         //Find Closest Player
         closestTarget = agent.ClosestPlayer + Vector3.up;
         relativePos = closestTarget - agent.transform.position;
@@ -36,8 +38,10 @@ public class AttackNode : Node {
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
+        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
 
-        if (isShooting && CheckIfCoverIsValid() == false) {
+        if (isShooting && CheckIfCoverIsValid() == false)
+        {
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
@@ -58,7 +62,8 @@ public class AttackNode : Node {
     }
 
 
-    public IEnumerator AttackDelay() {
+    public IEnumerator AttackDelay()
+    {
         yield return new WaitForSeconds(attackDelay);
         Attack();
         isShooting = true;
@@ -68,7 +73,8 @@ public class AttackNode : Node {
     }
 
 
-    void Attack() {
+    void Attack()
+    {
 
         //Calculate direction from attackpoint to targetpoint
         directionWithoutSpread = checkCover.point - agent.Health.GetFirePoint().transform.position;
@@ -100,15 +106,18 @@ public class AttackNode : Node {
 
     }
 
-    bool CheckIfCoverIsValid() {
+    bool CheckIfCoverIsValid()
+    {
         //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
 
         // Create the ray to use
         Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
         //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f)) {
+        if (Physics.Raycast(ray, out checkCover, 30.0f))
+        {
             //Check if that collider is the player
-            if (checkCover.collider.gameObject.CompareTag("Player")) {
+            if (checkCover.collider.gameObject.CompareTag("Player"))
+            {
                 //There is no cover
                 return false;
             }

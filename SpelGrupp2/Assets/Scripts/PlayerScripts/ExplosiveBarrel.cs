@@ -28,7 +28,6 @@ public class ExplosiveBarrel : MonoBehaviour, IDamageable
         fireparticles.transform.position = transform.position;
         fireparticles.SetActive(true);
         yield return new WaitForSeconds(burnTime);
-        Destroy(fireparticles);
         fireparticles.SetActive(false);
         barrelMesh.enabled = false;
         explosionParticles.SetActive(true);
