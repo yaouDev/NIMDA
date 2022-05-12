@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
-  m_Name: EnemyAttackSequence
+  m_Script: {fileID: 11500000, guid: 0add8275269e0e44d8be0a88fbd7f3e5, type: 3}
+  m_Name: Enemy Attack Node
   m_EditorClassIdentifier: 
-  nodes:
-  - {fileID: 11400000, guid: 38c03ccef1040dd4cb38abf43db44641, type: 2}
-  - {fileID: 11400000, guid: 7afb40efabdba9745820542eb636153b, type: 2}
+  turnSpeed: 70
+  spread: 1
+  shootForce: 20
+  recoilForce: 0.2
+  attackDelay: 1.5
