@@ -12,8 +12,11 @@ public class BossSpawn : MonoBehaviour
         boss = GameObject.Find("Boss");
     }
 
-    void OnTriggerEnter(Collision col)
+    void OnTriggerEnter(Collider col)
     {
-        boss.SetActive(true);
+        if (col.gameObject.tag == "Player")
+        {
+            boss.SetActive(true);
+        }
     }
 }
