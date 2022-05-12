@@ -177,7 +177,7 @@ public class AI_Controller : MonoBehaviour {
             }
             // the enemy is stuck between two modules
             else if (Vector3.Distance(Position, currentPath[0]) > 0.5f) {
-                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z);
+                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
             }
 
         }
