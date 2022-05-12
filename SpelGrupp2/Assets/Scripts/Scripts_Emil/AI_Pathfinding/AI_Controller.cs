@@ -145,7 +145,7 @@ public class AI_Controller : MonoBehaviour {
 
     private void FixedUpdate() {
         if (!isStopped) {
-            //AdjustForLatePathUpdate();
+            AdjustForLatePathUpdate();
             Move();
         }
         MoveAwayFromBlockedNode();
