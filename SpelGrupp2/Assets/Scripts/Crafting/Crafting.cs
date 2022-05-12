@@ -202,7 +202,7 @@ namespace CallbackSystem
 
             for (int i = 0; i < recipe.ResNeededArr.Length; i++)
             {
-                Debug.Log(recipe.ResNeededArr[i]);
+                //Debug.Log(recipe.ResNeededArr[i]);
                 if (resourceArray[i] < recipe.ResNeededArr[i])
                 {
                     Debug.Log("Not enough resources");

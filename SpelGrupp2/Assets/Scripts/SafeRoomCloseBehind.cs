@@ -7,6 +7,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitClosed;
     [SerializeField] private GameObject entrance;
     [SerializeField] private GameObject exit;
+    private int playerCount;
     private EnemySpawnController spawnController;
 
     // Start is called before the first frame update
@@ -17,10 +18,38 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider col) {
-        entrance.transform.position = entranceClosed;
-        exit.transform.position = exitClosed;
-        spawnController.GeneratorRunning(false);
-        CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
+        if (col.gameObject.tag == "Player")
+        {
+            playerCount++;
+            Debug.Log("Playercount = " + playerCount);
+            if (playerCount == 2)
+            {
+                spawnController.GeneratorRunning(false);
+                CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
+            }
+        }
     }
 
+    void OnTriggerExit(Collider col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            playerCount--;
+            //Debug.Log("Playercount = " + playerCount);
+            if(playerCount == 0)
+            {
+                CloseExit();
+            }
+        }
+    }
+
+    void CloseEntrance()
+    {
+        entrance.transform.position = entranceClosed;
+    }
+
+    void CloseExit()
+    {
+        exit.transform.position = exitClosed;
+    }
 }
