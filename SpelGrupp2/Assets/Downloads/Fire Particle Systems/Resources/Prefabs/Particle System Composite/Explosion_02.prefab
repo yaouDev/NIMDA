@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2652912101043881903}
   - component: {fileID: 8054388694797530728}
   - component: {fileID: 6717612586731181793}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Explosion_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4834,7 +4834,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d1a4a4eed5b514175b10a10ea1c19add, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4890,6 +4889,14 @@ PrefabInstance:
     - target: {fileID: 2533041155713510639, guid: 381e02f47a2a047219b58d999746659b, type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Sparks
+      objectReference: {fileID: 0}
+    - target: {fileID: 2533041155713510639, guid: 381e02f47a2a047219b58d999746659b, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2622929213867377808, guid: 381e02f47a2a047219b58d999746659b, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6741410043067831774, guid: 381e02f47a2a047219b58d999746659b, type: 3}
       propertyPath: m_RootOrder
@@ -4993,9 +5000,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5457304116505308116, guid: a1f6b97156cc34a83a9c2593d5a196e7, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5547751487853265835, guid: a1f6b97156cc34a83a9c2593d5a196e7, type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Fire_Sphere_Large
+      objectReference: {fileID: 0}
+    - target: {fileID: 5547751487853265835, guid: a1f6b97156cc34a83a9c2593d5a196e7, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1f6b97156cc34a83a9c2593d5a196e7, type: 3}
@@ -5075,9 +5090,17 @@ PrefabInstance:
       propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 8928938609818786142, guid: c82b10c95c5484801b7618f55fbff557, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8982528275862794529, guid: c82b10c95c5484801b7618f55fbff557, type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Splash
+      objectReference: {fileID: 0}
+    - target: {fileID: 8982528275862794529, guid: c82b10c95c5484801b7618f55fbff557, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c82b10c95c5484801b7618f55fbff557, type: 3}
@@ -5137,9 +5160,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5878556334330098764, guid: 5b66ff1bf013b475c84c9f708512e168, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6257044063349824563, guid: 5b66ff1bf013b475c84c9f708512e168, type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Shockwave_Ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 6257044063349824563, guid: 5b66ff1bf013b475c84c9f708512e168, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b66ff1bf013b475c84c9f708512e168, type: 3}
