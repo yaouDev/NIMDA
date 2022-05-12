@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace CallbackSystem
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth : MonoBehaviour, IDamageable
     {
         [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 5.0f;
         [SerializeField] private bool isPlayerOne;
         [SerializeField] private int batteryCount, batteryRespawnCount, maxBatteryCount;
         [SerializeField] private float healthReg;
-        private float maxHealth = 1f;
+        private float maxHealth = 100f;
         private float currHealth;
         private float respawnTimer;
         private bool alive = true;
@@ -116,7 +116,7 @@ namespace CallbackSystem
         private void HealthRegeneration()
         {
             currHealth += (Time.deltaTime * healthReg * 0.1f);
-            currHealth = Mathf.Min(currHealth, 1f);
+            currHealth = Mathf.Min(currHealth, 100f);
 
         }
 
