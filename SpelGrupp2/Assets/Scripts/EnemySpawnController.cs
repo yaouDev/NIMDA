@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour {
-    [SerializeField] private GameObject spawnThis;
+    [SerializeField] private GameObject[] spawnThis;
     [SerializeField] private int maxSpawnCount;
     private int spawnCount;
     private GameObject[] players;
@@ -47,7 +47,7 @@ public class EnemySpawnController : MonoBehaviour {
                 index = Random.Range(0, nearbySpawners.Count);
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;
-                Instantiate(spawnThis, spawnPos.position, spawnPos.rotation);
+                Instantiate(spawnThis[Random.Range(0, 2)], spawnPos.position, spawnPos.rotation);
                 nearbySpawners.Clear();
                 spawnCount += 1;
             }
@@ -55,22 +55,18 @@ public class EnemySpawnController : MonoBehaviour {
         }
     }
 
-    public void reduceSpawnCount(int amount)
-    {
+    public void reduceSpawnCount(int amount) {
         spawnCount -= amount;
     }
 
-    public void GeneratorRunning(bool on)
-    {
-        if (on)
-        {
+    public void GeneratorRunning(bool on) {
+        if (on) {
             spawnCooldown = 3;
             maxSpawnCount = 40;
             spawnDistanceMax = 50;
             spawnDistanceMin = 15;
         }
-        if (!on)
-        {
+        if (!on) {
             spawnCooldown = 5;
             maxSpawnCount = 25;
             spawnDistanceMax = 35;
