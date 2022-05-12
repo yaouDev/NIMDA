@@ -31,7 +31,6 @@ namespace CallbackSystem
 
         private ResourceUpdateEvent resourceEvent;
         private PlayerHealth playerHealthScript;
-        private Craft craft = new Craft();
         private bool isPlayerOne, started = false, isCrafting = false;
         private PlayerInput playerInput;
 
@@ -162,7 +161,8 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                if(TryCraftRecipe(bulletRecipe))
+                Debug.Log("Attempt to craft bullet");
+                if (TryCraftRecipe(bulletRecipe))
                     playerAttackScript.UpdateBulletCount(1);
 
             }
@@ -171,6 +171,7 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
+                Debug.Log("Attempt to craft battery");
                 if(TryCraftRecipe(batteryRecipe))
                     playerHealthScript.IncreaseBattery();
             }
@@ -179,13 +180,19 @@ namespace CallbackSystem
         public void CraftUpgradedProjectileWeapon()
         {
             if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
+            {
                 playerAttackScript.UpgradeProjectileWeapon();
+                selectedButton.interactable = false;
+            }
         }
 
         public void CraftUpgradedLaserWeapon()
         {
             if (TryCraftRecipe(UpgradedLaserWeaponRecipe))
+            {
                 playerAttackScript.UpgradeLaserWeapon();
+                selectedButton.interactable = false;
+            }
         }
 
         public bool TryCraftRecipe(Recipe recipe)
@@ -204,10 +211,7 @@ namespace CallbackSystem
             }
 
             if (!missingResources)
-            { 
-                if(isCrafting)
-                    selectedButton.interactable = false;
-              
+            {   
                 copper -= recipe.copperNeeded;
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;

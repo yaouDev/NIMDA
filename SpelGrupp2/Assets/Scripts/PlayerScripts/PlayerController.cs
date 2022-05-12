@@ -162,6 +162,7 @@ public class PlayerController : MonoBehaviour
         return joyStickRightInput;
     }
 
+
     private void ApplyJoystickMovement()
     {
 
@@ -189,6 +190,18 @@ public class PlayerController : MonoBehaviour
         cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
         input = Quaternion.Euler(cameraRotation) * input;
         return Vector3.ProjectOnPlane(input, _planeNormal).normalized;
+    }
+
+    private Vector3 RightJoystickToCameraProjection(Vector2 movement)
+    {
+
+        if (_camera == null)
+            return movement;
+
+        Vector3 cameraRotation = _camera.transform.rotation.eulerAngles;
+        cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
+        movement = Quaternion.Euler(cameraRotation) * movement;
+        return Vector3.ProjectOnPlane(movement, _planeNormal).normalized;
     }
 
     public void Accelerate(Vector3 input)
