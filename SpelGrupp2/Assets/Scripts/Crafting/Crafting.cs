@@ -204,8 +204,10 @@ namespace CallbackSystem
             }
 
             if (!missingResources)
-            {
-                selectedButton.interactable = false;
+            { 
+                if(isCrafting)
+                    selectedButton.interactable = false;
+              
                 copper -= recipe.copperNeeded;
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;
