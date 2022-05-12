@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AI_Controller : MonoBehaviour
-{
+public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, critRange, allowedTargetDiscrepancy;
-    [SerializeField] private bool drawPath = false;
+    [SerializeField] private bool drawPath = false, isBoss = false;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private LineRenderer lineRenderer;
@@ -22,8 +21,7 @@ public class AI_Controller : MonoBehaviour
     private Vector3 destination = Vector3.zero;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         targets = GameObject.FindGameObjectsWithTag("Player");
         activeTarget = targets[0].transform.position;
         col = GetComponent<Collider>();
@@ -37,22 +35,18 @@ public class AI_Controller : MonoBehaviour
     }
 
 
-    void Update()
-    {
+    void Update() {
         UpdateTarget();
         behaviorTree.Update();
         if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
         //if (!updatingPath) StartCoroutine(UpdatePath());
-        if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position)))
-        {
+        if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
         // This code is for debugging purposes only, shows current calculated path
-        if (drawPath && currentPath != null && currentPath.Count != 0)
-        {
+        if (drawPath && currentPath != null && currentPath.Count != 0) {
             Vector3 prevPos = currentPath[0];
-            foreach (Vector3 pos in currentPath)
-            {
+            foreach (Vector3 pos in currentPath) {
                 if (pos != prevPos)
                     Debug.DrawLine(prevPos, pos, Color.blue);
                 prevPos = pos;
@@ -60,8 +54,7 @@ public class AI_Controller : MonoBehaviour
         }
     }
 
-    private IEnumerator UpdatePath()
-    {
+    private IEnumerator UpdatePath() {
         UpdateTarget();
         updatingPath = true;
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
@@ -70,47 +63,37 @@ public class AI_Controller : MonoBehaviour
     }
 
     // getters and setters below
-    public bool TargetInSight
-    {
-        get
-        {
+    public bool TargetInSight {
+        get {
             RaycastHit hit;
             Vector3 dir = (ClosestPlayer - Position).normalized;
             Physics.Raycast(Position, dir, out hit, Mathf.Infinity);
 
-            if (hit.collider != null)
-            {
-                if (hit.collider.tag == "Player")
-                {
+            if (hit.collider != null) {
+                if (hit.collider.tag == "Player") {
                     return true;
                 }
             }
             return false;
         }
     }
-    public Vector3 ClosestPlayer
-    {
-        get
-        {
+    public Vector3 ClosestPlayer {
+        get {
             GameObject closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
             Vector3.Distance(targets[1].transform.position, transform.position) ? closestTarget = targets[1] : targets[0];
             return closestTarget.transform.position;
         }
     }
 
-    public Vector3 Destination
-    {
+    public Vector3 Destination {
         get { return destination; }
         set { destination = value; }
     }
 
-    public int CurrentPathIndex
-    {
+    public int CurrentPathIndex {
         get { return currentPathIndex; }
-        set
-        {
-            if (currentPath != null)
-            {
+        set {
+            if (currentPath != null) {
                 if (value > currentPath.Count) currentPathIndex = currentPath.Count - 1;
                 else if (value < 0) currentPathIndex = 0;
                 else currentPathIndex = value;
@@ -124,16 +107,14 @@ public class AI_Controller : MonoBehaviour
 
     public Vector3 CurrentTarget { get { return activeTarget; } }
 
-    public List<Vector3> CurrentPath
-    {
+    public List<Vector3> CurrentPath {
         get { return currentPath; }
         set { currentPath = value; }
     }
 
     public Vector3 Position { get { return transform.position; } }
 
-    public bool IsStopped
-    {
+    public bool IsStopped {
         get { return isStopped; }
         set { isStopped = value; }
     }
@@ -148,8 +129,7 @@ public class AI_Controller : MonoBehaviour
 
     public Rigidbody Rigidbody { get { return rBody; } }
 
-    private bool IsPathRequestAllowed()
-    {
+    private bool IsPathRequestAllowed() {
         bool nullCond = currentPath != null && currentPath.Count != 0;
         bool indexCond = nullCond && currentPath.Count - currentPathIndex <= 5;
         bool discrepancyCond = nullCond && currentPath[currentPath.Count - 1] != activeTarget &&
@@ -162,10 +142,8 @@ public class AI_Controller : MonoBehaviour
 
 
 
-    private void FixedUpdate()
-    {
-        if (!isStopped)
-        {
+    private void FixedUpdate() {
+        if (!isStopped) {
             //AdjustForLatePathUpdate();
             Move();
         }
@@ -173,18 +151,21 @@ public class AI_Controller : MonoBehaviour
     }
 
     // Should stop most of the weird cases where the enemies get stuck
-    void MoveAwayFromBlockedNode()
-    {
-        if (Rigidbody.velocity.magnitude < 0.05f && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f)
-        {
+    private void MoveAwayFromBlockedNode() {
+        float jumpHeight = 0.1f;
+        bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
+        if (isBoss) {
+            velocityCond = Rigidbody.velocity.magnitude < 0.01f;
+            jumpHeight = 0.5f;
+        }
+
+        if (velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
             Vector3 blockedNode = Vector3.zero;
-            foreach (Vector3 node in DynamicGraph.Instance.GetPossibleNeighborsKV(CurrentPathNode).Keys)
-            {
+            foreach (Vector3 node in DynamicGraph.Instance.GetPossibleNeighborsKV(CurrentPathNode).Keys) {
                 if (DynamicGraph.Instance.IsNodeBlocked(node)) blockedNode = node;
             }
             // the enemy is stuck on a collider, like a wall
-            if (blockedNode != Vector3.zero)
-            {
+            if (blockedNode != Vector3.zero) {
 
                 Vector3 dirToMove;
 
@@ -195,25 +176,21 @@ public class AI_Controller : MonoBehaviour
                 Debug.DrawLine(Position, Position + dirToMove * speed, Color.red);
             }
             // the enemy is stuck between two modules
-            else //if(Vector3.Distance(Position, currentPath[0]) > 1f)
-            {
-                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + 0.1f, Position.z));
+            else if (Vector3.Distance(Position, currentPath[0]) > 1f) {
+                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
             }
 
         }
     }
 
     // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
-    private void OnTriggerStay(Collider other)
-    {
-        if (other != null && other.tag == "Enemy")
-        {
+    private void OnTriggerStay(Collider other) {
+        if (other != null && other.tag == "Enemy") {
             Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
             Vector3 valueToTest = transform.position;
             if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
             float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
-            if ((dot >= 0) || valueToTest == transform.position)
-            {
+            if ((dot >= 0) || valueToTest == transform.position) {
                 Vector3 forceToAdd = -directionOfOtherEnemy * speed;
                 float multiplier = 0.15f;
                 if (!isStopped) multiplier = 0.05f;
@@ -223,10 +200,8 @@ public class AI_Controller : MonoBehaviour
         }
     }
 
-    private void AdjustForLatePathUpdate()
-    {
-        if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0)
-        {
+    private void AdjustForLatePathUpdate() {
+        if (currentPath != null && currentPathIndex == 0 && currentPath.Count != 0) {
             bool distanceCond = Vector3.Distance(CurrentPathNode, activeTarget) > Vector3.Distance(Position, activeTarget);
             while (currentPathIndex < currentPath.Count - 2 &&
             Vector3.Distance(CurrentPathNode, activeTarget) > Vector3.Distance(Position, activeTarget) &&
@@ -236,12 +211,9 @@ public class AI_Controller : MonoBehaviour
     }
 
 
-    private void Move()
-    {
-        if (currentPath != null && currentPath.Count != 0)
-        {
-            if (Vector3.Distance(Position, CurrentPathNode) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(Position, CurrentPathNode) > 2f))
-            {
+    private void Move() {
+        if (currentPath != null && currentPath.Count != 0) {
+            if (Vector3.Distance(Position, CurrentPathNode) > 0.5f || (currentPathIndex == currentPath.Count - 1 && Vector3.Distance(Position, CurrentPathNode) > 2f)) {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
                 Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5f) - Position).normalized * speed;
@@ -251,9 +223,7 @@ public class AI_Controller : MonoBehaviour
                 Rigidbody.AddForce(forceTadd, ForceMode.Force);
                 if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(CurrentPathNode, Position)) currentPathIndex++;
 
-            }
-            else if (currentPathIndex < currentPath.Count - 2)
-            {
+            } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
             // ensure enemies stay at their max speed
@@ -261,8 +231,7 @@ public class AI_Controller : MonoBehaviour
         }
     }
 
-    public void UpdateTarget()
-    {
+    public void UpdateTarget() {
         activeTarget = Destination;
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
     }
