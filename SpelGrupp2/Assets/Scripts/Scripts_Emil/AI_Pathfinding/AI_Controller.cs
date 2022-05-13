@@ -39,7 +39,7 @@ public class AI_Controller : MonoBehaviour {
         UpdateTarget();
         behaviorTree.Update();
         if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
-        //if (!updatingPath) StartCoroutine(UpdatePath());
+        if (IsPathRequestAllowed()) updatePath();
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Destroy(gameObject);
         }
@@ -60,6 +60,11 @@ public class AI_Controller : MonoBehaviour {
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
         updatingPath = false;
+    }
+
+    private void updatePath() {
+        UpdateTarget();
+        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
     }
 
     // getters and setters below
@@ -137,7 +142,7 @@ public class AI_Controller : MonoBehaviour {
         float distToTarget = Vector3.Distance(Position, activeTarget);
         bool criticalRangeCond = distToTarget < critRange && Destination == ClosestPlayer;
         bool distCond = distToTarget > critRange && isStopped;
-        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && !updatingPath;
+        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond);// && !updatingPath;
     }
 
 
