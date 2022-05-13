@@ -37,6 +37,11 @@ public class Bullet : MonoBehaviour
             {
                 Ricochet();
             }
+            else if (hitInfo.transform.tag == "BreakableObject")
+            {
+                BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
+                breakable.DropBoxLoot();
+            }
             else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
             {
                 hit = true;
