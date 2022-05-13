@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace CallbackSystem
 {
@@ -14,25 +15,24 @@ namespace CallbackSystem
      */
     public class Crafting : MonoBehaviour
     {
-        public int copper;
-        public int transistor;
-        public int iron;
+        [HideInInspector] public PlayerAttack playerAttackScript;
+        [SerializeField] private Recipe batteryRecipe, bulletRecipe, UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe;
+        [SerializeField] private LayerMask layerMask;
+        [SerializeField] private GameObject craftingTable;
+        [SerializeField] private Button[] craftingButtons;
+        private int[] resourceArray;
+        private Button selectedButton;
+        private float sphereRadius = 1f; 
+        private float maxSphereDistance = 3f;
+        private int selectedButtonIndex;
 
-        private Craft craft = new Craft();
-        public Recipe batteryRecipe;
-        public Recipe bulletRecipe;
+        //public Recipe batteryRecipe, bulletRecipe;
+        public int copper, transistor, iron;
+
         private ResourceUpdateEvent resourceEvent;
-        public PlayerAttack playerAttackScript;
         private PlayerHealth playerHealthScript;
-        private bool isPlayerOne;
-        private bool started = false;
-
-        public enum PickUp
-        {
-            Copper,
-            Transistor,
-            Iron
-        }
+        private bool isPlayerOne, started = false, isCrafting = false;
+        private PlayerInput playerInput;
 
         public void UpdateResources()
         {
@@ -40,6 +40,7 @@ namespace CallbackSystem
             resourceEvent.t = transistor;
             resourceEvent.i = iron;
             resourceEvent.ammoChange = false;
+            resourceArray = new int[] { copper, transistor, iron };
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
@@ -50,13 +51,13 @@ namespace CallbackSystem
         {
             playerAttackScript = GetComponent<PlayerAttack>();
             playerHealthScript = GetComponent<PlayerHealth>();
+            playerInput = GetComponent<PlayerInput>();
             resourceEvent = new ResourceUpdateEvent();
+            craftingTable.SetActive(false);
+            resourceArray = new int[] { copper, transistor, iron };
+
         }
 
-        public void CraftBattery()
-        {
-            playerHealthScript.IncreaseBattery();
-        }
         private void Update()
         {
             if (!started)
@@ -67,117 +68,157 @@ namespace CallbackSystem
                 started = true;
             }
         }
- 
-        private static readonly PickUp[][] Combos =
-    {
-        new PickUp[] {PickUp.Copper, PickUp.Transistor, PickUp.Iron},
-        new PickUp[] {PickUp.Iron, PickUp.Iron, PickUp.Iron}
-    };
 
-        private int currentIndex = 0;
-        private bool[] validRecipe = { true, true };
-
-        public void PressedCopper(InputAction.CallbackContext context)
+        //Priority on interactions
+        //Interaction function should not be in Crafting script!
+        public void Interact(InputAction.CallbackContext context)
         {
             if (context.performed)
             {
-                Combo(PickUp.Copper);
-            }
-        }
-
-        public void PressedIron(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                Combo(PickUp.Iron);
-            }
-        }
-
-        public void PressedTransistor(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                Combo(PickUp.Transistor);
-            }
-        }
-
-        public void PressedBattery(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                craft.CraftRecipe(batteryRecipe, this);
-            }
-        }
-
-        public void PressedBullet(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                craft.CraftRecipe(bulletRecipe, this);
-
-            }
-        }
-
-        private void Combo(PickUp latestPress)
-        {
-            bool correctSoFar = false;
-            for (int recipee = 0; recipee < validRecipe.Length; recipee++)
-            {
-                if (!validRecipe[recipee]) continue;
-                if (recipee > Combos[recipee].Length) continue;
-
-                if (Combos[recipee][currentIndex] == latestPress)
+                if (isCrafting)
                 {
-                    correctSoFar = true;
-                    currentIndex++;
-                    if (currentIndex >= Combos[recipee].Length)
-                    {
-                        ResetValidRecipees();
-                        SuccessfulCombo(recipee);
-                        currentIndex = 0;
-                        return;
-                    }
+                    EnterCraftingUI();
                 }
                 else
                 {
-                    validRecipe[recipee] = false;
+                    RaycastHit hit;
+                    Physics.SphereCast(transform.position, sphereRadius, transform.forward, out hit, maxSphereDistance, layerMask);
+                    if (hit.collider != null)
+                    {
+                        Debug.Log("Collided with: " + hit.collider.gameObject.name);
+                        EnterCraftingUI();
+                    }
                 }
             }
 
-            if (!correctSoFar)
+        }
+
+        private void EnterCraftingUI()
+        {
+            isCrafting = !isCrafting;
+
+            if (!isCrafting)
             {
-                Debug.LogWarning("INCORRECT! START AGAIN!");
-                ResetValidRecipees();
+                craftingTable.SetActive(false);
+                selectedButton.image.color = Color.white;
+                selectedButtonIndex = 0;
+                playerInput.SwitchCurrentActionMap("Player");
+            } 
+            else
+            {
+                craftingTable.SetActive(true);
+                selectedButton = craftingButtons[selectedButtonIndex];
+                selectedButton.image.color = Color.red;
+                playerInput.SwitchCurrentActionMap("Crafting");
             }
         }
 
-        private void ResetValidRecipees()
+        public void NextButton(InputAction.CallbackContext context)
         {
-            currentIndex = 0;
-            for (int recipe = 0; recipe < validRecipe.Length; recipe++)
+            if (context.performed)
             {
-                validRecipe[recipe] = true;
+                selectedButtonIndex++;
+                if (selectedButtonIndex == craftingButtons.Length) 
+                        selectedButtonIndex = 0;
+
+                ChangeSelectedButton();
             }
         }
 
-        public void CraftAmmunition()
+        public void PreviousButton(InputAction.CallbackContext context)
         {
-            
-        }
-
-        private void SuccessfulCombo(int recipee)
-        {
-            switch (recipee)
+            if (context.performed)
             {
-                case (0):
-                    craft.CraftRecipe(batteryRecipe, this);
-                   // playerAttackScript.UpdateBulletCount(1);
-                    break;
-                case (1):
-                    //Debug.Log("crafted bullet");
-                    craft.CraftRecipe(bulletRecipe, this);
-                    break;
+                selectedButtonIndex--;
+                if (selectedButtonIndex < 0)
+                    selectedButtonIndex = craftingButtons.Length-1;
+
+                ChangeSelectedButton();
             }
         }
-    }
+
+        private void ChangeSelectedButton()
+        {
+            selectedButton.image.color = Color.white;
+            selectedButton = craftingButtons[selectedButtonIndex];
+            selectedButton.image.color = Color.red;
+        }
+
+        public void SelectButton(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                if(selectedButton.interactable != false)
+                {
+                    selectedButton.onClick.Invoke();
+                }
+                else
+                    Debug.Log("Upgrade has already been applied");
+            }
+        }
+
+        public void CraftBullet(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                //Debug.Log("Attempt to craft bullet");
+                if (TryCraftRecipe(bulletRecipe))
+                    playerAttackScript.UpdateBulletCount(3);
+
+            }
+        }
+        public void CraftBattery(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                //Debug.Log("Attempt to craft battery");
+                if(TryCraftRecipe(batteryRecipe))
+                    playerHealthScript.IncreaseBattery();
+            }
+        }
+
+        public void CraftUpgradedProjectileWeapon()
+        {
+            if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
+            {
+                playerAttackScript.UpgradeProjectileWeapon();
+                selectedButton.interactable = false;
+            }
+        }
+
+        public void CraftUpgradedLaserWeapon()
+        {
+            if (TryCraftRecipe(UpgradedLaserWeaponRecipe))
+            {
+                playerAttackScript.UpgradeLaserWeapon();
+                selectedButton.interactable = false;
+            }
+        }
+
+        public bool TryCraftRecipe(Recipe recipe)
+        {
+            bool missingResources = false;
+            if (recipe == null); //Debug.LogWarning("Trying to craft null");
+
+            for (int i = 0; i < recipe.ResNeededArr.Length; i++)
+            {
+                //Debug.Log(recipe.ResNeededArr[i]);
+                if (resourceArray[i] < recipe.ResNeededArr[i])
+                {
+                    //Debug.Log("Not enough resources");
+                    missingResources = true;
+                }
+            }
+
+            if (!missingResources)
+            {   
+                copper -= recipe.copperNeeded;
+                iron -= recipe.ironNeeded;
+                transistor -= recipe.transistorNeeded;
+                UpdateResources();
+                return true;
+            }
+            return false;
+        }
+    }   
 }

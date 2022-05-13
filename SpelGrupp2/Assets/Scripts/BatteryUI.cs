@@ -18,6 +18,7 @@ public class BatteryUI : MonoBehaviour
 
         if (battery >= float.Epsilon)
         {
+            battery /= 100;
             batteryAmount.gameObject.SetActive(true);
             batteryUI.gameObject.SetActive(true);
             batteryUI.fillAmount = battery;

@@ -1,5 +1,44 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8188803108444612368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
+  m_Name: Transparent
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    passTag: Transparent
+    Event: 500
+    filterSettings:
+      RenderQueueType: 1
+      LayerMask:
+        serializedVersion: 2
+        m_Bits: 20791
+      PassNames: []
+    overrideMaterial: {fileID: 0}
+    overrideMaterialPassIndex: 0
+    overrideDepthState: 0
+    depthCompareFunction: 4
+    enableWrite: 1
+    stencilSettings:
+      overrideStencilState: 1
+      stencilReference: 1
+      stencilCompareFunction: 6
+      passOperation: 0
+      failOperation: 0
+      zFailOperation: 0
+    cameraSettings:
+      overrideCamera: 0
+      restoreCamera: 1
+      offset: {x: 0, y: 0, z: 0, w: 0}
+      cameraFieldOfView: 60
 --- !u!114 &-7029475657249180540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,9 +133,10 @@ MonoBehaviour:
   - {fileID: 2766199426724299566}
   - {fileID: -1680152799459297452}
   - {fileID: 7069290756240493430}
+  - {fileID: -8188803108444612368}
   - {fileID: -7029475657249180540}
   - {fileID: 3706831840575004388}
-  m_RendererFeatureMap: 2e83caffb883632654b7d943eee5aee876cbaaf37c2a1b628434682c2249729ee49e945beb4f7133
+  m_RendererFeatureMap: 2e83caffb883632654b7d943eee5aee876cbaaf37c2a1b62f0588b81f5865b8e8434682c2249729ee49e945beb4f7133
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
   shaders:
@@ -223,7 +263,7 @@ MonoBehaviour:
       RenderQueueType: 0
       LayerMask:
         serializedVersion: 2
-        m_Bits: 20759
+        m_Bits: 2182107415
       PassNames: []
     overrideMaterial: {fileID: 0}
     overrideMaterialPassIndex: 0

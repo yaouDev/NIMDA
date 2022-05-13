@@ -5,7 +5,7 @@ using UnityEngine;
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, critRange, allowedTargetDiscrepancy;
-    [SerializeField] private bool drawPath = false;
+    [SerializeField] private bool drawPath = false, isBoss = false;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private LineRenderer lineRenderer;
@@ -32,6 +32,7 @@ public class AI_Controller : MonoBehaviour {
         enemyHealth = GetComponent<EnemyHealth>();
         lineRenderer = GetComponent<LineRenderer>();
         Destination = ClosestPlayer;
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
     }
 
 
@@ -41,7 +42,7 @@ public class AI_Controller : MonoBehaviour {
         if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
         if (IsPathRequestAllowed()) updatePath();
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
-            Destroy(gameObject);
+            Health.DieNoLoot();
         }
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -149,15 +150,21 @@ public class AI_Controller : MonoBehaviour {
 
     private void FixedUpdate() {
         if (!isStopped) {
-            //AdjustForLatePathUpdate();
+            AdjustForLatePathUpdate();
             Move();
         }
         MoveAwayFromBlockedNode();
     }
 
     // Should stop most of the weird cases where the enemies get stuck
-    void MoveAwayFromBlockedNode() {
-        if (Rigidbody.velocity.magnitude < 0.05f && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
+    private void MoveAwayFromBlockedNode() {
+        float jumpHeight = 0.1f;
+        bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
+        if (isBoss) {
+            velocityCond = Rigidbody.velocity.magnitude < 0.01f;
+        }
+
+        if (velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
             Vector3 blockedNode = Vector3.zero;
             foreach (Vector3 node in DynamicGraph.Instance.GetPossibleNeighborsKV(CurrentPathNode).Keys) {
                 if (DynamicGraph.Instance.IsNodeBlocked(node)) blockedNode = node;
@@ -174,8 +181,8 @@ public class AI_Controller : MonoBehaviour {
                 Debug.DrawLine(Position, Position + dirToMove * speed, Color.red);
             }
             // the enemy is stuck between two modules
-            else if (Vector3.Distance(Position, currentPath[0]) > 1f) {
-                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + 0.1f, Position.z));
+            else if (Vector3.Distance(Position, currentPath[0]) > 0.5f) {
+                Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
             }
 
         }
@@ -232,5 +239,15 @@ public class AI_Controller : MonoBehaviour {
     public void UpdateTarget() {
         activeTarget = Destination;
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
+    }
+
+    private void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
+        if (!isBoss) {
+            Health.DieNoLoot();
+        }
+    }
+
+    private void OnDestroy() {
+        CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
     }
 }

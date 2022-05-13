@@ -20,6 +20,7 @@ public class DynamicGraph : MonoBehaviour {
     private HashSet<Vector2Int> loadedModules;
     private Queue<Vector3> nodesToRemove;
     [SerializeField] private bool drawGrid = false;
+    [SerializeField] private bool usePlayTestModules = true;
 
     void Start() {
         masterGraph = new ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>>();
@@ -30,6 +31,93 @@ public class DynamicGraph : MonoBehaviour {
 
         CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleSpawnEvent>(OnModuleLoad);
         CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
+
+        if (usePlayTestModules) {
+            Vector2Int module1 = new Vector2Int(0, 0);
+            Vector2Int module2 = new Vector2Int(0, 1);
+            Vector2Int module3 = new Vector2Int(1, 1);
+            Vector2Int module4 = new Vector2Int(1, 2);
+            Vector2Int module5 = new Vector2Int(0, 2);
+            Vector2Int module6 = new Vector2Int(-1, 2);
+            Vector2Int module7 = new Vector2Int(-1, 3);
+            Vector2Int module8 = new Vector2Int(-2, 3);
+            Vector2Int module9 = new Vector2Int(1, 3);
+            Vector2Int module10 = new Vector2Int(0, 3);
+            Vector2Int module11 = new Vector2Int(0, 4);
+            Vector2Int module12 = new Vector2Int(-1, 4);
+            Vector2Int module13 = new Vector2Int(0, 5);
+            Vector2Int module14 = new Vector2Int(1, 5);
+            Vector2Int module25 = new Vector2Int(-1, 5);
+
+            Vector2Int module15 = new Vector2Int(1, 7);
+            Vector2Int module16 = new Vector2Int(1, 8);
+            Vector2Int module17 = new Vector2Int(0, 8);
+            Vector2Int module18 = new Vector2Int(0, 9);
+            Vector2Int module19 = new Vector2Int(2, 8);
+            Vector2Int module20 = new Vector2Int(3, 8);
+            Vector2Int module21 = new Vector2Int(3, 9);
+            Vector2Int module22 = new Vector2Int(2, 9);
+            Vector2Int module23 = new Vector2Int(2, 10);
+            Vector2Int module24 = new Vector2Int(1, 10);
+            Vector2Int module26 = new Vector2Int(1, 9);
+            Vector2Int bossmod = new Vector2Int(3, 11);
+
+            loadedModules.Add(module1);
+            loadedModules.Add(module2);
+            loadedModules.Add(module3);
+            loadedModules.Add(module4);
+            loadedModules.Add(module5);
+            loadedModules.Add(module6);
+            loadedModules.Add(module7);
+            loadedModules.Add(module8);
+            loadedModules.Add(module9);
+            loadedModules.Add(module10);
+            loadedModules.Add(module11);
+            loadedModules.Add(module12);
+            loadedModules.Add(module13);
+            loadedModules.Add(module14);
+            loadedModules.Add(module15);
+            loadedModules.Add(module16);
+            loadedModules.Add(module17);
+            loadedModules.Add(module18);
+            loadedModules.Add(module19);
+            loadedModules.Add(module20);
+            loadedModules.Add(module21);
+            loadedModules.Add(module22);
+            loadedModules.Add(module23);
+            loadedModules.Add(module24);
+            loadedModules.Add(module25);
+            loadedModules.Add(module26);
+            loadedModules.Add(bossmod);
+
+            AddBlockedNodes(module1);
+            AddBlockedNodes(module2);
+            AddBlockedNodes(module3);
+            AddBlockedNodes(module4);
+            AddBlockedNodes(module5);
+            AddBlockedNodes(module6);
+            AddBlockedNodes(module7);
+            AddBlockedNodes(module8);
+            AddBlockedNodes(module9);
+            AddBlockedNodes(module10);
+            AddBlockedNodes(module11);
+            AddBlockedNodes(module12);
+            AddBlockedNodes(module13);
+            AddBlockedNodes(module14);
+            AddBlockedNodes(module15);
+            AddBlockedNodes(module16);
+            AddBlockedNodes(module17);
+            AddBlockedNodes(module18);
+            AddBlockedNodes(module19);
+            AddBlockedNodes(module20);
+            AddBlockedNodes(module21);
+            AddBlockedNodes(module22);
+            AddBlockedNodes(module23);
+            AddBlockedNodes(module24);
+            AddBlockedNodes(module25);
+            AddBlockedNodes(module26);
+            AddBlockedNodes(bossmod);
+        }
     }
 
     void Update() {

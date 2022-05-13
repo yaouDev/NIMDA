@@ -20,7 +20,7 @@ public class TopDownState : CameraState
 	private float headHeight = 1.6f;
 	
 	[SerializeField] [Range(1.0f, 20.0f)]
-	private float splitMagnitude = 4.0f;
+	private float splitMagnitude = 6.0f;
 
 	[SerializeField] [Range(1.0f, 20.0f)] 
 	private float thirdPersonSplitDistance = 15.0f;
@@ -46,7 +46,8 @@ public class TopDownState : CameraState
 	private float smoothDampMinVal = .1f;
 	private float smoothDampMaxVal = 1.0f;
 	private Vector3 smoothDampCurrentVelocity;
-	
+	private RaycastHit[] hits;
+
 	public override void Run() {
 		Input();
 		
@@ -61,47 +62,64 @@ public class TopDownState : CameraState
 		centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, splitMagnitude );
 		
 		
-		
+		// TODO Camera zoom hack
+		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / splitMagnitude;
+		topDownOffset.z = Mathf.Lerp(-12.0f, -16.0f, distanceFraction);
+		//
 		
 		
 		
 		// // TODO hack
-		//
-		// Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
-		//
-		// Physics.SphereCast((Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
-		// 	.5f,
-		// 	offsetDirection.normalized,
-		// 	out  RaycastHit  hit, 
-		// 	offsetDirection.magnitude, 
-		// 	collisionMask);
-		//
-		// Debug.DrawRay(centroidOffsetPosition + thisTransform.position + abovePlayer, offsetDirection, Color.magenta);
-		//
-		// Vector3 offset;
-		// if (hit.collider)
-		// {
-		// 	offset = topDownOffset.normalized * hit.distance;
-		// }
+
+		Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
+		hits = new RaycastHit[10];
+		
+		Physics.SphereCastNonAlloc(
+			PlayerThis.position,
+			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
+			2.0f,
+			offsetDirection.normalized,
+			hits,
+			//out  RaycastHit  hit, 
+			25.0f, 
+			collisionMask);
+		
+		Debug.DrawRay(
+			//centroidOffsetPosition + thisTransform.position + abovePlayer,
+			PlayerThis.position,
+			offsetDirection, 
+			Color.magenta);
+		
+		//Vector3 offset;
+		for (int i = 0; i < hits.Length; i++)
+		{
+			if (hits[i].collider)
+			{
+				TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
+				if (tf != null)
+				{
+					tf.FadeOut();
+				}
+				//offset = topDownOffset.normalized * hit.distance;
+			}
+		}
+
 		// else
 		// {
 		// 	offset = topDownOffset;
 		// }
-		//
-		// smoothDollyTime = hit.collider ? smoothDampMinVal : smoothDampMaxVal;
-		// lerpOffset = Vector3.SmoothDamp(lerpOffset, offset, ref smoothDampCurrentVelocity, smoothDollyTime);
-		//
-		// CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * lerpOffset;
-		//
+		
+		//smoothDollyTime = hit.collider ? smoothDampMinVal : smoothDampMaxVal;
+		//lerpOffset = Vector3.SmoothDamp(lerpOffset, offset, ref smoothDampCurrentVelocity, smoothDollyTime);
+		
+		//CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * lerpOffset;
+		
 		// // TODO hack
 		//
 		
 		
 		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 
-		
-		
-		
 		
 		
 		
