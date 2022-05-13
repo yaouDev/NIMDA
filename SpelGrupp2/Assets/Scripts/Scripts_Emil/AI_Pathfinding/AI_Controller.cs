@@ -19,7 +19,7 @@ public class AI_Controller : MonoBehaviour {
     [SerializeField] public bool isStopped = true;
     GameObject[] targets;
     private Vector3 destination = Vector3.zero;
-    private bool pathRequestAllowed;
+    private bool pathRequestAllowed = true;
 
     // Start is called before the first frame update
     void Start() {
@@ -38,8 +38,8 @@ public class AI_Controller : MonoBehaviour {
 
 
     void Update() {
-        if (Vector3.Distance(Destination, Position) > 50f) PathRequestAllowed = false;
-        else PathRequestAllowed = true;
+  /*       if (Vector3.Distance(Destination, Position) > 50f) PathRequestAllowed = false;
+        else PathRequestAllowed = true; */
         UpdateTarget();
         behaviorTree.Update();
         //if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
