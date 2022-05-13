@@ -39,7 +39,7 @@ public class AI_Controller : MonoBehaviour {
     void Update() {
         UpdateTarget();
         behaviorTree.Update();
-        if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
+        //if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
         if (IsPathRequestAllowed()) updatePath();
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
             Health.DieNoLoot();
