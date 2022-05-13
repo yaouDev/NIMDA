@@ -37,7 +37,7 @@ public class MeleeAttackNode : Node
 
         if (isAttacking && CheckIfCoverIsValid() == false)
         {
-            agent.IsStopped = true;
+            //agent.IsStopped = true;
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
             NodeState = NodeState.RUNNING;
