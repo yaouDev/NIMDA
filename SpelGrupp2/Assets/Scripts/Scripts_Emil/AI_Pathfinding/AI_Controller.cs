@@ -19,6 +19,7 @@ public class AI_Controller : MonoBehaviour {
     [SerializeField] public bool isStopped = true;
     GameObject[] targets;
     private Vector3 destination = Vector3.zero;
+    private bool pathRequestAllowed;
 
     // Start is called before the first frame update
     void Start() {
@@ -37,6 +38,8 @@ public class AI_Controller : MonoBehaviour {
 
 
     void Update() {
+        if (Vector3.Distance(Destination, Position) > 50f) PathRequestAllowed = false;
+        else PathRequestAllowed = true;
         UpdateTarget();
         behaviorTree.Update();
         //if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
@@ -125,6 +128,11 @@ public class AI_Controller : MonoBehaviour {
         set { isStopped = value; }
     }
 
+    public bool PathRequestAllowed {
+        get { return pathRequestAllowed && IsPathRequestAllowed(); }
+        set { pathRequestAllowed = value; }
+    }
+
     public float DistanceFromTarget { get { return Vector3.Distance(activeTarget, Position); } }
 
     public Vector3 Velocity { get { return rBody.velocity; } }
@@ -143,7 +151,7 @@ public class AI_Controller : MonoBehaviour {
         float distToTarget = Vector3.Distance(Position, activeTarget);
         bool criticalRangeCond = distToTarget < critRange && Destination == ClosestPlayer;
         bool distCond = distToTarget > critRange && isStopped;
-        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond);// && !updatingPath;
+        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && pathRequestAllowed;// && !updatingPath;
     }
 
 

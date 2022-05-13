@@ -8,8 +8,7 @@ public class RangeNode : Node {
 
     public float Range;
 
-    public override NodeState Evaluate() 
-    {
+    public override NodeState Evaluate() {
         /*  distance = Vector3.Distance(agent.ClosestTarget, agent.transform.position);
           return distance <= Range ? NodeState.SUCCESS : NodeState.FAILURE;*/
 
