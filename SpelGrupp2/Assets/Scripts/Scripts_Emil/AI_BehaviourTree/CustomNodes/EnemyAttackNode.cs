@@ -11,6 +11,7 @@ public class EnemyAttackNode : Node
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
     [SerializeField] private float attackDelay = 1.0f;
+    [SerializeField] private LayerMask whatIsTarget;
     //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
@@ -104,7 +105,7 @@ public class EnemyAttackNode : Node
         // Create the ray to use
         Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
         //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f))
+        if (Physics.Raycast(ray, out checkCover, 30.0f, whatIsTarget))
         {
             //Check if that collider is the player
             if (checkCover.collider.gameObject.CompareTag("Player"))
