@@ -19,6 +19,7 @@ public class AI_Controller : MonoBehaviour {
     [SerializeField] public bool isStopped = true;
     GameObject[] targets;
     private Vector3 destination = Vector3.zero;
+    private bool pathRequestAllowed = true;
 
     // Start is called before the first frame update
     void Start() {
@@ -37,12 +38,14 @@ public class AI_Controller : MonoBehaviour {
 
 
     void Update() {
+  /*       if (Vector3.Distance(Destination, Position) > 50f) PathRequestAllowed = false;
+        else PathRequestAllowed = true; */
         UpdateTarget();
         behaviorTree.Update();
-        if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
-        //if (!updatingPath) StartCoroutine(UpdatePath());
+        //if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
+        if (IsPathRequestAllowed()) updatePath();
         if (!DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(Position))) {
-            Destroy(gameObject);
+            Health.DieNoLoot();
         }
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -61,6 +64,11 @@ public class AI_Controller : MonoBehaviour {
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
         yield return new WaitForSeconds(timeBetweenPathUpdates);
         updatingPath = false;
+    }
+
+    private void updatePath() {
+        UpdateTarget();
+        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
     }
 
     // getters and setters below
@@ -120,6 +128,11 @@ public class AI_Controller : MonoBehaviour {
         set { isStopped = value; }
     }
 
+    public bool PathRequestAllowed {
+        get { return pathRequestAllowed && IsPathRequestAllowed(); }
+        set { pathRequestAllowed = value; }
+    }
+
     public float DistanceFromTarget { get { return Vector3.Distance(activeTarget, Position); } }
 
     public Vector3 Velocity { get { return rBody.velocity; } }
@@ -138,14 +151,14 @@ public class AI_Controller : MonoBehaviour {
         float distToTarget = Vector3.Distance(Position, activeTarget);
         bool criticalRangeCond = distToTarget < critRange && Destination == ClosestPlayer;
         bool distCond = distToTarget > critRange && isStopped;
-        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && !updatingPath;
+        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && pathRequestAllowed;// && !updatingPath;
     }
 
 
 
     private void FixedUpdate() {
         if (!isStopped) {
-            //AdjustForLatePathUpdate();
+            AdjustForLatePathUpdate();
             Move();
         }
         MoveAwayFromBlockedNode();
@@ -157,7 +170,6 @@ public class AI_Controller : MonoBehaviour {
         bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
         if (isBoss) {
             velocityCond = Rigidbody.velocity.magnitude < 0.01f;
-            jumpHeight = 0.5f;
         }
 
         if (velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
@@ -177,7 +189,7 @@ public class AI_Controller : MonoBehaviour {
                 Debug.DrawLine(Position, Position + dirToMove * speed, Color.red);
             }
             // the enemy is stuck between two modules
-            else if (Vector3.Distance(Position, currentPath[0]) > 1f) {
+            else if (Vector3.Distance(Position, currentPath[0]) > 0.5f) {
                 Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
             }
 
@@ -239,7 +251,7 @@ public class AI_Controller : MonoBehaviour {
 
     private void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
         if (!isBoss) {
-            Health.Die();
+            Health.DieNoLoot();
         }
     }
 

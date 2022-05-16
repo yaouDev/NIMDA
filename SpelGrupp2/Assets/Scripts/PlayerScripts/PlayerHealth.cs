@@ -29,7 +29,7 @@ namespace CallbackSystem
         }
         private void Start()
         {
-            batteryCount = 2;
+            batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;

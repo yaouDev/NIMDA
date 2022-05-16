@@ -161,9 +161,9 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                Debug.Log("Attempt to craft bullet");
+                //Debug.Log("Attempt to craft bullet");
                 if (TryCraftRecipe(bulletRecipe))
-                    playerAttackScript.UpdateBulletCount(1);
+                    playerAttackScript.UpdateBulletCount(3);
 
             }
         }
@@ -171,7 +171,7 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                Debug.Log("Attempt to craft battery");
+                //Debug.Log("Attempt to craft battery");
                 if(TryCraftRecipe(batteryRecipe))
                     playerHealthScript.IncreaseBattery();
             }
@@ -198,14 +198,14 @@ namespace CallbackSystem
         public bool TryCraftRecipe(Recipe recipe)
         {
             bool missingResources = false;
-            if (recipe == null) Debug.LogWarning("Trying to craft null");
+            if (recipe == null); //Debug.LogWarning("Trying to craft null");
 
             for (int i = 0; i < recipe.ResNeededArr.Length; i++)
             {
                 //Debug.Log(recipe.ResNeededArr[i]);
                 if (resourceArray[i] < recipe.ResNeededArr[i])
                 {
-                    Debug.Log("Not enough resources");
+                    //Debug.Log("Not enough resources");
                     missingResources = true;
                 }
             }
