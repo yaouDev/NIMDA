@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float speed, timeBetweenPathUpdates, critRange, allowedTargetDiscrepancy;
-    [SerializeField] private bool drawPath = false, isBoss = false;
+    [SerializeField] private bool drawPath = false, isBoss = false, movingFromBlock = false;
     private EnemyHealth enemyHealth;
     private Vector3 desiredTarget, targetBlocked, activeTarget;
     private LineRenderer lineRenderer;
@@ -38,8 +39,6 @@ public class AI_Controller : MonoBehaviour {
 
 
     void Update() {
-  /*       if (Vector3.Distance(Destination, Position) > 50f) PathRequestAllowed = false;
-        else PathRequestAllowed = true; */
         UpdateTarget();
         behaviorTree.Update();
         //if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
@@ -139,7 +138,20 @@ public class AI_Controller : MonoBehaviour {
 
     public LineRenderer LineRenderer { get { return lineRenderer; } }
 
-    public Vector3 CurrentPathNode { get { return currentPath[currentPathIndex]; } }
+    public Vector3 CurrentPathNode {
+        get {
+            if (currentPath == null) return Vector3.zero;
+            return currentPath[currentPathIndex];
+        }
+    }
+
+    public Vector3 NextPathNode {
+        get {
+            if (currentPath == null) return Vector3.zero;
+            else if (currentPathIndex == CurrentPath.Count - 1) return CurrentPathNode;
+            return currentPath[currentPathIndex + 1];
+        }
+    }
 
     public Rigidbody Rigidbody { get { return rBody; } }
 
@@ -151,48 +163,63 @@ public class AI_Controller : MonoBehaviour {
         float distToTarget = Vector3.Distance(Position, activeTarget);
         bool criticalRangeCond = distToTarget < critRange && Destination == ClosestPlayer;
         bool distCond = distToTarget > critRange && isStopped;
-        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && pathRequestAllowed;// && !updatingPath;
+        return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond);// && !updatingPath;
     }
 
 
 
     private void FixedUpdate() {
+        MoveFromBlock();
         if (!isStopped) {
             AdjustForLatePathUpdate();
             Move();
         }
-        MoveAwayFromBlockedNode();
     }
 
-    // Should stop most of the weird cases where the enemies get stuck
-    private void MoveAwayFromBlockedNode() {
+    void MoveFromBlock() {
         float jumpHeight = 0.1f;
         bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
         if (isBoss) {
             velocityCond = Rigidbody.velocity.magnitude < 0.01f;
         }
 
-        if (velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
-            Vector3 blockedNode = Vector3.zero;
-            foreach (Vector3 node in DynamicGraph.Instance.GetPossibleNeighborsKV(CurrentPathNode).Keys) {
-                if (DynamicGraph.Instance.IsNodeBlocked(node)) blockedNode = node;
+        if (!movingFromBlock && velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
+
+            Vector3[] neighbors = DynamicGraph.Instance.GetPossibleNeighbors(CurrentPathNode);
+            bool[] blockedNeighbors = new bool[neighbors.Length];
+
+            for (int i = 0; i < neighbors.Length; i++) {
+                if (DynamicGraph.Instance.IsNodeBlocked(neighbors[i])) {
+                    blockedNeighbors[i] = true;
+                }
+            }
+
+            bool anyNodeBlocked = false;
+            Vector3 dirToMoveBack = Vector3.zero;
+
+            for (int i = 0; i < neighbors.Length; i++) {
+                if (blockedNeighbors[i]) {
+                    anyNodeBlocked = true;
+                    float dot = Vector3.Dot((neighbors[i] - Position).normalized, (NextPathNode - CurrentPathNode).normalized);
+                    if (dot > 0f) {
+                        if (dirToMoveBack == Vector3.zero) dirToMoveBack = (CurrentPathNode - neighbors[i]).normalized;
+                        else {
+                            dirToMoveBack = Vector3.Lerp(dirToMoveBack, (CurrentPathNode - neighbors[i]).normalized, dot);
+                        }
+                        dirToMoveBack.y = 0;
+                        dirToMoveBack = dirToMoveBack.normalized;
+                    }
+                }
             }
             // the enemy is stuck on a collider, like a wall
-            if (blockedNode != Vector3.zero) {
-
-                Vector3 dirToMove;
-
-                if (Vector3.Dot(blockedNode, Rigidbody.velocity.normalized) >= -0.1f) dirToMove = (Position - blockedNode).normalized;
-                else dirToMove = (Vector3.Lerp(Position, Rigidbody.velocity.normalized, 0.5f) - blockedNode).normalized;
-
-                Rigidbody.AddForce(dirToMove * speed * 5f, ForceMode.Force);
-                Debug.DrawLine(Position, Position + dirToMove * speed, Color.red);
+            if (anyNodeBlocked) {
+                Rigidbody.AddForce(dirToMoveBack * speed * 13f, ForceMode.Force);
+                Debug.DrawLine(Position, Position + dirToMoveBack * speed, Color.red);
             }
             // the enemy is stuck between two modules
             else if (Vector3.Distance(Position, currentPath[0]) > 0.5f) {
                 Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
             }
-
         }
     }
 

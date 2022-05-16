@@ -59,7 +59,7 @@ public class PathfinderManager : MonoBehaviour {
 
 
     void Update() {
-        
+
         if (!pathQueue.IsEmpty() && job.IsCompleted) {
             job.Complete();
 
@@ -78,7 +78,6 @@ public class PathfinderManager : MonoBehaviour {
                 agentsToUpdate.Add(agent);
                 startPositionsTmp.Add(agent.Position);
                 endPositionsTMp.Add(agent.CurrentTarget);
-
             }
 
             AStarJob aStarJob = new AStarJob {

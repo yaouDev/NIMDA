@@ -218,7 +218,7 @@ public class DynamicGraph : MonoBehaviour {
         return closestNode;
     }
 
-    private Vector3[] GetPossibleNeighbors(Vector3 node) {
+    public Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
@@ -256,6 +256,7 @@ public class DynamicGraph : MonoBehaviour {
 
     private Collider[] GetBlockedNode(Vector3 position) {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
+        //return Physics.OverlapSphere(position, nodeHalfextent, colliderMask);
     }
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
