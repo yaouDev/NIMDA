@@ -92,6 +92,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
 
     public void TakeDamage(float damage) {
         currentHealth -= damage;
+        Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
         //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!!
         AudioController.instance.PlayOneShot(enemySound.hurt, GameObject.Find("Players").transform.position);
         //Debug.Log(currentHealth);

@@ -60,7 +60,7 @@ public class PulseAreaAttackNode : Node
 
     void Attack()
     {
-        Instantiate(AIData.Instance.getPulseAttackPartickles, agent.Position, Quaternion.identity);
+        Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
     }
 

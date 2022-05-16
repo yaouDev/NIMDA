@@ -28,6 +28,7 @@ public class EnemyShield : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+        Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
     }
 
 }

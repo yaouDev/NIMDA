@@ -9,7 +9,8 @@ public class AIData : MonoBehaviour {
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject bossBigBullet;
     [SerializeField] private GameObject bossSmallBullet;
-    [SerializeField] private ParticleSystem pulseAttackPartickles;
+    [SerializeField] private ParticleSystem pulseAttackParticles;
+    [SerializeField] private ParticleSystem enemyHitParticles;
 
     private CallbackSystem.EventSystem eventSystem;
     //private Transform bestCoverSpot;
@@ -30,20 +31,24 @@ public class AIData : MonoBehaviour {
         Instance ??= this;
     }
 
-    public GameObject getBullet {
+    public GameObject Bullet {
         get { return bullet; }
     }
-    public GameObject getBossBullet
+    public GameObject BossBullet
     {
         get { return bossBigBullet; }
     }
-    public GameObject getSmallBullet
+    public GameObject SmallBullet
     {
         get { return bossSmallBullet; }
     }
-    public ParticleSystem getPulseAttackPartickles
+    public ParticleSystem PulseAttackParticles
     {
-        get { return pulseAttackPartickles; }
+        get { return pulseAttackParticles; }
+    }
+    public ParticleSystem EnemyHitParticles
+    {
+        get { return enemyHitParticles; }
     }
 
     /*     public void SetBestCoverSpot(Transform bestCoverSpot) {

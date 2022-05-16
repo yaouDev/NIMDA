@@ -62,7 +62,7 @@ public class EnemyPulseAttackAreaNode : Node
     void Attack()
     {
         //Particklesystem
-        Instantiate(AIData.Instance.getPulseAttackPartickles, agent.Position, Quaternion.identity);
+        Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
 
     }

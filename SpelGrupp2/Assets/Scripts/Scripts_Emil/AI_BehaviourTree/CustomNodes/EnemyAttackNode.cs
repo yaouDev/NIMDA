@@ -46,6 +46,7 @@ public class EnemyAttackNode : Node
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
+
             NodeState = NodeState.SUCCESS;
             return NodeState;
         }
@@ -79,7 +80,7 @@ public class EnemyAttackNode : Node
         directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.getBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
