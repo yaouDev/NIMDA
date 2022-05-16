@@ -138,6 +138,6 @@ public class SplitScreenState : CameraState {
 		mouseMovement.y -= PlayerController.GetRightStickVector().y * rightStickSpeedY * Time.deltaTime;// TODO UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
 		mouseMovement.y = Mathf.Clamp(mouseMovement.y, 1 - lookOffset , 179 - lookOffset);
 
-		// mouseMovement.y = Mathf.Clamp(mouseMovement.y, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
+		// mouseMovement.z = Mathf.Clamp(mouseMovement.z, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
 	}
 }
