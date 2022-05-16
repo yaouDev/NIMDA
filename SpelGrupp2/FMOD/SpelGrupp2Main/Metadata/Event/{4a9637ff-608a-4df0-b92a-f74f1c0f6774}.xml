@@ -5,10 +5,10 @@
 			<value>cmbt_fire_projectile001</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
-			<destination>{b5aef8c0-6e7f-48a5-b321-a8fcbd4caff4}</destination>
+			<destination>{ca00dd73-85cc-47ef-b5da-40e2244fd032}</destination>
 		</relationship>
 		<relationship name="mixer">
 			<destination>{93b11baa-2ccc-43fd-8dec-fe6890053b88}</destination>
@@ -116,6 +116,7 @@
 	<object class="MixerBusEffectChain" id="{b2b01894-ebc6-4fae-b61b-9f35a1eb3f9a}">
 		<relationship name="effects">
 			<destination>{3509bca9-9aa1-41da-90d1-3a5237637edd}</destination>
+			<destination>{5a21a93c-ff09-450f-8579-e6b5fb45fcb4}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{9b79b2b2-7688-4e32-ae5e-ffd53b4b7cbc}" />
@@ -135,5 +136,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{96e12e4e-9502-4c5f-ae6d-d37fa661b0da}" />
 	<object class="MixerBusFader" id="{3509bca9-9aa1-41da-90d1-3a5237637edd}" />
+	<object class="SpatialiserEffect" id="{5a21a93c-ff09-450f-8579-e6b5fb45fcb4}" />
 	<object class="MixerBusFader" id="{3c7b6d30-8c44-413b-bdd8-d94f01a6a08e}" />
 </objects>
