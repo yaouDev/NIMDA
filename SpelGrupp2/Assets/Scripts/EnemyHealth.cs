@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
+    [SerializeField] private float hitForce;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -51,6 +52,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     }
 
 
+
     public void Die() {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
@@ -90,6 +92,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
 
     public void TakeDamage(float damage) {
         currentHealth -= damage;
+        Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
         //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!!
         AudioController.instance.PlayOneShot(enemySound.hurt, GameObject.Find("Players").transform.position);
         //Debug.Log(currentHealth);
