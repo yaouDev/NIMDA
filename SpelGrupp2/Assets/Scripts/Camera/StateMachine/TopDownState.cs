@@ -169,8 +169,8 @@ public class TopDownState : CameraState
 	protected void Input() {
 		// _mouseMovement.x += playerController.GetCameraMovement().x * mouseSensitivityX * 100;// 0;// TODO UnityEngine.Input.GetAxisRaw(MouseX) * mouseSensitivityX;
 		// Debug.Log(_mouseMovement.x);
-		// _mouseMovement.y -= playerController.GetCameraMovement().y * mouseSensitivityX * 100;// TODO UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
-		// _mouseMovement.y = Mathf.Clamp(_mouseMovement.y, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
+		// _mouseMovement.z -= playerController.GetCameraMovement().z * mouseSensitivityX * 100;// TODO UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
+		// _mouseMovement.z = Mathf.Clamp(_mouseMovement.z, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
 	}
 	
 	private void RotateScreenSplit() {

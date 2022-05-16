@@ -15,7 +15,7 @@ public class AttackNode : Node
 
     private bool isShooting = true;
     private float x;
-    private float y;
+    //private float z;
 
     private GameObject currentBullet;
 
@@ -81,10 +81,10 @@ public class AttackNode : Node
 
         //Calculate spread
         x = Random.Range(-spread, spread);
-        y = Random.Range(-spread, spread);
+        //z = Random.Range(-spread, spread);
 
         //Calculate direction 
-        directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+        directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
         currentBullet = Instantiate(AIData.Instance.getBossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);

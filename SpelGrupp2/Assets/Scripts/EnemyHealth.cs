@@ -7,6 +7,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
+    [SerializeField] private float hitForce;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -47,6 +48,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     public GameObject GetFirePoint() {
         return firePoint;
     }
+
 
 
     public void Die() {
