@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/MeleeAttack")]
-public class MeleeAttackNode : Node
-{
+public class MeleeAttackNode : Node {
     [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float attackCoolDown = 1.0f;
     [SerializeField] private float damage = 5.0f;
@@ -23,8 +22,7 @@ public class MeleeAttackNode : Node
 
     Quaternion rotation;
 
-    public override NodeState Evaluate()
-    {
+    public override NodeState Evaluate() {
         //Find Closest Player
         closestTarget = agent.ClosestPlayer + Vector3.up;
         relativePos = closestTarget - agent.transform.position;
@@ -35,9 +33,8 @@ public class MeleeAttackNode : Node
                                                             rotation, Time.deltaTime * turnSpeed);
         agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
 
-        if (isAttacking && CheckIfCoverIsValid() == false)
-        {
-            agent.IsStopped = true;
+        if (isAttacking && CheckIfCoverIsValid() == false) {
+            //agent.IsStopped = true;
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
             NodeState = NodeState.RUNNING;
@@ -48,8 +45,7 @@ public class MeleeAttackNode : Node
         return NodeState;
 
     }
-    public IEnumerator AttackDelay()
-    {
+    public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
@@ -58,25 +54,20 @@ public class MeleeAttackNode : Node
     }
 
 
-    void Attack()
-    {
+    void Attack() {
         CheckForPlayers();
 
     }
 
-    private void CheckForPlayers()
-    {
+    private void CheckForPlayers() {
         //Check with a overlapsphere what colliders are in the area
         colliders = Physics.OverlapSphere(agent.transform.position, 1.5f, whatAreTargets);
-        foreach (Collider coll in colliders)
-        {
-            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject"))
-            {
+        foreach (Collider coll in colliders) {
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject")) {
                 damageable = coll.transform.GetComponent<IDamageable>();
                 Debug.Log("MeleeAttack");
 
-                if (damageable != null)
-                {
+                if (damageable != null) {
                     damageable.TakeDamage(damage);
 
                 }
@@ -84,18 +75,15 @@ public class MeleeAttackNode : Node
             }
         }
     }
-    bool CheckIfCoverIsValid()
-    {
+    bool CheckIfCoverIsValid() {
         //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
 
         // Create the ray to use
         Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
         //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f))
-        {
+        if (Physics.Raycast(ray, out checkCover, 30.0f)) {
             //Check if that collider is the player
-            if (checkCover.collider.gameObject.CompareTag("Player"))
-            {
+            if (checkCover.collider.gameObject.CompareTag("Player")) {
                 //There is no cover
                 return false;
             }

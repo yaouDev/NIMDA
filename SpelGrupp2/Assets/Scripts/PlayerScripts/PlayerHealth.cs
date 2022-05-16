@@ -29,7 +29,7 @@ namespace CallbackSystem
         }
         private void Start()
         {
-            batteryCount = 2;
+            batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
@@ -85,6 +85,9 @@ namespace CallbackSystem
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
+
+            AudioController ac = AudioController.instance;
+            ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
         public void Respawn()

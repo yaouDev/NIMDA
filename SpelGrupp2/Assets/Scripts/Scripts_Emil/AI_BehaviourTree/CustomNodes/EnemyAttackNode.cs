@@ -11,11 +11,12 @@ public class EnemyAttackNode : Node
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
     [SerializeField] private float attackDelay = 1.0f;
+    [SerializeField] private LayerMask whatIsTarget;
     //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
     private float x;
-    private float y;
+    //private float z;
 
     private GameObject currentBullet;
 
@@ -45,7 +46,8 @@ public class EnemyAttackNode : Node
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
-            NodeState = NodeState.RUNNING;
+
+            NodeState = NodeState.SUCCESS;
             return NodeState;
         }
 
@@ -72,13 +74,13 @@ public class EnemyAttackNode : Node
 
         //Calculate spread
         x = Random.Range(-spread, spread);
-        y = Random.Range(-spread, spread);
+        //z = Random.Range(-spread, spread);
 
         //Calculate direction 
-        directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+        directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.getBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -104,7 +106,7 @@ public class EnemyAttackNode : Node
         // Create the ray to use
         Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
         //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f))
+        if (Physics.Raycast(ray, out checkCover, 30.0f, whatIsTarget))
         {
             //Check if that collider is the player
             if (checkCover.collider.gameObject.CompareTag("Player"))

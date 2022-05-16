@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1951519302668874774}
   - component: {fileID: 5338677766656367054}
   - component: {fileID: 1869013960398311591}
+  - component: {fileID: 8566484985649247833}
   m_Layer: 12
   m_Name: Sphere
   m_TagString: Untagged
@@ -28,7 +29,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.014286384, y: 0.44308424, z: -0.2997867}
   m_LocalScale: {x: 0.28269058, y: 0.28269058, z: 0.28269058}
-  m_Children: []
+  m_Children:
+  - {fileID: 1340332499659496241}
   m_Father: {fileID: 8232592279165226726}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -81,6 +83,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8566484985649247833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752931912940615760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2277014da5067f499758911ab845c5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2391426115168524892
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,11 +202,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3299691513183295365}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.42428637, y: 0.44308424, z: -0.24178666}
-  m_LocalScale: {x: 0.1966113, y: 0.19661132, z: 0.1966113}
+  m_LocalPosition: {x: -0.0070747817, y: 0, z: 0.20517142}
+  m_LocalScale: {x: 0.6955, y: 0.6955001, z: 0.6955}
   m_Children: []
-  m_Father: {fileID: 8232592279165226726}
-  m_RootOrder: 7
+  m_Father: {fileID: 4437836205198717465}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5591206865705338445
 MeshFilter:
@@ -483,6 +497,7 @@ MonoBehaviour:
   transitorRange: 100
   dropMin: 5
   dropMax: 9
+  enemySound: {fileID: 11400000, guid: de065afaf4c856945a048cfb82854c04, type: 2}
 --- !u!114 &195881032626777595
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -666,6 +681,7 @@ GameObject:
   - component: {fileID: 4437836205198717465}
   - component: {fileID: 3101270473218712450}
   - component: {fileID: 7198688348158376694}
+  - component: {fileID: 8369619695392978166}
   m_Layer: 12
   m_Name: Sphere (1)
   m_TagString: Untagged
@@ -683,7 +699,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.4222864, y: 0.44308424, z: -0.2997867}
   m_LocalScale: {x: 0.28269058, y: 0.28269058, z: 0.28269058}
-  m_Children: []
+  m_Children:
+  - {fileID: 926727413654203763}
   m_Father: {fileID: 8232592279165226726}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -736,6 +753,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8369619695392978166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4458578043973183165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2277014da5067f499758911ab845c5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5036797459765976680
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,11 +872,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5198459077306119860}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.017286375, y: 0.44308424, z: -0.24178666}
-  m_LocalScale: {x: 0.1929363, y: 0.1929363, z: 0.1929363}
+  m_LocalPosition: {x: -0.010612278, y: 0, z: 0.20517142}
+  m_LocalScale: {x: 0.6824999, y: 0.6824999, z: 0.6824999}
   m_Children: []
-  m_Father: {fileID: 8232592279165226726}
-  m_RootOrder: 6
+  m_Father: {fileID: 1951519302668874774}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8521929715946338374
 MeshFilter:
@@ -1042,8 +1071,6 @@ Transform:
   - {fileID: 2259929623737770108}
   - {fileID: 363903858333433606}
   - {fileID: 6502200543498553201}
-  - {fileID: 1340332499659496241}
-  - {fileID: 926727413654203763}
   m_Father: {fileID: 4102459122074449044}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

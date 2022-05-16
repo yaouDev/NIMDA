@@ -10,6 +10,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private LayerMask environmentLayerMask;
     [SerializeField] private ParticleSystem ricochetParticleSystem;
     [SerializeField] private float bulletSpeed = 150.0f;
+    [SerializeField] private float impactForce = 40f;
     private bool hit;
     private float destroyTime = 5.0f;
     private float timeAlive = 0.0f;
@@ -37,12 +38,21 @@ public class Bullet : MonoBehaviour
             {
                 Ricochet();
             }
+            else if (hitInfo.transform.tag == "BreakableObject")
+            {
+                BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
+                breakable.DropBoxLoot();
+            }
             else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
             {
                 hit = true;
                 // TODO [Patrik] Update to call to IHealth Interface, thus we can shoot each other too <3
                 IDamageable target = hitInfo.transform.GetComponent<IDamageable>();
                 DamageEnemy(target);
+                if (hitInfo.rigidbody != null)
+                {
+                    hitInfo.rigidbody.AddForce(-hitInfo.normal * impactForce);
+                }
                 Ricochet();
             }
         }

@@ -7,10 +7,9 @@ public class PulseAreaAttackNode : Node
 {
     [SerializeField] private float attackRange;
     [SerializeField] private float turnSpeed = 70.0f;
-    [SerializeField] private float attackCoolDown = 1.0f;
+    [SerializeField] private float attackCoolDown = 3.0f;
     [SerializeField] private float damage = 10.0f;
     [SerializeField] private LayerMask whatAreTargets;
-    [SerializeField] private ParticleSystem pulseParticles;
 
     private bool isAttacking = true;
 
@@ -61,8 +60,8 @@ public class PulseAreaAttackNode : Node
 
     void Attack()
     {
+        Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
-
     }
 
     private void CheckForPlayers()
@@ -77,8 +76,7 @@ public class PulseAreaAttackNode : Node
 
                 if (damageable != null) 
                 {
-                    damageable.TakeDamage(damage); 
-
+                    damageable.TakeDamage(damage);
                 }
 
             }

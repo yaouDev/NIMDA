@@ -222,21 +222,35 @@ public class DynamicGraph : MonoBehaviour {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
-        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2);
-        return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor };
+        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2),
+        firstTopDiagonalNeighbor = new Vector3(firstPossibleXNeighbor.x, node.y, firstPossibleZNeighbor.z),
+        secondTopDiagonalNeighbor = new Vector3(secondPossibleXNeighbor.x, node.y, firstPossibleZNeighbor.z),
+        firstBottomDiagnoalNeighbor = new Vector3(firstPossibleXNeighbor.x, node.y, secondPossibleZNeighbor.z),
+        secondBottomDiagonalNeighbor = new Vector3(secondPossibleXNeighbor.x, node.y, secondPossibleZNeighbor.z);
+        return new Vector3[] { firstPossibleXNeighbor, secondPossibleXNeighbor, firstPossibleZNeighbor, secondPossibleZNeighbor,
+        firstTopDiagonalNeighbor, secondTopDiagonalNeighbor, firstBottomDiagnoalNeighbor, secondBottomDiagonalNeighbor };
     }
 
     public Dictionary<Unity.Mathematics.float3, float> GetPossibleNeighborsKV(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
         firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
-        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2);
+        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2),
+        firstTopDiagonalNeighbor = new Vector3(firstPossibleXNeighbor.x, node.y, firstPossibleZNeighbor.z),
+        secondTopDiagonalNeighbor = new Vector3(secondPossibleXNeighbor.x, node.y, firstPossibleZNeighbor.z),
+        firstBottomDiagnoalNeighbor = new Vector3(firstPossibleXNeighbor.x, node.y, secondPossibleZNeighbor.z),
+        secondBottomDiagonalNeighbor = new Vector3(secondPossibleXNeighbor.x, node.y, secondPossibleZNeighbor.z);
+
 
         Dictionary<Unity.Mathematics.float3, float> tempNeighbors = new Dictionary<Unity.Mathematics.float3, float>();
         tempNeighbors.Add(firstPossibleXNeighbor, 1);
         tempNeighbors.Add(secondPossibleXNeighbor, 1);
         tempNeighbors.Add(firstPossibleZNeighbor, 1);
         tempNeighbors.Add(secondPossibleZNeighbor, 1);
+        tempNeighbors.Add(firstTopDiagonalNeighbor, 1);
+        tempNeighbors.Add(secondTopDiagonalNeighbor, 1);
+        tempNeighbors.Add(firstBottomDiagnoalNeighbor, 1);
+        tempNeighbors.Add(secondBottomDiagonalNeighbor, 1);
         return tempNeighbors;
     }
 
@@ -283,7 +297,6 @@ public class DynamicGraph : MonoBehaviour {
     public void CreateNeighbors(Vector3 node, Dictionary<Unity.Mathematics.float3, float> possibleNeighbors) {
         foreach (Vector3 pNeighbor in possibleNeighbors.Keys) {
             if (IsModuleLoaded(GetModulePosFromWorldPos(node)) && !masterGraph.ContainsKey(pNeighbor)) {
-
                 Insert(pNeighbor);
                 Connect(node, pNeighbor, possibleNeighbors[pNeighbor]);
             }

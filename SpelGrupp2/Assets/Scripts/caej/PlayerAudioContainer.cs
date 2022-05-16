@@ -16,4 +16,5 @@ public class PlayerAudioContainer : AudioContainer
     public EventReference fire2;
     public EventReference hurt;
     public EventReference dodge;
+    public EventReference death;
 }
