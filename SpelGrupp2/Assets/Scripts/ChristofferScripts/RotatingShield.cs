@@ -22,14 +22,14 @@ public class RotatingShield : MonoBehaviour
         //Spin the shield
         transform.Rotate(rotation * rotationSpeed * Time.deltaTime);
         //If health is under 700, spin faster
-        if (health < 700)
+        if (health < 1400)
         {
             transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);
             
         }
         else
         {
-            if (health < 400)
+            if (health < 800)
             {
                 gameObject.layer = LayerMask.NameToLayer("Bouncing");
                 transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);

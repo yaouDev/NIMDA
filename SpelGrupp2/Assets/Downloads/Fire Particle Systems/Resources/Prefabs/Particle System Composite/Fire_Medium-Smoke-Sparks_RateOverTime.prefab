@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 87023509468949713}
   - component: {fileID: 5342057730135514390}
   - component: {fileID: 8709367830593764767}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Fire_Medium-Smoke-Sparks_RateOverTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9195308507420792288}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 42.65, y: 2, z: 47.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1568139128878731328}
@@ -4886,6 +4886,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 87023509468949713}
     m_Modifications:
+    - target: {fileID: 984207891930175163, guid: 9981e4cec22644c10bd12f28ca683bae, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 1441652197001272519, guid: 9981e4cec22644c10bd12f28ca683bae, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -4934,6 +4938,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ParticleSystem_Fire_RateOverTime_Medium
       objectReference: {fileID: 0}
+    - target: {fileID: 7685568948667721206, guid: 9981e4cec22644c10bd12f28ca683bae, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7919878490494356873, guid: 9981e4cec22644c10bd12f28ca683bae, type: 3}
       propertyPath: m_SortingFudge
       value: -100
@@ -4959,6 +4967,10 @@ PrefabInstance:
     - target: {fileID: 4017941345898534900, guid: 3cf692a56f30a4c2ba321db57e966c0e, type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Smoke_RateOverTime
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017941345898534900, guid: 3cf692a56f30a4c2ba321db57e966c0e, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5290603011084889797, guid: 3cf692a56f30a4c2ba321db57e966c0e, type: 3}
       propertyPath: m_RootOrder
@@ -5065,6 +5077,10 @@ PrefabInstance:
     - target: {fileID: 4957288164747090111, guid: b80d6728ed796486a9794e8f98467142, type: 3}
       propertyPath: m_Name
       value: ParticleSystem_Sparks_RateOverTime
+      objectReference: {fileID: 0}
+    - target: {fileID: 4957288164747090111, guid: b80d6728ed796486a9794e8f98467142, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b80d6728ed796486a9794e8f98467142, type: 3}
