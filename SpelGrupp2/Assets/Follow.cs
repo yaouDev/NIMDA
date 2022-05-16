@@ -12,7 +12,7 @@ public class Follow : MonoBehaviour
 
     void Start()
     {
-        
+       
     }
 
     public void StartFollowing()
