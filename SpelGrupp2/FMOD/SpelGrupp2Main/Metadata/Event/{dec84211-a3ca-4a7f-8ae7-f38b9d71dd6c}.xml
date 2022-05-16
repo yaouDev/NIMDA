@@ -5,7 +5,7 @@
 			<value>cmbt_fire_laser001</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{ca00dd73-85cc-47ef-b5da-40e2244fd032}</destination>
@@ -155,6 +155,7 @@
 	<object class="MixerBusEffectChain" id="{0a3e6da8-afaf-454c-9378-55f613718031}">
 		<relationship name="effects">
 			<destination>{cca8b150-2486-48a2-9224-56f7f6f5c290}</destination>
+			<destination>{183a359c-cf96-4930-86eb-d18d955d4254}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{52b0b757-5c25-40f4-95e6-9542929027e9}" />
@@ -182,6 +183,7 @@
 	</object>
 	<object class="MixerBusPanner" id="{70993ad1-ca2a-4110-b77b-c69631171635}" />
 	<object class="MixerBusFader" id="{cca8b150-2486-48a2-9224-56f7f6f5c290}" />
+	<object class="SpatialiserEffect" id="{183a359c-cf96-4930-86eb-d18d955d4254}" />
 	<object class="AutomationCurve" id="{6831f56c-6af9-497d-996b-fd2e496131a9}">
 		<relationship name="parameter">
 			<destination>{b8893170-7e7e-4f23-a3bc-9b15bf2005dd}</destination>
