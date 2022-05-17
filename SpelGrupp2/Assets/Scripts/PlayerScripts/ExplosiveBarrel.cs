@@ -7,11 +7,10 @@ public class ExplosiveBarrel : MonoBehaviour, IDamageable
     [SerializeField] private float burnTime = 5f;
     [SerializeField] private float health = 50f;
     [SerializeField] private float damage = 10.0f;
-    [SerializeField] private GameObject fireparticles;
-    [SerializeField] private GameObject explosionParticles;
     [SerializeField] private MeshRenderer barrelMesh;
-    //[SerializeField] private Transform burnSpot;
+    [SerializeField] private Transform burnSpot;
     [SerializeField] private LayerMask whatAreTargets;
+    private ParticleSystem fire;
 
     private IDamageable damageable;
     private Collider[] colliders;
@@ -25,12 +24,13 @@ public class ExplosiveBarrel : MonoBehaviour, IDamageable
 
     private IEnumerator ExplosionSequence()
     {
-        fireparticles.transform.position = transform.position;
-        fireparticles.SetActive(true);
+        fire = Instantiate(AIData.Instance.FireParticles, burnSpot.transform.position, Quaternion.identity);
+        
         yield return new WaitForSeconds(burnTime);
-        fireparticles.SetActive(false);
+        fire.Stop();
         barrelMesh.enabled = false;
-        explosionParticles.SetActive(true);
+        Instantiate(AIData.Instance.PulseAttackParticles, transform.position, Quaternion.identity);
+        //explosionParticles.SetActive(true);
         colliders = Physics.OverlapSphere(transform.position, 4f, whatAreTargets);
         Debug.Log("PulseAttack");
         foreach (Collider coll in colliders)
@@ -54,7 +54,8 @@ public class ExplosiveBarrel : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if(health <= 0)
+        Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
+        if (health <= 0)
         {
             Die();
         }
