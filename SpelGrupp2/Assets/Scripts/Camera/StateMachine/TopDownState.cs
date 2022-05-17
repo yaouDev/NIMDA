@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Rendering.LWRP;
 using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Create CameraState/CameraTopDownState")]
@@ -30,6 +32,7 @@ public class TopDownState : CameraState
 	private Vector3 stencilPlanePosition;
 	private Vector3 depthMaskPlanePos;
 	private readonly Quaternion _ninetyDegrees = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+	private readonly Quaternion fourtyFiveDegrees = quaternion.Euler(0.0f, 45.0f, 0.0f);
 
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
@@ -47,93 +50,53 @@ public class TopDownState : CameraState
 	private float smoothDampMaxVal = 1.0f;
 	private Vector3 smoothDampCurrentVelocity;
 	private RaycastHit[] hits;
+	private float lateralSplitMagnitude = 4.5f;
 
-	public override void Run() {
+	public override void Run()
+	{
 		Input();
 		
-		// both cameras have the same rotation (fixed?)
+		// both cameras have the same rotation
 		CameraTransform.rotation = Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f);
 
 		// the split is rotating freely between the players
 		RotateScreenSplit();
 		
+		// TODO in progress different splitMagnitude x/y axis on screen
+		float dynamicSplitMagnitude;
+		// change magnitude of splitMagnitude depending on where
+		
+		//Vector3 dist = Vector3.ProjectOnPlane( fourtyFiveDegrees * (PlayerOther.position - PlayerThis.position), Vector3.ProjectOnPlane(CameraTransform.rotation.eulerAngles, Vector3.up));
+		Vector3 dist = Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position);
+		dist.z *= 2.0f;
+		
+		float inv = Mathf.InverseLerp(0.0f, 9.0f, Mathf.Abs(dist.z));
+
+		dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, inv);
+		//Debug.Log($"{inv} {dist.z} {dynamicSplitMagnitude}");
+		
 		// both cameras follow the centroid point between the players, split when necessary
 		Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
-		centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, splitMagnitude );
-		
-		
-		// TODO Camera zoom hack
-		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / splitMagnitude;
+		Debug.DrawRay(PlayerThis.position + centroidOffsetPosition, Vector3.up * 10.0f);
+		centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, dynamicSplitMagnitude);
+
+		// TODO Camera zoom
+		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / dynamicSplitMagnitude;
 		topDownOffset.z = Mathf.Lerp(-12.0f, -16.0f, distanceFraction);
-		//
-		
-		
-		
-		// // TODO hack
-
-		Vector3 offsetDirection = -CameraTransform.forward * 8;//((abovePlayer + thisTransform.position) - Camera.transform.position);
-		hits = new RaycastHit[10];
-		
-		Physics.SphereCastNonAlloc(
-			PlayerThis.position,
-			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
-			2.0f,
-			offsetDirection.normalized,
-			hits,
-			//out  RaycastHit  hit, 
-			25.0f, 
-			collisionMask);
-		
-		Debug.DrawRay(
-			//centroidOffsetPosition + thisTransform.position + abovePlayer,
-			PlayerThis.position,
-			offsetDirection, 
-			Color.magenta);
-		
-		//Vector3 offset;
-		for (int i = 0; i < hits.Length; i++)
-		{
-			if (hits[i].collider)
-			{
-				TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
-				if (tf != null)
-				{
-					tf.FadeOut();
-				}
-				//offset = topDownOffset.normalized * hit.distance;
-			}
-		}
-
-		// else
-		// {
-		// 	offset = topDownOffset;
-		// }
-		
-		//smoothDollyTime = hit.collider ? smoothDampMinVal : smoothDampMaxVal;
-		//lerpOffset = Vector3.SmoothDamp(lerpOffset, offset, ref smoothDampCurrentVelocity, smoothDollyTime);
-		
-		//CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * lerpOffset;
-		
-		// // TODO hack
-		//
-		
-		
-		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
-
-		
-		
-		
-		LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude);
 
 		FadeObstacles();
 		
+		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
+		
+		LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
+
 		//if (Vector3.Distance(PlayerThis.position, PlayerOther.position) > thirdPersonSplitDistance)
 		//	stateMachine.TransitionTo<TransitionToSplitState>();
 	}
 
-	private void LerpSplitScreenLineWidth(float offsetMagnitude) {
+	private void LerpSplitScreenLineWidth(float offsetMagnitude, float dynamicSplitMagnitude) {
 
-		float t = Remap(offsetMagnitude, splitMagnitude, splitMagnitude + 1.0f, 0.0f, 1.0f); 
+		float t = Remap(offsetMagnitude, dynamicSplitMagnitude, dynamicSplitMagnitude + 1.0f, 0.0f, 1.0f); 
 		float lineWidth = Mathf.Lerp(-.5f, -.497f, t);
 		depthMaskPlanePos.x = lineWidth;
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
@@ -154,13 +117,38 @@ public class TopDownState : CameraState
 	}
 
 	private void FadeObstacles() {
-		// TODO fade objects in front of camera
-		// Physics.SphereCast(_abovePlayer, 
-		// 	_cameraCollisionRadius, 
-		// 	_offsetDirection.normalized, 
-		// 	out _hit, 
-		// 	_offsetDirection.magnitude, 
-		// 	collisionMask);
+		Vector3 offsetDirection = -CameraTransform.forward;
+		hits = new RaycastHit[10];
+		
+		Physics.SphereCastNonAlloc(
+			PlayerThis.position,
+			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
+			2.0f,
+			offsetDirection.normalized,
+			hits,
+			//out  RaycastHit  hit, 
+			25.0f, 
+			collisionMask);
+		
+		Debug.DrawRay(
+			//centroidOffsetPosition + thisTransform.position + abovePlayer,
+			PlayerThis.position,
+			offsetDirection * 8.0f, 
+			Color.magenta);
+		
+		//Vector3 offset;
+		for (int i = 0; i < hits.Length; i++)
+		{
+			if (hits[i].collider)
+			{
+				TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
+				if (tf != null)
+				{
+					tf.FadeOut();
+				}
+				//offset = topDownOffset.normalized * hit.distance;
+			}
+		}
 	}
 
 	public override void Exit() {
