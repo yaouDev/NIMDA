@@ -4,8 +4,23 @@ using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour
 {
+    [Header("What to Spawn")]
     [SerializeField] private GameObject[] spawnThis;
-    [SerializeField] private int maxSpawnCount;
+    [Header("Normal Spawn")]
+    [SerializeField] private int maxSpawnCount = 25;
+    [SerializeField] private float spawnCooldown = 5;
+    [SerializeField] private int spawnDistanceMax = 35;
+    [SerializeField] private int spawnDistanceMin = 5;
+    [Header("Night Spawn")]
+    [SerializeField] private int nightMaxSpawnCount = 30;
+    [SerializeField] private float nightSpawnCooldown = 0.1f;
+    [SerializeField] private int nightSpawnDistanceMax = 35;
+    [SerializeField] private int nightSpawnDistanceMin = 5;
+    [Header("Generator Spawn")]
+    [SerializeField] private int genMaxSpawnCount = 40;
+    [SerializeField] private float genSpawnCooldown = 0.1f;
+    [SerializeField] private int genSpawnDistanceMax = 50;
+    [SerializeField] private int genSpawnDistanceMin = 15;
     private int spawnCount;
     private GameObject[] players;
     private GameObject[] spawnLocations;
@@ -14,9 +29,6 @@ public class EnemySpawnController : MonoBehaviour
     private GameObject activeSpawner;
     private Transform spawnPos;
     private DayNightSystem dayNightSystem;
-    [SerializeField] private float spawnCooldown;
-    [SerializeField] private int spawnDistanceMax;
-    [SerializeField] private int spawnDistanceMin;
 
     // Start is called before the first frame update
     void Start()
@@ -26,11 +38,14 @@ public class EnemySpawnController : MonoBehaviour
         players = GameObject.FindGameObjectsWithTag("Player");
         StartCoroutine(SpawnObject());
     }
-
+    private void FixedUpdate()
+    {
+        IsNight();
+    }
     // Update is called once per frame
     void Update()
     {
-        IsNight();
+        
     }
 
     IEnumerator SpawnObject()
@@ -75,10 +90,10 @@ public class EnemySpawnController : MonoBehaviour
     {
         if (on)
         {
-            spawnCooldown = 3;
-            maxSpawnCount = 40;
-            spawnDistanceMax = 50;
-            spawnDistanceMin = 15;
+            spawnCooldown = genSpawnCooldown;
+            maxSpawnCount = genMaxSpawnCount;
+            spawnDistanceMax = genSpawnDistanceMax;
+            spawnDistanceMin = genSpawnDistanceMin;
         }
         if (!on)
         {
@@ -92,10 +107,10 @@ public class EnemySpawnController : MonoBehaviour
     {
         if (!dayNightSystem.Isday)
         {
-            spawnCooldown = 3;
-            maxSpawnCount = 30;
-            spawnDistanceMax = 50;
-            spawnDistanceMin = 15;
+            spawnCooldown = nightSpawnCooldown;
+            maxSpawnCount = nightMaxSpawnCount;
+            spawnDistanceMax = nightSpawnDistanceMax;
+            spawnDistanceMin = nightSpawnDistanceMin;
         } else
         {
             spawnCooldown = 5;
