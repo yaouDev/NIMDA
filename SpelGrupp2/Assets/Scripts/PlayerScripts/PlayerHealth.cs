@@ -63,7 +63,7 @@ namespace CallbackSystem
             {
                 currHealth = maxHealth;
                 batteryCount--;
-                UpdateHealthUI();
+                UpdateHealthUI(true);
             }
             if (currHealth <= 0f && batteryCount == 0) {
                 Die();
@@ -104,7 +104,7 @@ namespace CallbackSystem
             UpdateHealthUI();
         }
 
-        private void UpdateHealthUI()
+        private void UpdateHealthUI(bool batteryDecreased = false)
         {
             if (batteryCount < 1)
             {
@@ -113,6 +113,7 @@ namespace CallbackSystem
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             healthEvent.batteries = batteryCount;
+            healthEvent.batteryDecreased = batteryDecreased;
             EventSystem.Current.FireEvent(healthEvent);
         }
 
