@@ -57,44 +57,53 @@ public class TopDownState : CameraState
 	private RaycastHit[] hits;
 	private float lateralSplitMagnitude = 4.5f;
 
-	private float trauma = 1;
+	private static float s;
+	private static float sharedTrauma;
+	private float trauma;
 	private float easedTrauma;
-	private float cameraShakeFalloffSpeed = 3.0f;
+	private float cameraShakeFalloffSpeed = 2.0f;
 	private float shakeSpeed = 10.0f;
 	private float vibrationSpeed = 20.0f;
+	private float rotationFactor = 5.0f;
 
-	public void ShakeCamera(float magnitude)
-	{
-		trauma += magnitude;
-	}
+	public void ShakeCamera(float magnitude) => trauma += magnitude;
 
-	
-	
-	
 	private void CameraShake(float distanceFraction)
 	{
-		trauma = .1f;
-		
-		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2; // perlin within Range(-1, 1)
-		perlinNoiseX += (Mathf.PerlinNoise(.25f, Time.time * vibrationSpeed) - .5f) * .5f; // perlin noise within Range(-.25, .25)
-		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2; // perlin within Range(-1, 1)
-		perlinNoiseY += (Mathf.PerlinNoise(.75f, Time.time * vibrationSpeed) - .5f) * .5f; // perlin noise within Range(-.25, .25)
-
-
-		trauma = Mathf.Clamp01(trauma -= Time.deltaTime * cameraShakeFalloffSpeed);
-		easedTrauma = Ease.EaseInExpo(trauma);
-		cameraShakeOffset = CameraTransform.rotation * new Vector3(perlinNoiseX * easedTrauma, perlinNoiseY * easedTrauma, 0.0f);
-
-		// TODO Lerp sharedCameraShakeOffset and cameraShakeOffset with distance instead
-		// if same screen - share camerashake
-		if (distanceFraction + Mathf.Epsilon <= 1.0f)
+		// Debug Timer in place of event
+		s += Time.deltaTime;
+		if (s >= 4.0f)
 		{
-			sharedCameraShakeOffset = cameraShakeOffset;
+			s = 0;
+			trauma = 2f;
 		}
+		
+		// perlin within Range(-1, 1)
+		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2;
+		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2;
+		// add perlin within Range(-.25, .25)
+		perlinNoiseX += (Mathf.PerlinNoise(.25f, Time.time * vibrationSpeed) - .5f) * .5f;
+		perlinNoiseY += (Mathf.PerlinNoise(.75f, Time.time * vibrationSpeed) - .5f) * .5f;
 
-		cameraShakeOffset = cameraShakeOffset.sqrMagnitude > sharedCameraShakeOffset.sqrMagnitude
-			? cameraShakeOffset
-			: sharedCameraShakeOffset; //Vector3.Max(cameraShakeOffset, sharedCameraShakeOffset);
+		// decrease trauma over time
+		trauma = Mathf.Clamp(trauma -= Time.deltaTime * cameraShakeFalloffSpeed, 0.0f, 1.0f);
+		sharedTrauma = Mathf.Clamp(sharedTrauma -= Time.deltaTime * cameraShakeFalloffSpeed, 0.0f, 1.0f);
+		
+		// share screenshake if players on same screen
+		if (distanceFraction <= 1.0f && trauma > sharedTrauma) { sharedTrauma = trauma; }
+		trauma = Mathf.Max(trauma, sharedTrauma);
+
+		easedTrauma = Ease.EaseInExpo(trauma);
+		
+		cameraShakeOffset = 
+			CameraTransform.rotation * 
+			new Vector3(perlinNoiseX * easedTrauma, perlinNoiseY * easedTrauma, 0.0f);
+		
+		CameraTransform.rotation *= 
+			Quaternion.Euler(
+				perlinNoiseX * easedTrauma * rotationFactor, 
+				perlinNoiseY * easedTrauma * rotationFactor, 
+				Mathf.Lerp(perlinNoiseX, perlinNoiseY, .5f) * easedTrauma * rotationFactor);
 	}
 
 	public override void Run()
@@ -166,7 +175,7 @@ public class TopDownState : CameraState
 		hits = new RaycastHit[10];
 		
 		Physics.SphereCastNonAlloc(
-			PlayerThis.position,
+			PlayerThis.position + offsetDirection * 6,
 			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
 			2.0f,
 			offsetDirection.normalized,
@@ -184,14 +193,18 @@ public class TopDownState : CameraState
 		//Vector3 offset;
 		for (int i = 0; i < hits.Length; i++)
 		{
+			
 			if (hits[i].collider)
 			{
+				float dot = Vector3.Dot(
+					(PlayerThis.position - hits[i].transform.position).normalized,
+					new Vector3(1.0f, 0.0f, 1.0f));
+				
 				TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
-				if (tf != null)
+				if (tf != null && dot > 0)
 				{
 					tf.FadeOut();
 				}
-				//offset = topDownOffset.normalized * hit.distance;
 			}
 		}
 	}
