@@ -20,6 +20,7 @@ namespace CallbackSystem
         private HealthUpdateEvent healthEvent;
         private ActivationUIEvent UIEvent;
         private bool started = false;
+        private UIMenus uiMenus;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake()
@@ -33,6 +34,7 @@ namespace CallbackSystem
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
+            uiMenus = GameObject.FindObjectOfType<UIMenus>();
         }
         private void Update()
         {
@@ -88,6 +90,7 @@ namespace CallbackSystem
 
             AudioController ac = AudioController.instance;
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
+            uiMenus.DeadPlayers(1);
         }
 
         public void Respawn()
@@ -102,6 +105,7 @@ namespace CallbackSystem
             attackAbility.Respawn();
             movement.Respawn();
             UpdateHealthUI();
+            uiMenus.DeadPlayers(-1);
         }
 
         private void UpdateHealthUI()
@@ -131,6 +135,11 @@ namespace CallbackSystem
         public int ReturnBatteries()
         {
             return batteryCount;
+        }
+
+        public int ReturnMaxBatteries()
+        {
+            return maxBatteryCount;
         }
     }
 }
