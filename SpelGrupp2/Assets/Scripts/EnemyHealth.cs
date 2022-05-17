@@ -45,7 +45,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
             Die();
         } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
-
         }
     }
     public float GetCurrentHealth() {

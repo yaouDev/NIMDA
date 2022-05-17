@@ -385,10 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0720211dc6baf4995b21d5da3a91d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropList:
-  - {fileID: 1773718070719246588, guid: 33b6c439e1ddb674caec9d9da8ad1cf7, type: 3}
-  - {fileID: 479024149273734875, guid: 6c0b0d07344f8fb4c866b85f19373f5d, type: 3}
-  - {fileID: 8077681747453517423, guid: 2ab2e71a5e48ec0408f0913243f6a614, type: 3}
+  dropList: []
   healthRestoreRate: 1
   firePoint: {fileID: 9218188913738382862}
   fullHealth: 50
@@ -396,9 +393,9 @@ MonoBehaviour:
   ironRange: 65
   copperRange: 90
   transitorRange: 100
-  dropMin: 5
-  dropMax: 9
-  enemySound: {fileID: 0}
+  dropMin: 0
+  dropMax: 0
+  enemySound: {fileID: 11400000, guid: de065afaf4c856945a048cfb82854c04, type: 2}
 --- !u!114 &1907723285357056591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,7 +553,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8146809650001539842
 Rigidbody:
