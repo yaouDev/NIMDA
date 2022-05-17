@@ -164,7 +164,7 @@ public class AI_Controller : MonoBehaviour {
         MoveAwayFromBlockedNode();
     }
 
-    // Should stop most of the weird cases where the enemies get stuck
+    // Should stop most of the weird cases where the spawnThis get stuck
     private void MoveAwayFromBlockedNode() {
         float jumpHeight = 0.1f;
         bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
@@ -196,7 +196,7 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
-    // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
+    // causes FPS to tank with many spawnThis, sometimes. Needs a better solution. moves spawnThis away form each other.
     private void OnTriggerStay(Collider other) {
         if (other != null && other.tag == "Enemy") {
             Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
@@ -239,7 +239,7 @@ public class AI_Controller : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
-            // ensure enemies stay at their max speed
+            // ensure spawnThis stay at their max speed
             Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, speed);
         }
     }

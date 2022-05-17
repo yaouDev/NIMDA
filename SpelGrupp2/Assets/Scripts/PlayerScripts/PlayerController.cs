@@ -8,6 +8,10 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
+    //cc animation
+    public Animator anim;
+
+
     private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
     private GameObject[] players;
     private GameObject otherPlayer;
@@ -111,6 +115,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+
         //crafting = new Crafting();
         _jumpVector = new Vector3(0.0f, _jumpForce);
         _defaultGravity = -Physics.gravity.y;
@@ -125,11 +130,24 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
         if (alive)
         {
+
             Grounded();
             ApplyJoystickMovement();
             stateMachine.Run();
+
+            if (anim != null)
+            {
+                Vector3 rot = transform.rotation.eulerAngles;
+                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) *_velocity;
+
+                anim.SetFloat("Speed", rotatedVelocity.x);
+                anim.SetFloat("Direction", rotatedVelocity.z);
+
+                //print(_inputMovement.x);
+            }
         }
     }
 
@@ -171,6 +189,18 @@ public class PlayerController : MonoBehaviour
         _inputMovement.z = joyStickLeftInput.y;
 
         if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
+
+
+       /* if (anim != null)
+        {
+            Vector3 rotatedInputMovement;
+
+
+            anim.SetFloat("Speed", _inputMovement.x);
+            anim.SetFloat("Direction", _inputMovement.z);
+
+            //print(_inputMovement.x);
+        }*/
         _inputMovement = InputToCameraProjection(_inputMovement);
         _inputMovement *= _acceleration * Time.deltaTime;
     }
