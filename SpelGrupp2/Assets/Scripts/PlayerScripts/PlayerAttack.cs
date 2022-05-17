@@ -81,12 +81,12 @@ namespace CallbackSystem {
                 weaponCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
-
-            if (ASCounter <= 1f)
+            /*
+            if (ASCounter <= 0.1f)
                 ASCounter += Time.deltaTime;
             else
                 canShootGun = true;
-                
+            */    
 
             if (isAlive) {
                 AnimateLasers();
@@ -97,30 +97,34 @@ namespace CallbackSystem {
 
         public void Fire(InputAction.CallbackContext context) {
             if (!isAlive) return;
-            if (context.performed && !recentlyFired) {
+            if (context.started && !recentlyFired) {
                 if (laserWeapon && canShootLaser) {
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
                 } else if (!laserWeapon) {
-                    ProjectileFire(context);
+                    FireProjectileWeapon();
                 }
                 recentlyFired = true;
                 weaponCooldown = 0f;
             }
         }
-
+        /*
         private void ProjectileFire(InputAction.CallbackContext context)
         {
-            while (automaticFireUpgraded && !context.canceled)
+            int debugInt = 0;
+            while (automaticFireUpgraded && !context.canceled && debugInt != 300)
             {
                 if (canShootGun)
-                {
+                { 
                     FireProjectileWeapon();
                     canShootGun = false;
                     ASCounter = 0f;
                 }
+                debugInt++;
+                Debug.Log("debugInt reached 300");
             }
         }
+        */
 
         public void WeaponSwap(InputAction.CallbackContext context) {
             if (context.performed) {

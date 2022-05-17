@@ -8,6 +8,7 @@ namespace CallbackSystem
     {
         private PlayerHealth playerHealth;
         private PlayerAttack playerAttack;
+        [SerializeField] private GameObject parent; 
         private enum PickUp
         {
             Iron, Copper, Transistor, Bullet, Battery
@@ -23,7 +24,7 @@ namespace CallbackSystem
                 playerHealth = other.GetComponent<PlayerHealth>();
                 Crafting crafting = other.gameObject.GetComponent<Crafting>();
                 pickUpDrop(crafting);
-                Destroy(gameObject);
+                Destroy(parent);
             }
         }
         private void pickUpDrop(Crafting crafting)
