@@ -320,13 +320,18 @@ public class AI_Controller : MonoBehaviour {
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
     }
 
-    private void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
+    public void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
         if (!isBoss) {
             Health.DieNoLoot();
         }
     }
 
     private void OnDestroy() {
-        CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
+        try{
+            CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
+        } catch(System.Exception){
+            // only so it doesn't spam nullreference on exit playmode
+        }
+        
     }
 }
