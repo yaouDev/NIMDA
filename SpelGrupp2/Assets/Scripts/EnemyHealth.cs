@@ -38,7 +38,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
             Die();
         } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
-
         }
     }
     public float GetCurrentHealth() {
@@ -58,6 +57,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(enemySound.death, gameObject);
         Destroy(gameObject);
+        Debug.Log("Dör");
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);

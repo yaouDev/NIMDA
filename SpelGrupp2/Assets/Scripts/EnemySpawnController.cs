@@ -90,7 +90,7 @@ public class EnemySpawnController : MonoBehaviour
                 spawnPos = activeSpawner.transform;
                 for (int i = 0; i < spawnThisMany; i++)
                 {
-                    Instantiate(spawnThis[Random.Range(0, 2)], spawnPos.position, spawnPos.rotation);
+                    Instantiate(spawnThis[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }

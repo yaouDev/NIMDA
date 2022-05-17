@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class EnemyShield : MonoBehaviour, IDamageable
 {
-    [SerializeField]private float fullHealth = 50;
+    [SerializeField] private float fullHealth = 50;
     private float currentHealth;
+
+    public float CurrentHealth 
+    {
+        get { return currentHealth; }
+    }
 
     private void Awake()
     {
