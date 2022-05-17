@@ -10,7 +10,7 @@ using Unity.Burst;
 public class DynamicGraph : MonoBehaviour {
     private int numberOfNodes;
     [Header("World attributes")]
-    [SerializeField] private float nodeHalfextent;
+    [SerializeField] private float nodeHalfextent, groundLevel = 1.6f;
     [SerializeField] private int moduleSize = 50;
     [SerializeField] private LayerMask colliderMask;
     // private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
@@ -21,6 +21,7 @@ public class DynamicGraph : MonoBehaviour {
     private Queue<Vector3> nodesToRemove;
     [SerializeField] private bool drawGrid = false;
     [SerializeField] private bool usePlayTestModules = true;
+
 
     void Start() {
         masterGraph = new ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>>();
@@ -176,7 +177,7 @@ public class DynamicGraph : MonoBehaviour {
 
     public Vector3 GetClosestNode(Vector3 pos) {
         Vector2Int modulePos = GetModulePosFromWorldPos(pos);
-        Vector3 localWorldPos = new Vector3(0, 1.6f, 0);
+        Vector3 localWorldPos = new Vector3(0, groundLevel, 0);
         if (modulePos.x == 0) localWorldPos.x = modulePos.x;
         else localWorldPos.x = (modulePos.x * moduleSize);
         if (modulePos.y == 0) localWorldPos.z = modulePos.y;
@@ -314,7 +315,7 @@ public class DynamicGraph : MonoBehaviour {
     }
 
     void MarkNodesForDeletion(Vector2Int module) {
-        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2), 1.6f, module.y + (moduleSize / 2));
+        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2), groundLevel, module.y + (moduleSize / 2));
         float leftMostX = worldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = worldPos.z + (moduleSize / 2) - nodeHalfextent;
         float rightMostX = worldPos.x + (moduleSize / 2) - nodeHalfextent;
@@ -357,7 +358,7 @@ public class DynamicGraph : MonoBehaviour {
     }
 
     private void AddBlockedNodes(Vector2Int module) {
-        Vector3 localWorldPos = new Vector3(0, 1.6f, 0);
+        Vector3 localWorldPos = new Vector3(0, groundLevel, 0);
         if (module.x == 0) localWorldPos.x = module.x;
         else localWorldPos.x = (module.x * moduleSize);
         if (module.y == 0) localWorldPos.z = module.y;

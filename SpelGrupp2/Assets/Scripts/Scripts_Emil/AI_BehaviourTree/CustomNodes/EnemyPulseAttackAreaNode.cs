@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyPulseAttack")]
-public class EnemyPulseAttackAreaNode : Node
-{
-    [SerializeField] private float turnSpeed = 70.0f;
+public class EnemyPulseAttackAreaNode : Node {
     [SerializeField] private float attackCoolDown = 1.0f;
     [SerializeField] private float damage = 50.0f;
     [SerializeField] private LayerMask whatAreTargets;
@@ -18,26 +16,9 @@ public class EnemyPulseAttackAreaNode : Node
 
     Collider[] colliders;
 
-    Vector3 closestTarget;
-    Vector3 relativePos;
+    public override NodeState Evaluate() {
 
-    RaycastHit checkCover;
-
-    Quaternion rotation;
-
-    public override NodeState Evaluate()
-    {
-        //Find Closest Player
-        closestTarget = agent.ClosestPlayer;
-        relativePos = closestTarget - agent.transform.position;
-
-        // Rotate the Enemy towards the player
-        rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-        agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
-                                                            rotation, Time.deltaTime * turnSpeed);
-
-        if (isAttacking && CheckIfCoverIsValid() == false)
-        {
+        if (isAttacking && agent.TargetInSight) {
             agent.IsStopped = true;
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
@@ -49,8 +30,7 @@ public class EnemyPulseAttackAreaNode : Node
         return NodeState;
 
     }
-    public IEnumerator AttackDelay()
-    {
+    public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
@@ -59,33 +39,27 @@ public class EnemyPulseAttackAreaNode : Node
     }
 
 
-    void Attack()
-    {
+    void Attack() {
         //Particklesystem
         Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
 
     }
 
-    private void CheckForPlayers()
-    {
+    private void CheckForPlayers() {
         colliders = Physics.OverlapSphere(agent.Position, explosionRange, whatAreTargets);
         Debug.Log("PulseAttack");
-        foreach (Collider coll in colliders)
-        {
-            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy"))
-            {
+        foreach (Collider coll in colliders) {
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy")) {
                 damageable = coll.transform.GetComponent<IDamageable>();
 
-                if (damageable != null)
-                {
+                if (damageable != null) {
                     //damage
                     damageable.TakeDamage(damage);
 
                     //ExplosionForce
                     Rigidbody rbTemp = coll.GetComponent<Rigidbody>();
-                    if (rbTemp != null)
-                    {
+                    if (rbTemp != null) {
                         rbTemp.AddExplosionForce(explosionForce, agent.Position, explosionRange);
                     }
 
@@ -96,26 +70,4 @@ public class EnemyPulseAttackAreaNode : Node
             }
         }
     }
-
-
-
-    bool CheckIfCoverIsValid()
-    {
-        //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
-
-        // Create the ray to use
-        Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
-        //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f))
-        {
-            //Check if that collider is the player
-            if (checkCover.collider.gameObject.CompareTag("Player"))
-            {
-                //There is no cover
-                return false;
-            }
-        }
-        return true;
-    }
-
 }

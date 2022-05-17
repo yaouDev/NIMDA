@@ -670,6 +670,7 @@ MonoBehaviour:
   healthRestoreRate: 1
   firePoint: {fileID: 1477424552870054217}
   fullHealth: 100
+  hitForce: 0
   ironRange: 65
   copperRange: 90
   transitorRange: 100
@@ -692,6 +693,9 @@ MonoBehaviour:
   timeBetweenPathUpdates: 1.5
   critRange: 0
   allowedTargetDiscrepancy: 5
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 3328
   drawPath: 0
   isBoss: 0
   isStopped: 1

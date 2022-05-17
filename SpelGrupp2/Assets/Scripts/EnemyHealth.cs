@@ -28,6 +28,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
         get { return currentHealth; }
         set { currentHealth = Mathf.Clamp(value, 0, fullHealth); }
     }
+
+    public float CurrentHealthPercentage {
+        get {
+            return currentHealth / fullHealth;
+        }
+    }
+
     private void Awake() {
         CurrentHealth = fullHealth;
         enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();

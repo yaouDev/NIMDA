@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CallbackSystem
-{
-    public class PlayerHealth : MonoBehaviour, IDamageable
-    {
+namespace CallbackSystem {
+    public class PlayerHealth : MonoBehaviour, IDamageable {
         [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 5.0f;
         [SerializeField] private bool isPlayerOne;
@@ -22,45 +20,36 @@ namespace CallbackSystem
         private bool started = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
-        private void Awake()
-        {
+        private void Awake() {
             healthEvent = new HealthUpdateEvent();
             UIEvent = new ActivationUIEvent();
         }
-        private void Start()
-        {
+        private void Start() {
             batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
         }
-        private void Update()
-        {
-            if (!started)
-            {
+        private void Update() {
+            if (!started) {
                 UpdateHealthUI();
                 started = true;
             }
-            if (alive && currHealth != maxHealth)
-            {
+            if (alive && currHealth != maxHealth) {
                 UpdateHealthUI();
                 respawnTimer = 0.0f;
-            }
-            else { 
+            } else {
                 respawnTimer += Time.deltaTime;
             }
 
-            if (!alive && respawnTimer > respawnTime)
-            {
+            if (!alive && respawnTimer > respawnTime) {
                 Respawn();
             }
         }
 
-        public void TakeDamage(float damage)
-        {
+        public void TakeDamage(float damage) {
             currHealth -= damage;
-            if(currHealth <= float.Epsilon && batteryCount > 0)
-            {
+            if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
                 UpdateHealthUI();
@@ -70,14 +59,16 @@ namespace CallbackSystem
             }
         }
 
-        public void IncreaseBattery()
-        {
+        public bool Alive {
+            get { return alive; }
+        }
+
+        public void IncreaseBattery() {
             batteryCount++;
             UpdateHealthUI();
         }
 
-        public void Die()
-        {
+        public void Die() {
             alive = false;
             attackAbility.Die();
             movement.Die();
@@ -90,8 +81,7 @@ namespace CallbackSystem
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
-        public void Respawn()
-        {
+        public void Respawn() {
             alive = true;
             currHealth = maxHealth;
             batteryCount = batteryRespawnCount;
@@ -104,32 +94,27 @@ namespace CallbackSystem
             UpdateHealthUI();
         }
 
-        private void UpdateHealthUI()
-        {
-            if (batteryCount < 1)
-            {
+        private void UpdateHealthUI() {
+            if (batteryCount < 1) {
                 HealthRegeneration();
-            }            
+            }
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             healthEvent.batteries = batteryCount;
             EventSystem.Current.FireEvent(healthEvent);
         }
 
-        private void HealthRegeneration()
-        {
+        private void HealthRegeneration() {
             currHealth += (Time.deltaTime * healthReg * 1f);
             currHealth = Mathf.Min(currHealth, 100f);
 
         }
 
-        public float ReturnHealth()
-        {
+        public float ReturnHealth() {
             return currHealth;
         }
 
-        public int ReturnBatteries()
-        {
+        public int ReturnBatteries() {
             return batteryCount;
         }
     }

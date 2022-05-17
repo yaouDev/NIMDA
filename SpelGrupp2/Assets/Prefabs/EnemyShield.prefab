@@ -392,11 +392,13 @@ MonoBehaviour:
   healthRestoreRate: 1
   firePoint: {fileID: 9218188913738382862}
   fullHealth: 50
+  hitForce: 0
   ironRange: 65
   copperRange: 90
   transitorRange: 100
   dropMin: 5
   dropMax: 9
+  enemySound: {fileID: 0}
 --- !u!114 &1907723285357056591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,6 +415,9 @@ MonoBehaviour:
   timeBetweenPathUpdates: 1.5
   critRange: 0
   allowedTargetDiscrepancy: 5
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 3328
   drawPath: 0
   isBoss: 0
   isStopped: 1
