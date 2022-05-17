@@ -92,7 +92,6 @@ namespace CallbackSystem {
         public void Fire(InputAction.CallbackContext context) {
             if (context.started && isAlive && !recentlyFired) {
                 if (laserWeapon && canShootLaser) {
-                    AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
                 } else if (!laserWeapon) {
@@ -145,6 +144,10 @@ namespace CallbackSystem {
                     laserSelfDmg = reducedSelfDmg;
 
                 health.TakeDamage(laserSelfDmg);
+
+                AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
+
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)
                 {
@@ -241,8 +244,13 @@ namespace CallbackSystem {
         {
             if (bullets > 0)
             {
+                if (AIData.Instance.EnemyMuzzleflash != null)
+                {
+                    Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
+                }
                 Debug.Log("Standard projectile weapon fired!");
-                AudioController.instance?.TriggerTest(); //TODO [Carl August Erik] Make a prefab with what's needed for AudioController
+                AudioController ac = AudioController.instance;
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 UpdateBulletCount(-1);
                 if(projectionWeaponUpgraded)
                     Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);

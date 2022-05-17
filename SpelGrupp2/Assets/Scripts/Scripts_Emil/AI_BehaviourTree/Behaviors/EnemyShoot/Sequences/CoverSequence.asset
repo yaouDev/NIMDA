@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71dec7f9be8047249894342f18b4439d, type: 3}
-  m_Name: Pulse Area Attack Node
+  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
+  m_Name: CoverSequence
   m_EditorClassIdentifier: 
-  attackRange: 0
-  turnSpeed: 70
-  attackCoolDown: 1
-  damage: 10
-  whatAreTargets:
-    serializedVersion: 2
-    m_Bits: 3072
+  nodes:
+  - {fileID: 11400000, guid: b30ef5b57df2e7b429eeca804f39c745, type: 2}
+  - {fileID: 11400000, guid: 91e14b96795ad8245887503c498da25b, type: 2}

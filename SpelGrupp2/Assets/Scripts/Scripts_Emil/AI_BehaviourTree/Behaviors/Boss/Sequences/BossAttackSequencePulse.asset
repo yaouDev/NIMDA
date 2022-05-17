@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3744a72ffc04064a87b192b7b2aad38, type: 3}
-  m_Name: Node
+  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
+  m_Name: BossAttackSequencePulse
   m_EditorClassIdentifier: 
-  attackRange: 20
-  turnSpeed: 50
-  spread: 0.3
-  shootForce: 100
-  recoilForce: 0.2
+  nodes:
+  - {fileID: 11400000, guid: 9582ecaa59611cc438e33fc22acd21da, type: 2}
+  - {fileID: 11400000, guid: 332c9cb4c822b85478e155e34dc4e8b3, type: 2}

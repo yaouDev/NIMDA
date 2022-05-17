@@ -15,7 +15,7 @@ public class AttackNode : Node
 
     private bool isShooting = true;
     private float x;
-    private float y;
+    //private float z;
 
     private GameObject currentBullet;
 
@@ -81,13 +81,13 @@ public class AttackNode : Node
 
         //Calculate spread
         x = Random.Range(-spread, spread);
-        y = Random.Range(-spread, spread);
+        //z = Random.Range(-spread, spread);
 
         //Calculate direction 
-        directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+        directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.getBossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.BossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -98,11 +98,11 @@ public class AttackNode : Node
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
-        /*            //MuzzleFlash
-                    if (AIData.instance.getMuzzleflash != null)
-                    {
-                        Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
-                    }*/
+        //MuzzleFlash
+        if (AIData.Instance.EnemyMuzzleflash != null)
+        {
+            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        }
 
     }
 

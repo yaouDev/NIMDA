@@ -8,12 +8,13 @@ public class DayNightSystem : MonoBehaviour
     public float currentTime; 
     public float dayLenghtMinutes;
     public TextMeshProUGUI timeText;
+    private EnemySpawnController spawnController;
 
     public bool isDay;
 
     //public Material stars;
 
-    private float rotationSpeed;
+    //private float rotationSpeed;
     private float midDay;
 /*    private float morning = 9f;
     private float evening = 9f;
@@ -21,10 +22,14 @@ public class DayNightSystem : MonoBehaviour
     private bool isEvening;*/
     private float translateTime;
     string amPm = "AM";
- 
+    
+    public bool Isday
+    {
+        get { return isDay; }
+    }
     void Start()
     {
-        rotationSpeed = 360 / dayLenghtMinutes / 61;
+        //rotationSpeed = 360 / dayLenghtMinutes / 61;
         midDay = dayLenghtMinutes * 60 / 2;
     }
 
@@ -87,15 +92,15 @@ public class DayNightSystem : MonoBehaviour
         }
 
         if(currentTime >= midDay / 2 && currentTime <= midDay * 1.5)
-        {   
+        {
             isDay = true;
-            Debug.Log(isDay);
+            //Debug.Log(isDay);
         }
         
         if(currentTime >= midDay * 1.5)
         {
             isDay = false;
-            Debug.Log(isDay);
+            //Debug.Log(isDay);
         }
 
 
@@ -113,6 +118,6 @@ public class DayNightSystem : MonoBehaviour
 
         timeText.text = displayTime;
         
-        transform.Rotate(new Vector3(1, 0, 0) * rotationSpeed * Time.deltaTime);
+        //transform.Rotate(new Vector3(1, 0, 0) * rotationSpeed * Time.deltaTime);
     }
 }
