@@ -91,11 +91,11 @@ public class EnemyAttackNode : Node
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
-        /*            //MuzzleFlash
-                    if (AIData.instance.getMuzzleflash != null)
-                    {
-                        Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
-                    }*/
+        //MuzzleFlash
+        if (AIData.Instance.EnemyMuzzleflash != null)
+        {
+            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        }
 
     }
 

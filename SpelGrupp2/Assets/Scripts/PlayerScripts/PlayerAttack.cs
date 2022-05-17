@@ -232,6 +232,10 @@ namespace CallbackSystem {
         {
             if (bullets > 0)
             {
+                if (AIData.Instance.EnemyMuzzleflash != null)
+                {
+                    Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
+                }
                 Debug.Log("Standard projectile weapon fired!");
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
