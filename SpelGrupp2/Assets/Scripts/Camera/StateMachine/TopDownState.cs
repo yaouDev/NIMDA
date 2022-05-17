@@ -26,6 +26,11 @@ public class TopDownState : CameraState
 
 	[SerializeField] [Range(1.0f, 20.0f)] 
 	private float thirdPersonSplitDistance = 15.0f;
+
+	private Vector3 cameraPosition;
+	private Vector3 cameraShakeOffset;
+	private static Vector3 sharedCameraShakeOffset;
+
 	
 	private Vector3 centroid;
 	private Vector3 abovePlayer;
@@ -52,6 +57,46 @@ public class TopDownState : CameraState
 	private RaycastHit[] hits;
 	private float lateralSplitMagnitude = 4.5f;
 
+	private float trauma = 1;
+	private float easedTrauma;
+	private float cameraShakeFalloffSpeed = 3.0f;
+	private float shakeSpeed = 10.0f;
+	private float vibrationSpeed = 20.0f;
+
+	public void ShakeCamera(float magnitude)
+	{
+		trauma += magnitude;
+	}
+
+	
+	
+	
+	private void CameraShake(float distanceFraction)
+	{
+		trauma = .1f;
+		
+		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2; // perlin within Range(-1, 1)
+		perlinNoiseX += (Mathf.PerlinNoise(.25f, Time.time * vibrationSpeed) - .5f) * .5f; // perlin noise within Range(-.25, .25)
+		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2; // perlin within Range(-1, 1)
+		perlinNoiseY += (Mathf.PerlinNoise(.75f, Time.time * vibrationSpeed) - .5f) * .5f; // perlin noise within Range(-.25, .25)
+
+
+		trauma = Mathf.Clamp01(trauma -= Time.deltaTime * cameraShakeFalloffSpeed);
+		easedTrauma = Ease.EaseInExpo(trauma);
+		cameraShakeOffset = CameraTransform.rotation * new Vector3(perlinNoiseX * easedTrauma, perlinNoiseY * easedTrauma, 0.0f);
+
+		// TODO Lerp sharedCameraShakeOffset and cameraShakeOffset with distance instead
+		// if same screen - share camerashake
+		if (distanceFraction + Mathf.Epsilon <= 1.0f)
+		{
+			sharedCameraShakeOffset = cameraShakeOffset;
+		}
+
+		cameraShakeOffset = cameraShakeOffset.sqrMagnitude > sharedCameraShakeOffset.sqrMagnitude
+			? cameraShakeOffset
+			: sharedCameraShakeOffset; //Vector3.Max(cameraShakeOffset, sharedCameraShakeOffset);
+	}
+
 	public override void Run()
 	{
 		Input();
@@ -62,31 +107,31 @@ public class TopDownState : CameraState
 		// the split is rotating freely between the players
 		RotateScreenSplit();
 		
-		// TODO in progress different splitMagnitude x/y axis on screen
-		float dynamicSplitMagnitude;
-		// change magnitude of splitMagnitude depending on where
-		
-		//Vector3 dist = Vector3.ProjectOnPlane( fourtyFiveDegrees * (PlayerOther.position - PlayerThis.position), Vector3.ProjectOnPlane(CameraTransform.rotation.eulerAngles, Vector3.up));
 		Vector3 dist = Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position);
 		dist.z *= 1.5f;
 		
+		// different splitMagnitude x/y axis on screen
 		float inv = Mathf.InverseLerp(0.0f, 9.0f, Mathf.Abs(dist.z));
-
-		dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, Ease.EaseOutCirc(inv));
-		//Debug.Log($"{inv} {dist.z} {dynamicSplitMagnitude}");
+		float dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, Ease.EaseOutCirc(inv));
 		
 		// both cameras follow the centroid point between the players, split when necessary
 		Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
-		Debug.DrawRay(PlayerThis.position + centroidOffsetPosition, Vector3.up * 10.0f);
 		centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, dynamicSplitMagnitude);
+		Debug.DrawRay(centroid, Vector3.up * 10.0f);
 
-		// TODO Camera zoom
+		// Camera zoom
 		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / dynamicSplitMagnitude;
 		topDownOffset.z = Mathf.Lerp(-12.0f, -16.0f, distanceFraction);
 
+		CameraShake(distanceFraction);
+
 		FadeObstacles();
+
+
 		
-		CameraTransform.position = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
+		cameraPosition = centroid + abovePlayer + CameraTransform.rotation * topDownOffset; // TODO in progress
+
+		CameraTransform.position = cameraPosition + cameraShakeOffset; // TODO in progress // centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 		
 		LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
 
@@ -102,9 +147,9 @@ public class TopDownState : CameraState
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
 	}
 
-	public static float Remap (float from, float fromMin, float fromMax, float toMin,  float toMax) {
+	public static float Remap (float value, float fromMin, float fromMax, float toMin,  float toMax) {
 		
-		float fromAbs = from - fromMin;
+		float fromAbs = value - fromMin;
 		float fromMaxAbs = fromMax - fromMin;      
       
 		float normal = fromAbs / fromMaxAbs;
