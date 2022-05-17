@@ -9,12 +9,13 @@ namespace CallbackSystem {
     public class PlayerAttack : MonoBehaviour {
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private LineRenderer aimLineRenderer;
-        [SerializeField] private LayerMask enemyLayerMask;
+        [SerializeField] private LayerMask enemyLayerMask, laserLayerMask;
         private Vector3 aimingDirection = Vector3.forward;
         private PlayerHealth health;
         private PlayerController controller;
         private Camera cam;
         private bool isAlive = true;
+        [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
         [SerializeField] private int bullets = 10;
@@ -22,14 +23,14 @@ namespace CallbackSystem {
         private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
-        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded;
-        private float reducedSelfDmg, weaponCooldown;
+        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true;
+        private float reducedSelfDmg, weaponCooldown, currentHitDistance, ASCounter = 0f;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
          * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
          */
-   
+
         public void Die() => isAlive = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
@@ -76,10 +77,16 @@ namespace CallbackSystem {
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
             }
-            if (recentlyFired && weaponCooldown < 0.5f)
+            if (recentlyFired && weaponCooldown < 0.5f && laserWeapon)
                 weaponCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
+            /*
+            if (ASCounter <= 0.1f)
+                ASCounter += Time.deltaTime;
+            else
+                canShootGun = true;
+            */    
 
             if (isAlive) {
                 AnimateLasers();
@@ -89,7 +96,8 @@ namespace CallbackSystem {
         }
 
         public void Fire(InputAction.CallbackContext context) {
-            if (context.started && isAlive && !recentlyFired) {
+            if (!isAlive) return;
+            if (context.started && !recentlyFired) {
                 if (laserWeapon && canShootLaser) {
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
@@ -100,6 +108,23 @@ namespace CallbackSystem {
                 weaponCooldown = 0f;
             }
         }
+        /*
+        private void ProjectileFire(InputAction.CallbackContext context)
+        {
+            int debugInt = 0;
+            while (automaticFireUpgraded && !context.canceled && debugInt != 300)
+            {
+                if (canShootGun)
+                { 
+                    FireProjectileWeapon();
+                    canShootGun = false;
+                    ASCounter = 0f;
+                }
+                debugInt++;
+                Debug.Log("debugInt reached 300");
+            }
+        }
+        */
 
         public void WeaponSwap(InputAction.CallbackContext context) {
             if (context.performed) {
@@ -108,6 +133,7 @@ namespace CallbackSystem {
             }
         }
 
+        //This method & Pass Through(Y) on Input Actions if up = laser & down = projectile.
         public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context) {
             if (context.performed) {
                 float scrollDelta = context.ReadValue<float>();
@@ -191,7 +217,7 @@ namespace CallbackSystem {
         }
 
         private void AnimateLaserSightLineRenderer(Vector3 dir) {
-            Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * 30.0f };
+            Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
             aimLineRenderer.SetPositions(positions);
             float lineWidth = 0.05f;
             aimLineRenderer.startWidth = lineWidth;
@@ -199,6 +225,15 @@ namespace CallbackSystem {
             Color color = new Color(1f, 0.2f, 0.2f);
             aimLineRenderer.startColor = color;
             aimLineRenderer.endColor = color;
+        }
+
+        private void UpdateLaserSightDistance()
+        {
+            Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLayerMask);
+                if(hit.collider != null)
+                currentHitDistance = hit.distance;
+                else
+                currentHitDistance = maxDistance;
         }
 
         public void TargetMousePos(InputAction.CallbackContext context) {
@@ -225,6 +260,7 @@ namespace CallbackSystem {
 
             AimDirection();
             ApplyJoystickFireDirection();
+            UpdateLaserSightDistance();
             AnimateLaserSightLineRenderer(gameObject.transform.forward);
         }
 
@@ -241,6 +277,25 @@ namespace CallbackSystem {
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 UpdateBulletCount(-1);
                 if(projectionWeaponUpgraded)
+                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                else
+                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+            }
+        }
+
+        private void AutomaticProjectileWeapon()
+        {
+            if (bullets > 0)
+            {
+                if (AIData.Instance.EnemyMuzzleflash != null)
+                {
+                    Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
+                }
+                Debug.Log("Standard projectile weapon fired!");
+                AudioController ac = AudioController.instance;
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
+                UpdateBulletCount(-1);
+                if (projectionWeaponUpgraded)
                     Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
                 else
                     Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
