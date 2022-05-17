@@ -169,6 +169,7 @@ public class PlayerController : MonoBehaviour
         return joyStickRightInput;
     }
 
+
     private void ApplyJoystickMovement()
     {
 

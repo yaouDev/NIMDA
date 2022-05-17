@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace CallbackSystem
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth : MonoBehaviour, IDamageable
     {
         [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 5.0f;
         [SerializeField] private bool isPlayerOne;
         [SerializeField] private int batteryCount, batteryRespawnCount, maxBatteryCount;
         [SerializeField] private float healthReg;
-        private float maxHealth = 1f;
+        private float maxHealth = 100f;
         private float currHealth;
         private float respawnTimer;
         private bool alive = true;
@@ -29,7 +29,7 @@ namespace CallbackSystem
         }
         private void Start()
         {
-            batteryCount = 2;
+            batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
@@ -85,6 +85,9 @@ namespace CallbackSystem
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
+
+            AudioController ac = AudioController.instance;
+            ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
         public void Respawn()
@@ -115,8 +118,8 @@ namespace CallbackSystem
 
         private void HealthRegeneration()
         {
-            currHealth += (Time.deltaTime * healthReg * 0.1f);
-            currHealth = Mathf.Min(currHealth, 1f);
+            currHealth += (Time.deltaTime * healthReg * 1f);
+            currHealth = Mathf.Min(currHealth, 100f);
 
         }
 

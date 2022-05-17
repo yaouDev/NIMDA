@@ -10,6 +10,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private LayerMask environmentLayerMask;
     [SerializeField] private ParticleSystem ricochetParticleSystem;
     [SerializeField] private float bulletSpeed = 150.0f;
+    [SerializeField] private float impactForce = 40f;
     private bool hit;
     private float destroyTime = 5.0f;
     private float timeAlive = 0.0f;
@@ -25,24 +26,33 @@ public class Bullet : MonoBehaviour
     private void MoveBullet()
     {
         if (Physics.Raycast(
-                transform.position, 
-                transform.forward, 
-                out RaycastHit hitInfo, 
+                transform.position,
+                transform.forward,
+                out RaycastHit hitInfo,
                 bulletSpeed * Time.deltaTime,
                 environmentLayerMask | enemyLayerMask))
         {
             transform.position += hitInfo.distance * transform.forward;
-            
+
             if (1 << hitInfo.collider.gameObject.layer == environmentLayerMask)
             {
                 Ricochet();
+            }
+            else if (hitInfo.transform.tag == "BreakableObject")
+            {
+                BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
+                breakable.DropBoxLoot();
             }
             else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
             {
                 hit = true;
                 // TODO [Patrik] Update to call to IHealth Interface, thus we can shoot each other too <3
-                EnemyHealth enemyHealth = hitInfo.transform.GetComponent<EnemyHealth>();
-                DamageEnemy(enemyHealth);
+                IDamageable target = hitInfo.transform.GetComponent<IDamageable>();
+                DamageEnemy(target);
+                if (hitInfo.rigidbody != null)
+                {
+                    hitInfo.rigidbody.AddForce(-hitInfo.normal * impactForce);
+                }
                 Ricochet();
             }
         }
@@ -52,9 +62,12 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    private void DamageEnemy(EnemyHealth enemyHealth)
+    private void DamageEnemy(IDamageable target)
     {
-        enemyHealth.TakeDamage(damage);
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }
     }
 
     private void Ricochet()

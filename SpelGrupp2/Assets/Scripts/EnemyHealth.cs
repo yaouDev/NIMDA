@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour {
+public class EnemyHealth : MonoBehaviour, IDamageable {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
-    [SerializeField] private float fleeHealthtreshold;
-    [SerializeField][Range(0, 100)] private int fullHealth;
+    [SerializeField] private GameObject firePoint;
+    [SerializeField][Range(0, 2000)] private int fullHealth = 100;
+    [SerializeField] private float hitForce;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -20,6 +21,8 @@ public class EnemyHealth : MonoBehaviour {
     [SerializeField] private int transitorRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
+
+    [SerializeField] private EnemyAudioContainer enemySound;
 
     public float CurrentHealth {
         get { return currentHealth; }
@@ -41,21 +44,23 @@ public class EnemyHealth : MonoBehaviour {
     public float GetCurrentHealth() {
         return CurrentHealth;
     }
-    public float GetFleeHealthTreshold() {
-        return fleeHealthtreshold;
+    public float GetFullHealth() {
+        return fullHealth;
+    }
+    public GameObject GetFirePoint() {
+        return firePoint;
     }
 
-    public void TakeDamage() {
-        --currentHealth;
-    }
-    
-    public void TakeDamage(float damage) {
-        currentHealth -= damage;
-    }
-    
+
+
     public void Die() {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
+        AudioController.instance.PlayOneShotAttatched(enemySound.death, gameObject);
+        Destroy(gameObject);
+    }
+    public void DieNoLoot() {
+        enemySpawnController.reduceSpawnCount(1);
         Destroy(gameObject);
     }
 
@@ -66,20 +71,14 @@ public class EnemyHealth : MonoBehaviour {
     public void DropLoot() {
 
         int dropAmount = Random.Range(dropMin, dropMax);
-        for (int i = 0; i < dropAmount; i++)
-        {
+        for (int i = 0; i < dropAmount; i++) {
             dropOffset = new Vector3(Random.Range(-1.3f, 1.3f), 1f, Random.Range(-1.3f, 1.3f));
             int dropRoll = Random.Range(0, 100);
-            if (dropRoll <= ironRange)
-            {
+            if (dropRoll <= ironRange) {
                 drop = dropList[0];
-            }
-            else if (dropRoll <= copperRange)
-            {
+            } else if (dropRoll <= copperRange) {
                 drop = dropList[1];
-            }
-            else if (dropRoll <= transitorRange)
-            {
+            } else if (dropRoll <= transitorRange) {
                 drop = dropList[2];
             }
             //int item = Random.Range(0, dropList.Length);
@@ -89,5 +88,14 @@ public class EnemyHealth : MonoBehaviour {
             loot.SetActive(true);
             Destroy(loot, 15f);
         }
+    }
+
+    public void TakeDamage(float damage) {
+        currentHealth -= damage;
+        Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
+        //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!!
+        AudioController.instance.PlayOneShot(enemySound.hurt, GameObject.Find("Players").transform.position);
+        //Debug.Log(currentHealth);
+
     }
 }

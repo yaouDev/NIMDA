@@ -1,14 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using UnityEngine;
 
 public class AIData : MonoBehaviour {
-    public static AIData instance;
+    public static AIData Instance;
 
     [SerializeField] private GameObject bullet;
+    [SerializeField] private GameObject bossBigBullet;
+    [SerializeField] private GameObject bossSmallBullet;
+    [SerializeField] private ParticleSystem pulseAttackParticles;
+    [SerializeField] private ParticleSystem enemyHitParticles;
+    [SerializeField] private ParticleSystem enemyMuzzleflash;
 
     private CallbackSystem.EventSystem eventSystem;
-    private Transform bestCoverSpot;
+    //private Transform bestCoverSpot;
+    private Vector3 bestCoverSpot;
+
+
 
     //private List<Transform> activeCovers = new List<Transform>(); 
     private List<Cover> activeCovers = new List<Cover>();
@@ -20,18 +29,48 @@ public class AIData : MonoBehaviour {
         eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(LoadModule);
         eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(UnLoadModule);
 
-        instance ??= this;
+        Instance ??= this;
     }
 
-    public GameObject getBullet {
+    public GameObject Bullet {
         get { return bullet; }
     }
+    public GameObject BossBullet
+    {
+        get { return bossBigBullet; }
+    }
+    public GameObject SmallBullet
+    {
+        get { return bossSmallBullet; }
+    }
+    public ParticleSystem PulseAttackParticles
+    {
+        get { return pulseAttackParticles; }
+    }
+    public ParticleSystem EnemyHitParticles
+    {
+        get { return enemyHitParticles; }
+    }
+    public ParticleSystem EnemyMuzzleflash
+    {
+        get { return enemyMuzzleflash; }
+    }
 
-    public void SetBestCoverSpot(Transform bestCoverSpot) {
+    /*     public void SetBestCoverSpot(Transform bestCoverSpot) {
+            this.bestCoverSpot = bestCoverSpot;
+        } */
+
+    public void SetBestCoverSpot(Vector3 bestCoverSpot) {
         this.bestCoverSpot = bestCoverSpot;
     }
-    public Transform GetBestCoverSpot() {
 
+
+    /*     public Transform GetBestCoverSpot() {
+
+            return bestCoverSpot;
+        } */
+
+    public Vector3 GetBestCoverSpot() {
         return bestCoverSpot;
     }
     /* public List<Transform> GetActiveCovers()
@@ -65,6 +104,23 @@ public class AIData : MonoBehaviour {
         */
 
     }
+
+    private ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>>();
+    public void AddCoverSpot(Vector3 coverSpot) {
+        Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(coverSpot);
+        if (!potentialCoverSpots.ContainsKey(modulePos)) {
+            potentialCoverSpots.TryAdd(modulePos, new ConcurrentDictionary<Vector3, byte>());
+        }
+        if (!potentialCoverSpots[modulePos].ContainsKey(coverSpot)) {
+            potentialCoverSpots[modulePos].TryAdd(coverSpot, 0);
+        }
+    }
+
+    public ConcurrentDictionary<Vector3, byte> GetNearbyCoverSpots(Vector2Int module) {
+        if (potentialCoverSpots.ContainsKey(module)) return potentialCoverSpots[module];
+        return null;
+    }
+
 
 
 }
