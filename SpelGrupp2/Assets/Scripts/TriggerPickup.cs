@@ -13,7 +13,7 @@ public class TriggerPickup : MonoBehaviour
     {
         if (collider.gameObject.tag.Equals("Player"))
         {
-            parent.StartFollowing(collider.transform);
+            parent.StartFollowing(collider.gameObject);
         }
     }
 }
