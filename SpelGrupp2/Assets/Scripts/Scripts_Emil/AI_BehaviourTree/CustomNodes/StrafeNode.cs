@@ -5,8 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Strafe")]
 public class StrafeNode : Node {
 
-    [SerializeField] private float turnSpeed = 70.0f, strafeSpeed = 16.5f;
-    [SerializeField] private int maxShotsToFire = 2, minShotsToFire = 5;
+    [SerializeField] private float strafeSpeed = 16.5f;
+    [SerializeField] private int maxShotsToFire = 2, minShotsToFire = 5, minStrafeDistance = 2, maxStrafeDistance = 5;
     [SerializeField] private float distanceFromTargetToStop;
     private Vector3 randomPos;
     private int xPos;
@@ -22,9 +22,12 @@ public class StrafeNode : Node {
         if (shotReqCond) {
             strafeTarget = Vector3.zero;
             while (strafeTarget == Vector3.zero || DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) {
-                xPos = Random.Range(-5, 5);
-                zPos = Random.Range(-5, 5);
-                randomPos = new Vector3(xPos, 0, zPos);
+                float angleOffset = Random.Range(-120, 121);
+                int strafeDistance = Random.Range(minStrafeDistance, maxStrafeDistance + 1);
+                /*         xPos = Random.Range(-5, 5);
+                        zPos = Random.Range(-5, 5); */
+                //randomPos = new Vector3(xPos, 0, zPos);
+                randomPos = Quaternion.AngleAxis(angleOffset, Vector3.up) * (agent.ClosestPlayer - agent.Position).normalized * strafeDistance;
                 strafeTarget = randomPos + agent.Position;
                 agent.Destination = strafeTarget;
                 agent.IsStopped = false;
