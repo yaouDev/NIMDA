@@ -12,6 +12,11 @@ public class AudioController : MonoBehaviour
      * AudioController.instance.PlayerOneShotAttached(player1.fire1, gameObject); //call upon the audio controller, choose how to trigger the audio, and send the event through the container
     */
 
+    /* TO CHANGE CHANNEL TIME ON LASER WEAPON
+     * RuntimeManager.StudioSystem.setParameterByName("Channel Time", *INSERT VALUE*);
+    */
+
+
     [Range(0, 24)]
     [SerializeField]
     public float night;
