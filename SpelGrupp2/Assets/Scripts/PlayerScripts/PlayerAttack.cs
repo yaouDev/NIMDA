@@ -23,8 +23,8 @@ namespace CallbackSystem {
         private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
-        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded;
-        private float reducedSelfDmg, weaponCooldown, currentHitDistance;
+        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true;
+        private float reducedSelfDmg, weaponCooldown, currentHitDistance, ASCounter = 0f;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -77,10 +77,16 @@ namespace CallbackSystem {
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
             }
-            if (recentlyFired && weaponCooldown < 0.5f)
+            if (recentlyFired && weaponCooldown < 0.5f && laserWeapon)
                 weaponCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
+
+            if (ASCounter <= 1f)
+                ASCounter += Time.deltaTime;
+            else
+                canShootGun = true;
+                
 
             if (isAlive) {
                 AnimateLasers();
@@ -90,15 +96,29 @@ namespace CallbackSystem {
         }
 
         public void Fire(InputAction.CallbackContext context) {
-            if (context.started && isAlive && !recentlyFired) {
+            if (!isAlive) return;
+            if (context.performed && !recentlyFired) {
                 if (laserWeapon && canShootLaser) {
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
                 } else if (!laserWeapon) {
-                    FireProjectileWeapon();
+                    ProjectileFire(context);
                 }
                 recentlyFired = true;
                 weaponCooldown = 0f;
+            }
+        }
+
+        private void ProjectileFire(InputAction.CallbackContext context)
+        {
+            while (automaticFireUpgraded && !context.canceled)
+            {
+                if (canShootGun)
+                {
+                    FireProjectileWeapon();
+                    canShootGun = false;
+                    ASCounter = 0f;
+                }
             }
         }
 
@@ -253,6 +273,25 @@ namespace CallbackSystem {
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 UpdateBulletCount(-1);
                 if(projectionWeaponUpgraded)
+                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                else
+                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+            }
+        }
+
+        private void AutomaticProjectileWeapon()
+        {
+            if (bullets > 0)
+            {
+                if (AIData.Instance.EnemyMuzzleflash != null)
+                {
+                    Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
+                }
+                Debug.Log("Standard projectile weapon fired!");
+                AudioController ac = AudioController.instance;
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
+                UpdateBulletCount(-1);
+                if (projectionWeaponUpgraded)
                     Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
                 else
                     Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
