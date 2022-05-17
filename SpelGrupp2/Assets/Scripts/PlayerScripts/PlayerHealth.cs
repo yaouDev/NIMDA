@@ -94,17 +94,17 @@ namespace CallbackSystem {
             EventSystem.Current.FireEvent(UIEvent);
             attackAbility.Respawn();
             movement.Respawn();
-            UpdateHealthUI(bool batteryDecreased = false);
+            UpdateHealthUI();
             uiMenus.DeadPlayers(-1);
         }
 
-        private void UpdateHealthUI() {
+        private void UpdateHealthUI(bool batteryDecreased = false) {
             if (batteryCount < 1) {
                 HealthRegeneration();
             }
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
-            healthEvent.batteries = batteryCount
+            healthEvent.batteries = batteryCount;
             healthEvent.batteryDecreased = batteryDecreased;
             EventSystem.Current.FireEvent(healthEvent);
         }
