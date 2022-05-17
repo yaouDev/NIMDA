@@ -8,17 +8,13 @@ namespace CallbackSystem
     {
         private PlayerHealth playerHealth;
         private PlayerAttack playerAttack;
+        [SerializeField] private GameObject parent; 
         private enum PickUp
         {
             Iron, Copper, Transistor, Bullet, Battery
         }
 
         [SerializeField] private PickUp pickUpType;
-        private ResourceUpdateEvent resourceEvent;
-        private void Awake()
-        {
-            resourceEvent = new ResourceUpdateEvent();
-        }
 
         void OnTriggerEnter(Collider other)
         {
@@ -28,7 +24,7 @@ namespace CallbackSystem
                 playerHealth = other.GetComponent<PlayerHealth>();
                 Crafting crafting = other.gameObject.GetComponent<Crafting>();
                 pickUpDrop(crafting);
-                Destroy(gameObject);
+                Destroy(parent);
             }
         }
         private void pickUpDrop(Crafting crafting)
@@ -57,21 +53,6 @@ namespace CallbackSystem
                     break;
             }
             crafting.UpdateResources();
-            UpdateRes();
-
-            void UpdateRes()
-            {
-            Debug.Log("Updated resources");
-
-                resourceEvent.isPlayerOne = crafting.IsPlayerOne();
-                resourceEvent.ammoChange = false;
-                resourceEvent.c = crafting.copper;
-                resourceEvent.t = crafting.transistor;
-                resourceEvent.i = crafting.iron;
-               // Debug.Log("Copper: " + resourceEvent.c + ". Transistor: " + resourceEvent.t + ". Iron: " + resourceEvent.i);
-
-                EventSystem.Current.FireEvent(resourceEvent);
-            }
         }
     }
 }

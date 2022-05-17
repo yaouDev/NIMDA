@@ -68,11 +68,11 @@ public class TopDownState : CameraState
 		
 		//Vector3 dist = Vector3.ProjectOnPlane( fourtyFiveDegrees * (PlayerOther.position - PlayerThis.position), Vector3.ProjectOnPlane(CameraTransform.rotation.eulerAngles, Vector3.up));
 		Vector3 dist = Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position);
-		dist.z *= 2.0f;
+		dist.z *= 1.5f;
 		
 		float inv = Mathf.InverseLerp(0.0f, 9.0f, Mathf.Abs(dist.z));
 
-		dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, inv);
+		dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, Ease.EaseOutCirc(inv));
 		//Debug.Log($"{inv} {dist.z} {dynamicSplitMagnitude}");
 		
 		// both cameras follow the centroid point between the players, split when necessary

@@ -23,6 +23,7 @@ namespace CallbackSystem {
     public class HealthUpdateEvent : Event {
         public float health;
         public int batteries;
+        public bool batteryDecreased;
 
     }
 

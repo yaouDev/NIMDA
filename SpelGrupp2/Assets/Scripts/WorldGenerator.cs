@@ -69,7 +69,7 @@ public class WorldGenerator : MonoBehaviour {
             active = false;
             WorldGenerator.modulePool[(int)module].Enqueue(m);
             // TODO [Patrik]
-            // Killbox for enemies on worldgenerator
+            // Killbox for spawnThis on worldgenerator
             // Callback function, send to remove from pathfinding, send: Vec2Int, uint 
             deSpawnEvent.GameObject = m;
             EventSystem.Current.FireEvent(deSpawnEvent);
