@@ -137,6 +137,17 @@ public class PlayerController : MonoBehaviour
             Grounded();
             ApplyJoystickMovement();
             stateMachine.Run();
+
+            if (anim != null)
+            {
+                Vector3 rot = transform.rotation.eulerAngles;
+                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) *_velocity;
+
+                anim.SetFloat("Speed", rotatedVelocity.x);
+                anim.SetFloat("Direction", rotatedVelocity.z);
+
+                //print(_inputMovement.x);
+            }
         }
     }
 
@@ -179,13 +190,17 @@ public class PlayerController : MonoBehaviour
 
         if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
 
-        if (anim != null)
+
+       /* if (anim != null)
         {
+            Vector3 rotatedInputMovement;
+
+
             anim.SetFloat("Speed", _inputMovement.x);
             anim.SetFloat("Direction", _inputMovement.z);
 
             //print(_inputMovement.x);
-        }
+        }*/
         _inputMovement = InputToCameraProjection(_inputMovement);
         _inputMovement *= _acceleration * Time.deltaTime;
     }
