@@ -6,13 +6,15 @@ public class EnemySpawnController : MonoBehaviour
 {
     [Header("What to Spawn")]
     [SerializeField] private GameObject[] spawnThis;
-    [SerializeField] private int maxSpawnThisMany = 5;
-    [SerializeField] private int minSpawnThisMany = 1;
+    private int maxSpawnThisMany;
+    private int minSpawnThisMany;
     private int spawnThisMany;
     [Header("Normal Spawn")]
     [SerializeField] private int nMaxSpawnCount = 25;
     [SerializeField] private int nMaxSpawnCooldown = 7;
     [SerializeField] private int nMinSpawnCooldown = 4;
+    [SerializeField] private int nMaxSpawnThisMany = 2;
+    [SerializeField] private int nMinSpawnThisMany = 1;
     [SerializeField] private int nSpawnDistanceMax = 35;
     [SerializeField] private int nSpawnDistanceMin = 5;
     private int nSpawnCooldown;
@@ -20,6 +22,8 @@ public class EnemySpawnController : MonoBehaviour
     [SerializeField] private int nightMaxSpawnCount = 30;
     [SerializeField] private int nightMaxSpawnCooldown = 5;
     [SerializeField] private int nightMinSpawnCooldown = 1;
+    [SerializeField] private int nightMaxSpawnThisMany = 3;
+    [SerializeField] private int nightMinSpawnThisMany = 1;
     [SerializeField] private int nightSpawnDistanceMax = 35;
     [SerializeField] private int nightSpawnDistanceMin = 5;
     private int nightSpawnCooldown;
@@ -27,6 +31,8 @@ public class EnemySpawnController : MonoBehaviour
     [SerializeField] private int genMaxSpawnCount = 40;
     [SerializeField] private int genMaxSpawnCooldown = 3;
     [SerializeField] private int genMinSpawnCooldown = 1;
+    [SerializeField] private int genMaxSpawnThisMany = 5;
+    [SerializeField] private int genMinSpawnThisMany = 3;
     [SerializeField] private int genSpawnDistanceMax = 50;
     [SerializeField] private int genSpawnDistanceMin = 15;
     private int genSpawnCooldown;
@@ -90,7 +96,7 @@ public class EnemySpawnController : MonoBehaviour
                 spawnPos = activeSpawner.transform;
                 for (int i = 0; i < spawnThisMany; i++)
                 {
-                    Instantiate(spawnThis[Random.Range(0, 2)], spawnPos.position, spawnPos.rotation);
+                    Instantiate(spawnThis[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
@@ -108,6 +114,8 @@ public class EnemySpawnController : MonoBehaviour
     {
         if (on)
         {
+            maxSpawnThisMany = genMaxSpawnThisMany;
+            minSpawnThisMany = genMinSpawnThisMany;
             spawnCooldown = genSpawnCooldown;
             maxSpawnCount = genMaxSpawnCount;
             spawnDistanceMax = genSpawnDistanceMax;
@@ -115,6 +123,8 @@ public class EnemySpawnController : MonoBehaviour
         }
         if (!on)
         {
+            maxSpawnThisMany = nMaxSpawnThisMany;
+            minSpawnThisMany = nMinSpawnThisMany;
             spawnCooldown = nSpawnCooldown;
             maxSpawnCount = nMaxSpawnCount;
             spawnDistanceMax = nSpawnDistanceMax;
@@ -125,6 +135,8 @@ public class EnemySpawnController : MonoBehaviour
     {
         if (!dayNightSystem.Isday)
         {
+            maxSpawnThisMany = nightMaxSpawnThisMany;
+            minSpawnThisMany = nightMinSpawnThisMany;
             spawnCooldown = nightSpawnCooldown;
             maxSpawnCount = nightMaxSpawnCount;
             spawnDistanceMax = nightSpawnDistanceMax;
@@ -132,6 +144,8 @@ public class EnemySpawnController : MonoBehaviour
         }
         else
         {
+            maxSpawnThisMany = nMaxSpawnThisMany;
+            minSpawnThisMany = nMinSpawnThisMany;
             spawnCooldown = nSpawnCooldown;
             maxSpawnCount = nMaxSpawnCount;
             spawnDistanceMax = nSpawnDistanceMax;

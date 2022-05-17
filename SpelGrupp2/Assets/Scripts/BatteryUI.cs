@@ -10,8 +10,9 @@ using TMPro;
 
 public class BatteryUI : MonoBehaviour
 {
-    [SerializeField] private Image batteryUI, batteryIcon;
+    [SerializeField] private Image batteryUI;
     [SerializeField] private TextMeshProUGUI batteryAmount;
+    [SerializeField] private GameObject prefab;
     
     public void UpdateBatteryUI(float battery)
     {
@@ -34,5 +35,10 @@ public class BatteryUI : MonoBehaviour
     public void SetBatteryCount(int count)
     {
         batteryAmount.text = count.ToString();
+    }
+
+    public void BreakBattery()
+    {
+        Instantiate(prefab, transform.position, transform.rotation, transform.parent);
     }
 }

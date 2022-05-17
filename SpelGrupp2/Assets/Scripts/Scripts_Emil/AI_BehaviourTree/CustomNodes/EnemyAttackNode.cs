@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyRangeAttack")]
-public class EnemyAttackNode : Node
-{
+public class EnemyAttackNode : Node {
 
-    [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float spread = 0.1f;
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
@@ -20,43 +18,34 @@ public class EnemyAttackNode : Node
 
     private GameObject currentBullet;
 
-    Vector3 closestTarget;
-    Vector3 relativePos;
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
+    public override NodeState Evaluate() {
 
-    RaycastHit checkCover;
+        bool coverIsValid = !agent.TargetInSight;
 
-    Quaternion rotation;
-
-    public override NodeState Evaluate()
-    {
-        //Find Closest Player
-        closestTarget = agent.ClosestPlayer + Vector3.up;
-        relativePos = closestTarget - agent.transform.position;
-
-        // Rotate the Enemy towards the player
-        rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-        agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
-                                                            rotation, Time.deltaTime * turnSpeed);
-        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
-
-        if (isShooting && CheckIfCoverIsValid() == false)
-        {
+        if (isShooting && !coverIsValid) {
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
 
-            NodeState = NodeState.SUCCESS;
+            AIData.Instance.IncreaseShotsFired(agent);
+
+            if (AIData.Instance.GetShotRequirement(agent) > AIData.Instance.GetShotsFired(agent)) {
+                NodeState = NodeState.RUNNING;
+            } else NodeState = NodeState.SUCCESS;
+
             return NodeState;
         }
-
-        NodeState = NodeState.FAILURE;
+        if ((AIData.Instance.GetShotRequirement(agent) > AIData.Instance.GetShotsFired(agent)) && !coverIsValid) {
+            NodeState = NodeState.RUNNING;
+        } else if ((AIData.Instance.GetShotRequirement(agent) < AIData.Instance.GetShotsFired(agent)) || coverIsValid) {
+            NodeState = NodeState.FAILURE;
+        }
         return NodeState;
 
     }
-    public IEnumerator AttackDelay()
-    {
+    public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackDelay);
         Attack();
         isShooting = true;
@@ -66,11 +55,10 @@ public class EnemyAttackNode : Node
     }
 
 
-    void Attack()
-    {
+    void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = checkCover.point - agent.Health.GetFirePoint().transform.position;
+        directionWithoutSpread = agent.ClosestPlayer - agent.Health.GetFirePoint().transform.position;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -92,30 +80,9 @@ public class EnemyAttackNode : Node
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
         //MuzzleFlash
-        if (AIData.Instance.EnemyMuzzleflash != null)
-        {
+        if (AIData.Instance.EnemyMuzzleflash != null) {
             Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
         }
 
     }
-
-    bool CheckIfCoverIsValid()
-    {
-        //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
-
-        // Create the ray to use
-        Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
-        //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f, whatIsTarget))
-        {
-            //Check if that collider is the player
-            if (checkCover.collider.gameObject.CompareTag("Player"))
-            {
-                //There is no cover
-                return false;
-            }
-        }
-        return true;
-    }
-
 }

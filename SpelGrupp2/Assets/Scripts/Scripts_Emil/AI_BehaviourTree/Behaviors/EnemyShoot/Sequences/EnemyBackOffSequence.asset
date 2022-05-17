@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 401f8f66451ac634a824a5d5b16c9dbf, type: 3}
-  m_Name: Enemy Player Range Node
+  m_Script: {fileID: 11500000, guid: 5ce68d5493fc6534e9e7ecd2c20450c1, type: 3}
+  m_Name: EnemyBackOffSequence
   m_EditorClassIdentifier: 
-  Range: 10
+  nodes:
+  - {fileID: 11400000, guid: 4a2eec3f3268e534d98bc06ac85e23f0, type: 2}
+  - {fileID: 11400000, guid: 67d76be8caaadb8448a1dc363b8b3a5c, type: 2}
