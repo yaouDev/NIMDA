@@ -388,7 +388,7 @@ MonoBehaviour:
   dropList: []
   healthRestoreRate: 1
   firePoint: {fileID: 9218188913738382862}
-  fullHealth: 50
+  fullHealth: 80
   hitForce: 0
   ironRange: 65
   copperRange: 90
@@ -412,6 +412,7 @@ MonoBehaviour:
   timeBetweenPathUpdates: 1.5
   critRange: 0
   allowedTargetDiscrepancy: 5
+  turnSpeed: 100
   targetMask:
     serializedVersion: 2
     m_Bits: 3328
@@ -886,7 +887,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95db57532d8eab41823bb9d5dd7998f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fullHealth: 50
+  fullHealth: 80
 --- !u!54 &2035042391
 Rigidbody:
   m_ObjectHideFlags: 0
