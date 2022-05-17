@@ -22,11 +22,14 @@ public class EnemySpawnController : MonoBehaviour
     [SerializeField] private int genSpawnDistanceMax = 50;
     [SerializeField] private int genSpawnDistanceMin = 15;
     private int spawnCount;
+    private int index;
+    private float distanceP1;
+    private float distanceP2;
+
     private GameObject[] players;
     private GameObject[] spawnLocations;
-    private List<GameObject> nearbySpawners = new List<GameObject>();
-    private int index;
     private GameObject activeSpawner;
+    private List<GameObject> nearbySpawners = new List<GameObject>();
     private Transform spawnPos;
     private DayNightSystem dayNightSystem;
 
@@ -61,8 +64,8 @@ public class EnemySpawnController : MonoBehaviour
 
             for (int i = 0; i < spawnLocations.Length; i++)
             {
-                float distanceP1 = Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position);
-                float distanceP2 = Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position);
+                distanceP1 = Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position);
+                distanceP2 = Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position);
                 if ((distanceP1 < spawnDistanceMax && distanceP1 > spawnDistanceMin) || (distanceP2 < spawnDistanceMax && distanceP2 > spawnDistanceMin))
                 {
                     nearbySpawners.Add(spawnLocations[i]);
