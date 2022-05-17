@@ -6,7 +6,7 @@ namespace CallbackSystem
 {
     public class PlayerOnCameraPos : MonoBehaviour
     {
-        private Vector3 screenPos, offset = new Vector3(0f, 2.5f, 0f);
+        private Vector3 screenPos, offset = new Vector3(0.3f, 4.5f, 0f);
         private Camera cam;
         private CameraPosUpdateEvent cameraEvent;
         private bool player;

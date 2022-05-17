@@ -59,13 +59,19 @@ public class PathfinderManager : MonoBehaviour {
 
 
     void Update() {
-        
+
         if (!pathQueue.IsEmpty() && job.IsCompleted) {
             job.Complete();
 
             for (int i = 0; i < agentsToUpdate.Count; i++) {
-                agentsToUpdate[i].CurrentPath = latestEnemyPath[i];
-                agentsToUpdate[i].CurrentPathIndex = 0;
+                try {
+                    agentsToUpdate[i].CurrentPath = latestEnemyPath[i];
+                    agentsToUpdate[i].CurrentPathIndex = 0;
+                } catch (System.Exception) {
+                    Debug.Log("Something broke the pathfinding");
+                    continue;
+                }
+
             }
 
             agentsToUpdate.Clear();
@@ -78,7 +84,6 @@ public class PathfinderManager : MonoBehaviour {
                 agentsToUpdate.Add(agent);
                 startPositionsTmp.Add(agent.Position);
                 endPositionsTMp.Add(agent.CurrentTarget);
-
             }
 
             AStarJob aStarJob = new AStarJob {
@@ -95,8 +100,14 @@ public class PathfinderManager : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        startPositionsTmp.Dispose();
-        endPositionsTMp.Dispose();
+        try {
+            startPositionsTmp.Dispose();
+            endPositionsTMp.Dispose();
+        } catch (System.Exception) {
+            // so it doesn't spam on exit playmode
+        }
+
+
     }
 
     public void UpdateAgentLatestPath(int agentId, List<Vector3> path) {

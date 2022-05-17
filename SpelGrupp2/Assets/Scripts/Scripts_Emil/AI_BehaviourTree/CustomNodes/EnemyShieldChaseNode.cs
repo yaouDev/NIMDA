@@ -2,20 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AIBehavior/Behavior/Move")]
-public class MoveNode : Node
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyShieldChase")]
+public class EnemyShieldChaseNode : Node
 {
 
     [SerializeField] private float turnSpeed = 70.0f;
+    [SerializeField] private float chaseSpeed = 12.8f;
     Vector3 closestTarget;
     Vector3 relativePos;
 
     Quaternion rotation;
 
     [SerializeField] private float distanceFromTargetToStop;
-    private Vector3 randomPos;
-    private int xPos;
-    private int zPos;
+    private EnemyShield enemyShield;
     public override NodeState Evaluate()
     {
 
@@ -27,16 +26,23 @@ public class MoveNode : Node
         rotation = Quaternion.LookRotation(relativePos, Vector3.up);
         agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
-        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
-
-
-        xPos = Random.Range(1, 5);
-        zPos = Random.Range(1, 5);
-        randomPos = new Vector3(xPos, 0, zPos);
-
-        if (agent.Destination != randomPos)
+        
+        enemyShield = agent.GetComponentInChildren<EnemyShield>();
+        if (enemyShield != null)
         {
-            agent.Destination = randomPos;
+            if (enemyShield.CurrentHealth <= 0)
+            {
+                agent.Speed = 16f;
+                Debug.Log("Yeeeehuuuuu, Nu gåre snabbt!");
+            }
+
+        }
+
+        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
+        if (agent.Destination != agent.ClosestPlayer)
+        {
+            agent.Speed = chaseSpeed;
+            agent.Destination = agent.ClosestPlayer;
             agent.IsStopped = false;
             NodeState = NodeState.RUNNING;
         }
