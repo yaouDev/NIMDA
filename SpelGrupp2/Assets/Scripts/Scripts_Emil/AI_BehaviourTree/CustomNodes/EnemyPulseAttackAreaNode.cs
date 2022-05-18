@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyPulseAttack")]
-public class EnemyPulseAttackAreaNode : Node {
-    [SerializeField] private float attackCoolDown = 3.0f;
+public class EnemyPulseAttackAreaNode : Node
+{
+    [SerializeField] private float attackCoolDown = 5.0f;
     [SerializeField] private float damage = 50.0f;
     [SerializeField] private LayerMask whatAreTargets;
     [SerializeField] private float explosionRange = 4f;
     [SerializeField] private float explosionForce = 50f;
     [SerializeField] private Material flashMaterial;
-    [SerializeField] private float duration = 0.5f;
+    [SerializeField] private float duration = 0.2f;
+    [SerializeField] private Material originalMaterial;
+
     private MeshRenderer meshRenderer;
-    private Material originalMaterial;
+    private float counter;
     //private Coroutine flashRoutine; 
 
 
@@ -22,15 +25,17 @@ public class EnemyPulseAttackAreaNode : Node {
 
     Collider[] colliders;
 
-    public override NodeState Evaluate() {
+    public override NodeState Evaluate()
+    {
 
         meshRenderer = agent.GetComponent<MeshRenderer>();
-        originalMaterial = meshRenderer.material;
 
-        if (isAttacking && agent.TargetInSight) {
+        if (isAttacking && agent.TargetInSight)
+        {
             agent.IsStopped = true;
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
+            agent.StartCoroutine(FlashRoutine());
             NodeState = NodeState.RUNNING;
             return NodeState;
         }
@@ -39,8 +44,8 @@ public class EnemyPulseAttackAreaNode : Node {
         return NodeState;
 
     }
-    public IEnumerator AttackDelay() {
-        agent.StartCoroutine(FlashRoutine());
+    public IEnumerator AttackDelay()
+    {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
@@ -50,34 +55,51 @@ public class EnemyPulseAttackAreaNode : Node {
 
     private IEnumerator FlashRoutine()
     {
-        meshRenderer.material = flashMaterial;
-        yield return new WaitForSeconds(duration);
-        meshRenderer.material = originalMaterial;
+        while (true)
+        {
+
+            meshRenderer.material = flashMaterial;
+            Debug.Log("Innan");
+            yield return new WaitForSeconds(duration);
+            meshRenderer.material = originalMaterial;
+            Debug.Log("mitten");
+            yield return new WaitForSeconds(duration);
+            Debug.Log("Efter");
+
+        }
+
+
         //agent.StopCoroutine(FlashRoutine());
     }
 
 
-    void Attack() {
+    void Attack()
+    {
         //Particklesystem
         Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
 
     }
 
-    private void CheckForPlayers() {
+    private void CheckForPlayers()
+    {
         colliders = Physics.OverlapSphere(agent.Position, explosionRange, whatAreTargets);
         Debug.Log("PulseAttack");
-        foreach (Collider coll in colliders) {
-            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy")) {
+        foreach (Collider coll in colliders)
+        {
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy"))
+            {
                 damageable = coll.transform.GetComponent<IDamageable>();
 
-                if (damageable != null) {
+                if (damageable != null)
+                {
                     //damage
                     damageable.TakeDamage(damage);
 
                     //ExplosionForce
                     Rigidbody rbTemp = coll.GetComponent<Rigidbody>();
-                    if (rbTemp != null) {
+                    if (rbTemp != null)
+                    {
                         rbTemp.AddExplosionForce(explosionForce, agent.Position, explosionRange);
                     }
 
