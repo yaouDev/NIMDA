@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 public class GeneratorEvent : MonoBehaviour
 {
-
     [SerializeField] private float openHeight;
     [SerializeField] private float eventDuration = 20;
     [SerializeField] private GameObject door;
@@ -15,7 +14,6 @@ public class GeneratorEvent : MonoBehaviour
     private bool doorOpen;
     private bool interactableRange = false; 
     private Vector3 closePosition;
-    private Vector3 startPosition;
     private Vector3 openPosition;
 
     // Start is called before the first frame update
@@ -30,20 +28,10 @@ public class GeneratorEvent : MonoBehaviour
         if (col.CompareTag("Player"))
         {
             textPopup.SetActive(true);
-            //Debug.Log("Starting Generator");
             interactableRange = true;
-            //StartGenerator();
+
         }
     }
-/*    void OnTriggerEnter(Collider col)
-    {
-        if (col.CompareTag("Player"))
-        {
-            textPopup.SetActive(true);
-            //Debug.Log("Starting Generator");
-            StartGenerator();
-        }
-    }*/
 
     void OnTriggerExit()
     {
@@ -64,11 +52,10 @@ public class GeneratorEvent : MonoBehaviour
     IEnumerator MoveDoor(Vector3 targetPosition, float duration)
     {
         timeElapsed = 0;
-        startPosition = door.transform.position;
         while (door.transform.position != targetPosition)
         {
             //Debug.Log("Moving Door");
-            door.transform.position = Vector3.Lerp(startPosition, targetPosition, timeElapsed / duration);
+            door.transform.position = Vector3.Lerp(closePosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
