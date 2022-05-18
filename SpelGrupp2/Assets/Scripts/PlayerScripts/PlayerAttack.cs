@@ -102,8 +102,7 @@ namespace CallbackSystem
             if (isAlive)
             {
                 AnimateLasers();
-                if (!laserWeapon)
-                    RenderCrosshair();
+                
             }
             else
             {
@@ -152,11 +151,6 @@ namespace CallbackSystem
             if (context.performed)
             {
                 laserWeapon = !laserWeapon;
-                if (!laserWeapon)
-                {
-                    crosshairEvent.usingProjectileWeapon = false;
-                    EventSystem.Current.FireEvent(crosshairEvent);
-                }
                 // TODO [Sound] Play weapon swap sound(s)
             }
         }
@@ -308,11 +302,12 @@ namespace CallbackSystem
             ApplyJoystickFireDirection();
             UpdateLaserSightDistance();
             AnimateLaserSightLineRenderer(gameObject.transform.forward);
+            RenderCrosshair();
         }
 
         private void RenderCrosshair()
         {
-            crosshairEvent.usingProjectileWeapon = true;
+            crosshairEvent.usingProjectileWeapon = laserWeapon ? false : true;
             crosshairEvent.isPlayerOne = isPlayerOne;
             crosshairEvent.crosshairPos = crosshairPoint;
             crosshairEvent.targetInSight = targetInSight;
