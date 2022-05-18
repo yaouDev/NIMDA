@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using CallbackSystem;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering.LWRP;
@@ -30,7 +32,6 @@ public class TopDownState : CameraState
 	private Vector3 cameraPosition;
 	private Vector3 cameraShakeOffset;
 	private static Vector3 sharedCameraShakeOffset;
-
 	
 	private Vector3 centroid;
 	private Vector3 abovePlayer;
@@ -40,10 +41,13 @@ public class TopDownState : CameraState
 	private readonly Quaternion fourtyFiveDegrees = quaternion.Euler(0.0f, 45.0f, 0.0f);
 
 	private void Awake() {
+		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
+		Debug.Log($"isPlayerOne {isPlayerOne}");
 		abovePlayer = Vector3.up * headHeight;
 	}
 
 	public override void Enter() {
+		isPlayerOne = owner.IsPlayerOne();
 		depthMaskPlanePos = DepthMaskPlane.localPosition;
 		depthMaskPlanePos.x = -.5f;
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
@@ -65,18 +69,26 @@ public class TopDownState : CameraState
 	private float shakeSpeed = 10.0f;
 	private float vibrationSpeed = 20.0f;
 	private float rotationFactor = 5.0f;
+	private bool isPlayerOne;
+	private CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
+
+	private void ShakeCamera(CameraShakeEvent cameraShake)
+	{
+		if (cameraShake.affectsPlayerOne && isPlayerOne || cameraShake.affectsPlayerTwo && !isPlayerOne)
+			ShakeCamera(cameraShake.magnitude);
+	}
 
 	public void ShakeCamera(float magnitude) => trauma += magnitude;
 
 	private void CameraShake(float distanceFraction)
 	{
 		// Debug Timer in place of event
-		s += Time.deltaTime;
-		if (s >= 4.0f)
-		{
-			s = 0;
-			trauma = 2f;
-		}
+		// s += Time.deltaTime;
+		// if (s >= 4.0f)
+		// {
+		// 	s = 0;
+		// 	trauma = 2f;
+		// }
 		
 		// perlin within Range(-1, 1)
 		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2;
@@ -93,7 +105,7 @@ public class TopDownState : CameraState
 		if (distanceFraction <= 1.0f && trauma > sharedTrauma) { sharedTrauma = trauma; }
 		trauma = Mathf.Max(trauma, sharedTrauma);
 
-		easedTrauma = Ease.EaseInExpo(trauma);
+		easedTrauma = Ease.EaseInQuad(trauma);
 		
 		cameraShakeOffset = 
 			CameraTransform.rotation * 

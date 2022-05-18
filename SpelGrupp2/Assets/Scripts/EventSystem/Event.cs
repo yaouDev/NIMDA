@@ -64,5 +64,15 @@ namespace CallbackSystem {
         public int Walls;
     }
 
+    /// <summary>
+    /// <param name="magnitude"/> value betweel 0.0f and 1.0f
+    /// </summary>
+    public class CameraShakeEvent : Event
+    {
+        public bool affectsPlayerOne;
+        public bool affectsPlayerTwo;
+        public float magnitude;
+    }
+
     public class SafeRoomEvent : Event { }
 }
