@@ -45,6 +45,13 @@ namespace CallbackSystem {
 
     }
 
+    public class WeaponCrosshairEvent : Event
+    {
+        public bool isAlive, usingProjectileWeapon, targetInSight;
+        public Vector3 crosshairPos;
+        public PlayerAttack attackScript;
+    }
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.
