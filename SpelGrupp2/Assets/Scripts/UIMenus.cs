@@ -3,36 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PauseGame : MonoBehaviour
+public class UIMenus : MonoBehaviour
 {
 
     [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private GameObject gameOverScreen;
     private bool isPaused = false;
-    
+    private int deadPlayerCount;
+
     void Start()
     {
         pauseScreen.SetActive(false);
+        gameOverScreen.SetActive(false);
     }
-    
-    // // Update is called once per frame
-    // void Update()
-    // {
-    //     if (Input.GetKeyDown("HELP"))
-    //     {
-    //         if (pauseScreen.activeInHierarchy)
-    //         {
-    //             Unpause();
-    //         }
-    //         if (!pauseScreen.activeInHierarchy)
-    //         {
-    //             Pause();
-    //         }
-    //     }
-    // }
 
     public void PauseButton(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && deadPlayerCount != 2)
         {
             isPaused = !isPaused;
             
@@ -57,5 +44,20 @@ public class PauseGame : MonoBehaviour
     {
         Time.timeScale = 1;
         pauseScreen.SetActive(false);
+    }
+
+    private void GameOver()
+    {
+        Time.timeScale = 0;
+        gameOverScreen.SetActive(true);
+    }
+
+    public void DeadPlayers(int number)
+    {
+        deadPlayerCount += number;
+        if (deadPlayerCount == 2)
+        {
+            GameOver();
+        }
     }
 }

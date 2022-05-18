@@ -331,7 +331,7 @@ MonoBehaviour:
   isPlayerOne: 1
   batteryCount: 3
   batteryRespawnCount: 2
-  maxBatteryCount: 3
+  maxBatteryCount: 5
   healthReg: 10
 --- !u!114 &8397479276426667862
 MonoBehaviour:
@@ -350,10 +350,15 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 6144
+  laserLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  maxDistance: 30
   laserSelfDmg: 25
-  damage: 70
+  damage: 65
   teamDamage: 30
   bullets: 15
+  maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
   bulletMat: {fileID: 2100000, guid: 61b3e88432baf31448b1e0c5f1d358aa, type: 2}
@@ -388,7 +393,7 @@ MonoBehaviour:
   _acceleration: 6.23
   _deceleration: 3.16
   _turnSpeedModifier: 9.32
-  _terminalVelocity: 4
+  _terminalVelocity: 5
   _jumpForce: 10
   _staticFrictionCoefficient: 0.5
   _kineticFrictionCoefficient: 0.2
@@ -829,7 +834,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayerOne: 1
 --- !u!1 &326990607699453844
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,7 +990,7 @@ MonoBehaviour:
   isPlayerOne: 0
   batteryCount: 3
   batteryRespawnCount: 2
-  maxBatteryCount: 3
+  maxBatteryCount: 5
   healthReg: 10
 --- !u!114 &3037943043123946253
 MonoBehaviour:
@@ -1005,10 +1009,15 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 5120
+  laserLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  maxDistance: 30
   laserSelfDmg: 25
-  damage: 70
+  damage: 65
   teamDamage: 30
   bullets: 15
+  maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
   bulletMat: {fileID: 2100000, guid: 61b3e88432baf31448b1e0c5f1d358aa, type: 2}
@@ -1043,7 +1052,7 @@ MonoBehaviour:
   _acceleration: 6.23
   _deceleration: 3.16
   _turnSpeedModifier: 9.32
-  _terminalVelocity: 4
+  _terminalVelocity: 5
   _jumpForce: 10
   _staticFrictionCoefficient: 0.5
   _kineticFrictionCoefficient: 0.2
@@ -1512,7 +1521,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayerOne: 0
 --- !u!1 &326990607883718378
 GameObject:
   m_ObjectHideFlags: 0

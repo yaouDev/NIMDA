@@ -18,7 +18,7 @@ namespace CallbackSystem {
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
-        [SerializeField] private int bullets = 10;
+        [SerializeField] private int bullets, maxBullets;
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
         private bool laserWeapon = true;
@@ -312,6 +312,16 @@ namespace CallbackSystem {
         {
             Debug.Log("Projectile weapon upgraded!");
             laserWeaponUpgraded = true;
+        }
+
+        public int ReturnBullets()
+        {
+            return bullets;
+        }
+
+        public int ReturnMaxBullets()
+        {
+            return maxBullets;
         }
     }
 }

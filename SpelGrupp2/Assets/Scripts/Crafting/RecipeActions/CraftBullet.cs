@@ -8,7 +8,7 @@ namespace CallbackSystem
     {
         override public void PerformAction(Crafting crafting)
         {
-            crafting.playerAttackScript.UpdateBulletCount(1);
+            crafting.playerAttackScript.UpdateBulletCount(3);
         }
     }
 }

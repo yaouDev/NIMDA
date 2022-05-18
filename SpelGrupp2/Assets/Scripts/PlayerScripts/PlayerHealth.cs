@@ -18,6 +18,7 @@ namespace CallbackSystem {
         private HealthUpdateEvent healthEvent;
         private ActivationUIEvent UIEvent;
         private bool started = false;
+        private UIMenus uiMenus;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake() {
@@ -29,6 +30,7 @@ namespace CallbackSystem {
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
+            uiMenus = GameObject.FindObjectOfType<UIMenus>();
         }
         private void Update() {
             if (!started) {
@@ -52,7 +54,7 @@ namespace CallbackSystem {
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
-                UpdateHealthUI();
+                UpdateHealthUI(true);
             }
             if (currHealth <= 0f && batteryCount == 0) {
                 Die();
@@ -79,6 +81,7 @@ namespace CallbackSystem {
 
             AudioController ac = AudioController.instance;
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
+            uiMenus.DeadPlayers(1);
         }
 
         public void Respawn() {
@@ -92,15 +95,17 @@ namespace CallbackSystem {
             attackAbility.Respawn();
             movement.Respawn();
             UpdateHealthUI();
+            uiMenus.DeadPlayers(-1);
         }
 
-        private void UpdateHealthUI() {
+        private void UpdateHealthUI(bool batteryDecreased = false) {
             if (batteryCount < 1) {
                 HealthRegeneration();
             }
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             healthEvent.batteries = batteryCount;
+            healthEvent.batteryDecreased = batteryDecreased;
             EventSystem.Current.FireEvent(healthEvent);
         }
 
@@ -116,6 +121,11 @@ namespace CallbackSystem {
 
         public int ReturnBatteries() {
             return batteryCount;
+        }
+
+        public int ReturnMaxBatteries()
+        {
+            return maxBatteryCount;
         }
     }
 }
