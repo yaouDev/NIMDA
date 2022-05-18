@@ -59,12 +59,9 @@ public class EnemyPulseAttackAreaNode : Node
         {
 
             meshRenderer.material = flashMaterial;
-            Debug.Log("Innan");
             yield return new WaitForSeconds(duration);
             meshRenderer.material = originalMaterial;
-            Debug.Log("mitten");
             yield return new WaitForSeconds(duration);
-            Debug.Log("Efter");
 
         }
 
@@ -84,7 +81,6 @@ public class EnemyPulseAttackAreaNode : Node
     private void CheckForPlayers()
     {
         colliders = Physics.OverlapSphere(agent.Position, explosionRange, whatAreTargets);
-        Debug.Log("PulseAttack");
         foreach (Collider coll in colliders)
         {
             if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy"))
