@@ -30,6 +30,7 @@ namespace CallbackSystem
         public int copper, transistor, iron;
 
         private ResourceUpdateEvent resourceEvent;
+        private FadingTextEvent fadingtextEvent;
         private PlayerHealth playerHealthScript;
         private bool isPlayerOne, started = false, isCrafting = false;
         private PlayerInput playerInput;
@@ -52,6 +53,7 @@ namespace CallbackSystem
             playerAttackScript = GetComponent<PlayerAttack>();
             playerHealthScript = GetComponent<PlayerHealth>();
             playerInput = GetComponent<PlayerInput>();
+            fadingtextEvent = new FadingTextEvent();
             resourceEvent = new ResourceUpdateEvent();
             craftingTable.SetActive(false);
             resourceArray = new int[] { copper, transistor, iron };
@@ -64,6 +66,7 @@ namespace CallbackSystem
             {
                 isPlayerOne = playerAttackScript.IsPlayerOne();
                 resourceEvent.isPlayerOne = isPlayerOne;
+                fadingtextEvent.isPlayerOne = isPlayerOne;
                 UpdateResources();
                 started = true;
             }
@@ -166,6 +169,8 @@ namespace CallbackSystem
                     if (playerAttackScript.ReturnBullets() < playerAttackScript.ReturnMaxBullets())
                     {
                         playerAttackScript.UpdateBulletCount(3);
+                        fadingtextEvent.text = "Bullets Crafted (x3)";
+                        EventSystem.Current.FireEvent(fadingtextEvent);
                     }
                     else
                     {
@@ -184,6 +189,8 @@ namespace CallbackSystem
                     if (TryCraftRecipe(batteryRecipe))
                     {
                         playerHealthScript.IncreaseBattery();
+                        fadingtextEvent.text = "Battery Crafted";
+                        EventSystem.Current.FireEvent(fadingtextEvent);
                     }
                 }
                 else
@@ -198,6 +205,8 @@ namespace CallbackSystem
             if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
             {
                 playerAttackScript.UpgradeProjectileWeapon();
+                fadingtextEvent.text = "Revolver Upgraded";
+                EventSystem.Current.FireEvent(fadingtextEvent);
                 selectedButton.interactable = false;
             }
         }
@@ -207,6 +216,8 @@ namespace CallbackSystem
             if (TryCraftRecipe(UpgradedLaserWeaponRecipe))
             {
                 playerAttackScript.UpgradeLaserWeapon();
+                fadingtextEvent.text = "Lasergun Upgraded";
+                EventSystem.Current.FireEvent(fadingtextEvent);
                 selectedButton.interactable = false;
             }
         }

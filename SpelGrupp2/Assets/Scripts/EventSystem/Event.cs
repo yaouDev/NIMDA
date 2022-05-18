@@ -52,6 +52,11 @@ namespace CallbackSystem {
         public PlayerAttack attackScript;
     }
 
+    public class FadingTextEvent : Event
+    {
+        public string text;
+    } 
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.
