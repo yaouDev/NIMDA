@@ -10,6 +10,7 @@ public class GeneratorEvent : MonoBehaviour
     [SerializeField] private GameObject door;
     [SerializeField] private GameObject textPopup;
     [SerializeField] private EnemySpawnController spawnController;
+    [SerializeField] private Light siren;
     private float timeElapsed;
     private bool doorOpen;
     private bool interactableRange = false; 
@@ -20,6 +21,7 @@ public class GeneratorEvent : MonoBehaviour
     void Start()
     {
         closePosition = door.transform.position;
+        siren.enabled = false; 
         spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
     }
 
@@ -42,8 +44,8 @@ public class GeneratorEvent : MonoBehaviour
     {
         if (!doorOpen)
         {
-            Debug.Log("Kommer hit?");
             //Debug.Log("Opening");
+            siren.enabled = true;
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
             spawnController.GeneratorRunning(true);
@@ -55,13 +57,13 @@ public class GeneratorEvent : MonoBehaviour
         timeElapsed = 0;
         while (door.transform.position != targetPosition)
         {
-            Debug.Log("Hit då?");
             //Debug.Log("Moving Door");
             door.transform.position = Vector3.Lerp(closePosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
         doorOpen = true;
+        siren.enabled = false; 
 
     }
     public void Interact(InputAction.CallbackContext value)
@@ -69,7 +71,6 @@ public class GeneratorEvent : MonoBehaviour
         if (value.started && interactableRange)
         {
             StartGenerator();
-            Debug.Log("interact");
         }
     }
 }
