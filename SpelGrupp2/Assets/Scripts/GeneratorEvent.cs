@@ -42,6 +42,7 @@ public class GeneratorEvent : MonoBehaviour
     {
         if (!doorOpen)
         {
+            Debug.Log("Kommer hit?");
             //Debug.Log("Opening");
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
@@ -54,6 +55,7 @@ public class GeneratorEvent : MonoBehaviour
         timeElapsed = 0;
         while (door.transform.position != targetPosition)
         {
+            Debug.Log("Hit då?");
             //Debug.Log("Moving Door");
             door.transform.position = Vector3.Lerp(closePosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
@@ -67,6 +69,7 @@ public class GeneratorEvent : MonoBehaviour
         if (value.started && interactableRange)
         {
             StartGenerator();
+            Debug.Log("interact");
         }
     }
 }
