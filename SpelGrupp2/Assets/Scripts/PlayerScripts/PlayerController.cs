@@ -135,7 +135,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnsmoothed, ref reference, .05f, 100.0f);
-        Debug.Log(joyStickRightInput);
 
         if (alive)
         {
@@ -427,32 +426,39 @@ public class PlayerController : MonoBehaviour
     public void Die()
     {
         //gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
-        StartCoroutine(ReturnToOtherPlayer());
+        if (alive)
+            StartCoroutine(ReturnToOtherPlayer());
         alive = false;
     }
 
     private IEnumerator ReturnToOtherPlayer()
     {
         float t = 0.0f;
-        Vector3 sPos = visuals.transform.localPosition;
-        Quaternion sRot = visuals.transform.localRotation;
-        visuals.transform.RotateAround(transform.position + Vector3.up * .05f, visuals.transform.right, -90);
-        Vector3 ePos = visuals.transform.localPosition;
-        Quaternion eRot = visuals.transform.localRotation;
-        visuals.transform.localPosition = sPos;
-        visuals.transform.localRotation = sRot;
+        // Vector3 sPos = visuals.transform.localPosition;
+        // Quaternion sRot = visuals.transform.localRotation;
+        // visuals.transform.RotateAround(transform.position + Vector3.up * .05f, visuals.transform.right, -90);
+        // Vector3 ePos = visuals.transform.localPosition;
+        // Quaternion eRot = visuals.transform.localRotation;
+        // visuals.transform.localPosition = sPos;
+        // visuals.transform.localRotation = sRot;
+        Quaternion startRot = transform.rotation;
+        Quaternion endRot = quaternion.Euler(-90, 0, 0) * startRot;
+        transform.position += Vector3.up * .5f;
         while (t <= 1.0f)
         {
-            
+            transform.rotation = Quaternion.Slerp(startRot, endRot, Ease.EaseOutBounce(t));
             //visuals.transform.RotateAround(transform.position + Vector3.up * 0.5f, transform.right, -90 * Time.deltaTime);
-            visuals.transform.localRotation = Quaternion.Slerp(sRot, eRot, Ease.EaseOutBounce(t));
-            visuals.transform.localPosition = Vector3.Lerp(sPos, ePos, Ease.EaseOutBounce(t));
+            // visuals.transform.localRotation = Quaternion.Slerp(sRot, eRot, Ease.EaseOutBounce(t));
+            // visuals.transform.localPosition = Vector3.Lerp(sPos, ePos, Ease.EaseOutBounce(t));
             t += Time.deltaTime;
             yield return null;
         }
+
+        yield return new WaitForSeconds(1.0f);
         visuals.SetActive(false);
-        visuals.transform.localRotation = sRot;
-        visuals.transform.localPosition = sPos;
+        transform.rotation = startRot;
+        // visuals.transform.localRotation = sRot;
+        // visuals.transform.localPosition = sPos;
         //visuals.transform.RotateAround(transform.position, transform.forward, 90);
 
         // visuals.transform.localRotation = startRotation;
@@ -464,7 +470,7 @@ public class PlayerController : MonoBehaviour
             t += Time.deltaTime;
             yield return null;
         }
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         visuals.SetActive(true);
         alive = true;
     }
