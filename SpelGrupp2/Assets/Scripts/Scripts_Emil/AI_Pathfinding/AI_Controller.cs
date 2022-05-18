@@ -43,7 +43,7 @@ public class AI_Controller : MonoBehaviour {
     public Vector3 ClosestPlayer {
         get {
             CallbackSystem.PlayerHealth closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
-            Vector3.Distance(targets[1].transform.position, transform.position) && targets[0].Alive ? closestTarget = targets[1] : targets[0];
+            Vector3.Distance(targets[1].transform.position, transform.position) && targets[1].Alive ? closestTarget = targets[1] : targets[0];
             return closestTarget.transform.position;
         }
     }

@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawnController : MonoBehaviour
-{
+public class EnemySpawnController : MonoBehaviour {
     [Header("What to Spawn")]
     [SerializeField] private GameObject[] spawnThis;
     private int maxSpawnThisMany;
@@ -45,58 +44,60 @@ public class EnemySpawnController : MonoBehaviour
     private float distanceP1;
     private float distanceP2;
 
-    private GameObject[] players;
+    private CallbackSystem.PlayerHealth[] players;
     private GameObject[] spawnLocations;
     private GameObject activeSpawner;
     private List<GameObject> nearbySpawners = new List<GameObject>();
     private Transform spawnPos;
     private DayNightSystem dayNightSystem;
-    
 
-    void Start()
-    {
+
+    void Start() {
         dayNightSystem = FindObjectOfType<DayNightSystem>();
         spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
-        players = GameObject.FindGameObjectsWithTag("Player");
+        players = new CallbackSystem.PlayerHealth[2];
+        GameObject[] tmp = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < tmp.Length; i++) players[i] = tmp[i].GetComponent<CallbackSystem.PlayerHealth>();
         StartCoroutine(SpawnObject());
     }
-    private void FixedUpdate()
-    {
+    private void FixedUpdate() {
         IsNight();
     }
 
-    IEnumerator SpawnObject()
-    {
-        while (true)
-        {
+    public Vector3 ClosestPlayer {
+        get {
+            CallbackSystem.PlayerHealth closestTarget = Vector3.Distance(players[0].transform.position, transform.position) >
+            Vector3.Distance(players[1].transform.position, transform.position) ? closestTarget = players[1] : players[0];
+            return closestTarget.transform.position;
+        }
+    }
+
+    IEnumerator SpawnObject() {
+        while (true) {
             nSpawnCooldown = Random.Range(nMinSpawnCooldown, nMaxSpawnCooldown);
             nightSpawnCooldown = Random.Range(nightMinSpawnCooldown, nightMinSpawnCooldown);
             genSpawnCooldown = Random.Range(genMinSpawnCooldown, genMaxSpawnCooldown);
             spawnThisMany = Random.Range(minSpawnThisMany, maxSpawnThisMany);
 
-            if (spawnLocations.Length == 0)
-            {
+            if (spawnLocations.Length == 0) {
                 spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
             }
             // Debug.Log("hello");
             // Debug.Log(spawnLocations.Length);
 
-            for (int i = 0; i < spawnLocations.Length; i++)
-            {
+            for (int i = 0; i < spawnLocations.Length; i++) {
                 distanceP1 = Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position);
                 distanceP2 = Vector3.Distance(players[1].transform.position, spawnLocations[i].transform.position);
-                if ((distanceP1 < spawnDistanceMax && distanceP1 > spawnDistanceMin) || (distanceP2 < spawnDistanceMax && distanceP2 > spawnDistanceMin))
-                {
+                if ((distanceP1 < spawnDistanceMax && distanceP1 > spawnDistanceMin) || (distanceP2 < spawnDistanceMax && distanceP2 > spawnDistanceMin)) {
                     nearbySpawners.Add(spawnLocations[i]);
                 }
             }
-            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount)
-            {
+            if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount) {
                 index = Random.Range(0, nearbySpawners.Count);
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;
-                for (int i = 0; i < spawnThisMany; i++)
-                {
+                spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
+                for (int i = 0; i < spawnThisMany; i++) {
                     Instantiate(spawnThis[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation);
                     nearbySpawners.Clear();
                     spawnCount += 1;
@@ -106,15 +107,12 @@ public class EnemySpawnController : MonoBehaviour
         }
     }
 
-    public void reduceSpawnCount(int amount)
-    {
+    public void reduceSpawnCount(int amount) {
         spawnCount -= amount;
     }
 
-    public void GeneratorRunning(bool on)
-    {
-        if (on)
-        {
+    public void GeneratorRunning(bool on) {
+        if (on) {
             maxSpawnThisMany = genMaxSpawnThisMany;
             minSpawnThisMany = genMinSpawnThisMany;
             spawnCooldown = genSpawnCooldown;
@@ -122,8 +120,7 @@ public class EnemySpawnController : MonoBehaviour
             spawnDistanceMax = genSpawnDistanceMax;
             spawnDistanceMin = genSpawnDistanceMin;
         }
-        if (!on)
-        {
+        if (!on) {
             maxSpawnThisMany = nMaxSpawnThisMany;
             minSpawnThisMany = nMinSpawnThisMany;
             spawnCooldown = nSpawnCooldown;
@@ -132,19 +129,15 @@ public class EnemySpawnController : MonoBehaviour
             spawnDistanceMin = nSpawnDistanceMin;
         }
     }
-    private void IsNight()
-    {
-        if (!dayNightSystem.Isday)
-        {
+    private void IsNight() {
+        if (!dayNightSystem.Isday) {
             maxSpawnThisMany = nightMaxSpawnThisMany;
             minSpawnThisMany = nightMinSpawnThisMany;
             spawnCooldown = nightSpawnCooldown;
             maxSpawnCount = nightMaxSpawnCount;
             spawnDistanceMax = nightSpawnDistanceMax;
             spawnDistanceMin = nightSpawnDistanceMin;
-        }
-        else
-        {
+        } else {
             maxSpawnThisMany = nMaxSpawnThisMany;
             minSpawnThisMany = nMinSpawnThisMany;
             spawnCooldown = nSpawnCooldown;
@@ -154,8 +147,7 @@ public class EnemySpawnController : MonoBehaviour
         }
     }
 
-    private void CheckModuleExits()
-    {
+    private void CheckModuleExits() {
 
     }
 
