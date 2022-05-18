@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AI_Controller : MonoBehaviour {
 
-    [SerializeField] private float speed, critRange, allowedTargetDiscrepancy, turnSpeed = 100f;
+    [SerializeField] private float acceleration = 13.5f, maxSpeed = 13.5f, critRange, allowedTargetDiscrepancy, turnSpeed = 100f;
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private bool drawPath = false, isBoss = false, isStopped = true;
 
@@ -19,87 +19,25 @@ public class AI_Controller : MonoBehaviour {
     private CallbackSystem.PlayerHealth[] targets;
     private bool targetInSight = false;
 
-    // Start is called before the first frame update
-    void Start() {
-
-        // Getting components
-        targets = new CallbackSystem.PlayerHealth[2];
-        GameObject[] tmp = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < tmp.Length; i++) targets[i] = tmp[i].GetComponent<CallbackSystem.PlayerHealth>();
-        col = GetComponent<Collider>();
-        enemyHealth = GetComponent<EnemyHealth>();
-        behaviorTree = GetComponent<BehaviorTree>();
-        avoidTrigger = GetComponentInChildren<SphereCollider>();
-        rBody = GetComponent<Rigidbody>();
-
-        activeTarget = targets[0].transform.position;
-        Destination = ClosestPlayer;
-
-        Physics.IgnoreLayerCollision(12, 12);
-
-        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
-        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
-    }
-
-
-    void Update() {
-
-        UpdateTarget();
-        UpdateTargetInSight();
-        behaviorTree.Update();
-        RotateTowardPlayer();
-
-        if (PathRequestAllowed) updatePath();
-
-        // This code is for debugging purposes only, shows current calculated path
-        if (drawPath && currentPath != null && currentPath.Count != 0) {
-            Vector3 prevPos = currentPath[0];
-            foreach (Vector3 pos in currentPath) {
-                if (pos != prevPos)
-                    Debug.DrawLine(prevPos, pos, Color.blue);
-                prevPos = pos;
-            }
-        }
-    }
-
-    private void RotateTowardPlayer() {
-        //Find Closest Player
-        Vector3 relativePos = ClosestPlayer - Position;
-
-        // Rotate the Enemy towards the player
-        Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation,
-                                                            rotation, Time.deltaTime * turnSpeed);
-        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
-    }
-
-    private void updatePath() {
-        UpdateTarget();
-        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
-    }
-
-    private void UpdateTargetInSight() {
-        RaycastHit hit;
-        Vector3 dir = (ClosestPlayer - Position).normalized;
-        Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
-
-        if (hit.collider != null) {
-            if (hit.collider.tag == "Player") {
-                targetInSight = true;
-                return;
-            }
-        }
-        targetInSight = false;
-    }
-
-    // getters and setters below
+    // Getters and setters below
     public bool TargetInSight {
         get { return targetInSight; }
     }
 
-    public float Speed {
-        get { return speed; }
-        set { speed = value; }
+    public float Acceleration {
+        get { return acceleration; }
+        set {
+            if (value < 0) acceleration = 0;
+            else acceleration = value;
+        }
+    }
+
+    public float MaxSpeed {
+        get { return maxSpeed; }
+        set {
+            if (value < 0) maxSpeed = 0;
+            else maxSpeed = value;
+        }
     }
 
     public Vector3 ClosestPlayer {
@@ -176,13 +114,87 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
+    void Start() {
 
+        // Getting components
+        targets = new CallbackSystem.PlayerHealth[2];
+        GameObject[] tmp = GameObject.FindGameObjectsWithTag("Player");
+        for (int i = 0; i < tmp.Length; i++) targets[i] = tmp[i].GetComponent<CallbackSystem.PlayerHealth>();
+        col = GetComponent<Collider>();
+        enemyHealth = GetComponent<EnemyHealth>();
+        behaviorTree = GetComponent<BehaviorTree>();
+        avoidTrigger = GetComponentInChildren<SphereCollider>();
+        rBody = GetComponent<Rigidbody>();
+
+        activeTarget = targets[0].transform.position;
+        Destination = ClosestPlayer;
+
+        Physics.IgnoreLayerCollision(12, 12);
+
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
+    }
 
     private void FixedUpdate() {
         MoveFromBlock();
         if (!isStopped) {
             Move();
         }
+    }
+
+    void Update() {
+
+        UpdateTarget();
+        UpdateTargetInSight();
+        UpdateRotation();
+        behaviorTree.Update();
+
+        if (PathRequestAllowed) UpdatePath();
+
+        // This code is for debugging purposes only, shows current calculated path
+        if (drawPath && currentPath != null && currentPath.Count != 0) {
+            Vector3 prevPos = currentPath[0];
+            foreach (Vector3 pos in currentPath) {
+                if (pos != prevPos)
+                    Debug.DrawLine(prevPos, pos, Color.blue);
+                prevPos = pos;
+            }
+        }
+    }
+
+    private void UpdateRotation() {
+        //Find Closest Player
+        Vector3 relativePos = ClosestPlayer - Position;
+
+        // Rotate the Enemy towards the player
+        Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                                                            rotation, Time.deltaTime * turnSpeed);
+        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+    }
+
+    private void UpdatePath() {
+        UpdateTarget();
+        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
+    }
+
+    private void UpdateTargetInSight() {
+        RaycastHit hit;
+        Vector3 dir = (ClosestPlayer - Position).normalized;
+        Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
+
+        if (hit.collider != null) {
+            if (hit.collider.tag == "Player") {
+                targetInSight = true;
+                return;
+            }
+        }
+        targetInSight = false;
+    }
+
+    public void UpdateTarget() {
+        activeTarget = Destination;
+        activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
     }
 
     void MoveFromBlock() {
@@ -238,29 +250,11 @@ public class AI_Controller : MonoBehaviour {
                 }
                 // the enemy is stuck on a collider, like a wall
                 if (anyNodeBlocked) {
-                    force = dirToMoveBack * speed * forceMultiplier;
+                    force = dirToMoveBack * acceleration * forceMultiplier;
                 }
             }
         }
         return force;
-    }
-
-    // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
-    private void OnTriggerStay(Collider other) {
-        if (other != null && other.tag == "Enemy") {
-            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
-            Vector3 valueToTest = transform.position;
-            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
-            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
-            if ((dot >= 0) || valueToTest == transform.position) {
-                Vector3 forceToAdd = -directionOfOtherEnemy * speed;
-                float multiplier = 0.15f;
-                if (!isStopped) multiplier = 0.05f;
-                forceToAdd.y = 0;
-                rBody.AddForce(forceToAdd * multiplier, ForceMode.Force);
-                Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, speed);
-            }
-        }
     }
 
     private void Move() {
@@ -273,7 +267,7 @@ public class AI_Controller : MonoBehaviour {
                 int indexesToLerp = 4;
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
 
-                Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5f) - Position).normalized * speed;
+                Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5f) - Position).normalized * acceleration;
                 lerpForceToAdd.y = 0;
                 Vector3 forceToAdd = lerpForceToAdd;
 
@@ -285,15 +279,12 @@ public class AI_Controller : MonoBehaviour {
             } else if (currentPathIndex < currentPath.Count - 2) {
                 currentPathIndex++;
             }
-            // ensure enemies stay at their max speed
-            Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, speed);
         }
+        // ensure enemies stay at their max speed
+        Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
     }
 
-    public void UpdateTarget() {
-        activeTarget = Destination;
-        activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
-    }
+    // Callback functions below
 
     public void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
         if (!isBoss) {
@@ -313,5 +304,23 @@ public class AI_Controller : MonoBehaviour {
     private void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(Position);
         if (deSpawnEvent.Position == modulePos) Health.DieNoLoot();
+    }
+
+    // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
+    private void OnTriggerStay(Collider other) {
+        if (other != null && other.tag == "Enemy") {
+            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
+            Vector3 valueToTest = transform.position;
+            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
+            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
+            if ((dot >= 0) || valueToTest == transform.position) {
+                Vector3 forceToAdd = -directionOfOtherEnemy * acceleration;
+                float multiplier = 0.15f;
+                if (!isStopped) multiplier = 0.05f;
+                forceToAdd.y = 0;
+                rBody.AddForce(forceToAdd * multiplier, ForceMode.Force);
+                Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
+            }
+        }
     }
 }
