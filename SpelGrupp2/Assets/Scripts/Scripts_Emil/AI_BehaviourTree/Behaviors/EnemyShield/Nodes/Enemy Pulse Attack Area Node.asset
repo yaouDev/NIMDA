@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54383c84c636ec84eb49a43c1e9b3ccd, type: 3}
   m_Name: Enemy Pulse Attack Area Node
   m_EditorClassIdentifier: 
-  attackRange: 0
-  turnSpeed: 70
   attackCoolDown: 1
   damage: 50
   whatAreTargets:
@@ -21,3 +19,5 @@ MonoBehaviour:
     m_Bits: 7168
   explosionRange: 4
   explosionForce: 50
+  flashMaterial: {fileID: 2100000, guid: 2fc70992846f95c4cb46e8a11354a514, type: 2}
+  duration: 2

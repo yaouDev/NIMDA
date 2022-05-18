@@ -33,7 +33,6 @@ public class EnemyShieldChaseNode : Node
             if (enemyShield.CurrentHealth <= 0)
             {
                 agent.Speed = 16f;
-                Debug.Log("Yeeeehuuuuu, Nu gåre snabbt!");
             }
 
         }

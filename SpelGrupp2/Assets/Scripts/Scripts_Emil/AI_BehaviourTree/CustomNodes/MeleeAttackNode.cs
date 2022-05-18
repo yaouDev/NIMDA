@@ -42,7 +42,10 @@ public class MeleeAttackNode : Node {
 
     void Attack() {
         CheckForPlayers();
-
+        if (AIData.Instance.EnemyMuzzleflash != null)
+        {
+            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        }
     }
 
     private void CheckForPlayers() {
