@@ -121,7 +121,7 @@ public class DynamicGraph : MonoBehaviour {
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
-            if (HasBlockedNeighbor(firstNode) && HasBlockedNeighbor(secondNode)) cost *= 2;
+           // if (HasBlockedNeighbor(firstNode) && HasBlockedNeighbor(secondNode)) cost *= 2;
             masterGraph[firstNode].TryAdd(secondNode, cost);
             masterGraph[secondNode].TryAdd(firstNode, cost);
         }

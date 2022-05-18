@@ -250,7 +250,7 @@ public class AI_Controller : MonoBehaviour {
                 }
                 // the enemy is stuck on a collider, like a wall
                 if (anyNodeBlocked) {
-                    force = dirToMoveBack * acceleration * forceMultiplier;
+                    force = dirToMoveBack * 15f * forceMultiplier;
                 }
             }
         }
