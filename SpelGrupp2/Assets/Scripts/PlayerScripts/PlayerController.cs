@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -106,6 +108,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The distance the character should count as being grounded")]
     private float _groundCheckDistance = 0.15f;
 
+    [SerializeField] private GameObject visuals;
+
     private void Awake()
     {
         stateMachine = new StateMachine(this, states);
@@ -130,10 +134,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnsmoothed, ref reference, .05f, 100.0f);
+        Debug.Log(joyStickRightInput);
 
         if (alive)
         {
-
             Grounded();
             ApplyJoystickMovement();
             stateMachine.Run();
@@ -148,6 +153,14 @@ public class PlayerController : MonoBehaviour
 
                 //print(_inputMovement.x);
             }
+        }
+        else
+        {
+            inputVectorUnsmoothed = Vector2.zero;
+            joyStickLeftInput = Vector2.zero;
+            reference = Vector2.zero;
+            _inputMovement = Vector3.zero;
+            _velocity = Vector3.zero;
         }
     }
 
@@ -170,9 +183,17 @@ public class PlayerController : MonoBehaviour
         joyStickLeftInput = context.ReadValue<Vector2>();
     }
 
+    // private DateTime time;
+    private Vector2 reference;
+    private Vector2 inputVectorUnsmoothed;
     public void JoystickRight(InputAction.CallbackContext context)
     {
-        joyStickRightInput = context.ReadValue<Vector2>();
+        // TimeSpan t = DateTime.Now - time;
+        inputVectorUnsmoothed = context.ReadValue<Vector2>();
+        // Debug.Log($"{inp.x} {inp.y} Time since last input {t.TotalMilliseconds}");
+        // time = DateTime.Now;
+        // joyStickRightInput = context.ReadValue<Vector2>();
+        // joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnsmoothed, ref reference, .1f, 1.0f);
     }
 
     public Vector2 GetRightStickVector()
@@ -405,8 +426,48 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
+        //gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
+        StartCoroutine(ReturnToOtherPlayer());
         alive = false;
     }
+
+    private IEnumerator ReturnToOtherPlayer()
+    {
+        float t = 0.0f;
+        Vector3 sPos = visuals.transform.localPosition;
+        Quaternion sRot = visuals.transform.localRotation;
+        visuals.transform.RotateAround(transform.position + Vector3.up * .05f, visuals.transform.right, -90);
+        Vector3 ePos = visuals.transform.localPosition;
+        Quaternion eRot = visuals.transform.localRotation;
+        visuals.transform.localPosition = sPos;
+        visuals.transform.localRotation = sRot;
+        while (t <= 1.0f)
+        {
+            
+            //visuals.transform.RotateAround(transform.position + Vector3.up * 0.5f, transform.right, -90 * Time.deltaTime);
+            visuals.transform.localRotation = Quaternion.Slerp(sRot, eRot, Ease.EaseOutBounce(t));
+            visuals.transform.localPosition = Vector3.Lerp(sPos, ePos, Ease.EaseOutBounce(t));
+            t += Time.deltaTime;
+            yield return null;
+        }
+        visuals.SetActive(false);
+        visuals.transform.localRotation = sRot;
+        visuals.transform.localPosition = sPos;
+        //visuals.transform.RotateAround(transform.position, transform.forward, 90);
+
+        // visuals.transform.localRotation = startRotation;
+        t = 0.0f;
+        Vector3 startPos = gameObject.transform.position;
+        while (t <= 1.0f)
+        {
+            gameObject.transform.position = Vector3.LerpUnclamped(startPos, otherPlayer.transform.position + Vector3.left, Ease.EaseOutBack(t));
+            t += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(3);
+        visuals.SetActive(true);
+        alive = true;
+    }
+    
     public void Respawn() => alive = true;
 }
