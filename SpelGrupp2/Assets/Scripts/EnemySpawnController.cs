@@ -51,6 +51,7 @@ public class EnemySpawnController : MonoBehaviour
     private List<GameObject> nearbySpawners = new List<GameObject>();
     private Transform spawnPos;
     private DayNightSystem dayNightSystem;
+    
 
     void Start()
     {
@@ -151,6 +152,11 @@ public class EnemySpawnController : MonoBehaviour
             spawnDistanceMax = nSpawnDistanceMax;
             spawnDistanceMin = nSpawnDistanceMin;
         }
+    }
+
+    private void CheckModuleExits()
+    {
+
     }
 
 
