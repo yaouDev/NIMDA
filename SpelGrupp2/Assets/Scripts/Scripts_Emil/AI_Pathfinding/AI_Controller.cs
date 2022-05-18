@@ -319,7 +319,7 @@ public class AI_Controller : MonoBehaviour {
                 if (!isStopped) multiplier = 0.05f;
                 forceToAdd.y = 0;
                 rBody.AddForce(forceToAdd * multiplier, ForceMode.Force);
-                Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
+                //Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
             }
         }
     }
