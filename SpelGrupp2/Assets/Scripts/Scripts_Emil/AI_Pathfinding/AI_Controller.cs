@@ -22,7 +22,7 @@ public class AI_Controller : MonoBehaviour {
     [SerializeField] public bool isStopped = true;
     CallbackSystem.PlayerHealth[] targets;
     private Vector3 destination = Vector3.zero;
-    private bool pathRequestAllowed = true;
+    private bool targetInSight = false;
 
     // Start is called before the first frame update
     void Start() {
@@ -47,6 +47,7 @@ public class AI_Controller : MonoBehaviour {
 
     void Update() {
         UpdateTarget();
+        UpdateTargetInSight();
         behaviorTree.Update();
         RotateTowardPlayer();
         //if (IsPathRequestAllowed()) StartCoroutine(UpdatePath());
@@ -89,20 +90,23 @@ public class AI_Controller : MonoBehaviour {
         PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
     }
 
+    private void UpdateTargetInSight() {
+        RaycastHit hit;
+        Vector3 dir = (ClosestPlayer - Position).normalized;
+        Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
+
+        if (hit.collider != null) {
+            if (hit.collider.tag == "Player") {
+                targetInSight = true;
+                return;
+            }
+        }
+        targetInSight = false;
+    }
+
     // getters and setters below
     public bool TargetInSight {
-        get {
-            RaycastHit hit;
-            Vector3 dir = (ClosestPlayer - Position).normalized;
-            Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
-
-            if (hit.collider != null) {
-                if (hit.collider.tag == "Player") {
-                    return true;
-                }
-            }
-            return false;
-        }
+        get { return targetInSight; }
     }
 
     public float Speed {
@@ -152,11 +156,6 @@ public class AI_Controller : MonoBehaviour {
         set { isStopped = value; }
     }
 
-    public bool PathRequestAllowed {
-        get { return pathRequestAllowed && IsPathRequestAllowed(); }
-        set { pathRequestAllowed = value; }
-    }
-
     public float DistanceFromTarget { get { return Vector3.Distance(activeTarget, Position); } }
 
     public Vector3 Velocity { get { return rBody.velocity; } }
@@ -202,66 +201,63 @@ public class AI_Controller : MonoBehaviour {
     }
 
     void MoveFromBlock() {
-        float jumpHeight = 0.1f;
+        Vector3 forceToAdd = Vector3.zero;
+        if (currentPath != null && currentPathIndex != currentPath.Count - 1) {
+            forceToAdd = CalculateAvoidForce(currentPathIndex, 8f);
+            Rigidbody.AddForce(forceToAdd, ForceMode.Force);
+        }
+    }
+
+    Vector3 CalculateAvoidForce(int index, float forceMultiplier) {
         bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
         if (isBoss) {
             velocityCond = Rigidbody.velocity.magnitude < 0.01f;
         }
+        Vector3 force = Vector3.zero;
 
         if (velocityCond && !isStopped && currentPath != null && CurrentPath.Count > 0 && DistanceFromTarget > 2f) {
 
-            Vector3[] pathNeighbors = DynamicGraph.Instance.GetPossibleNeighbors(CurrentPathNode);
-            Vector3[] currentPosNeighbors = DynamicGraph.Instance.GetPossibleNeighbors(DynamicGraph.Instance.GetClosestNode(Position));
+            Vector3 currentNode = currentPath[index];
+            Vector3 nextNode = currentPath[index + 1];
+
+            Vector3[] pathNeighbors = DynamicGraph.Instance.GetPossibleNeighbors(currentNode);
             bool[] blockedNeighbors = new bool[pathNeighbors.Length];
 
-            bool posBlocked = false;
             bool sideBlocked = false;
 
             for (int i = 0; i < pathNeighbors.Length; i++) {
                 if (DynamicGraph.Instance.IsNodeBlocked(pathNeighbors[i])) {
                     blockedNeighbors[i] = true;
                 }
-
-                if (Vector3.Dot((pathNeighbors[i] - CurrentPathNode).normalized, (NextPathNode - CurrentPathNode).normalized) == 0) sideBlocked = true;
-                if (DynamicGraph.Instance.IsNodeBlocked(currentPosNeighbors[i])) {
-                    posBlocked = true;
-                }
+                if (Vector3.Dot((pathNeighbors[i] - currentNode).normalized, (nextNode - currentNode).normalized) == 0) sideBlocked = true;
             }
 
-            if (posBlocked) {
-                bool anyNodeBlocked = false;
-                Vector3 dirToMoveBack = Vector3.zero;
-                int lerpCount = 2;
-                for (int i = 0; i < pathNeighbors.Length; i++) {
-                    if (blockedNeighbors[i]) {
-                        anyNodeBlocked = true;
-                        float dot = Vector3.Dot((pathNeighbors[i] - CurrentPathNode).normalized, (NextPathNode - CurrentPathNode).normalized);
+            bool anyNodeBlocked = false;
+            Vector3 dirToMoveBack = Vector3.zero;
+            int lerpCount = 2;
+            for (int i = 0; i < pathNeighbors.Length; i++) {
+                if (blockedNeighbors[i]) {
+                    anyNodeBlocked = true;
+                    float dot = Vector3.Dot((pathNeighbors[i] - currentNode).normalized, (nextNode - currentNode).normalized);
 
-                        if (dirToMoveBack == Vector3.zero) dirToMoveBack = (CurrentPathNode - pathNeighbors[i]).normalized;
-                        else {
-                            float lerpVal = 0;
-                            if (dot < 0.5f || (dot >= 0.5f && !sideBlocked)) lerpVal = 0.5f;
-                            else if (dot >= 0.5f && sideBlocked) lerpVal = 0.3f;
-                            dirToMoveBack = Vector3.Lerp(dirToMoveBack, (CurrentPathNode - pathNeighbors[i]).normalized, lerpVal);
-                            lerpCount++;
-                        }
-                        dirToMoveBack.y = 0;
-                        dirToMoveBack = dirToMoveBack.normalized;
+                    if (dirToMoveBack == Vector3.zero) dirToMoveBack = (currentNode - pathNeighbors[i]).normalized;
+                    else {
+                        float lerpVal = 0;
+                        if (dot < 0.5f || (dot >= 0.5f && !sideBlocked)) lerpVal = 0.5f;
+                        else if (dot >= 0.5f && sideBlocked) lerpVal = 0.3f;
+                        dirToMoveBack = Vector3.Lerp(dirToMoveBack, (currentNode - pathNeighbors[i]).normalized, lerpVal);
+                        lerpCount++;
                     }
+                    dirToMoveBack.y = 0;
+                    dirToMoveBack = dirToMoveBack.normalized;
                 }
                 // the enemy is stuck on a collider, like a wall
                 if (anyNodeBlocked) {
-                    Vector3 dirForce = dirToMoveBack * speed * 13f;
-                    Rigidbody.AddForce(dirForce, ForceMode.Force);
-                    Debug.DrawLine(Position, Position + dirForce * speed, Color.red);
+                    force = dirToMoveBack * speed * forceMultiplier;
                 }
             }
-
-            // the enemy is stuck between two modules
-            /*          else if (Vector3.Distance(Position, currentPath[0]) > 0.5f) {
-                         Rigidbody.MovePosition(new Vector3(Position.x, Position.y + jumpHeight, Position.z));
-                     } */
         }
+        return force;
     }
 
     // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
@@ -302,9 +298,12 @@ public class AI_Controller : MonoBehaviour {
                 if (currentPath.Count - 1 - currentPathIndex < 4) indexesToLerp = currentPath.Count - 1 - currentPathIndex;
                 Vector3 lerpForceToAdd = (Vector3.Lerp(CurrentPathNode, currentPath[currentPathIndex + indexesToLerp], 0.5f) - Position).normalized * speed;
                 lerpForceToAdd.y = 0;
-                Vector3 forceTadd = lerpForceToAdd;
+                Vector3 forceToAdd = lerpForceToAdd;
                 //if (currentPathIndex != currentPath.Count - 1 && rBody.velocity.magnitude < 0.1f) forceTadd = (CurrentPathNode - Position).normalized * speed * 5;
-                Rigidbody.AddForce(forceTadd, ForceMode.Force);
+
+                if (currentPathIndex <= currentPath.Count - 4) forceToAdd += CalculateAvoidForce(currentPathIndex + 2, 13f);
+
+                Rigidbody.AddForce(forceToAdd, ForceMode.Force);
                 if (currentPathIndex != currentPath.Count - 1 && Vector3.Distance(currentPath[currentPathIndex + 1], Position) < Vector3.Distance(CurrentPathNode, Position)) currentPathIndex++;
 
             } else if (currentPathIndex < currentPath.Count - 2) {
@@ -327,11 +326,11 @@ public class AI_Controller : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        try{
+        try {
             CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
-        } catch(System.Exception){
+        } catch (System.Exception) {
             // only so it doesn't spam nullreference on exit playmode
         }
-        
+
     }
 }
