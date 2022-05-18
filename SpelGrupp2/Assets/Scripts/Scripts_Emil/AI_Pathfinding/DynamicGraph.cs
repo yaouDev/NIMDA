@@ -291,7 +291,7 @@ public class DynamicGraph : MonoBehaviour {
     public bool IsModuleLoaded(Vector2Int modulePos) {
         return loadedModules.Contains(modulePos);
     }
-
+ 
     public HashSet<Vector2Int> GetLoadedModules() {
         return loadedModules;
     }

@@ -106,8 +106,6 @@ public class PathfinderManager : MonoBehaviour {
         } catch (System.Exception) {
             // so it doesn't spam on exit playmode
         }
-
-
     }
 
     public void UpdateAgentLatestPath(int agentId, List<Vector3> path) {
