@@ -42,7 +42,6 @@ public class TopDownState : CameraState
 
 	private void Awake() {
 		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
-		Debug.Log($"isPlayerOne {isPlayerOne}");
 		abovePlayer = Vector3.up * headHeight;
 	}
 
