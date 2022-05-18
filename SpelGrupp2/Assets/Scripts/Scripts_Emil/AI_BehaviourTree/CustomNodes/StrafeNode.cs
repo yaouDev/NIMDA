@@ -24,9 +24,6 @@ public class StrafeNode : Node {
             while (strafeTarget == Vector3.zero || DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) {
                 float angleOffset = Random.Range(-120, 121);
                 int strafeDistance = Random.Range(minStrafeDistance, maxStrafeDistance + 1);
-                /*         xPos = Random.Range(-5, 5);
-                        zPos = Random.Range(-5, 5); */
-                //randomPos = new Vector3(xPos, 0, zPos);
                 randomPos = Quaternion.AngleAxis(angleOffset, Vector3.up) * (agent.ClosestPlayer - agent.Position).normalized * strafeDistance;
                 strafeTarget = randomPos + agent.Position;
                 agent.Destination = strafeTarget;
