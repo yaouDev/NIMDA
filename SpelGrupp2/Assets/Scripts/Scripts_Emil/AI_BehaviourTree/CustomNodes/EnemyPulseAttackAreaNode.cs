@@ -10,7 +10,7 @@ public class EnemyPulseAttackAreaNode : Node {
     [SerializeField] private float explosionRange = 4f;
     [SerializeField] private float explosionForce = 50f;
     [SerializeField] private Material flashMaterial;
-    [SerializeField] private float duration = 2f;
+    [SerializeField] private float duration = 0.5f;
     private MeshRenderer meshRenderer;
     private Material originalMaterial;
     //private Coroutine flashRoutine; 
@@ -53,7 +53,7 @@ public class EnemyPulseAttackAreaNode : Node {
         meshRenderer.material = flashMaterial;
         yield return new WaitForSeconds(duration);
         meshRenderer.material = originalMaterial;
-        agent.StopCoroutine(FlashRoutine());
+        //agent.StopCoroutine(FlashRoutine());
     }
 
 
