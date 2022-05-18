@@ -54,7 +54,6 @@ public class MeleeAttackNode : Node {
         foreach (Collider coll in colliders) {
             if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject")) {
                 damageable = coll.transform.GetComponent<IDamageable>();
-                Debug.Log("MeleeAttack");
 
                 if (damageable != null) {
                     damageable.TakeDamage(damage);

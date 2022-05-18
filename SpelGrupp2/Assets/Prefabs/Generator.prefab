@@ -128,9 +128,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openHeight: -11.7
-  eventDuration: 60
+  eventDuration: 10
   door: {fileID: 0}
   textPopup: {fileID: 614617766033636849}
+  spawnController: {fileID: 0}
 --- !u!1 &614617766033636849
 GameObject:
   m_ObjectHideFlags: 0
@@ -229,7 +230,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '[F]/(X) - Start generator'
+  m_text: '[F]/(Aw) - Start generator'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
