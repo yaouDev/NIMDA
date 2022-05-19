@@ -126,14 +126,12 @@ namespace CallbackSystem {
         }
         public void ChooseMaterialColor(Color color)
         {
-            //Event to update UI color aswell as crosshair/laserSight
             playerMaterial.color = color;
             colorEvent.color = color;
             EventSystem.Current.FireEvent(colorEvent);
         }
         public void ChooseMaterialColor()
         {
-            //Event to update UI color aswell as crosshair/laserSight
             playerMaterial.color = defaultColor;
             colorEvent.color = defaultColor;
             EventSystem.Current.FireEvent(colorEvent);
