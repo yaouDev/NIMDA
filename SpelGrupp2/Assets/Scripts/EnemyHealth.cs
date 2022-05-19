@@ -50,9 +50,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
         }
     }
-    public float GetCurrentHealth() {
-        return CurrentHealth;
-    }
+
     public float GetFullHealth() {
         return fullHealth;
     }
@@ -120,10 +118,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             shield.CurrentHealth = shield.FullHealth;
             shield.gameObject.SetActive(true);
         }
-    }
-
-    private void OnParticleSystemStopped() {
-
     }
 
 }

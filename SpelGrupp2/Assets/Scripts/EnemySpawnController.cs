@@ -114,7 +114,7 @@ public class EnemySpawnController : MonoBehaviour {
                 EnemyRange();
                 for (int i = 0; i < spawnThisMany; i++) {
                     //Instantiate(spawnedEnemy, spawnPos.position, spawnPos.rotation);
-                    ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation);
+                    ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
@@ -138,7 +138,7 @@ public class EnemySpawnController : MonoBehaviour {
             enemyShootRange = genEnemyShootRange;
             enemyMeeleRange = genEnemyMeeleRange;
             enemyShieldRange = genEnemyShieldRange;
-}
+        }
         if (!on) {
             maxSpawnThisMany = nMaxSpawnThisMany;
             minSpawnThisMany = nMinSpawnThisMany;
@@ -174,30 +174,22 @@ public class EnemySpawnController : MonoBehaviour {
             enemyShieldRange = nEnemyShieldRange;
         }
     }
-    private void EnemyRange()
-    {
-        
-        for (int i = 0; i < spawnThisMany; i++)
-        {
+    private void EnemyRange() {
+
+        for (int i = 0; i < spawnThisMany; i++) {
             dropRoll = Random.Range(0, 100);
-            
-            if (dropRoll <= enemyShootRange)
-            {
+
+            if (dropRoll <= enemyShootRange) {
                 spawnedEnemy = spawnThis[0];
-            }
-            else if (dropRoll <= enemyMeeleRange)
-            {
+            } else if (dropRoll <= enemyMeeleRange) {
                 spawnedEnemy = spawnThis[1];
-            }
-            else if (dropRoll <= enemyShieldRange)
-            {
+            } else if (dropRoll <= enemyShieldRange) {
                 spawnedEnemy = spawnThis[2];
             }
         }
 
     }
-    private void CheckModuleExits() 
-    {
+    private void CheckModuleExits() {
 
     }
 

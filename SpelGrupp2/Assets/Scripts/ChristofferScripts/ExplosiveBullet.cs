@@ -17,21 +17,16 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
     [SerializeField] private bool useGravity;
 
     //Damage
-    [SerializeField] private int explosionDamage;
     [SerializeField] private float explosionRange;
-    [SerializeField] private float explosionForce;
 
 
     //LifeTime
-    [SerializeField] private int maxCollisions = 2;
-    [SerializeField] private float maxLifeTime = 4.0f;
+    [SerializeField] private float maxLifeTime = 100f;
     private float currentLifeTime;
     [SerializeField] private bool explodeOnTouch = true;
 
     [SerializeField] private float damage = .1f;
     [SerializeField] private TrailRenderer trailRenderer;
-
-    private int colissions;
 
     PhysicMaterial physicsMat;
 
@@ -40,10 +35,6 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
     }
 
     private void Update() {
-        //When to Explode
-        if (colissions > maxCollisions) {
-            Explode();
-        }
         //Count down lifetime
         currentLifeTime -= Time.deltaTime;
         if (currentLifeTime <= 0) {
@@ -62,8 +53,7 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
     }
 
     private void OnTriggerEnter(Collider other) {
-        //Count up colissions
-        colissions++;
+  
         //Explode if bullet hits enemy directly
         if (other.gameObject.CompareTag("Player") && explodeOnTouch) {
             Explode();
@@ -93,7 +83,6 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
 
     public void OnSpawn() {
         currentLifeTime = maxLifeTime;
-        colissions = 0;
         rigidBody.velocity = Vector3.zero;
         trailRenderer.enabled = true;
         trailRenderer.Clear();

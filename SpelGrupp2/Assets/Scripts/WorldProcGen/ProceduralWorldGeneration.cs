@@ -231,7 +231,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
     private void MakeMaze()
     {
-        int slowAnimate = 0;
+        //int slowAnimate = 0;
         Stack<Vector2Int> backTracker = new Stack<Vector2Int>();
         HashSet<Vector2Int> unvisited = new HashSet<Vector2Int>();
 

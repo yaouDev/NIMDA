@@ -39,7 +39,7 @@ namespace CallbackSystem {
             defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
             playerMaterial.color = defaultColor;
             colorEvent.color = playerMaterial.color;
-            EventSystem.Current.FireEvent(colorEvent);
+            //EventSystem.Current.FireEvent(colorEvent);
         }
         private void Update() {
             if (!started) {
