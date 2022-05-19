@@ -32,7 +32,6 @@ public class ExplosiveBarrel : MonoBehaviour, IDamageable
         Instantiate(AIData.Instance.PulseAttackParticles, transform.position, Quaternion.identity);
         //explosionParticles.SetActive(true);
         colliders = Physics.OverlapSphere(transform.position, 4f, whatAreTargets);
-        Debug.Log("PulseAttack");
         foreach (Collider coll in colliders)
         {
             if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject"))

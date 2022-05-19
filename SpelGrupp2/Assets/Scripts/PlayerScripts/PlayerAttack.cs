@@ -67,7 +67,7 @@ namespace CallbackSystem
         private void Update()
         {
             canShootLaser = (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0);
-            // if (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0)
+            // if (healthPercentage.ReturnHealth() > laserSelfDmg || healthPercentage.ReturnBatteries() > 0)
             // {
             //     canShootLaser = true;
             // }
