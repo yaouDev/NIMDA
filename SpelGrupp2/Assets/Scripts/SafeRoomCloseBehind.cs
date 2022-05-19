@@ -20,6 +20,8 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitClosePosition;
     private Vector3 exitStartPosition;
     private Vector3 exitOpenPosition;
+    private ObjectivesManager objectivesManager;
+    private bool bossNext;
 
     // Start is called before the first frame update
     void Start() {
@@ -27,6 +29,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         exitOpenPosition = exit.transform.position;
         spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
         compass = GameObject.Find("Compass").GetComponent<Compass>();
+        objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
     }
 
     void OnTriggerEnter(Collider col) {
@@ -40,7 +43,8 @@ public class SafeRoomCloseBehind : MonoBehaviour {
                 compass.UpdateQuest();
                 spawnController.GeneratorRunning(false);
                 CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
-                Debug.Log("stäng entrance" + playerCount);
+                //Debug.Log("stäng entrance" + playerCount);
+                objectivesManager.RemoveObjective("enter safe room");
             }
         }
     }
@@ -50,11 +54,20 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         {
             playerCount--;
             //Debug.Log("Playercount = " + playerCount);
-            Debug.Log("stäng exit" + playerCount);
+            //Debug.Log("stäng exit" + playerCount);
             if (playerCount < 1)
             {
                 CloseExit();
                 compass.UpdateQuest();
+                if (!bossNext)
+                {
+                    objectivesManager.AddObjective("find the next safe room");
+                    bossNext = true;
+                }
+                else
+                {
+                    objectivesManager.AddObjective("kill the boss");
+                }
             }
         }
     }
