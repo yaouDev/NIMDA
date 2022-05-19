@@ -17,24 +17,29 @@ namespace CallbackSystem {
         private PlayerController movement;
         private HealthUpdateEvent healthEvent;
         private ActivationUIEvent UIEvent;
+        private ChangeColorEvent colorEvent;
         private bool started = false;
         private UIMenus uiMenus;
-
-        private AudioController ac;
+        [SerializeField] private Material playerMaterial;
+        private Color defaultColor;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake() {
             healthEvent = new HealthUpdateEvent();
+            colorEvent = new ChangeColorEvent();
             UIEvent = new ActivationUIEvent();
         }
         private void Start() {
             batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
+            colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
-
-            ac = AudioController.instance;
+            defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
+            playerMaterial.color = defaultColor;
+            colorEvent.color = playerMaterial.color;
+            EventSystem.Current.FireEvent(colorEvent);
         }
         private void Update() {
             if (!started) {
@@ -55,12 +60,9 @@ namespace CallbackSystem {
 
         public void TakeDamage(float damage) {
             currHealth -= damage;
-            //Make check to see if it's self-inflicted or not in order to not *always* get hurt sound
-            ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.hurt : ac.player2.hurt, gameObject); //player hurt sound
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
-                ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.batteryDelpetion : ac.player2.batteryDelpetion, gameObject); //battery delepetion sound
                 UpdateHealthUI(true);
             }
             if (currHealth <= 0f && batteryCount == 0) {
@@ -88,6 +90,7 @@ namespace CallbackSystem {
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
 
+            AudioController ac = AudioController.instance;
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
@@ -121,16 +124,29 @@ namespace CallbackSystem {
             currHealth = Mathf.Min(currHealth, 100f);
 
         }
+        public void ChooseMaterialColor(Color color)
+        {
+            playerMaterial.color = color;
+            colorEvent.color = color;
+            EventSystem.Current.FireEvent(colorEvent);
+        }
+        public void ChooseMaterialColor()
+        {
+            playerMaterial.color = defaultColor;
+            colorEvent.color = defaultColor;
+            EventSystem.Current.FireEvent(colorEvent);
+        }
+        public Color GetCurrentMaterialColor() { return playerMaterial.color; }
 
-        public float ReturnHealth() {
+        public float GetCurrenthealth() {
             return currHealth;
         }
 
-        public int ReturnBatteries() {
+        public int GetCurrentBatteryCount() {
             return batteryCount;
         }
 
-        public int ReturnMaxBatteries()
+        public int GetMaxBatteryCount()
         {
             return maxBatteryCount;
         }
