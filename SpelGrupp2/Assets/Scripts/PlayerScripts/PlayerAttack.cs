@@ -164,7 +164,6 @@ namespace CallbackSystem
         {
             if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f)
             {
-                Debug.Log(laserWeapon);
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
             }
