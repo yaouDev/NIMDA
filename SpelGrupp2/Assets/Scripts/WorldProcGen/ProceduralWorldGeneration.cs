@@ -23,7 +23,25 @@ public class ProceduralWorldGeneration : MonoBehaviour
         };
 
     private Dictionary<Vector2Int, uint> walls = new Dictionary<Vector2Int, uint>();
-    private uint[,] graph;
+    // 16 = safeRoom
+    // 17 = boss
+    private uint[,] graph = {
+        {15,15,15,15,15,15,15,15,15,15,15,15,15,15},
+        {15,15,15,15,15,15,17,15,15,15,15,15,15,15},
+        {15,15,15,15, 9,10,16,15,15,15,15,15,15,15},
+        {15,15,15,11, 1, 6, 3,15,15,15,15,15,15,15},
+        {15,15,15, 5, 0,12, 6,15,15,15,15,15,15,15},
+        {15,15,15,15, 3,15,15,15,15,15,15,15,15,15},
+        {15,15,15,15,16,15,15,15,15,15,15,15,15,15},
+        {15,15,11, 9, 6,15,15,15,15,15,15,15,15,15},
+        {15,15, 1, 2,15,15,15,15,15,15,15,15,15,15},
+        {15, 13,0, 4,14,15,15,15,15,15,15,15,15,15},
+        {15,15, 5,12,10,15,15,15,15,15,15,15,15,15},
+        {15,15,15, 9, 6,15,15,15,15,15,15,15,15,15},
+        {15,15,15, 7,15,15,15,15,15,15,15,15,15,15},
+        {15,15,15,15,15,15,15,15,15,15,15,15,15,15}
+    };
+    
     private System.Random random;
     private static ProceduralWorldGeneration instance;
     private Quaternion tileRotation = Quaternion.Euler(90, 0, 0);
@@ -67,7 +85,26 @@ public class ProceduralWorldGeneration : MonoBehaviour
         walls.Add(Vector2Int.left, W);
 
         random = new System.Random(worldSeed);
+<<<<<<< Updated upstream
         graph = new uint[worldSize.x, worldSize.y];
+=======
+        // graph = new uint[worldSize.x, worldSize.y]; // TODO playtest disabled procgen temporarily 
+
+        List<Vector2Int> setTiles = new List<Vector2Int>();
+        setTiles.Add(new Vector2Int(1, 1));
+        setTiles.Add(new Vector2Int(5, 5));
+        setTiles.Add(new Vector2Int(10, 10));
+        
+        graph[1, 1] = (S | W);
+        graph[5, 5] = (E | W);
+        graph[10, 10] = (E | W);
+        return; // TODO playtest disabled procgen temporarily
+        StartCoroutine(WaveFunctionCollapse(setTiles));
+        // MakeMaze();
+        // TearDownWalls();
+        // Path();
+
+>>>>>>> Stashed changes
         // StartCoroutine( 
         MakeMaze();
         // );
