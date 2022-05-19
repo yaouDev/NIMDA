@@ -390,12 +390,12 @@ MonoBehaviour:
   firePoint: {fileID: 9218188913738382862}
   fullHealth: 80
   hitForce: 0
+  objectPoolTag: EnemyShield
   ironRange: 65
   copperRange: 90
   transitorRange: 100
   dropMin: 0
   dropMax: 0
-  enemySound: {fileID: 11400000, guid: de065afaf4c856945a048cfb82854c04, type: 2}
 --- !u!114 &1907723285357056591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,7 +408,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23bb2f716d3c43349a1777483aedeab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 13.5
+  acceleration: 13.5
+  maxSpeed: 13.5
   critRange: 0
   allowedTargetDiscrepancy: 5
   turnSpeed: 100
@@ -418,6 +419,7 @@ MonoBehaviour:
   drawPath: 0
   isBoss: 0
   isStopped: 1
+  hitBufferSize: 5
 --- !u!114 &570393665669603275
 MonoBehaviour:
   m_ObjectHideFlags: 0

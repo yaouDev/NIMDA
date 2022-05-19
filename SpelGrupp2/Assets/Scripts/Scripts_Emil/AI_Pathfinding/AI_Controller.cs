@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CallbackSystem;
 
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private float acceleration = 13.5f, maxSpeed = 13.5f, critRange, allowedTargetDiscrepancy, turnSpeed = 100f;
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private bool drawPath = false, isBoss = false, isStopped = true;
+    [SerializeField] private int hitBufferSize = 5;
 
     private EnemyHealth enemyHealth;
     private Vector3 activeTarget, destination;
@@ -16,8 +18,9 @@ public class AI_Controller : MonoBehaviour {
     private Rigidbody rBody;
     private int currentPathIndex = 0;
     private BehaviorTree behaviorTree;
-    private CallbackSystem.PlayerHealth[] targets;
+    private PlayerHealth[] targets;
     private bool targetInSight = false;
+    private RaycastHit[] hitBuffer;
 
     // Getters and setters below
     public bool TargetInSight {
@@ -42,7 +45,7 @@ public class AI_Controller : MonoBehaviour {
 
     public Vector3 ClosestPlayer {
         get {
-            CallbackSystem.PlayerHealth closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
+            PlayerHealth closestTarget = Vector3.Distance(targets[0].transform.position, transform.position) >
             Vector3.Distance(targets[1].transform.position, transform.position) && targets[1].Alive ? closestTarget = targets[1] : targets[0];
             return closestTarget.transform.position;
         }
@@ -117,9 +120,9 @@ public class AI_Controller : MonoBehaviour {
     void Start() {
 
         // Getting components
-        targets = new CallbackSystem.PlayerHealth[2];
+        targets = new PlayerHealth[2];
         GameObject[] tmp = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < tmp.Length; i++) targets[i] = tmp[i].GetComponent<CallbackSystem.PlayerHealth>();
+        for (int i = 0; i < tmp.Length; i++) targets[i] = tmp[i].GetComponent<PlayerHealth>();
         col = GetComponent<Collider>();
         enemyHealth = GetComponent<EnemyHealth>();
         behaviorTree = GetComponent<BehaviorTree>();
@@ -129,10 +132,12 @@ public class AI_Controller : MonoBehaviour {
         activeTarget = targets[0].transform.position;
         Destination = ClosestPlayer;
 
+        hitBuffer = new RaycastHit[hitBufferSize];
+
         Physics.IgnoreLayerCollision(12, 12);
 
-        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
-        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
+        EventSystem.Current.RegisterListener<SafeRoomEvent>(OnPlayerEnterSafeRoom);
+        EventSystem.Current.RegisterListener<ModuleDeSpawnEvent>(OnModuleUnload);
     }
 
     private void FixedUpdate() {
@@ -179,17 +184,29 @@ public class AI_Controller : MonoBehaviour {
     }
 
     private void UpdateTargetInSight() {
-        RaycastHit hit;
-        Vector3 dir = (ClosestPlayer - Position).normalized;
-        Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
+        /*         RaycastHit hit;
+                Vector3 dir = (ClosestPlayer - Position).normalized;
+                Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
 
-        if (hit.collider != null) {
-            if (hit.collider.tag == "Player") {
-                targetInSight = true;
-                return;
+                if (hit.collider != null) {
+                    if (hit.collider.tag == "Player") {
+                        targetInSight = true;
+                        return;
+                    }
+                }
+                targetInSight = false; */
+
+
+        int hits = Physics.RaycastNonAlloc(Position, (ClosestPlayer - Position).normalized, hitBuffer, Mathf.Infinity, targetMask);
+        for (int i = 0; i < hits; i++) {
+            if (hitBuffer[i].collider != null) {
+                if (hitBuffer[i].collider.tag == "Player") {
+                    targetInSight = true;
+                    return;
+                }
             }
+            targetInSight = false;
         }
-        targetInSight = false;
     }
 
     public void UpdateTarget() {
@@ -286,7 +303,7 @@ public class AI_Controller : MonoBehaviour {
 
     // Callback functions below
 
-    public void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
+    public void OnPlayerEnterSafeRoom(SafeRoomEvent safeRoomEvent) {
         if (!isBoss) {
             Health.DieNoLoot();
         }
@@ -294,14 +311,14 @@ public class AI_Controller : MonoBehaviour {
 
     private void OnDestroy() {
         try {
-            CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
-            CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
+            EventSystem.Current.UnregisterListener<SafeRoomEvent>(OnPlayerEnterSafeRoom);
+            EventSystem.Current.UnregisterListener<ModuleDeSpawnEvent>(OnModuleUnload);
         } catch (System.Exception) {
             // only so it doesn't spam nullreference on exit playmode
         }
     }
 
-    private void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
+    private void OnModuleUnload(ModuleDeSpawnEvent deSpawnEvent) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(Position);
         if (deSpawnEvent.Position == modulePos) Health.DieNoLoot();
     }
