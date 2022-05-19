@@ -28,27 +28,31 @@ public class DynamicGraph : MonoBehaviour {
         CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
 
         if (usePlayTestModules) {
-            Vector2Int module1 = new Vector2Int(0, 0); //done
-            Vector2Int module2 = new Vector2Int(-1, 3); // done
-            Vector2Int module3 = new Vector2Int(0, 3); // done
-            Vector2Int module4 = new Vector2Int(0, 1); // done
-            Vector2Int module5 = new Vector2Int(0, 2); // done
-            Vector2Int module6 = new Vector2Int(-1, 1); // done
-            Vector2Int module7 = new Vector2Int(0, 4); // done
-            Vector2Int module8 = new Vector2Int(1, 2); // done
-            Vector2Int module9 = new Vector2Int(-1, 2); // done
-            Vector2Int module10 = new Vector2Int(-1, 4); // done
-            Vector2Int module10point5 = new Vector2Int(1, 4); // done
-            Vector2Int module11 = new Vector2Int(1, 3); // done
-            Vector2Int module12 = new Vector2Int(-1, 7); // done
-            Vector2Int module13 = new Vector2Int(1, 8); // done
-            Vector2Int module14 = new Vector2Int(-1, 8); // done
-            Vector2Int module15 = new Vector2Int(0, 8); // done
-            Vector2Int module16 = new Vector2Int(-1, 9); // done
-            Vector2Int module17 = new Vector2Int(1, 9); // done
-            Vector2Int module18 = new Vector2Int(-1, 6); // done
-            Vector2Int module19 = new Vector2Int(1, 6); // done
-            Vector2Int module20 = new Vector2Int(0, 9); // done
+            Vector2Int module1 = new Vector2Int(0, 0);
+            Vector2Int module2 = new Vector2Int(-1, 3);
+            Vector2Int module3 = new Vector2Int(0, 3);
+            Vector2Int module4 = new Vector2Int(0, 1);
+            Vector2Int module5 = new Vector2Int(0, 2);
+            Vector2Int module6 = new Vector2Int(-1, 2);
+            Vector2Int module7 = new Vector2Int(0, 4);
+            Vector2Int module8 = new Vector2Int(1, 2);
+            Vector2Int module9 = new Vector2Int(-1, 2);
+            Vector2Int module10 = new Vector2Int(1, 4);
+            Vector2Int module11 = new Vector2Int(-1, 4);
+            Vector2Int module12 = new Vector2Int(1, 3);
+            Vector2Int module13 = new Vector2Int(1, 7);
+            Vector2Int module14 = new Vector2Int(1, 8);
+            Vector2Int module25 = new Vector2Int(0, 8);
+
+            Vector2Int module15 = new Vector2Int(-1, 9);
+            Vector2Int module16 = new Vector2Int(-1, 6);
+            Vector2Int module17 = new Vector2Int(1, 6);
+            Vector2Int module18 = new Vector2Int(0, 7);
+            Vector2Int module19 = new Vector2Int(1, 7);
+            Vector2Int module20 = new Vector2Int(0, 6);
+            Vector2Int module21 = new Vector2Int(0, 9);
+            Vector2Int module22 = new Vector2Int(-1, 1);
+            Vector2Int bossmod = new Vector2Int(0, 11);
 
             loadedModules.Add(module1);
             loadedModules.Add(module2);
@@ -70,7 +74,9 @@ public class DynamicGraph : MonoBehaviour {
             loadedModules.Add(module18);
             loadedModules.Add(module19);
             loadedModules.Add(module20);
-            loadedModules.Add(module10point5);
+            loadedModules.Add(module21);
+            loadedModules.Add(module22);
+            loadedModules.Add(bossmod);
 
             AddBlockedNodes(module1);
             AddBlockedNodes(module2);
@@ -92,18 +98,17 @@ public class DynamicGraph : MonoBehaviour {
             AddBlockedNodes(module18);
             AddBlockedNodes(module19);
             AddBlockedNodes(module20);
-            AddBlockedNodes(module10point5);
-
+            AddBlockedNodes(module21);
+            AddBlockedNodes(module22);
+            AddBlockedNodes(bossmod);
         }
     }
 
     void Update() {
         //RemoveUnloadedNodes();
-        //GetClosestNode(new Vector3(400, groundLevel, 400));
     }
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
-       // GetClosestNode(new Vector3(24, groundLevel, 475));
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
             // if (HasBlockedNeighbor(firstNode) && HasBlockedNeighbor(secondNode)) cost *= 2;
             masterGraph[firstNode].TryAdd(secondNode, cost);
@@ -190,8 +195,8 @@ public class DynamicGraph : MonoBehaviour {
 
         // literal edge cases
         if (pos.x < edgePos[0]) x = edgePos[0];
-        else if (pos.x > edgePos[1]) x = edgePos[2];
-        if (pos.z > edgePos[2]) z = edgePos[1];
+        else if (pos.x > edgePos[1]) x = edgePos[1];
+        if (pos.z > edgePos[2]) z = edgePos[2];
         else if (pos.z < edgePos[3]) z = edgePos[3];
 
         return new Vector3(x, y, z);

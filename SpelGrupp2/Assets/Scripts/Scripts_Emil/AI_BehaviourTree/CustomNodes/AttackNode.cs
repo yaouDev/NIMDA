@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AIBehavior/Behavior/LaserAttack")]
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
 public class AttackNode : Node {
 
     [SerializeField] private float spread;
@@ -36,9 +36,9 @@ public class AttackNode : Node {
 
 
         /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
-                    if (agent.LaserAttack.IsShooting()) {
-                        agent.LaserAttack.SetShooting(false);
-                        agent.LaserAttack.StartCoroutine(agent.LaserAttack.LaserAttackDelay());
+                    if (agent.Attack.IsShooting()) {
+                        agent.Attack.SetShooting(false);
+                        agent.Attack.StartCoroutine(agent.Attack.AttackDelay());
                     }
                     agent.IsStopped = true;
                     NodeState = NodeState.SUCCESS;
@@ -84,5 +84,6 @@ public class AttackNode : Node {
         if (AIData.Instance.EnemyMuzzleflash != null) {
             Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
+
     }
 }

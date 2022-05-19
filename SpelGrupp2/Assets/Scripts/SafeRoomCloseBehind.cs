@@ -28,7 +28,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         entranceOpenPosition = entrance.transform.position;
         exitOpenPosition = exit.transform.position;
         spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
-        compass = GameObject.Find("Compass").GetComponent<Compass>();
+       // compass = GameObject.Find("Compass").GetComponent<Compass>();
         objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
     }
 
@@ -40,10 +40,10 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             if (playerCount == 2)
             {
                 CloseEntrance();
-                compass.UpdateQuest();
+                //compass.UpdateQuest();
                 spawnController.GeneratorRunning(false);
                 CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
-                //Debug.Log("stäng entrance" + playerCount);
+                //Debug.Log("stï¿½ng entrance" + playerCount);
                 objectivesManager.RemoveObjective("enter safe room");
             }
         }
@@ -54,7 +54,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         {
             playerCount--;
             //Debug.Log("Playercount = " + playerCount);
-            //Debug.Log("stäng exit" + playerCount);
+            //Debug.Log("stï¿½ng exit" + playerCount);
             if (playerCount < 1)
             {
                 CloseExit();

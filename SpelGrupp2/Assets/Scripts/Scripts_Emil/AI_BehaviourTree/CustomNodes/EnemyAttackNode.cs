@@ -69,16 +69,12 @@ public class EnemyAttackNode : Node {
 
         //Instatiate bullet
         currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.FirePoint, Quaternion.identity);
-        //ObjectPool.Instance.GetFromPool("SimpleBullet", agent.Health.FirePoint, Quaternion.identity, null, true);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
 
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-
-        //Add sound to ejection
-        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.fire1, agent.gameObject);
 
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
