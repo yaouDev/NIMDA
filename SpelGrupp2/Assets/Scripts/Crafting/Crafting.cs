@@ -92,7 +92,6 @@ namespace CallbackSystem
                     out hit, maxSphereDistance, layerMask);
                     if (hit.collider != null)
                     {
-                        Debug.Log("Collided with: " + hit.collider.gameObject.name);
                         EnterCraftingUI();
                     }
                 }
@@ -177,7 +176,6 @@ namespace CallbackSystem
             {
                 if (playerAttackScript.GetCurrentBulletCount() < playerAttackScript.GetMaxBulletCount())
                 {
-                    Debug.Log("Attempt to craft bullet");
                     if (TryCraftRecipe(bulletRecipe))
                     {
                         playerAttackScript.UpdateBulletCount(3);
@@ -197,7 +195,6 @@ namespace CallbackSystem
             {
                 if (playerHealthScript.GetCurrentBatteryCount() < playerHealthScript.GetMaxBatteryCount())
                 {
-                    Debug.Log("Attempt to craft battery");
                     if (TryCraftRecipe(batteryRecipe))
                     {
                         playerHealthScript.IncreaseBattery();
@@ -323,7 +320,6 @@ namespace CallbackSystem
 
             for (int i = 0; i < recipe.ResNeededArr.Length; i++)
             {
-                //Debug.Log(recipe.ResNeededArr[i]);
                 if (resourceArray[i] < recipe.ResNeededArr[i])
                 {
                     Debug.Log("Not enough resources");
