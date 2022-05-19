@@ -115,15 +115,15 @@ namespace CallbackSystem {
 
         }
 
-        public float ReturnHealth() {
+        public float GetCurrenthealth() {
             return currHealth;
         }
 
-        public int ReturnBatteries() {
+        public int GetCurrentBatteryCount() {
             return batteryCount;
         }
 
-        public int ReturnMaxBatteries()
+        public int GetMaxBatteryCount()
         {
             return maxBatteryCount;
         }

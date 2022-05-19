@@ -164,9 +164,10 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                Debug.Log("Attempt to craft bullet");
-                if (TryCraftRecipe(bulletRecipe))
-                    if (playerAttackScript.ReturnBullets() < playerAttackScript.ReturnMaxBullets())
+                if (playerAttackScript.GetCurrentBulletCount() < playerAttackScript.GetMaxBulletCount())
+                {
+                    Debug.Log("Attempt to craft bullet");
+                    if (TryCraftRecipe(bulletRecipe))
                     {
                         playerAttackScript.UpdateBulletCount(3);
                         fadingtextEvent.text = "Bullets Crafted (x3)";
@@ -176,6 +177,8 @@ namespace CallbackSystem
                     {
                         Debug.Log("Carrying max bullets!");
                     }
+                }
+                    
 
             }
         }
@@ -183,7 +186,7 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                if (playerHealthScript.ReturnBatteries() < playerHealthScript.ReturnMaxBatteries())
+                if (playerHealthScript.GetCurrentBatteryCount() < playerHealthScript.GetMaxBatteryCount())
                 {
                     Debug.Log("Attempt to craft battery");
                     if (TryCraftRecipe(batteryRecipe))
