@@ -41,6 +41,9 @@ public class AI_Controller : MonoBehaviour {
             if (value < 0) maxSpeed = 0;
             else maxSpeed = value;
         }
+
+
+        
     }
 
     public Vector3 ClosestPlayer {
