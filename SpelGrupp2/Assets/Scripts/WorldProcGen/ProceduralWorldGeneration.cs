@@ -85,9 +85,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
         walls.Add(Vector2Int.left, W);
 
         random = new System.Random(worldSeed);
-<<<<<<< Updated upstream
-        graph = new uint[worldSize.x, worldSize.y];
-=======
+        
         // graph = new uint[worldSize.x, worldSize.y]; // TODO playtest disabled procgen temporarily 
 
         List<Vector2Int> setTiles = new List<Vector2Int>();
@@ -99,12 +97,11 @@ public class ProceduralWorldGeneration : MonoBehaviour
         graph[5, 5] = (E | W);
         graph[10, 10] = (E | W);
         return; // TODO playtest disabled procgen temporarily
-        StartCoroutine(WaveFunctionCollapse(setTiles));
+        //StartCoroutine(WaveFunctionCollapse(setTiles));
         // MakeMaze();
         // TearDownWalls();
         // Path();
-
->>>>>>> Stashed changes
+        
         // StartCoroutine( 
         MakeMaze();
         // );
