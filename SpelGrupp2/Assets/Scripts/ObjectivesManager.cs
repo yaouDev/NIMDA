@@ -10,22 +10,16 @@ public class ObjectivesManager : MonoBehaviour
     private float backgroundHeight = 125;
     private float backgroundWidth = 400;
     private int objectivesIndex = -1;
-    //List<TextMeshProUGUI> currentObjectives = new List<TextMeshProUGUI>();
 
     // Start is called before the first frame update
     void Start()
     {
         objectives[0].text = "destroy the virus";
         objectivesIndex++;
+        AddObjective("find the first safe room");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void UpdateObjectives(string newObjective)
+    public void AddObjective(string newObjective)
     {
         objectivesIndex++;
         objectives[objectivesIndex].text = newObjective;
