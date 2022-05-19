@@ -76,6 +76,9 @@ public class EnemyAttackNode : Node {
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
 
+        //Add sound to ejection
+        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.fire1, agent.gameObject);
+
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 

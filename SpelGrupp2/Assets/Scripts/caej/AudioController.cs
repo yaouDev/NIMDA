@@ -29,6 +29,7 @@ public class AudioController : MonoBehaviour
 
     public PlayerAudioContainer player1;
     public PlayerAudioContainer player2;
+    public EnemyAudioContainer enemySound;
 
     public static AudioController instance;
     private void Awake()
@@ -50,6 +51,21 @@ public class AudioController : MonoBehaviour
     public void PlayOneShotAttatched(EventReference audioEvent, GameObject attached)
     {
         RuntimeManager.PlayOneShotAttached(audioEvent.Path, attached);
+    }
+
+    public void PlayNewInstance(EventReference reference, GameObject attached)
+    {
+        FMOD.Studio.EventInstance ei = RuntimeManager.CreateInstance(reference);
+        RuntimeManager.AttachInstanceToGameObject(ei, attached.transform);
+        ei.start();
+    }
+
+    public void PlayNewInstanceWithParameter(EventReference reference, GameObject attached, string pName, float pValue)
+    {
+        FMOD.Studio.EventInstance ei = RuntimeManager.CreateInstance(reference);
+        RuntimeManager.AttachInstanceToGameObject(ei, attached.transform);
+        ei.setParameterByName(pName, pValue);
+        ei.start();
     }
 
     public void TriggerTest()

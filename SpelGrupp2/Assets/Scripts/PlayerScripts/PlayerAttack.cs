@@ -20,6 +20,7 @@ namespace CallbackSystem
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
+        [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets;
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
@@ -118,8 +119,7 @@ namespace CallbackSystem
             {
                 if (laserWeapon && canShootLaser)
                 {
-                    ShootLaser();
-                    StartCoroutine(AnimateLineRenderer(aimingDirection));
+                    StartCoroutine(AttackDelay(laserAttackDelay));
                 }
                 else if (!laserWeapon)
                 {
@@ -128,6 +128,20 @@ namespace CallbackSystem
                 recentlyFired = true;
                 weaponCooldown = 0f;
             }
+        }
+
+        IEnumerator AttackDelay(float channelTime)
+        {
+            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+            ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+            yield return new WaitForSeconds(channelTime);
+            LaserAttack();
+        }
+
+        private void LaserAttack()
+        {
+            ShootLaser();
+            StartCoroutine(AnimateLineRenderer(aimingDirection));
         }
         /*
         private void ProjectileFire(InputAction.CallbackContext context)
@@ -197,8 +211,7 @@ namespace CallbackSystem
 
                 health.TakeDamage(laserSelfDmg);
 
-                AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
+ 
 
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)
