@@ -57,6 +57,11 @@ namespace CallbackSystem {
         public string text;
     } 
 
+    public class ChangeColorEvent : Event
+    {
+        public Color color;
+    }
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.

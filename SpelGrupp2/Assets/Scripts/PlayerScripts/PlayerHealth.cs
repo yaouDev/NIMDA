@@ -17,20 +17,29 @@ namespace CallbackSystem {
         private PlayerController movement;
         private HealthUpdateEvent healthEvent;
         private ActivationUIEvent UIEvent;
+        private ChangeColorEvent colorEvent;
         private bool started = false;
         private UIMenus uiMenus;
+        [SerializeField] private Material playerMaterial;
+        private Color defaultColor;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake() {
             healthEvent = new HealthUpdateEvent();
+            colorEvent = new ChangeColorEvent();
             UIEvent = new ActivationUIEvent();
         }
         private void Start() {
             batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
+            colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
+            defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
+            playerMaterial.color = defaultColor;
+            colorEvent.color = playerMaterial.color;
+            EventSystem.Current.FireEvent(colorEvent);
         }
         private void Update() {
             if (!started) {
@@ -115,6 +124,21 @@ namespace CallbackSystem {
             currHealth = Mathf.Min(currHealth, 100f);
 
         }
+        public void ChooseMaterialColor(Color color)
+        {
+            //Event to update UI color aswell as crosshair/laserSight
+            playerMaterial.color = color;
+            colorEvent.color = color;
+            EventSystem.Current.FireEvent(colorEvent);
+        }
+        public void ChooseMaterialColor()
+        {
+            //Event to update UI color aswell as crosshair/laserSight
+            playerMaterial.color = defaultColor;
+            colorEvent.color = defaultColor;
+            EventSystem.Current.FireEvent(colorEvent);
+        }
+        public Color GetCurrentMaterialColor() { return playerMaterial.color; }
 
         public float GetCurrenthealth() {
             return currHealth;
