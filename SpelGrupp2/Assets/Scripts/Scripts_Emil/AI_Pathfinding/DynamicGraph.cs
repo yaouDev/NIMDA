@@ -99,9 +99,11 @@ public class DynamicGraph : MonoBehaviour {
 
     void Update() {
         //RemoveUnloadedNodes();
+        //GetClosestNode(new Vector3(400, groundLevel, 400));
     }
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
+       // GetClosestNode(new Vector3(24, groundLevel, 475));
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
             // if (HasBlockedNeighbor(firstNode) && HasBlockedNeighbor(secondNode)) cost *= 2;
             masterGraph[firstNode].TryAdd(secondNode, cost);

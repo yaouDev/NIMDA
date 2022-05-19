@@ -184,29 +184,29 @@ public class AI_Controller : MonoBehaviour {
     }
 
     private void UpdateTargetInSight() {
-        /*         RaycastHit hit;
-                Vector3 dir = (ClosestPlayer - Position).normalized;
-                Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
+        RaycastHit hit;
+        Vector3 dir = (ClosestPlayer - Position).normalized;
+        Physics.Raycast(Position, dir, out hit, Mathf.Infinity, targetMask);
 
-                if (hit.collider != null) {
-                    if (hit.collider.tag == "Player") {
-                        targetInSight = true;
-                        return;
-                    }
-                }
-                targetInSight = false; */
-
-
-        int hits = Physics.RaycastNonAlloc(Position, (ClosestPlayer - Position).normalized, hitBuffer, Mathf.Infinity, targetMask);
-        for (int i = 0; i < hits; i++) {
-            if (hitBuffer[i].collider != null) {
-                if (hitBuffer[i].collider.tag == "Player") {
-                    targetInSight = true;
-                    return;
-                }
+        if (hit.collider != null) {
+            if (hit.collider.tag == "Player") {
+                targetInSight = true;
+                return;
             }
-            targetInSight = false;
         }
+        targetInSight = false;
+
+        /* 
+                int hits = Physics.RaycastNonAlloc(Position, (ClosestPlayer - Position).normalized, hitBuffer, Mathf.Infinity, targetMask);
+                for (int i = 0; i < hits; i++) {
+                    if (hitBuffer[i].collider != null) {
+                        if (hitBuffer[i].collider.tag == "Player") {
+                            targetInSight = true;
+                            return;
+                        }
+                    }
+                    targetInSight = false;
+                } */
     }
 
     public void UpdateTarget() {

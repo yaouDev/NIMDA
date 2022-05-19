@@ -17,6 +17,7 @@ public class BackAwayNode : Node {
         bool runningCond = agent.CurrentPath != null && distanceFromTargetToStop < agent.DistanceFromTarget && playerCond && backOffPos != Vector3.zero;
         bool initCond = backOffPos == Vector3.zero || dist < distanceToBackOff;
 
+
         if (initCond) {
             float angleOffset = Random.Range(130, 231);
             backOffPos = agent.Position + ((Quaternion.AngleAxis(angleOffset, Vector3.up) * dirOfPlayer) * distanceToBackOff);

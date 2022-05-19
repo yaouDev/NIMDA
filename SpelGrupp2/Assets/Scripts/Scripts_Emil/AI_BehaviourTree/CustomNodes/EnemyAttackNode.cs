@@ -68,7 +68,8 @@ public class EnemyAttackNode : Node {
         directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        currentBullet = ObjectPool.Instance.GetFromPool("SimpleBullet", agent.Health.FirePoint, Quaternion.identity, null, true);
+        currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.FirePoint, Quaternion.identity);
+        //ObjectPool.Instance.GetFromPool("SimpleBullet", agent.Health.FirePoint, Quaternion.identity, null, true);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
