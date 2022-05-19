@@ -52,6 +52,12 @@ public class AudioController : MonoBehaviour
         RuntimeManager.PlayOneShotAttached(audioEvent.Path, attached);
     }
 
+    public void PlayNewInstance(EventReference reference)
+    {
+        FMOD.Studio.EventInstance ei = RuntimeManager.CreateInstance(reference);
+        ei.start();
+    }
+
     public void TriggerTest()
     {
         PlayOneShot(testReference, testPosition.position);
