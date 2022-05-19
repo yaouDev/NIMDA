@@ -28,7 +28,7 @@ namespace CallbackSystem
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
-        private float reducedSelfDmg, weaponCooldown, currentHitDistance, ASCounter = 0f;
+        private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -58,7 +58,8 @@ namespace CallbackSystem
             crosshairEvent = new WeaponCrosshairEvent();
             isPlayerOne = health.IsPlayerOne();
             reducedSelfDmg = laserSelfDmg / 2;
-            weaponCooldown = 0f;
+            laserWeaponCooldown = 0f;
+            revolverCooldown = 0f;
         }
 
         [SerializeField] private Material bulletMat;
@@ -89,8 +90,10 @@ namespace CallbackSystem
                 crosshairEvent.targetInSight = targetInSight;
                 EventSystem.Current.FireEvent(crosshairEvent);
             }
-            if (recentlyFired && weaponCooldown < 0.5f && laserWeapon)
-                weaponCooldown += Time.deltaTime;
+            if (recentlyFired && laserWeaponCooldown < 0.5f && laserWeapon)
+                laserWeaponCooldown += Time.deltaTime;
+            else if (recentlyFired && revolverCooldown < 0.3f && !laserWeapon)
+                revolverCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
             /*
@@ -125,7 +128,8 @@ namespace CallbackSystem
                     FireProjectileWeapon();
                 }
                 recentlyFired = true;
-                weaponCooldown = 0f;
+                laserWeaponCooldown = 0f;
+                revolverCooldown = 0f;
             }
         }
 
