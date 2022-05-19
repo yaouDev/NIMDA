@@ -9,7 +9,7 @@ public class RotatingShield : MonoBehaviour
     [SerializeField] private float rotationSpeedMultiplier = 2.0f;
 
     private EnemyHealth enemyHealth;
-    private float health;
+    private float healthPercentage;
 
     private void Start()
     {
@@ -18,18 +18,18 @@ public class RotatingShield : MonoBehaviour
 
     void Update()
     {
-        health = enemyHealth.CurrentHealth;
+        healthPercentage = enemyHealth.CurrentHealthPercentage;
         //Spin the shield
         transform.Rotate(rotation * rotationSpeed * Time.deltaTime);
-        //If health is under 700, spin faster
-        if (health < 1400)
+        //If healthPercentage is under 700, spin faster
+        if (healthPercentage < 70)
         {
             transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);
             
         }
         else
         {
-            if (health < 800)
+            if (healthPercentage < 30)
             {
                 gameObject.layer = LayerMask.NameToLayer("Bouncing");
                 transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);

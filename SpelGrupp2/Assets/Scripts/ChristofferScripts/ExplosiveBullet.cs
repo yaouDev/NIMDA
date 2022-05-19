@@ -25,7 +25,7 @@ public class ExplosiveBullet : MonoBehaviour
 
     //LifeTime
     [SerializeField] private int maxCollisions = 2;
-    [SerializeField] private float maxLifeTime = 500.0f;
+    [SerializeField] private float maxLifeTime = 4.0f;
     [SerializeField] private bool explodeOnTouch = true;
 
     [SerializeField] private float damage = .1f;

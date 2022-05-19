@@ -8,6 +8,7 @@ public class EnemySpawnController : MonoBehaviour {
     private int maxSpawnThisMany;
     private int minSpawnThisMany;
     private int spawnThisMany;
+    private GameObject spawnedEnemy;
     [Header("Normal Spawn")]
     [SerializeField] private int nMaxSpawnCount = 25;
     [SerializeField] private int nMaxSpawnCooldown = 7;
@@ -16,6 +17,9 @@ public class EnemySpawnController : MonoBehaviour {
     [SerializeField] private int nMinSpawnThisMany = 1;
     [SerializeField] private int nSpawnDistanceMax = 35;
     [SerializeField] private int nSpawnDistanceMin = 5;
+    [SerializeField] private int nEnemyShootRange;
+    [SerializeField] private int nEnemyMeeleRange;
+    [SerializeField] private int nEnemyShieldRange;
     private int nSpawnCooldown;
     [Header("Night Spawn")]
     [SerializeField] private int nightMaxSpawnCount = 30;
@@ -25,6 +29,9 @@ public class EnemySpawnController : MonoBehaviour {
     [SerializeField] private int nightMinSpawnThisMany = 1;
     [SerializeField] private int nightSpawnDistanceMax = 35;
     [SerializeField] private int nightSpawnDistanceMin = 5;
+    [SerializeField] private int nightEnemyShootRange;
+    [SerializeField] private int nightEnemyMeeleRange;
+    [SerializeField] private int nightEnemyShieldRange;
     private int nightSpawnCooldown;
     [Header("Generator Spawn")]
     [SerializeField] private int genMaxSpawnCount = 40;
@@ -34,15 +41,22 @@ public class EnemySpawnController : MonoBehaviour {
     [SerializeField] private int genMinSpawnThisMany = 3;
     [SerializeField] private int genSpawnDistanceMax = 50;
     [SerializeField] private int genSpawnDistanceMin = 15;
+    [SerializeField] private int genEnemyShootRange;
+    [SerializeField] private int genEnemyMeeleRange;
+    [SerializeField] private int genEnemyShieldRange;
     private int genSpawnCooldown;
     private int maxSpawnCount;
     private int spawnCooldown;
     private int spawnDistanceMax;
     private int spawnDistanceMin;
     private int spawnCount;
+    private int enemyShootRange;
+    private int enemyMeeleRange;
+    private int enemyShieldRange;
     private int index;
     private float distanceP1;
     private float distanceP2;
+    private int dropRoll;
 
     private CallbackSystem.PlayerHealth[] players;
     private GameObject[] spawnLocations;
@@ -97,8 +111,9 @@ public class EnemySpawnController : MonoBehaviour {
                 activeSpawner = nearbySpawners[index];
                 spawnPos = activeSpawner.transform;
                 spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
+                EnemyRange();
                 for (int i = 0; i < spawnThisMany; i++) {
-                    Instantiate(spawnThis[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation);
+                    Instantiate(spawnedEnemy, spawnPos.position, spawnPos.rotation);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
@@ -119,7 +134,10 @@ public class EnemySpawnController : MonoBehaviour {
             maxSpawnCount = genMaxSpawnCount;
             spawnDistanceMax = genSpawnDistanceMax;
             spawnDistanceMin = genSpawnDistanceMin;
-        }
+            enemyShootRange = genEnemyShootRange;
+            enemyMeeleRange = genEnemyMeeleRange;
+            enemyShieldRange = genEnemyShieldRange;
+}
         if (!on) {
             maxSpawnThisMany = nMaxSpawnThisMany;
             minSpawnThisMany = nMinSpawnThisMany;
@@ -127,6 +145,9 @@ public class EnemySpawnController : MonoBehaviour {
             maxSpawnCount = nMaxSpawnCount;
             spawnDistanceMax = nSpawnDistanceMax;
             spawnDistanceMin = nSpawnDistanceMin;
+            enemyShootRange = nEnemyShootRange;
+            enemyMeeleRange = nEnemyMeeleRange;
+            enemyShieldRange = nEnemyShieldRange;
         }
     }
     private void IsNight() {
@@ -137,6 +158,9 @@ public class EnemySpawnController : MonoBehaviour {
             maxSpawnCount = nightMaxSpawnCount;
             spawnDistanceMax = nightSpawnDistanceMax;
             spawnDistanceMin = nightSpawnDistanceMin;
+            enemyShootRange = nightEnemyShootRange;
+            enemyMeeleRange = nightEnemyMeeleRange;
+            enemyShieldRange = nightEnemyShieldRange;
         } else {
             maxSpawnThisMany = nMaxSpawnThisMany;
             minSpawnThisMany = nMinSpawnThisMany;
@@ -144,10 +168,35 @@ public class EnemySpawnController : MonoBehaviour {
             maxSpawnCount = nMaxSpawnCount;
             spawnDistanceMax = nSpawnDistanceMax;
             spawnDistanceMin = nSpawnDistanceMin;
+            enemyShootRange = nEnemyShootRange;
+            enemyMeeleRange = nEnemyMeeleRange;
+            enemyShieldRange = nEnemyShieldRange;
         }
     }
+    private void EnemyRange()
+    {
+        
+        for (int i = 0; i < spawnThisMany; i++)
+        {
+            dropRoll = Random.Range(0, 100);
+            
+            if (dropRoll <= enemyShootRange)
+            {
+                spawnedEnemy = spawnThis[0];
+            }
+            else if (dropRoll <= enemyMeeleRange)
+            {
+                spawnedEnemy = spawnThis[1];
+            }
+            else if (dropRoll <= enemyShieldRange)
+            {
+                spawnedEnemy = spawnThis[2];
+            }
+        }
 
-    private void CheckModuleExits() {
+    }
+    private void CheckModuleExits() 
+    {
 
     }
 
