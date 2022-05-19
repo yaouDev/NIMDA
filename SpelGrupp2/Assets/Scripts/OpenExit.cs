@@ -23,14 +23,23 @@ public class OpenExit : MonoBehaviour
     }
 
 
-    private void OnTriggerStay(Collider col)
+/*    private void OnTriggerStay(Collider col)
     {
         if (col.CompareTag("Player"))
         {
             textPopup.SetActive(true);
             interactableRange = true;
         }
+    }*/
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            textPopup.SetActive(true);
+            OpenDoor();
+        }
     }
+
     void OpenDoor()
     {
         if (!doorOpen)
@@ -55,12 +64,12 @@ public class OpenExit : MonoBehaviour
         doorOpen = true;
 
     }
-    public void Interact(InputAction.CallbackContext value)
+/*    public void Interact(InputAction.CallbackContext value)
     {
         if (value.started && interactableRange)
         {
             OpenDoor();
         }
-    }
+    }*/
   
 }
