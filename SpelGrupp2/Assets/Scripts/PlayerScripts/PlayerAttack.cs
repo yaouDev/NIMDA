@@ -66,8 +66,8 @@ namespace CallbackSystem
 
         private void Update()
         {
-            canShootLaser = (health.GetCurrenthealth() > laserSelfDmg || health.GetCurrentBatteryCount() > 0);
-            // if (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0)
+            canShootLaser = (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0);
+            // if (healthPercentage.ReturnHealth() > laserSelfDmg || healthPercentage.ReturnBatteries() > 0)
             // {
             //     canShootLaser = true;
             // }
@@ -108,7 +108,6 @@ namespace CallbackSystem
             else
             {
                 aimLineRenderer.enabled = false;
-                crosshairEvent.targetInSight = false;
             }
         }
 
@@ -277,11 +276,14 @@ namespace CallbackSystem
             if (hit.collider != null)
             {
                 currentHitDistance = hit.distance;
+                targetInSight = true;
                 crosshairPoint = cam.WorldToScreenPoint(hit.point);
             }
             else
+            {
                 currentHitDistance = maxDistance;
-            targetInSight = (currentHitDistance == maxDistance) ? false : true;
+                targetInSight = false;
+            }  
         }
 
 
@@ -374,12 +376,12 @@ namespace CallbackSystem
             laserWeaponUpgraded = true;
         }
 
-        public int GetCurrentBulletCount()
+        public int ReturnBullets()
         {
             return bullets;
         }
 
-        public int GetMaxBulletCount()
+        public int ReturnMaxBullets()
         {
             return maxBullets;
         }
