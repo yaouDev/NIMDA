@@ -46,7 +46,7 @@ namespace CallbackSystem
                     //Debug.Log("Picked up transistor");
                     break;
                 case (PickUp.Bullet):
-                    if (playerAttack.GetCurrentBulletCount() < playerAttack.GetMaxBulletCount())
+                    if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
                     {
                         playerAttack.UpdateBulletCount(1);
                         Destroy(parent);

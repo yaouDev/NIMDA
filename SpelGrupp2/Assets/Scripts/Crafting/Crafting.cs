@@ -174,7 +174,7 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                if (playerAttackScript.GetCurrentBulletCount() < playerAttackScript.GetMaxBulletCount())
+                if (playerAttackScript.ReturnBullets() < playerAttackScript.ReturnMaxBullets())
                 {
                     if (TryCraftRecipe(bulletRecipe))
                     {
