@@ -162,7 +162,7 @@ namespace CallbackSystem
 
         public void WeaponSwap(InputAction.CallbackContext context)
         {
-            if (context.performed)
+            if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f)
             {
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
@@ -175,7 +175,7 @@ namespace CallbackSystem
             if (context.performed)
             {
                 float scrollDelta = context.ReadValue<float>();
-
+                Debug.Log(scrollDelta);
                 if (Mathf.Abs(scrollDelta) > 100.0f)
                 {
                     laserWeapon = scrollDelta > 0;
