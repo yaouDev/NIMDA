@@ -132,7 +132,7 @@ namespace CallbackSystem
         {
             FMODUnity.RuntimeManager.StudioSystem.setParameterByName("laser_channel", 1f);
             AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-            ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
+            ac.PlayNewInstance(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1); //laser sound
             yield return new WaitForSeconds(1f);
             LaserAttack();
         }
