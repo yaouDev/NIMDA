@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour {
     [Header("What to Spawn")]
-    [SerializeField] private GameObject[] spawnThis;
+    [SerializeField] private string[] spawnThis;
     private int maxSpawnThisMany;
     private int minSpawnThisMany;
     private int spawnThisMany;
-    private GameObject spawnedEnemy;
+    private string spawnedEnemy;
     [Header("Normal Spawn")]
     [SerializeField] private int nMaxSpawnCount = 25;
     [SerializeField] private int nMaxSpawnCooldown = 7;
@@ -113,7 +113,8 @@ public class EnemySpawnController : MonoBehaviour {
                 spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
                 EnemyRange();
                 for (int i = 0; i < spawnThisMany; i++) {
-                    Instantiate(spawnedEnemy, spawnPos.position, spawnPos.rotation);
+                    //Instantiate(spawnedEnemy, spawnPos.position, spawnPos.rotation);
+                    ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
