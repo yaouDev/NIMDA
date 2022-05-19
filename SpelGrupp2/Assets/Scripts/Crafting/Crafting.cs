@@ -153,12 +153,8 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                if(selectedButton.interactable)
-                {
+                if (selectedButton.interactable)
                     selectedButton.onClick.Invoke();
-                    if(selectedButton != defaultColorButton)
-                    selectedButton.interactable = false;
-                }
                 else
                 {
                     fadingtextEvent.text = "Unavailable Purchase";
@@ -333,6 +329,8 @@ namespace CallbackSystem
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;
                 UpdateResources();
+                if (selectedButton != defaultColorButton && isCrafting)
+                    selectedButton.interactable = false;
                 return true;
             }
             return false;
