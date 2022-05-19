@@ -45,7 +45,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     void Update() {
 
         if (CurrentHealth <= 0) {
-            Debug.Log("Im dying in enemyHealth");
             Die();
         } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
