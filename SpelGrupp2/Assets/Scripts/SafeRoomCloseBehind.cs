@@ -58,7 +58,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             if (playerCount < 1)
             {
                 CloseExit();
-                compass.UpdateQuest();
+               // compass.UpdateQuest();
                 if (!bossNext)
                 {
                     objectivesManager.AddObjective("find the next safe room");

@@ -20,7 +20,6 @@ public class AttackNode : Node {
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
 
-    RaycastHit checkCover;
 
 
     public override NodeState Evaluate() {
@@ -59,7 +58,7 @@ public class AttackNode : Node {
     void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = checkCover.point - agent.Health.FirePoint;
+        directionWithoutSpread = agent.ClosestPlayer - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);

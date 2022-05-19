@@ -42,7 +42,7 @@ public class DynamicGraph : MonoBehaviour {
             Vector2Int module12 = new Vector2Int(1, 3);
             Vector2Int module13 = new Vector2Int(1, 7);
             Vector2Int module14 = new Vector2Int(1, 8);
-            Vector2Int module25 = new Vector2Int(0, 8);
+
 
             Vector2Int module15 = new Vector2Int(-1, 9);
             Vector2Int module16 = new Vector2Int(-1, 6);
@@ -52,6 +52,10 @@ public class DynamicGraph : MonoBehaviour {
             Vector2Int module20 = new Vector2Int(0, 6);
             Vector2Int module21 = new Vector2Int(0, 9);
             Vector2Int module22 = new Vector2Int(-1, 1);
+            Vector2Int module23 = new Vector2Int(1, 9);
+            Vector2Int module24 = new Vector2Int(-1, 8);
+            Vector2Int module25 = new Vector2Int(0, 8);
+            Vector2Int module26 = new Vector2Int(-1, 7);
             Vector2Int bossmod = new Vector2Int(0, 11);
 
             loadedModules.Add(module1);
@@ -76,6 +80,12 @@ public class DynamicGraph : MonoBehaviour {
             loadedModules.Add(module20);
             loadedModules.Add(module21);
             loadedModules.Add(module22);
+            loadedModules.Add(module23);
+            loadedModules.Add(module24);
+            loadedModules.Add(module25);
+            loadedModules.Add(module26);
+
+
             loadedModules.Add(bossmod);
 
             AddBlockedNodes(module1);
@@ -100,6 +110,10 @@ public class DynamicGraph : MonoBehaviour {
             AddBlockedNodes(module20);
             AddBlockedNodes(module21);
             AddBlockedNodes(module22);
+            AddBlockedNodes(module23);
+            AddBlockedNodes(module24);
+            AddBlockedNodes(module25);
+            AddBlockedNodes(module26);
             AddBlockedNodes(bossmod);
         }
     }
