@@ -24,7 +24,6 @@ namespace CallbackSystem
                 playerHealth = other.GetComponent<PlayerHealth>();
                 Crafting crafting = other.gameObject.GetComponent<Crafting>();
                 pickUpDrop(crafting);
-                Destroy(parent);
             }
         }
         private void pickUpDrop(Crafting crafting)
@@ -33,22 +32,33 @@ namespace CallbackSystem
             {
                 case (PickUp.Iron):
                     crafting.iron++;
+                    Destroy(parent);
                     //Debug.Log("Picked up iron");
                     break;
                 case (PickUp.Copper):
                     crafting.copper++;
+                    Destroy(parent);
                     //Debug.Log("Picked up copper");
                     break;
                 case (PickUp.Transistor):
                     crafting.transistor++;
+                    Destroy(parent);
                     //Debug.Log("Picked up transistor");
                     break;
                 case (PickUp.Bullet):
-                    playerAttack.UpdateBulletCount(1);
+                    if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
+                    {
+                        playerAttack.UpdateBulletCount(1);
+                        Destroy(parent);
+                    }
                     //Debug.Log("Picked up bullet");
                     break;
                 case (PickUp.Battery):
-                    playerHealth.IncreaseBattery();
+                    if (playerHealth.ReturnBatteries() < playerHealth.ReturnMaxBatteries())
+                    {
+                        playerHealth.IncreaseBattery();
+                        Destroy(parent);
+                    }
                     //Debug.Log("Picked up Battery");
                     break;
             }

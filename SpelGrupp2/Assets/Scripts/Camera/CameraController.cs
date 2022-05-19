@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CallbackSystem;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -68,10 +69,13 @@ public class CameraController : MonoBehaviour {
 	[SerializeField] private Transform playerOther;
 	[SerializeField] private Transform depthMaskHolder;
 	[SerializeField] private Transform depthMaskPlane;
+
+	[SerializeField] public bool isPlayerOne;
 	
 	private void Awake() {
 		
 		playerController = GetComponent<PlayerController>();
+		isPlayerOne = GetComponent<PlayerHealth>().IsPlayerOne();
 		stateMachine = new CameraStateMachine(this, states);
 		_fpsCameraPos = _camera.localPosition;
 		_cameraPos = transform.position;
@@ -316,4 +320,6 @@ public class CameraController : MonoBehaviour {
 	public PlayerController GetPlayerController() {
 		return playerController;
 	}
+
+	public bool IsPlayerOne() => isPlayerOne;
 }

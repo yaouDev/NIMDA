@@ -18,6 +18,7 @@ namespace CallbackSystem {
         private HealthUpdateEvent healthEvent;
         private ActivationUIEvent UIEvent;
         private bool started = false;
+        private UIMenus uiMenus;
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake() {
@@ -29,6 +30,7 @@ namespace CallbackSystem {
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
+            uiMenus = GameObject.FindObjectOfType<UIMenus>();
         }
         private void Update() {
             if (!started) {
@@ -52,7 +54,7 @@ namespace CallbackSystem {
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
-                UpdateHealthUI();
+                UpdateHealthUI(true);
             }
             if (currHealth <= 0f && batteryCount == 0) {
                 Die();
@@ -69,10 +71,12 @@ namespace CallbackSystem {
         }
 
         public void Die() {
+            if (alive)
+                uiMenus.DeadPlayers(1);
             alive = false;
             attackAbility.Die();
             movement.Die();
-            visuals.SetActive(false);
+            //visuals.SetActive(false);
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
@@ -85,22 +89,24 @@ namespace CallbackSystem {
             alive = true;
             currHealth = maxHealth;
             batteryCount = batteryRespawnCount;
-            visuals.SetActive(true);
+            //visuals.SetActive(true);
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
             attackAbility.Respawn();
             movement.Respawn();
             UpdateHealthUI();
+            uiMenus.DeadPlayers(-1);
         }
 
-        private void UpdateHealthUI() {
+        private void UpdateHealthUI(bool batteryDecreased = false) {
             if (batteryCount < 1) {
                 HealthRegeneration();
             }
             healthEvent.isPlayerOne = isPlayerOne;
             healthEvent.health = currHealth;
             healthEvent.batteries = batteryCount;
+            healthEvent.batteryDecreased = batteryDecreased;
             EventSystem.Current.FireEvent(healthEvent);
         }
 
@@ -116,6 +122,11 @@ namespace CallbackSystem {
 
         public int ReturnBatteries() {
             return batteryCount;
+        }
+
+        public int ReturnMaxBatteries()
+        {
+            return maxBatteryCount;
         }
     }
 }

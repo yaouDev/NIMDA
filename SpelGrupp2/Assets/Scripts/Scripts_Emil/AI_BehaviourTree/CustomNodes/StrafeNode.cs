@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Strafe")]
 public class StrafeNode : Node {
 
-    [SerializeField] private float turnSpeed = 70.0f, strafeSpeed = 16.5f;
+    [SerializeField] private float acceleration = 13.5f, maxSpeed = 16.5f, minStrafeDistance = 2, maxStrafeDistance = 5;
     [SerializeField] private int maxShotsToFire = 2, minShotsToFire = 5;
     [SerializeField] private float distanceFromTargetToStop;
     private Vector3 randomPos;
@@ -21,16 +21,25 @@ public class StrafeNode : Node {
 
         if (shotReqCond) {
             strafeTarget = Vector3.zero;
-            while (strafeTarget == Vector3.zero || DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) {
-                xPos = Random.Range(-5, 5);
-                zPos = Random.Range(-5, 5);
-                randomPos = new Vector3(xPos, 0, zPos);
+            int tries = 0;
+            while ((strafeTarget == Vector3.zero || DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) && tries < 10) {
+                float angleOffset;
+                int strafeRight = Random.Range(0, 2);
+                if (strafeRight == 0) angleOffset = Random.Range(50, 121);
+                else angleOffset = Random.Range(-120, -51);
+
+                float strafeDistance = Random.Range(minStrafeDistance, maxStrafeDistance + 1f);
+                randomPos = Quaternion.AngleAxis(angleOffset, Vector3.up) * (agent.ClosestPlayer - agent.Position).normalized * strafeDistance;
                 strafeTarget = randomPos + agent.Position;
                 agent.Destination = strafeTarget;
                 agent.IsStopped = false;
                 NodeState = NodeState.RUNNING;
-                agent.Speed = strafeSpeed;
+                agent.Acceleration = acceleration;
+                agent.MaxSpeed = maxSpeed;
+                tries++;
             }
+            // no strafeLocation was found
+            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) NodeState = NodeState.FAILURE;
 
         } else if (runningCond) {
             NodeState = NodeState.RUNNING;

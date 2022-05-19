@@ -161,9 +161,16 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                //Debug.Log("Attempt to craft bullet");
+                Debug.Log("Attempt to craft bullet");
                 if (TryCraftRecipe(bulletRecipe))
-                    playerAttackScript.UpdateBulletCount(3);
+                    if (playerAttackScript.ReturnBullets() < playerAttackScript.ReturnMaxBullets())
+                    {
+                        playerAttackScript.UpdateBulletCount(3);
+                    }
+                    else
+                    {
+                        Debug.Log("Carrying max bullets!");
+                    }
 
             }
         }
@@ -171,9 +178,18 @@ namespace CallbackSystem
         {
             if (context.performed)
             {
-                //Debug.Log("Attempt to craft battery");
-                if(TryCraftRecipe(batteryRecipe))
-                    playerHealthScript.IncreaseBattery();
+                if (playerHealthScript.ReturnBatteries() < playerHealthScript.ReturnMaxBatteries())
+                {
+                    Debug.Log("Attempt to craft battery");
+                    if (TryCraftRecipe(batteryRecipe))
+                    {
+                        playerHealthScript.IncreaseBattery();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Carrying max batteries!");
+                }
             }
         }
 
@@ -198,14 +214,14 @@ namespace CallbackSystem
         public bool TryCraftRecipe(Recipe recipe)
         {
             bool missingResources = false;
-            if (recipe == null); //Debug.LogWarning("Trying to craft null");
+            if (recipe == null) Debug.LogWarning("Trying to craft null");
 
             for (int i = 0; i < recipe.ResNeededArr.Length; i++)
             {
                 //Debug.Log(recipe.ResNeededArr[i]);
                 if (resourceArray[i] < recipe.ResNeededArr[i])
                 {
-                    //Debug.Log("Not enough resources");
+                    Debug.Log("Not enough resources");
                     missingResources = true;
                 }
             }

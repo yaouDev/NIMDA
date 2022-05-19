@@ -5,12 +5,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Chase")]
 public class ChaseNode : Node {
 
-    [SerializeField] private float chaseSpeed = 13.5f;
+    [SerializeField] private float acceleration = 13.5f, maxSpeed = 10f;
     [SerializeField] private float distanceFromTargetToStop;
     public override NodeState Evaluate() {
 
         if (agent.Destination != agent.ClosestPlayer) {
-            agent.Speed = chaseSpeed;
+            agent.Acceleration = acceleration;
+            agent.MaxSpeed = maxSpeed;
             agent.Destination = agent.ClosestPlayer;
             agent.IsStopped = false;
             NodeState = NodeState.RUNNING;

@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Back Away")]
 public class BackAwayNode : Node {
 
-    [SerializeField] private float turnSpeed = 70.0f, distanceToBackOff, backOffSpeed = 500f;
+    [SerializeField] private float turnSpeed = 70.0f, distanceToBackOff, acceleration = 15f, maxSpeed = 15f;
     Vector3 backOffPos;
     [SerializeField] private float distanceFromTargetToStop;
     public override NodeState Evaluate() {
@@ -20,7 +20,8 @@ public class BackAwayNode : Node {
         if (initCond) {
             float angleOffset = Random.Range(130, 231);
             backOffPos = agent.Position + ((Quaternion.AngleAxis(angleOffset, Vector3.up) * dirOfPlayer) * distanceToBackOff);
-            agent.Speed = backOffSpeed;
+            agent.Acceleration = acceleration;
+            agent.MaxSpeed = maxSpeed;
             agent.Destination = backOffPos;
             agent.IsStopped = false;
             if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(backOffPos))) {

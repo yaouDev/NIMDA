@@ -12,7 +12,7 @@ namespace CallbackSystem
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private LineRenderer aimLineRenderer;
         [SerializeField] private LayerMask enemyLayerMask, laserLayerMask;
-        private Vector3 aimingDirection = Vector3.forward;
+        private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
         private PlayerHealth health;
         private PlayerController controller;
         private Camera cam;
@@ -20,12 +20,13 @@ namespace CallbackSystem
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
-        [SerializeField] private int bullets = 10;
+        [SerializeField] private int bullets, maxBullets;
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
+        private WeaponCrosshairEvent crosshairEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
-        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true;
+        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, weaponCooldown, currentHitDistance, ASCounter = 0f;
 
         /*
@@ -36,6 +37,8 @@ namespace CallbackSystem
         public void Die() => isAlive = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
+
+        public bool UsingLaserWeapon() { return laserWeapon; }
         public void UpdateBulletCount(int amount)
         {
             bullets += amount;
@@ -51,6 +54,7 @@ namespace CallbackSystem
             cam = GetComponentInChildren<Camera>();
             health = GetComponent<PlayerHealth>();
             resourceEvent = new ResourceUpdateEvent();
+            crosshairEvent = new WeaponCrosshairEvent();
             isPlayerOne = health.IsPlayerOne();
             reducedSelfDmg = laserSelfDmg / 2;
             weaponCooldown = 0f;
@@ -79,6 +83,10 @@ namespace CallbackSystem
                 resourceEvent.a = bullets;
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
+                crosshairEvent.usingProjectileWeapon = !laserWeapon;
+                crosshairEvent.isPlayerOne = isPlayerOne;
+                crosshairEvent.targetInSight = targetInSight;
+                EventSystem.Current.FireEvent(crosshairEvent);
             }
             if (recentlyFired && weaponCooldown < 0.5f && laserWeapon)
                 weaponCooldown += Time.deltaTime;
@@ -94,6 +102,7 @@ namespace CallbackSystem
             if (isAlive)
             {
                 AnimateLasers();
+                
             }
             else
             {
@@ -106,12 +115,10 @@ namespace CallbackSystem
             if (!isAlive) return;
             if (context.started && !recentlyFired)
             {
-
                 if (laserWeapon && canShootLaser)
                 {
-
-                    StartCoroutine(LaserAttackDelay());
-
+                    ShootLaser();
+                    StartCoroutine(AnimateLineRenderer(aimingDirection));
                 }
                 else if (!laserWeapon)
                 {
@@ -120,21 +127,6 @@ namespace CallbackSystem
                 recentlyFired = true;
                 weaponCooldown = 0f;
             }
-        }
-
-        public IEnumerator LaserAttackDelay()
-        {
-            FMODUnity.RuntimeManager.StudioSystem.setParameterByName("Channel Time", 0.5f);
-            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-            ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
-            yield return new WaitForSeconds(0.5f);
-            LaserAttack();
-
-        }
-        private void LaserAttack()
-        {
-            ShootLaser();
-            StartCoroutine(AnimateLineRenderer(aimingDirection));
         }
         /*
         private void ProjectileFire(InputAction.CallbackContext context)
@@ -204,7 +196,8 @@ namespace CallbackSystem
 
                 health.TakeDamage(laserSelfDmg);
 
-
+                AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
 
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)
@@ -268,10 +261,18 @@ namespace CallbackSystem
         {
             Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLayerMask);
             if (hit.collider != null)
+            {
                 currentHitDistance = hit.distance;
+                targetInSight = true;
+                crosshairPoint = cam.WorldToScreenPoint(hit.point);
+            }
             else
+            {
                 currentHitDistance = maxDistance;
+                targetInSight = false;
+            }  
         }
+
 
         public void TargetMousePos(InputAction.CallbackContext context)
         {
@@ -301,6 +302,16 @@ namespace CallbackSystem
             ApplyJoystickFireDirection();
             UpdateLaserSightDistance();
             AnimateLaserSightLineRenderer(gameObject.transform.forward);
+            RenderCrosshair();
+        }
+
+        private void RenderCrosshair()
+        {
+            crosshairEvent.usingProjectileWeapon = laserWeapon ? false : true;
+            crosshairEvent.isPlayerOne = isPlayerOne;
+            crosshairEvent.crosshairPos = crosshairPoint;
+            crosshairEvent.targetInSight = targetInSight;
+            EventSystem.Current.FireEvent(crosshairEvent);
         }
 
         private void FireProjectileWeapon()
@@ -350,6 +361,16 @@ namespace CallbackSystem
         {
             Debug.Log("Projectile weapon upgraded!");
             laserWeaponUpgraded = true;
+        }
+
+        public int ReturnBullets()
+        {
+            return bullets;
+        }
+
+        public int ReturnMaxBullets()
+        {
+            return maxBullets;
         }
     }
 }
