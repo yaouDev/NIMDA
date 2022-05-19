@@ -20,6 +20,7 @@ namespace CallbackSystem
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
+        [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets;
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
@@ -117,7 +118,7 @@ namespace CallbackSystem
             {
                 if (laserWeapon && canShootLaser)
                 {
-                    StartCoroutine(AttackDelay());
+                    StartCoroutine(AttackDelay(laserAttackDelay));
                 }
                 else if (!laserWeapon)
                 {
@@ -128,12 +129,11 @@ namespace CallbackSystem
             }
         }
 
-        IEnumerator AttackDelay()
+        IEnumerator AttackDelay(float channelTime)
         {
-            FMODUnity.RuntimeManager.StudioSystem.setParameterByName("laser_channel", 1f);
             AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-            ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
-            yield return new WaitForSeconds(1f);
+            ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+            yield return new WaitForSeconds(channelTime);
             LaserAttack();
         }
 
