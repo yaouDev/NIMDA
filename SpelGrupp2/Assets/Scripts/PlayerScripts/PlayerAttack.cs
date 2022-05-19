@@ -109,6 +109,7 @@ namespace CallbackSystem
 
                 if (laserWeapon && canShootLaser)
                 {
+
                     StartCoroutine(LaserAttackDelay());
 
                 }
@@ -123,6 +124,9 @@ namespace CallbackSystem
 
         public IEnumerator LaserAttackDelay()
         {
+            FMODUnity.RuntimeManager.StudioSystem.setParameterByName("Channel Time", 0.5f);
+            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+            ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
             yield return new WaitForSeconds(0.5f);
             LaserAttack();
 
@@ -200,8 +204,7 @@ namespace CallbackSystem
 
                 health.TakeDamage(laserSelfDmg);
 
-                AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
+
 
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)
