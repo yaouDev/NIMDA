@@ -355,9 +355,10 @@ MonoBehaviour:
     m_Bits: 34610432
   maxDistance: 30
   laserSelfDmg: 25
-  damage: 70
+  damage: 65
   teamDamage: 30
-  bullets: 300
+  laserAttackDelay: 1.18
+  bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
@@ -860,6 +861,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: {x: 0.3, y: 4.5, z: 0}
 --- !u!1 &326990607699453844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,8 +1042,9 @@ MonoBehaviour:
     m_Bits: 34610432
   maxDistance: 30
   laserSelfDmg: 25
-  damage: 70
+  damage: 65
   teamDamage: 30
+  laserAttackDelay: 1.18
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
@@ -1573,6 +1576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: {x: 0.3, y: 4.5, z: 0}
 --- !u!1 &326990607883718378
 GameObject:
   m_ObjectHideFlags: 0
