@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c736ae3d5bbe948a9373c913afb4ca, type: 3}
   m_Name: Enemy Strafe Node
   m_EditorClassIdentifier: 
-  turnSpeed: 70
-  strafeSpeed: 16.5
-  maxShotsToFire: 3
+  acceleration: 13.5
+  maxSpeed: 16.5
+  maxShotsToFire: 2
   minShotsToFire: 1
+  minStrafeDistance: 2
+  maxStrafeDistance: 5
   distanceFromTargetToStop: 1

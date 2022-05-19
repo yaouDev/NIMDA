@@ -71,24 +71,25 @@ namespace CallbackSystem {
         }
 
         public void Die() {
+            if (alive)
+                uiMenus.DeadPlayers(1);
             alive = false;
             attackAbility.Die();
             movement.Die();
-            visuals.SetActive(false);
+            //visuals.SetActive(false);
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
 
             AudioController ac = AudioController.instance;
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
-            uiMenus.DeadPlayers(1);
         }
 
         public void Respawn() {
             alive = true;
             currHealth = maxHealth;
             batteryCount = batteryRespawnCount;
-            visuals.SetActive(true);
+            //visuals.SetActive(true);
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);

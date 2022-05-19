@@ -2,30 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using UnityEngine;
-using Unity.Jobs;
-using UnityEngine.Jobs;
-using Unity.Collections;
-using Unity.Burst;
 
 public class DynamicGraph : MonoBehaviour {
-    private int numberOfNodes;
     [Header("World attributes")]
     [SerializeField] private float nodeHalfextent, groundLevel = 1.6f;
     [SerializeField] private int moduleSize = 50;
     [SerializeField] private LayerMask colliderMask;
-    // private Dictionary<Vector3, Dictionary<Vector3, float>> masterGraph;
+    [SerializeField] private bool drawGrid = false;
+    [SerializeField] private bool usePlayTestModules = true;
     private ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>> masterGraph;
-    private ConcurrentDictionary<Vector3, byte> blockedNodes;
+    private HashSet<Vector3> blockedNodes;
     public static DynamicGraph Instance;
     private HashSet<Vector2Int> loadedModules;
     private Queue<Vector3> nodesToRemove;
-    [SerializeField] private bool drawGrid = false;
-    [SerializeField] private bool usePlayTestModules = true;
 
 
     void Start() {
         masterGraph = new ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>>();
-        blockedNodes = new ConcurrentDictionary<Vector3, byte>();
+        blockedNodes = new HashSet<Vector3>();
         nodesToRemove = new Queue<Vector3>();
         Instance ??= this;
         loadedModules = new HashSet<Vector2Int>();
@@ -123,12 +117,11 @@ public class DynamicGraph : MonoBehaviour {
 
     void Update() {
         //RemoveUnloadedNodes();
-        /*  Debug.Log(GetModulePosFromWorldPos(new Vector3(76, 1.5f, 10)));
-         Debug.Log(IsModuleLoaded(GetModulePosFromWorldPos(new Vector3(76, 1.5f, 10)))); */
     }
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
+           // if (HasBlockedNeighbor(firstNode) && HasBlockedNeighbor(secondNode)) cost *= 2;
             masterGraph[firstNode].TryAdd(secondNode, cost);
             masterGraph[secondNode].TryAdd(firstNode, cost);
         }
@@ -167,38 +160,55 @@ public class DynamicGraph : MonoBehaviour {
         return null;
     }
 
-    public void AddBlockedNode(Vector3 node) {
-        blockedNodes.TryAdd(node, 0);
-    }
-
     public bool IsNodeBlocked(Vector3 node) {
-        return blockedNodes.ContainsKey(node);
+        return blockedNodes.Contains(node);
     }
 
-    public Vector3 GetClosestNode(Vector3 pos) {
-        Vector2Int modulePos = GetModulePosFromWorldPos(pos);
+    private bool HasBlockedNeighbor(Vector3 node) {
+        foreach (Vector3 neighbor in GetPossibleNeighbors(node)) {
+            if (IsNodeBlocked(neighbor)) return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Gets the highest & lowest world x & z values for a given module coordinate
+    /// </summary>
+    /// <param name="module"> the module to get extreme positions from </param>
+    /// <returns> an array of 4 float values: 
+    /// index 0: leftmost x, index 1: rightmost x, index 2: topmost z, index 3: bottommost z 
+    /// </returns>
+    private float[] GetModuleEdgePositions(Vector2Int module) {
         Vector3 localWorldPos = new Vector3(0, groundLevel, 0);
-        if (modulePos.x == 0) localWorldPos.x = modulePos.x;
-        else localWorldPos.x = (modulePos.x * moduleSize);
-        if (modulePos.y == 0) localWorldPos.z = modulePos.y;
-        else localWorldPos.z = (modulePos.y * moduleSize);
-        float x = 0, y = localWorldPos.y, z = x;
+        if (module.x == 0) localWorldPos.x = module.x;
+        else localWorldPos.x = (module.x * moduleSize);
+        if (module.y == 0) localWorldPos.z = module.y;
+        else localWorldPos.z = (module.y * moduleSize);
+
         float leftMostX = localWorldPos.x - (moduleSize / 2) + nodeHalfextent;
         float topMostZ = localWorldPos.z + (moduleSize / 2) - nodeHalfextent;
         float rightMostX = localWorldPos.x + (moduleSize / 2) - nodeHalfextent;
         float bottomMostZ = localWorldPos.z - (moduleSize / 2) + nodeHalfextent;
+        float[] extremePos = { leftMostX, rightMostX, topMostZ, bottomMostZ };
+        return extremePos;
+    }
 
-        int nodesFromLeftEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.x - leftMostX) / (nodeHalfextent * 2));
-        int nodesFromTopEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.z - topMostZ) / (nodeHalfextent * 2));
+    public Vector3 GetClosestNode(Vector3 pos) {
 
-        x = leftMostX + (nodesFromLeftEdge * (nodeHalfextent * 2));
-        z = topMostZ - (nodesFromTopEdge * (nodeHalfextent * 2));
+        float[] edgePos = GetModuleEdgePositions(GetModulePosFromWorldPos(pos));
+        float x = 0, y = groundLevel, z = x;
+
+        int nodesFromLeftEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.x - edgePos[0]) / (nodeHalfextent * 2));
+        int nodesFromTopEdge = (int)Mathf.FloorToInt(Mathf.Abs(pos.z - edgePos[2]) / (nodeHalfextent * 2));
+
+        x = edgePos[0] + (nodesFromLeftEdge * (nodeHalfextent * 2));
+        z = edgePos[2] - (nodesFromTopEdge * (nodeHalfextent * 2));
 
         // literal edge cases
-        if (pos.x < leftMostX) x = leftMostX;
-        else if (pos.x > rightMostX) x = rightMostX;
-        if (pos.z > topMostZ) z = topMostZ;
-        else if (pos.z < bottomMostZ) z = bottomMostZ;
+        if (pos.x < edgePos[0]) x = edgePos[0];
+        else if (pos.x > edgePos[1]) x = edgePos[2];
+        if (pos.z > edgePos[2]) z = edgePos[1];
+        else if (pos.z < edgePos[3]) z = edgePos[3];
 
         return new Vector3(x, y, z);
     }
@@ -232,48 +242,22 @@ public class DynamicGraph : MonoBehaviour {
         firstTopDiagonalNeighbor, secondTopDiagonalNeighbor, firstBottomDiagnoalNeighbor, secondBottomDiagonalNeighbor };
     }
 
-    public Dictionary<Unity.Mathematics.float3, float> GetPossibleNeighborsKV(Vector3 node) {
-        Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
-        secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
-        firstPossibleZNeighbor = new Vector3(node.x, node.y, node.z + nodeHalfextent * 2),
-        secondPossibleZNeighbor = new Vector3(node.x, node.y, node.z - nodeHalfextent * 2),
-        firstTopDiagonalNeighbor = new Vector3(firstPossibleXNeighbor.x, node.y, firstPossibleZNeighbor.z),
-        secondTopDiagonalNeighbor = new Vector3(secondPossibleXNeighbor.x, node.y, firstPossibleZNeighbor.z),
-        firstBottomDiagnoalNeighbor = new Vector3(firstPossibleXNeighbor.x, node.y, secondPossibleZNeighbor.z),
-        secondBottomDiagonalNeighbor = new Vector3(secondPossibleXNeighbor.x, node.y, secondPossibleZNeighbor.z);
-
-
-        Dictionary<Unity.Mathematics.float3, float> tempNeighbors = new Dictionary<Unity.Mathematics.float3, float>();
-        tempNeighbors.Add(firstPossibleXNeighbor, 1);
-        tempNeighbors.Add(secondPossibleXNeighbor, 1);
-        tempNeighbors.Add(firstPossibleZNeighbor, 1);
-        tempNeighbors.Add(secondPossibleZNeighbor, 1);
-        tempNeighbors.Add(firstTopDiagonalNeighbor, 1);
-        tempNeighbors.Add(secondTopDiagonalNeighbor, 1);
-        tempNeighbors.Add(firstBottomDiagnoalNeighbor, 1);
-        tempNeighbors.Add(secondBottomDiagonalNeighbor, 1);
-        return tempNeighbors;
-    }
-
     private Collider[] GetBlockedNode(Vector3 position) {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
-        //return Physics.OverlapSphere(position, nodeHalfextent, colliderMask);
     }
 
     // Beware: this tanks the FPS *HARD* but is useful to see the generated pathfinding grid
     private void OnDrawGizmos() {
         if (drawGrid) {
-            int count = 0;
-            foreach (Vector3 v in masterGraph.Keys) {
-                bool blocked = !IsNodeBlocked(v); //.Length == 0;
-                if (blocked) {
+            Vector3 box = new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2);
+            foreach (Vector3 node in masterGraph.Keys) {
+                if (!IsNodeBlocked(node)) {
                     Gizmos.color = Color.green;
-                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                    Gizmos.DrawWireCube(node, box);
                 } else {
                     Gizmos.color = Color.red;
-                    Gizmos.DrawWireCube(v, new Vector3(nodeHalfextent * 2, nodeHalfextent * 2, nodeHalfextent * 2));
+                    Gizmos.DrawWireCube(node, box);
                 }
-                count++;
             }
         }
     }
@@ -296,14 +280,14 @@ public class DynamicGraph : MonoBehaviour {
         return loadedModules;
     }
 
-    public void CreateNeighbors(Vector3 node, Dictionary<Unity.Mathematics.float3, float> possibleNeighbors) {
-        foreach (Vector3 pNeighbor in possibleNeighbors.Keys) {
-            if (IsModuleLoaded(GetModulePosFromWorldPos(node)) && !masterGraph.ContainsKey(pNeighbor)) {
-                Insert(pNeighbor);
-                Connect(node, pNeighbor, possibleNeighbors[pNeighbor]);
+    public void CreateNeighbors(Vector3 node, Vector3[] possibleNeighbors) {
+        for (int i = 0; i < possibleNeighbors.Length; i++) {
+            if (IsModuleLoaded(GetModulePosFromWorldPos(node)) && !masterGraph.ContainsKey(possibleNeighbors[i])) {
+                Insert(possibleNeighbors[i]);
+                Connect(node, possibleNeighbors[i], 1);
             }
-            foreach (Vector3 neighborNeighbor in GetPossibleNeighbors(pNeighbor)) {
-                Connect(neighborNeighbor, pNeighbor, 1);
+            foreach (Vector3 neighborNeighbor in GetPossibleNeighbors(possibleNeighbors[i])) {
+                Connect(neighborNeighbor, possibleNeighbors[i], 1);
             }
         }
     }
@@ -315,18 +299,16 @@ public class DynamicGraph : MonoBehaviour {
     }
 
     void MarkNodesForDeletion(Vector2Int module) {
-        Vector3 worldPos = new Vector3(module.x + (moduleSize / 2), groundLevel, module.y + (moduleSize / 2));
-        float leftMostX = worldPos.x - (moduleSize / 2) + nodeHalfextent;
-        float topMostZ = worldPos.z + (moduleSize / 2) - nodeHalfextent;
-        float rightMostX = worldPos.x + (moduleSize / 2) - nodeHalfextent;
 
-        Vector3 node = new Vector3(leftMostX, worldPos.y, topMostZ);
+        float[] edgePos = GetModuleEdgePositions(module);
+
+        Vector3 node = new Vector3(edgePos[0], groundLevel, edgePos[2]);
 
         for (int i = 0; i <= moduleSize * moduleSize; i++) {
             if (masterGraph.ContainsKey(node))
                 nodesToRemove.Enqueue(node);
-            if (node.x == rightMostX) {
-                node.x = leftMostX;
+            if (node.x == edgePos[1]) {
+                node.x = edgePos[0];
                 node.z -= (nodeHalfextent * 2);
             } else {
                 node.x += (nodeHalfextent * 2);
@@ -338,50 +320,40 @@ public class DynamicGraph : MonoBehaviour {
         if (loadedModules.Contains(deSpawnEvent.Position)) loadedModules.Remove(deSpawnEvent.Position);
         MarkNodesForDeletion(deSpawnEvent.Position);
         RemoveUnloadedNodes();
-
     }
 
     private void RemoveUnloadedNodes() {
-        for (int i = 0; i < 50 || nodesToRemove.Count == 0; i++) {
-            if (nodesToRemove.Count > 0) {
-                Vector3 nodeToRemove = nodesToRemove.Dequeue();
-                if (!loadedModules.Contains(GetModulePosFromWorldPos(nodeToRemove))) {
-                    List<Vector3> connectedNodes = new List<Vector3>(GetNeighbors(nodeToRemove).Keys);
-                    foreach (Vector3 neighbor in connectedNodes) {
-                        Disconnect(nodeToRemove, neighbor);
-                    }
-                    ConcurrentDictionary<Vector3, float> outVal;
-                    masterGraph.TryRemove(nodeToRemove, out outVal);
-                }
-            } else break;
+        int counter = 0;
+        while (counter < 50 && nodesToRemove.Count != 0) {
+            Vector3 nodeToRemove = nodesToRemove.Dequeue();
+            if (!loadedModules.Contains(GetModulePosFromWorldPos(nodeToRemove))) continue;
+            List<Vector3> connectedNodes = new List<Vector3>(GetNeighbors(nodeToRemove).Keys);
+            foreach (Vector3 neighbor in connectedNodes) {
+                Disconnect(nodeToRemove, neighbor);
+            }
+            ConcurrentDictionary<Vector3, float> outVal;
+            masterGraph.TryRemove(nodeToRemove, out outVal);
+            counter++;
         }
     }
 
     private void AddBlockedNodes(Vector2Int module) {
-        Vector3 localWorldPos = new Vector3(0, groundLevel, 0);
-        if (module.x == 0) localWorldPos.x = module.x;
-        else localWorldPos.x = (module.x * moduleSize);
-        if (module.y == 0) localWorldPos.z = module.y;
-        else localWorldPos.z = (module.y * moduleSize);
 
-        float leftMostX = localWorldPos.x - ((float)moduleSize / 2) + nodeHalfextent;
-        float topMostZ = localWorldPos.z + ((float)moduleSize / 2) - nodeHalfextent;
-        float rightMostX = localWorldPos.x + ((float)moduleSize / 2) - nodeHalfextent;
+        float[] edgePos = GetModuleEdgePositions(module);
 
-        Vector3 node = new Vector3(leftMostX, localWorldPos.y, topMostZ);
+        Vector3 node = new Vector3(edgePos[0], groundLevel, edgePos[2]);
 
         for (int i = 0; i <= moduleSize * moduleSize; i++) {
             if (GetBlockedNode(node).Length != 0) {
-                blockedNodes.TryAdd(node, 0);
+                blockedNodes.Add(node);
                 AIData.Instance.AddCoverSpot(GetClosestNodeNotBlocked(node));
             }
-            if (node.x == rightMostX) {
-                node.x = leftMostX;
+            if (node.x == edgePos[1]) {
+                node.x = edgePos[0];
                 node.z -= (nodeHalfextent * 2);
             } else {
                 node.x += (nodeHalfextent * 2);
             }
         }
-
     }
 }

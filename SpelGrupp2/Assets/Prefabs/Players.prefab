@@ -352,12 +352,12 @@ MonoBehaviour:
     m_Bits: 6144
   laserLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 34610432
   maxDistance: 30
   laserSelfDmg: 25
-  damage: 65
+  damage: 70
   teamDamage: 30
-  bullets: 15
+  bullets: 300
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
@@ -403,6 +403,7 @@ MonoBehaviour:
     m_Bits: 256
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
+  visuals: {fileID: 326990607699453844}
 --- !u!114 &326990607570548866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +439,7 @@ MonoBehaviour:
   playerOther: {fileID: 326990607881322115}
   depthMaskHolder: {fileID: 326990608820777541}
   depthMaskPlane: {fileID: 326990609130996455}
+  isPlayerOne: 0
   splitScreenOffset: {x: 0, y: 0, z: 0}
   topDownViewRotation: {x: 30, y: 0}
   TopDownOffset: {x: 0, y: 1, z: -12}
@@ -693,7 +695,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8397479276426667862}
         m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
-        m_MethodName: WeaponSwapWithMouseWheel
+        m_MethodName: WeaponSwap
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -741,6 +743,30 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1021181802951838962}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 614617765979801252, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+        m_TargetAssemblyTypeName: GeneratorEvent, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6755697695635968549, guid: 044f0ae6fba1d92429dddd5077319949, type: 3}
+        m_TargetAssemblyTypeName: OpenExit, Assembly-CSharp
         m_MethodName: Interact
         m_Mode: 0
         m_Arguments:
@@ -1011,10 +1037,10 @@ MonoBehaviour:
     m_Bits: 5120
   laserLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 34610432
   maxDistance: 30
   laserSelfDmg: 25
-  damage: 65
+  damage: 70
   teamDamage: 30
   bullets: 15
   maxBullets: 30
@@ -1062,6 +1088,7 @@ MonoBehaviour:
     m_Bits: 256
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
+  visuals: {fileID: 326990609148873030}
 --- !u!114 &326990607881322124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1097,6 +1124,7 @@ MonoBehaviour:
   playerOther: {fileID: 326990607570548877}
   depthMaskHolder: {fileID: 326990608334043154}
   depthMaskPlane: {fileID: 326990609093943275}
+  isPlayerOne: 0
   splitScreenOffset: {x: 0, y: 0, z: 0}
   topDownViewRotation: {x: 30, y: 0}
   TopDownOffset: {x: 0, y: 1, z: -12}
@@ -1380,7 +1408,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3037943043123946253}
         m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
-        m_MethodName: WeaponSwapWithMouseWheel
+        m_MethodName: WeaponSwap
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1428,6 +1456,30 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5657999587282274127}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 614617765979801252, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+        m_TargetAssemblyTypeName: GeneratorEvent, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6755697695635968549, guid: 044f0ae6fba1d92429dddd5077319949, type: 3}
+        m_TargetAssemblyTypeName: OpenExit, Assembly-CSharp
         m_MethodName: Interact
         m_Mode: 0
         m_Arguments:
@@ -1851,7 +1903,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2182111095
+    m_Bits: 2182242167
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1976,7 +2028,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2182111159
+    m_Bits: 2182242231
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
