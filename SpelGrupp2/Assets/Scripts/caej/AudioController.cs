@@ -29,6 +29,7 @@ public class AudioController : MonoBehaviour
 
     public PlayerAudioContainer player1;
     public PlayerAudioContainer player2;
+    public EnemyAudioContainer enemySound;
 
     public static AudioController instance;
     private void Awake()

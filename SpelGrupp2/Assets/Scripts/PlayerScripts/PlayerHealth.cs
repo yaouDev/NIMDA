@@ -20,6 +20,8 @@ namespace CallbackSystem {
         private bool started = false;
         private UIMenus uiMenus;
 
+        private AudioController ac;
+
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake() {
             healthEvent = new HealthUpdateEvent();
@@ -31,6 +33,8 @@ namespace CallbackSystem {
             attackAbility = GetComponent<PlayerAttack>();
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
+
+            ac = AudioController.instance;
         }
         private void Update() {
             if (!started) {
@@ -51,9 +55,12 @@ namespace CallbackSystem {
 
         public void TakeDamage(float damage) {
             currHealth -= damage;
+            //Make check to see if it's self-inflicted or not in order to not *always* get hurt sound
+            ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.hurt : ac.player2.hurt, gameObject); //player hurt sound
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
+                ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.batteryDelpetion : ac.player2.batteryDelpetion, gameObject); //battery delepetion sound
                 UpdateHealthUI(true);
             }
             if (currHealth <= 0f && batteryCount == 0) {
@@ -81,7 +88,6 @@ namespace CallbackSystem {
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
 
-            AudioController ac = AudioController.instance;
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
