@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour, IDamageable {
+public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
     [SerializeField] private float hitForce;
+    [SerializeField] string objectPoolTag;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -21,6 +22,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     [SerializeField] private int transitorRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
+    private EnemyShield shield;
+    private Transform playersPos;
 
     public float CurrentHealth {
         get { return currentHealth; }
@@ -36,6 +39,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     private void Awake() {
         CurrentHealth = fullHealth;
         enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        shield = GetComponentInChildren<EnemyShield>();
+        playersPos = GameObject.Find("Players").transform;
     }
     void Update() {
 
@@ -51,8 +56,12 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     public float GetFullHealth() {
         return fullHealth;
     }
-    public GameObject GetFirePoint() {
-        return firePoint;
+    /*     public GameObject GetFirePoint() {
+            return firePoint;
+        } */
+
+    public Vector3 FirePoint {
+        get { return firePoint.transform.position; }
     }
 
 
@@ -61,11 +70,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
     /*  public float GetCurrentHealth() {
@@ -97,9 +108,22 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     public void TakeDamage(float damage) {
         currentHealth -= damage;
         Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
-        //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!!
-        AudioController.instance.PlayOneShot(AudioController.instance.enemySound.hurt, GameObject.Find("Players").transform.position);
+        //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!! // -- fixed
+        AudioController.instance.PlayOneShot(AudioController.instance.enemySound.hurt, playersPos.position);
         //Debug.Log(currentHealth);
 
     }
+
+    public void OnSpawn() {
+        CurrentHealth = fullHealth;
+        if (shield != null) {
+            shield.CurrentHealth = shield.FullHealth;
+            shield.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnParticleSystemStopped() {
+
+    }
+
 }

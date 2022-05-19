@@ -49,7 +49,7 @@ public class MoveAttackNode : Node {
     void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = checkCover.point - agent.Health.GetFirePoint().transform.position;
+        directionWithoutSpread = checkCover.point - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -59,7 +59,7 @@ public class MoveAttackNode : Node {
         directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.BossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.BossBullet, agent.Health.FirePoint, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;

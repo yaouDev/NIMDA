@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemySpawnController : MonoBehaviour {
     [Header("What to Spawn")]
-    [SerializeField] private GameObject[] spawnThis;
+    [SerializeField] private string[] spwanThisString;
     private int maxSpawnThisMany;
     private int minSpawnThisMany;
     private int spawnThisMany;
@@ -98,7 +98,8 @@ public class EnemySpawnController : MonoBehaviour {
                 spawnPos = activeSpawner.transform;
                 spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
                 for (int i = 0; i < spawnThisMany; i++) {
-                    Instantiate(spawnThis[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation);
+                    //Instantiate(spawnThis[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation);
+                    ObjectPool.Instance.GetFromPool(spwanThisString[Random.Range(0, 3)], spawnPos.position, spawnPos.rotation, null, true);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
