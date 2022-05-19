@@ -28,13 +28,21 @@ public class GeneratorEvent : MonoBehaviour
         objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
     }
 
-    private void OnTriggerStay(Collider col)
+/*    private void OnTriggerStay(Collider col)
     {
         if (col.CompareTag("Player"))
         {
             textPopup.SetActive(true);
             interactableRange = true;
 
+        }
+    }*/
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            textPopup.SetActive(true);
+            StartGenerator();
         }
     }
 
@@ -72,15 +80,18 @@ public class GeneratorEvent : MonoBehaviour
         objectivesManager.RemoveObjective("survive the horde");
         objectivesManager.AddObjective("enter safe room");
     }
-    public void Interact(InputAction.CallbackContext value)
+/*    public void Interact(InputAction.CallbackContext value)
     {
-        if (value.started && interactableRange)
+       
+        if (value.performed && interactableRange)
         {
+            Debug.Log(value);
+            Debug.Log("startas");
             StartGenerator();
             textPopup.GetComponent<TextMeshPro>().text = "";
             objectivesManager.RemoveObjective("start the generator");
             objectivesManager.AddObjective("let the generator finish");
             objectivesManager.AddObjective("survive the horde");
         }
-    }
+    }*/
 }

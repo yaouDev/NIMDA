@@ -49,11 +49,12 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
 
     private void Delay() {
         trailRenderer.enabled = false;
-        ObjectPool.Instance.ReturnToPool("SimpleBullet", gameObject);
+        //ObjectPool.Instance.ReturnToPool("SimpleBullet", gameObject);
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter(Collider other) {
-  
+
         //Explode if bullet hits enemy directly
         if (other.gameObject.CompareTag("Player") && explodeOnTouch) {
             Explode();

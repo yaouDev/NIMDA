@@ -5,10 +5,12 @@ using UnityEngine;
 public class EnemySpawnController : MonoBehaviour {
     [Header("What to Spawn")]
     [SerializeField] private string[] spawnThis;
+    [SerializeField] private GameObject[] spawnThisGO;
     private int maxSpawnThisMany;
     private int minSpawnThisMany;
     private int spawnThisMany;
     private string spawnedEnemy;
+    private GameObject spawnedEnemyGO;
     [Header("Normal Spawn")]
     [SerializeField] private int nMaxSpawnCount = 25;
     [SerializeField] private int nMaxSpawnCooldown = 7;
@@ -72,6 +74,7 @@ public class EnemySpawnController : MonoBehaviour {
         players = new CallbackSystem.PlayerHealth[2];
         GameObject[] tmp = GameObject.FindGameObjectsWithTag("Player");
         for (int i = 0; i < tmp.Length; i++) players[i] = tmp[i].GetComponent<CallbackSystem.PlayerHealth>();
+        spawnedEnemyGO = spawnThisGO[0];
         StartCoroutine(SpawnObject());
     }
     private void FixedUpdate() {
@@ -113,8 +116,8 @@ public class EnemySpawnController : MonoBehaviour {
                 spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
                 EnemyRange();
                 for (int i = 0; i < spawnThisMany; i++) {
-                    //Instantiate(spawnedEnemy, spawnPos.position, spawnPos.rotation);
-                    ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
+                    Instantiate(spawnedEnemyGO, spawnPos.position, spawnPos.rotation);
+                    //ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
@@ -180,11 +183,11 @@ public class EnemySpawnController : MonoBehaviour {
             dropRoll = Random.Range(0, 100);
 
             if (dropRoll <= enemyShootRange) {
-                spawnedEnemy = spawnThis[0];
+                spawnedEnemyGO = spawnThisGO[0];
             } else if (dropRoll <= enemyMeeleRange) {
-                spawnedEnemy = spawnThis[1];
+                spawnedEnemyGO = spawnThisGO[1];
             } else if (dropRoll <= enemyShieldRange) {
-                spawnedEnemy = spawnThis[2];
+                spawnedEnemyGO = spawnThisGO[2];
             }
         }
 

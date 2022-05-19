@@ -14,10 +14,6 @@ public class AIData : MonoBehaviour {
     [SerializeField] private ParticleSystem enemyMuzzleflash;
     [SerializeField] private ParticleSystem fireParticles;
 
-    private Vector3 bestCoverSpot;
-
-    private List<Cover> activeCovers = new List<Cover>();
-
     private void Start() {
         Instance ??= this;
     }
@@ -42,18 +38,6 @@ public class AIData : MonoBehaviour {
     }
     public ParticleSystem FireParticles {
         get { return fireParticles; }
-    }
-
-    public void SetBestCoverSpot(Vector3 bestCoverSpot) {
-        this.bestCoverSpot = bestCoverSpot;
-    }
-
-    public Vector3 GetBestCoverSpot() {
-        return bestCoverSpot;
-    }
-
-    public List<Cover> GetActiveCovers() {
-        return activeCovers;
     }
 
     public class KeyValue<K, V> {
@@ -90,6 +74,10 @@ public class AIData : MonoBehaviour {
         if (shotsToFireAndFired.ContainsKey(agent)) shotsToFireAndFired[agent].Value = shotsToFireAndFired[agent].Value + 1;
     }
 
+    public void ResetShotsFired(AI_Controller agent) {
+        if (shotsToFireAndFired.ContainsKey(agent)) shotsToFireAndFired[agent].Value = 0;
+    }
+
     private ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>>();
     public void AddCoverSpot(Vector3 coverSpot) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(coverSpot);
@@ -105,11 +93,5 @@ public class AIData : MonoBehaviour {
         if (potentialCoverSpots.ContainsKey(module)) return potentialCoverSpots[module];
         return null;
     }
-
-
-    private void OnParticleSystemStopped() {
-        
-    }
-
 
 }

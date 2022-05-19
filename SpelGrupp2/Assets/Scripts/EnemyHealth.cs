@@ -24,6 +24,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int dropMax;
     private EnemyShield shield;
     private Transform playersPos;
+    private AI_Controller agent;
 
     public float CurrentHealth {
         get { return currentHealth; }
@@ -41,6 +42,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
         shield = GetComponentInChildren<EnemyShield>();
         playersPos = GameObject.Find("Players").transform;
+        agent = GetComponent<AI_Controller>();
     }
     void Update() {
 
@@ -68,13 +70,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        //Destroy(gameObject);
-        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        //Destroy(gameObject);
-        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
     /*  public float GetCurrentHealth() {
@@ -118,6 +120,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             shield.CurrentHealth = shield.FullHealth;
             shield.gameObject.SetActive(true);
         }
+        if (AIData.Instance.GetShotRequirement(agent) != -1) {
+            AIData.Instance.ResetShotsFired(agent);
+        }
+        agent.Destination = Vector3.zero + new Vector3(1, 0, 0);
     }
 
 }

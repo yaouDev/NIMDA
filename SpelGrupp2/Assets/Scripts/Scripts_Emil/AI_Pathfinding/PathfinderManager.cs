@@ -48,12 +48,16 @@ public class PathfinderManager : MonoBehaviour {
 
             bool wrongDirectionCond = Vector3.Dot((latestCalculatedPath[0] - agent.Position).normalized, (endPos - agent.Position).normalized) > 0;
 
-            if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToReusePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
-                List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
-                pathToStartOflatest.AddRange(latestCalculatedPath);
-                agent.CurrentPath = pathToStartOflatest;
-                agent.CurrentPathIndex = 0;
+            lock (latestCalculatedPath) {
+                if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToReusePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
+                    List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
+                    pathToStartOflatest.AddRange(latestCalculatedPath);
+                    agent.CurrentPath = pathToStartOflatest;
+                    agent.CurrentPathIndex = 0;
+                }
             }
+
+
         }
         if (!pathQueue.Contains(agent)) pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
     }
