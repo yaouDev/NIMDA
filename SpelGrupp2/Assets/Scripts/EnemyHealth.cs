@@ -45,14 +45,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     void Update() {
 
         if (CurrentHealth <= 0) {
+            Debug.Log("Im dying in enemyHealth");
             Die();
         } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
         }
     }
-    public float GetCurrentHealth() {
-        return CurrentHealth;
-    }
+
     public float GetFullHealth() {
         return fullHealth;
     }
@@ -120,10 +119,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             shield.CurrentHealth = shield.FullHealth;
             shield.gameObject.SetActive(true);
         }
-    }
-
-    private void OnParticleSystemStopped() {
-
     }
 
 }
