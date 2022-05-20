@@ -19,9 +19,10 @@ public class BossSpawner : MonoBehaviour
         playerCount++;
         if (col.gameObject.tag == "Player")
         {
-            if (playerCount == 6)
+            if (playerCount == 2)
             {
                 boss.SetActive(true);
+                gameObject.SetActive(false);
             }
         }
     }
