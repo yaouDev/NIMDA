@@ -58,7 +58,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             {
                 CloseExit();
                // compass.UpdateQuest();
-                if (objectivesManager.BossNext())
+                if (!objectivesManager.BossNext())
                 {
                     objectivesManager.AddObjective("find the next safe room");
                     objectivesManager.FlipBossBool();
@@ -100,7 +100,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        doorOpen = false;
+        doorOpen = !doorOpen;
     }
     IEnumerator MoveExit(Vector3 targetPosition, float duration)
     {
