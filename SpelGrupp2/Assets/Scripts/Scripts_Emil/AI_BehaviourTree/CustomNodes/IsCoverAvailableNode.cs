@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class IsCoverAvailableNode : Node {
     [SerializeField] private LayerMask layerMask;
-    private Vector3 prevCastPos = Vector3.zero;
 
     private bool CheckIfSpotIsValid(Vector3 spot) {
         RaycastHit hit;
@@ -40,8 +39,6 @@ public class IsCoverAvailableNode : Node {
 
     public override NodeState Evaluate() {
 
-        // if (prevCastPos == Vector3.zero || Vector3.Distance(prevCastPos, agent.Destination) > 4f || agent.Destination == agent.ClosestPlayer) {
-
         Vector2Int currentModule = DynamicGraph.Instance.GetModulePosFromWorldPos(agent.Position);
         Vector3 bestCoverSpot = GetValidCoverFromModule(currentModule);
 
@@ -57,7 +54,6 @@ public class IsCoverAvailableNode : Node {
         if (bestCoverSpot.x != Mathf.Infinity) agent.Destination = bestCoverSpot;
 
         NodeState = bestCoverSpot.x == Mathf.Infinity ? NodeState.FAILURE : NodeState.SUCCESS;
-        prevCastPos = agent.Position;
 
         return NodeState;
     }

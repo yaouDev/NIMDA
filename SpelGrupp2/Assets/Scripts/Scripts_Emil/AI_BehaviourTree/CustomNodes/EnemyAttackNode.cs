@@ -58,7 +58,7 @@ public class EnemyAttackNode : Node {
     void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = agent.ClosestPlayer - agent.Health.GetFirePoint().transform.position;
+        directionWithoutSpread = agent.ClosestPlayer - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -68,7 +68,8 @@ public class EnemyAttackNode : Node {
         directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.FirePoint, Quaternion.identity);
+        //ObjectPool.Instance.GetFromPool("SimpleBullet", agent.Health.FirePoint, Quaternion.identity, null, true);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -76,12 +77,15 @@ public class EnemyAttackNode : Node {
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
 
+        //Add sound to ejection
+        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.fire1, agent.gameObject);
+
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
         //MuzzleFlash
         if (AIData.Instance.EnemyMuzzleflash != null) {
-            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
 
     }

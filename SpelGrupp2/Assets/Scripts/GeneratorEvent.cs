@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class GeneratorEvent : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class GeneratorEvent : MonoBehaviour
     private bool interactableRange = false; 
     private Vector3 closePosition;
     private Vector3 openPosition;
+    [SerializeField] private ObjectivesManager objectivesManager;
 
     // Start is called before the first frame update
     void Start()
@@ -23,15 +25,24 @@ public class GeneratorEvent : MonoBehaviour
         closePosition = door.transform.position;
         siren.enabled = false; 
         spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
     }
 
-    private void OnTriggerStay(Collider col)
+/*    private void OnTriggerStay(Collider col)
     {
         if (col.CompareTag("Player"))
         {
             textPopup.SetActive(true);
             interactableRange = true;
 
+        }
+    }*/
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            textPopup.SetActive(true);
+            StartGenerator();
         }
     }
 
@@ -63,14 +74,24 @@ public class GeneratorEvent : MonoBehaviour
             yield return null;
         }
         doorOpen = true;
-        siren.enabled = false; 
-
+        siren.enabled = false;
+        objectivesManager.RemoveObjective("open the safe room");
+        objectivesManager.RemoveObjective("let the generator finish");
+        objectivesManager.RemoveObjective("survive the horde");
+        objectivesManager.AddObjective("enter safe room");
     }
-    public void Interact(InputAction.CallbackContext value)
+/*    public void Interact(InputAction.CallbackContext value)
     {
-        if (value.started && interactableRange)
+       
+        if (value.performed && interactableRange)
         {
+            Debug.Log(value);
+            Debug.Log("startas");
             StartGenerator();
+            textPopup.GetComponent<TextMeshPro>().text = "";
+            objectivesManager.RemoveObjective("start the generator");
+            objectivesManager.AddObjective("let the generator finish");
+            objectivesManager.AddObjective("survive the horde");
         }
-    }
+    }*/
 }

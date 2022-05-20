@@ -4,7 +4,6 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/MeleeAttack")]
 public class MeleeAttackNode : Node {
-    [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float attackCoolDown = 1.0f;
     [SerializeField] private float damage = 5.0f;
     [SerializeField] private LayerMask whatAreTargets;
@@ -15,11 +14,9 @@ public class MeleeAttackNode : Node {
 
     Collider[] colliders;
 
-    RaycastHit checkCover;
-
     public override NodeState Evaluate() {
 
-        if (isAttacking && agent.TargetInSight){//CheckIfCoverIsValid() == false) {
+        if (isAttacking && agent.TargetInSight) {//CheckIfCoverIsValid() == false) {
             //agent.IsStopped = true;
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
@@ -42,9 +39,8 @@ public class MeleeAttackNode : Node {
 
     void Attack() {
         CheckForPlayers();
-        if (AIData.Instance.EnemyMuzzleflash != null)
-        {
-            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        if (AIData.Instance.EnemyMuzzleflash != null) {
+            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
     }
 

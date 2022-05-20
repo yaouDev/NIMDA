@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
+[CreateAssetMenu(menuName = "AIBehavior/Behavior/LaserAttack")]
 public class AttackNode : Node {
 
     [SerializeField] private float spread;
@@ -36,9 +36,9 @@ public class AttackNode : Node {
 
 
         /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
-                    if (agent.Attack.IsShooting()) {
-                        agent.Attack.SetShooting(false);
-                        agent.Attack.StartCoroutine(agent.Attack.AttackDelay());
+                    if (agent.LaserAttack.IsShooting()) {
+                        agent.LaserAttack.SetShooting(false);
+                        agent.LaserAttack.StartCoroutine(agent.LaserAttack.LaserAttackDelay());
                     }
                     agent.IsStopped = true;
                     NodeState = NodeState.SUCCESS;
@@ -59,7 +59,7 @@ public class AttackNode : Node {
     void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = checkCover.point - agent.Health.GetFirePoint().transform.position;
+        directionWithoutSpread = checkCover.point - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -69,7 +69,7 @@ public class AttackNode : Node {
         directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.BossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.BossBullet, agent.Health.FirePoint, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -82,8 +82,7 @@ public class AttackNode : Node {
 
         //MuzzleFlash
         if (AIData.Instance.EnemyMuzzleflash != null) {
-            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+            Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
-
     }
 }

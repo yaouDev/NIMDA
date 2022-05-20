@@ -20,6 +20,7 @@ namespace CallbackSystem
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
+        [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets;
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
@@ -27,7 +28,7 @@ namespace CallbackSystem
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
-        private float reducedSelfDmg, weaponCooldown, currentHitDistance, ASCounter = 0f;
+        private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -57,7 +58,8 @@ namespace CallbackSystem
             crosshairEvent = new WeaponCrosshairEvent();
             isPlayerOne = health.IsPlayerOne();
             reducedSelfDmg = laserSelfDmg / 2;
-            weaponCooldown = 0f;
+            laserWeaponCooldown = 0f;
+            revolverCooldown = 0f;
         }
 
         [SerializeField] private Material bulletMat;
@@ -65,8 +67,8 @@ namespace CallbackSystem
 
         private void Update()
         {
-            canShootLaser = (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0);
-            // if (health.ReturnHealth() > laserSelfDmg || health.ReturnBatteries() > 0)
+            canShootLaser = (health.GetCurrenthealth() > laserSelfDmg || health.GetCurrentBatteryCount() > 0);
+            // if (healthPercentage.ReturnHealth() > laserSelfDmg || healthPercentage.ReturnBatteries() > 0)
             // {
             //     canShootLaser = true;
             // }
@@ -88,8 +90,10 @@ namespace CallbackSystem
                 crosshairEvent.targetInSight = targetInSight;
                 EventSystem.Current.FireEvent(crosshairEvent);
             }
-            if (recentlyFired && weaponCooldown < 0.5f && laserWeapon)
-                weaponCooldown += Time.deltaTime;
+            if (recentlyFired && laserWeaponCooldown < 0.5f && laserWeapon)
+                laserWeaponCooldown += Time.deltaTime;
+            else if (recentlyFired && revolverCooldown < 0.3f && !laserWeapon)
+                revolverCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
             /*
@@ -117,16 +121,30 @@ namespace CallbackSystem
             {
                 if (laserWeapon && canShootLaser)
                 {
-                    ShootLaser();
-                    StartCoroutine(AnimateLineRenderer(aimingDirection));
+                    StartCoroutine(AttackDelay(laserAttackDelay));
                 }
                 else if (!laserWeapon)
                 {
                     FireProjectileWeapon();
                 }
                 recentlyFired = true;
-                weaponCooldown = 0f;
+                laserWeaponCooldown = 0f;
+                revolverCooldown = 0f;
             }
+        }
+
+        IEnumerator AttackDelay(float channelTime)
+        {
+            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+            ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+            yield return new WaitForSeconds(channelTime);
+            LaserAttack();
+        }
+
+        private void LaserAttack()
+        {
+            ShootLaser();
+            StartCoroutine(AnimateLineRenderer(aimingDirection));
         }
         /*
         private void ProjectileFire(InputAction.CallbackContext context)
@@ -148,7 +166,7 @@ namespace CallbackSystem
 
         public void WeaponSwap(InputAction.CallbackContext context)
         {
-            if (context.performed)
+            if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f)
             {
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
@@ -161,7 +179,7 @@ namespace CallbackSystem
             if (context.performed)
             {
                 float scrollDelta = context.ReadValue<float>();
-
+                Debug.Log(scrollDelta);
                 if (Mathf.Abs(scrollDelta) > 100.0f)
                 {
                     laserWeapon = scrollDelta > 0;
@@ -196,8 +214,7 @@ namespace CallbackSystem
 
                 health.TakeDamage(laserSelfDmg);
 
-                AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject); //laser sound
+ 
 
                 Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
                 if (hitInfo.collider != null)

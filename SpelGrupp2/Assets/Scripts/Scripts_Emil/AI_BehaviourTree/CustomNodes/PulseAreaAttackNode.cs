@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/PulseAttack")]
 public class PulseAreaAttackNode : Node {
     [SerializeField] private float attackRange;
-    [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float attackCoolDown = 3.0f;
     [SerializeField] private float damage = 10.0f;
     [SerializeField] private LayerMask whatAreTargets;

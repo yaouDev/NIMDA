@@ -333,6 +333,7 @@ MonoBehaviour:
   batteryRespawnCount: 2
   maxBatteryCount: 5
   healthReg: 10
+  playerMaterial: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
 --- !u!114 &8397479276426667862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,16 +353,17 @@ MonoBehaviour:
     m_Bits: 6144
   laserLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 34610432
   maxDistance: 30
   laserSelfDmg: 25
   damage: 65
   teamDamage: 30
+  laserAttackDelay: 0.5
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
-  bulletMat: {fileID: 2100000, guid: 61b3e88432baf31448b1e0c5f1d358aa, type: 2}
+  bulletMat: {fileID: 2100000, guid: e3d71b91e69896c498036f2258b873fa, type: 2}
   laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607570548879
 MonoBehaviour:
@@ -403,6 +405,7 @@ MonoBehaviour:
     m_Bits: 256
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
+  visuals: {fileID: 326990607699453844}
 --- !u!114 &326990607570548866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +441,7 @@ MonoBehaviour:
   playerOther: {fileID: 326990607881322115}
   depthMaskHolder: {fileID: 326990608820777541}
   depthMaskPlane: {fileID: 326990609130996455}
+  isPlayerOne: 0
   splitScreenOffset: {x: 0, y: 0, z: 0}
   topDownViewRotation: {x: 30, y: 0}
   TopDownOffset: {x: 0, y: 1, z: -12}
@@ -558,6 +562,12 @@ MonoBehaviour:
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
   UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
   UpgradedLaserWeaponRecipe: {fileID: 11400000, guid: d0ce47cee0731ef42806714666e68e9b, type: 2}
+  cyanRecipe: {fileID: 11400000, guid: 74845dfc9b8923f4fbc10e595439cf47, type: 2}
+  yellowRecipe: {fileID: 11400000, guid: c7156798ca3dd96489856c3aedc6e0d8, type: 2}
+  whiteRecipe: {fileID: 11400000, guid: 49e0d4df1dbccea49b2fef911d980e90, type: 2}
+  magentaRecipe: {fileID: 11400000, guid: b00a534573c159644ac4bb336244f8cd, type: 2}
+  greenRecipe: {fileID: 11400000, guid: 12a13220b6258c14a899bfe9b631f3ff, type: 2}
+  blackRecipe: {fileID: 11400000, guid: dec980b9f0400dd40a0b8c180c552fa0, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 1048576
@@ -565,6 +575,11 @@ MonoBehaviour:
   craftingButtons:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  defaultColorButton: {fileID: 0}
   copper: 0
   transistor: 0
   iron: 0
@@ -693,7 +708,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8397479276426667862}
         m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
-        m_MethodName: WeaponSwapWithMouseWheel
+        m_MethodName: WeaponSwap
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -795,7 +810,7 @@ MonoBehaviour:
     m_ActionName: Crafting/Next[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow,/XInputControllerWindows/dpad/up,/XInputControllerWindows/dpad/down]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1021181802951838962}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
         m_MethodName: Interact
         m_Mode: 0
@@ -858,6 +873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: {x: 0.3, y: 4.5, z: 0}
 --- !u!1 &326990607699453844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1016,6 +1032,7 @@ MonoBehaviour:
   batteryRespawnCount: 2
   maxBatteryCount: 5
   healthReg: 10
+  playerMaterial: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
 --- !u!114 &3037943043123946253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1035,16 +1052,17 @@ MonoBehaviour:
     m_Bits: 5120
   laserLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 34610432
   maxDistance: 30
   laserSelfDmg: 25
   damage: 65
   teamDamage: 30
+  laserAttackDelay: 0.5
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
-  bulletMat: {fileID: 2100000, guid: 61b3e88432baf31448b1e0c5f1d358aa, type: 2}
+  bulletMat: {fileID: 2100000, guid: fcb4d715143e6724bae637ae8ebe0232, type: 2}
   laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607881322125
 MonoBehaviour:
@@ -1086,6 +1104,7 @@ MonoBehaviour:
     m_Bits: 256
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
+  visuals: {fileID: 326990609148873030}
 --- !u!114 &326990607881322124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1121,6 +1140,7 @@ MonoBehaviour:
   playerOther: {fileID: 326990607570548877}
   depthMaskHolder: {fileID: 326990608334043154}
   depthMaskPlane: {fileID: 326990609093943275}
+  isPlayerOne: 0
   splitScreenOffset: {x: 0, y: 0, z: 0}
   topDownViewRotation: {x: 30, y: 0}
   TopDownOffset: {x: 0, y: 1, z: -12}
@@ -1241,6 +1261,12 @@ MonoBehaviour:
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
   UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
   UpgradedLaserWeaponRecipe: {fileID: 11400000, guid: d0ce47cee0731ef42806714666e68e9b, type: 2}
+  cyanRecipe: {fileID: 11400000, guid: 74845dfc9b8923f4fbc10e595439cf47, type: 2}
+  yellowRecipe: {fileID: 11400000, guid: c7156798ca3dd96489856c3aedc6e0d8, type: 2}
+  whiteRecipe: {fileID: 11400000, guid: 49e0d4df1dbccea49b2fef911d980e90, type: 2}
+  magentaRecipe: {fileID: 11400000, guid: b00a534573c159644ac4bb336244f8cd, type: 2}
+  greenRecipe: {fileID: 11400000, guid: 12a13220b6258c14a899bfe9b631f3ff, type: 2}
+  blackRecipe: {fileID: 11400000, guid: dec980b9f0400dd40a0b8c180c552fa0, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 1048576
@@ -1248,6 +1274,11 @@ MonoBehaviour:
   craftingButtons:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  defaultColorButton: {fileID: 0}
   copper: 0
   transistor: 0
   iron: 0
@@ -1404,7 +1435,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3037943043123946253}
         m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
-        m_MethodName: WeaponSwapWithMouseWheel
+        m_MethodName: WeaponSwap
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1506,7 +1537,7 @@ MonoBehaviour:
     m_ActionName: Crafting/Next[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow,/XInputControllerWindows/dpad/up,/XInputControllerWindows/dpad/down]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5657999587282274127}
         m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
         m_MethodName: Interact
         m_Mode: 0
@@ -1569,6 +1600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fe81becffcfaa24b8cff25d8c098b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  offset: {x: 0.3, y: 4.5, z: 0}
 --- !u!1 &326990607883718378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1899,7 +1931,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2182111095
+    m_Bits: 2182242167
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2024,7 +2056,7 @@ Camera:
   m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2182111159
+    m_Bits: 2182242231
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2619,19 +2651,19 @@ PrefabInstance:
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c0256a3c44f274947a1e83faa45384b8, type: 2}
+      objectReference: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: c0256a3c44f274947a1e83faa45384b8, type: 2}
+      objectReference: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: c0256a3c44f274947a1e83faa45384b8, type: 2}
+      objectReference: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[3]
       value: 
-      objectReference: {fileID: 2100000, guid: c0256a3c44f274947a1e83faa45384b8, type: 2}
+      objectReference: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[4]
       value: 
@@ -2930,19 +2962,19 @@ PrefabInstance:
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 6f846415a9d25ee419267a07031fca74, type: 2}
+      objectReference: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
-      objectReference: {fileID: 2100000, guid: 6f846415a9d25ee419267a07031fca74, type: 2}
+      objectReference: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[2]
       value: 
-      objectReference: {fileID: 2100000, guid: 6f846415a9d25ee419267a07031fca74, type: 2}
+      objectReference: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[3]
       value: 
-      objectReference: {fileID: 2100000, guid: 6f846415a9d25ee419267a07031fca74, type: 2}
+      objectReference: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
     - target: {fileID: 547628038550710083, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
       propertyPath: m_Materials.Array.data[4]
       value: 

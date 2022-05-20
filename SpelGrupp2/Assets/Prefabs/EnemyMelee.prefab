@@ -671,12 +671,12 @@ MonoBehaviour:
   firePoint: {fileID: 1477424552870054217}
   fullHealth: 100
   hitForce: 0
+  objectPoolTag: EnemyMelee
   ironRange: 65
   copperRange: 90
   transitorRange: 100
   dropMin: 5
   dropMax: 9
-  enemySound: {fileID: 11400000, guid: de065afaf4c856945a048cfb82854c04, type: 2}
 --- !u!114 &8148366392738030856
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -689,16 +689,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23bb2f716d3c43349a1777483aedeab5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 13.5
-  timeBetweenPathUpdates: 1.5
+  acceleration: 13.5
+  maxSpeed: 13.5
   critRange: 0
   allowedTargetDiscrepancy: 5
+  turnSpeed: 100
   targetMask:
     serializedVersion: 2
     m_Bits: 3328
   drawPath: 0
   isBoss: 0
   isStopped: 1
+  hitBufferSize: 50
 --- !u!114 &7820283272223385740
 MonoBehaviour:
   m_ObjectHideFlags: 0

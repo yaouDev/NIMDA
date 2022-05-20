@@ -24,7 +24,6 @@ namespace CallbackSystem
             tesh = prefab.GetComponent<TextMeshProUGUI>();
             tesh.text = eve.text;
             Instantiate(prefab, pos);
-            Debug.Log($"{tesh.text + ": called true"}");
         }
     }
 }

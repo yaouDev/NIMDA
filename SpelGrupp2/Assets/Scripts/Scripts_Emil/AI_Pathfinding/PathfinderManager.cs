@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Jobs;
 using UnityEngine.Jobs;
 using Unity.Collections;
+using Unity.Mathematics;
 
 public class PathfinderManager : MonoBehaviour {
     [SerializeField] float proximityToReusePath;
@@ -47,12 +48,16 @@ public class PathfinderManager : MonoBehaviour {
 
             bool wrongDirectionCond = Vector3.Dot((latestCalculatedPath[0] - agent.Position).normalized, (endPos - agent.Position).normalized) > 0;
 
-            if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToReusePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
-                List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
-                pathToStartOflatest.AddRange(latestCalculatedPath);
-                agent.CurrentPath = pathToStartOflatest;
-                agent.CurrentPathIndex = 0;
+            lock (latestCalculatedPath) {
+                if (Vector3.Distance(currentPosition, latestCalculatedPath[0]) <= proximityToReusePath && endPos == latestCalculatedPath[latestCalculatedPath.Count - 1] && wrongDirectionCond) {
+                    List<Vector3> pathToStartOflatest = AStar(currentPosition, latestCalculatedPath[0], false);
+                    pathToStartOflatest.AddRange(latestCalculatedPath);
+                    agent.CurrentPath = pathToStartOflatest;
+                    agent.CurrentPathIndex = 0;
+                }
             }
+
+
         }
         if (!pathQueue.Contains(agent)) pathQueue.Insert(agent, Vector3.Distance(currentPosition, endPos));
     }
@@ -106,8 +111,6 @@ public class PathfinderManager : MonoBehaviour {
         } catch (System.Exception) {
             // so it doesn't spam on exit playmode
         }
-
-
     }
 
     public void UpdateAgentLatestPath(int agentId, List<Vector3> path) {
@@ -118,13 +121,11 @@ public class PathfinderManager : MonoBehaviour {
     private List<Vector3> AStar(Vector3 startPos, Vector3 endPos, bool updateLatestPath) {
         PriorityQueue<Vector3> priorityQueue = new PriorityQueue<Vector3>();
         Vector3 node = Vector3.zero;
-        int edgesTested = 0;
-        HashSet<Vector3> explored = new HashSet<Vector3>();
-        Dictionary<Unity.Mathematics.float3, Unity.Mathematics.float3> via = new Dictionary<Unity.Mathematics.float3, Unity.Mathematics.float3>();
-        Dictionary<Unity.Mathematics.float3, float> cost = new Dictionary<Unity.Mathematics.float3, float>();
+        Dictionary<float3, float3> via = new Dictionary<float3, float3>();
+        Dictionary<float3, float> cost = new Dictionary<float3, float>();
         Vector3 closestNode = DynamicGraph.Instance.GetClosestNode(startPos);
         DynamicGraph.Instance.Insert(closestNode);
-        DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighborsKV(closestNode));
+        DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighbors(closestNode));
 
         priorityQueue.Insert(closestNode, 0);
         via[closestNode] = closestNode;
@@ -134,12 +135,10 @@ public class PathfinderManager : MonoBehaviour {
 
             node = priorityQueue.DeleteMin();
 
-            explored.Add(node);
             if (node == endPos) break;
-            Dictionary<Unity.Mathematics.float3, float> currEdges = DynamicGraph.Instance.GetPossibleNeighborsKV(node);
+            Vector3[] currEdges = DynamicGraph.Instance.GetPossibleNeighbors(node);
             DynamicGraph.Instance.CreateNeighbors(node, currEdges);
-            foreach (Vector3 neighbor in currEdges.Keys) {
-                edgesTested++;
+            foreach (Vector3 neighbor in currEdges) {
                 float tmpCost = cost[node] + DynamicGraph.Instance.GetCost(node, neighbor);
 
                 bool nodeIsFree = !DynamicGraph.Instance.IsNodeBlocked(neighbor); //.Length == 0;
@@ -165,15 +164,13 @@ public class PathfinderManager : MonoBehaviour {
         [ReadOnly] public NativeList<Vector3> endPositions;
 
         public void Execute(int index) {
-            PriorityQueue<Unity.Mathematics.float3> priorityQueue = new PriorityQueue<Unity.Mathematics.float3>();
+            PriorityQueue<float3> priorityQueue = new PriorityQueue<float3>();
             Vector3 node = Vector3.zero;
-            int edgesTested = 0;
-            HashSet<Unity.Mathematics.float3> explored = new HashSet<Unity.Mathematics.float3>();
-            Dictionary<Unity.Mathematics.float3, Unity.Mathematics.float3> via = new Dictionary<Unity.Mathematics.float3, Unity.Mathematics.float3>();
-            Dictionary<Unity.Mathematics.float3, float> cost = new Dictionary<Unity.Mathematics.float3, float>();
+            Dictionary<float3, float3> via = new Dictionary<float3, float3>();
+            Dictionary<float3, float> cost = new Dictionary<float3, float>();
             Vector3 closestNode = DynamicGraph.Instance.GetClosestNode(startPositions[index]);
             DynamicGraph.Instance.Insert(closestNode);
-            DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighborsKV(closestNode));
+            DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighbors(closestNode));
 
             priorityQueue.Insert(closestNode, 0);
             via[closestNode] = closestNode;
@@ -183,12 +180,10 @@ public class PathfinderManager : MonoBehaviour {
 
                 node = priorityQueue.DeleteMin();
 
-                explored.Add(node);
                 if (node == endPositions[index]) break;
-                Dictionary<Unity.Mathematics.float3, float> currEdges = DynamicGraph.Instance.GetPossibleNeighborsKV(node);
+                Vector3[] currEdges = DynamicGraph.Instance.GetPossibleNeighbors(node);
                 DynamicGraph.Instance.CreateNeighbors(node, currEdges);
-                foreach (Vector3 neighbor in currEdges.Keys) {
-                    edgesTested++;
+                foreach (Vector3 neighbor in currEdges) {
                     float tmpCost = cost[node] + DynamicGraph.Instance.GetCost(node, neighbor);
 
                     bool nodeIsFree = !DynamicGraph.Instance.IsNodeBlocked(neighbor);

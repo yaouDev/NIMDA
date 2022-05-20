@@ -5,8 +5,7 @@ using System.Net;
 using CallbackSystem;
 using UnityEngine;
 
-public class ExplosiveBullet : MonoBehaviour
-{
+public class ExplosiveBullet : MonoBehaviour, IPoolable {
     //Assignables
     [SerializeField] private Rigidbody rigidBody;
     //[SerializeField] private GameObject explosion;
@@ -18,85 +17,52 @@ public class ExplosiveBullet : MonoBehaviour
     [SerializeField] private bool useGravity;
 
     //Damage
-    [SerializeField] private int explosionDamage;
     [SerializeField] private float explosionRange;
-    [SerializeField] private float explosionForce;
 
 
     //LifeTime
-    [SerializeField] private int maxCollisions = 2;
-    [SerializeField] private float maxLifeTime = 500.0f;
+    [SerializeField] private float maxLifeTime = 100f;
+    private float currentLifeTime;
     [SerializeField] private bool explodeOnTouch = true;
 
     [SerializeField] private float damage = .1f;
-    
-    private int colissions;
+    [SerializeField] private TrailRenderer trailRenderer;
 
     PhysicMaterial physicsMat;
 
-    private void Start()
-    {
+    private void Start() {
         Setup();
     }
 
-    private void Update()
-    {
-        //When to Explode
-        if (colissions > maxCollisions)
-        {
-            Explode();
-        }
+    private void Update() {
         //Count down lifetime
-        maxLifeTime -= Time.deltaTime;
-        if(maxLifeTime <= 0)
-        {
+        currentLifeTime -= Time.deltaTime;
+        if (currentLifeTime <= 0) {
             Explode();
         }
 
     }
-    private void Explode()
-    {
-        //Intantiate Explosion
-/*        if(explosion != null)
-        {
-            Instantiate(explosion, transform.position, Quaternion.identity);
-        }*/
-/*        //Check for Enemies
-        Collider[] targets = Physics.OverlapSphere(transform.position, explosionRange, whatIsTarget);
-        for (int i = 0; i < targets.Length; i++)
-        {
-            //Get component of player
-            
-            //targets[i].GetComponent<PlayerHealth>().TakeDamage(explosionDamage); //sätt en damage parameter i TakeDamage
-            if (targets[i].GetComponent<Rigidbody>())
-            {
-                targets[i].GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRange);
-            }
-        }*/
-
+    private void Explode() {
         //Add delay to destroy
         Invoke("Delay", 0.05f);
     }
 
-    private void Delay()
-    {
+    private void Delay() {
+        trailRenderer.enabled = false;
+        //ObjectPool.Instance.ReturnToPool("SimpleBullet", gameObject);
         Destroy(gameObject);
     }
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        //Count up colissions
-        colissions++;
+
+    private void OnTriggerEnter(Collider other) {
+
         //Explode if bullet hits enemy directly
-        if(other.gameObject.CompareTag("Player") && explodeOnTouch)
-        {
+        if (other.gameObject.CompareTag("Player") && explodeOnTouch) {
             Explode();
             other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
         }
     }
 
-    private void Setup()
-    {
+    private void Setup() {
         //Create a new Ohysics material
         physicsMat = new PhysicMaterial();
         physicsMat.bounciness = bounciness;
@@ -108,11 +74,18 @@ public class ExplosiveBullet : MonoBehaviour
 
         //Set Gravity
         rigidBody.useGravity = useGravity;
+        currentLifeTime = maxLifeTime;
     }
 
-    private void OnDrawGizmosSelected()
-    {
+    private void OnDrawGizmosSelected() {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRange);
+    }
+
+    public void OnSpawn() {
+        currentLifeTime = maxLifeTime;
+        rigidBody.velocity = Vector3.zero;
+        trailRenderer.enabled = true;
+        trailRenderer.Clear();
     }
 }
