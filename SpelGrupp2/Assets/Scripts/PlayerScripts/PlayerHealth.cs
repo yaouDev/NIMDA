@@ -60,6 +60,16 @@ namespace CallbackSystem {
 
         public void TakeDamage(float damage) {
             currHealth -= damage;
+            if (alive)
+            {
+                CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
+                shakeEvent.affectsPlayerOne = isPlayerOne;
+                shakeEvent.affectsPlayerTwo = !isPlayerOne;
+                float magnitude = Mathf.Max(.28f, damage * .01f);
+                shakeEvent.magnitude = magnitude;
+                EventSystem.Current.FireEvent(shakeEvent);
+            }
+            
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
