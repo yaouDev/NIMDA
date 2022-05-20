@@ -21,7 +21,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitStartPosition;
     private Vector3 exitOpenPosition;
     private ObjectivesManager objectivesManager;
-    private bool bossNext;
+    
 
     // Start is called before the first frame update
     void Start() {
@@ -44,7 +44,6 @@ public class SafeRoomCloseBehind : MonoBehaviour {
                 spawnController.GeneratorRunning(false);
                 CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
                 //Debug.Log("st�ng entrance" + playerCount);
-                objectivesManager.RemoveObjective("enter safe room");
             }
         }
     }
@@ -59,10 +58,10 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             {
                 CloseExit();
                // compass.UpdateQuest();
-                if (!bossNext)
+                if (objectivesManager.BossNext())
                 {
                     objectivesManager.AddObjective("find the next safe room");
-                    bossNext = true;
+                    objectivesManager.FlipBossBool();
                 }
                 else
                 {
@@ -80,6 +79,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrence(entranceClosePosition, eventDuration));
             spawnController.GeneratorRunning(false);
+            objectivesManager.RemoveObjective("enter safe room");
         }
     }
     void CloseExit()

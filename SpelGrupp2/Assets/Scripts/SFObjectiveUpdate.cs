@@ -18,8 +18,9 @@ public class SFObjectiveUpdate : MonoBehaviour
             Debug.Log("entered");
             objM.RemoveObjective("find the first safe room");
             objM.RemoveObjective("find the next safe room");
-            objM.AddObjective("open the safe room");
+            //objM.AddObjective("open the safe room");
             objM.AddObjective("start the generator");
+            gameObject.SetActive(false);
         }
     }
 }
