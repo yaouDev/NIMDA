@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour, IDamageable {
+public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
+    [SerializeField] private float hitForce;
+    [SerializeField] string objectPoolTag;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -20,14 +22,27 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
     [SerializeField] private int transitorRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
+    private EnemyShield shield;
+    private Transform playersPos;
+    private AI_Controller agent;
 
     public float CurrentHealth {
         get { return currentHealth; }
         set { currentHealth = Mathf.Clamp(value, 0, fullHealth); }
     }
+
+    public float CurrentHealthPercentage {
+        get {
+            return currentHealth / fullHealth;
+        }
+    }
+
     private void Awake() {
         CurrentHealth = fullHealth;
         enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        shield = GetComponentInChildren<EnemyShield>();
+        playersPos = GameObject.Find("Players").transform;
+        agent = GetComponent<AI_Controller>();
     }
     void Update() {
 
@@ -35,28 +50,33 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
             Die();
         } else {
             CurrentHealth += Time.deltaTime * healthRestoreRate;
-
         }
     }
-    public float GetCurrentHealth() {
-        return CurrentHealth;
-    }
+
     public float GetFullHealth() {
         return fullHealth;
     }
-    public GameObject GetFirePoint() {
-        return firePoint;
+    /*     public GameObject GetFirePoint() {
+            return firePoint;
+        } */
+
+    public Vector3 FirePoint {
+        get { return firePoint.transform.position; }
     }
+
 
 
     public void Die() {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
+        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
         Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
         Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
     /*  public float GetCurrentHealth() {
@@ -87,7 +107,23 @@ public class EnemyHealth : MonoBehaviour, IDamageable {
 
     public void TakeDamage(float damage) {
         currentHealth -= damage;
+        Instantiate(AIData.Instance.EnemyHitParticles, transform.position, Quaternion.identity);
+        //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!! // -- fixed
+        AudioController.instance.PlayOneShot(AudioController.instance.enemySound.hurt, playersPos.position);
         //Debug.Log(currentHealth);
 
     }
+
+    public void OnSpawn() {
+        CurrentHealth = fullHealth;
+        if (shield != null) {
+            shield.CurrentHealth = shield.FullHealth;
+            shield.gameObject.SetActive(true);
+        }
+        if (AIData.Instance.GetShotRequirement(agent) != -1) {
+            AIData.Instance.ResetShotsFired(agent);
+        }
+        agent.Destination = Vector3.zero + new Vector3(1, 0, 0);
+    }
+
 }

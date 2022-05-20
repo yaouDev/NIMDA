@@ -61,9 +61,9 @@
                 },
                 {
                     "name": "ChangeWeaponWithMouseScroll",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "e0007e93-be16-41ae-b1b3-61551032e97e",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -391,6 +391,17 @@
                     "processors": "",
                     "groups": "MouseKeyboard",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fdf83617-597c-4797-95c8-1ddfb3a9552e",
+                    "path": "<Mouse>/scroll/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MouseKeyboard",
+                    "action": "ChangeWeaponWithMouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -8,17 +8,13 @@ namespace CallbackSystem
     {
         private PlayerHealth playerHealth;
         private PlayerAttack playerAttack;
+        [SerializeField] private GameObject parent; 
         private enum PickUp
         {
             Iron, Copper, Transistor, Bullet, Battery
         }
 
         [SerializeField] private PickUp pickUpType;
-        private ResourceUpdateEvent resourceEvent;
-        private void Awake()
-        {
-            resourceEvent = new ResourceUpdateEvent();
-        }
 
         void OnTriggerEnter(Collider other)
         {
@@ -28,7 +24,6 @@ namespace CallbackSystem
                 playerHealth = other.GetComponent<PlayerHealth>();
                 Crafting crafting = other.gameObject.GetComponent<Crafting>();
                 pickUpDrop(crafting);
-                Destroy(gameObject);
             }
         }
         private void pickUpDrop(Crafting crafting)
@@ -37,41 +32,37 @@ namespace CallbackSystem
             {
                 case (PickUp.Iron):
                     crafting.iron++;
+                    Destroy(parent);
                     //Debug.Log("Picked up iron");
                     break;
                 case (PickUp.Copper):
                     crafting.copper++;
+                    Destroy(parent);
                     //Debug.Log("Picked up copper");
                     break;
                 case (PickUp.Transistor):
                     crafting.transistor++;
+                    Destroy(parent);
                     //Debug.Log("Picked up transistor");
                     break;
                 case (PickUp.Bullet):
-                    playerAttack.UpdateBulletCount(1);
+                    if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
+                    {
+                        playerAttack.UpdateBulletCount(1);
+                        Destroy(parent);
+                    }
                     //Debug.Log("Picked up bullet");
                     break;
                 case (PickUp.Battery):
-                    playerHealth.IncreaseBattery();
+                    if (playerHealth.GetCurrentBatteryCount() < playerHealth.GetMaxBatteryCount())
+                    {
+                        playerHealth.IncreaseBattery();
+                        Destroy(parent);
+                    }
                     //Debug.Log("Picked up Battery");
                     break;
             }
             crafting.UpdateResources();
-            UpdateRes();
-
-            void UpdateRes()
-            {
-            Debug.Log("Updated resources");
-
-                resourceEvent.isPlayerOne = crafting.IsPlayerOne();
-                resourceEvent.ammoChange = false;
-                resourceEvent.c = crafting.copper;
-                resourceEvent.t = crafting.transistor;
-                resourceEvent.i = crafting.iron;
-               // Debug.Log("Copper: " + resourceEvent.c + ". Transistor: " + resourceEvent.t + ". Iron: " + resourceEvent.i);
-
-                EventSystem.Current.FireEvent(resourceEvent);
-            }
         }
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/MoveAttack")]
 public class MoveAttackNode : Node {
 
-    [SerializeField] private float turnSpeed = 70.0f;
     [SerializeField] private float spread;
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
@@ -18,27 +17,14 @@ public class MoveAttackNode : Node {
 
     private GameObject currentBullet;
 
-    Vector3 closestTarget;
-    Vector3 relativePos;
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
 
     RaycastHit checkCover;
 
-    Quaternion rotation;
-
     public override NodeState Evaluate() {
-        //Find Closest Player
-        closestTarget = agent.ClosestPlayer;
-        relativePos = closestTarget - agent.transform.position;
 
-        // Rotate the Enemy towards the player
-        rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-        agent.transform.rotation = Quaternion.RotateTowards(agent.transform.rotation,
-                                                            rotation, Time.deltaTime * turnSpeed);
-        agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
-
-        if (isShooting && CheckIfCoverIsValid() == false) {
+        if (isShooting && agent.TargetInSight) {
             //agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
@@ -63,7 +49,7 @@ public class MoveAttackNode : Node {
     void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = checkCover.point - agent.Health.GetFirePoint().transform.position;
+        directionWithoutSpread = checkCover.point - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -73,7 +59,7 @@ public class MoveAttackNode : Node {
         directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instatiate bullet
-        currentBullet = Instantiate(AIData.Instance.getBossBullet, agent.Health.GetFirePoint().transform.position, Quaternion.identity);
+        currentBullet = Instantiate(AIData.Instance.BossBullet, agent.Health.FirePoint, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
@@ -91,21 +77,4 @@ public class MoveAttackNode : Node {
                     }*/
 
     }
-
-    bool CheckIfCoverIsValid() {
-        //Casting rays towards the player. if the ray hits the player, the cover is not valid anymore.
-
-        // Create the ray to use
-        Ray ray = new Ray(agent.transform.position, closestTarget - agent.transform.position);
-        //Casting a ray against the player
-        if (Physics.Raycast(ray, out checkCover, 30.0f)) {
-            //Check if that collider is the player
-            if (checkCover.collider.gameObject.CompareTag("Player")) {
-                //There is no cover
-                return false;
-            }
-        }
-        return true;
-    }
-
 }

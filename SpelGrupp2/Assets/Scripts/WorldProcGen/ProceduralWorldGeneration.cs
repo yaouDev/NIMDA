@@ -176,12 +176,12 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 // if (currentPossibilities.Count > 0)
                 // {
                 //     randomModule = random.Next(0, currentPossibilities.Count - 1);
-                //     graph[current.x, current.y] = currentPossibilities[randomModule];
+                //     graph[current.x, current.z] = currentPossibilities[randomModule];
                 //     // UnityEngine.Debug.Log($"random module {currentPossibilities[randomModule]} debug {debug}");
                 // }
                 // else
                 // {
-                //     graph[current.x, current.y] = 15;
+                //     graph[current.x, current.z] = 15;
                 //     UnityEngine.Debug.Log($"no possibilities debug {debug}");
                 // }
                 int tileType = (int) graph[current.x, current.y];
@@ -231,7 +231,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
     private void MakeMaze()
     {
-        int slowAnimate = 0;
+        //int slowAnimate = 0;
         Stack<Vector2Int> backTracker = new Stack<Vector2Int>();
         HashSet<Vector2Int> unvisited = new HashSet<Vector2Int>();
 
@@ -266,7 +266,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
             }
 
             // animation
-            //currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
+            //currentIndicator.transform.position = new Vector3( current.x, .1f, current.z);
             //MoveTrail(currentIndicator.transform.position);
 
             // if (false && animate && slowAnimate++ % 5 == 0)
@@ -303,7 +303,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 //InstantiateTile(current);
                 //InstantiateTile(neighbor);
 
-                //currentIndicator.transform.position = new Vector3( current.x, .1f, current.y);
+                //currentIndicator.transform.position = new Vector3( current.x, .1f, current.z);
                 // if (false && animate)
                 // 	yield return null;
             }
@@ -382,9 +382,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 //     animate &&
                 //     last != vec2 &&
                 //     vec2.x < worldSize.x &&
-                //     vec2.y < worldSize.y &&
+                //     vec2.z < worldSize.z &&
                 //     vec2.x > 0 &&
-                //     vec2.y > 0)
+                //     vec2.z > 0)
                 //  yield return null;
 
                 if (!criticalPathCoordinates.Contains(vec2))
@@ -404,14 +404,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
                             if (vec2.y + 1 < worldSize.y)
                             {
                                 graph[vec2.x, vec2.y + 1] |= S;
-                                //InstantiateTile(new Vector2Int(vec2.x, vec2.y + 1));
+                                //InstantiateTile(new Vector2Int(vec2.x, vec2.z + 1));
                             }
 
                             // south
                             if (vec2.y - 1 > 0 && (graph[vec2.x, vec2.y - 1] & N) != 0)
                             {
                                 graph[vec2.x, vec2.y - 1] -= N;
-                                //InstantiateTile(new Vector2Int(vec2.x, vec2.y - 1));
+                                //InstantiateTile(new Vector2Int(vec2.x, vec2.z - 1));
                             }
                         }
                         else // lower part of circle
@@ -422,14 +422,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
                             if (vec2.y - 1 >= 0)
                             {
                                 graph[vec2.x, vec2.y - 1] |= N;
-                                //InstantiateTile(new Vector2Int(vec2.x, vec2.y - 1));
+                                //InstantiateTile(new Vector2Int(vec2.x, vec2.z - 1));
                             }
 
                             // North
                             if (vec2.y + 1 < worldSize.y && (graph[vec2.x, vec2.y + 1] & S) != 0)
                             {
                                 graph[vec2.x, vec2.y + 1] -= S;
-                                //InstantiateTile(new Vector2Int(vec2.x, vec2.y + 1));    
+                                //InstantiateTile(new Vector2Int(vec2.x, vec2.z + 1));    
                             }
                         }
                         //InstantiateTile(vec2);
@@ -438,7 +438,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         if (vec2.x - 1 > 0)
                         {
                             graph[vec2.x - 1, vec2.y] |= E;
-                            //InstantiateTile(new Vector2Int(vec2.x - 1, vec2.y));
+                            //InstantiateTile(new Vector2Int(vec2.x - 1, vec2.z));
                         }
 
                         // East
@@ -447,10 +447,10 @@ public class ProceduralWorldGeneration : MonoBehaviour
                             // if wall to W, remove wall
                             if ((graph[vec2.x + 1, vec2.y] & W) != 0)
                                 graph[vec2.x + 1, vec2.y] -= W;
-                            //InstantiateTile(new Vector2Int(vec2.x + 1, vec2.y));
+                            //InstantiateTile(new Vector2Int(vec2.x + 1, vec2.z));
                         }
 
-                        //currentIndicator.transform.position = new Vector3(vec2.x, .1f, vec2.y);
+                        //currentIndicator.transform.position = new Vector3(vec2.x, .1f, vec2.z);
                         //MoveTrail(currentIndicator.transform.position);
                     }
                 }
@@ -475,11 +475,11 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
         ShowMaze();
         mapHolder.position += Vector3.up * 13;
-        // for (int y = 0; y < worldSize.y; y++)
+        // for (int z = 0; z < worldSize.z; z++)
         // {
         //     for (int x = 0; x < worldSize.x; x++)
         //     {
-        //         Vector2Int pos = new Vector2Int(x, y);
+        //         Vector2Int pos = new Vector2Int(x, z);
         //         InstantiateTile(pos);
         //     }
         // }
@@ -558,14 +558,14 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         // West
                         if (vec2.x - 1 > 0)
                         {
-                            // if ((graph[vec2.x - 1, vec2.y] & E) != 0)
+                            // if ((graph[vec2.x - 1, vec2.z] & E) != 0)
                             graph[vec2.x - 1, vec2.y] |= E;
                         }
 
                         // East
                         if (vec2.x + 1 < worldSize.x)
                         {
-                            // if ((graph[vec2.x + 1, vec2.y] & W) != 0)
+                            // if ((graph[vec2.x + 1, vec2.z] & W) != 0)
                             graph[vec2.x + 1, vec2.y] |= W;
                         }
                     }
@@ -677,7 +677,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
 
             if (!animate)
                 continue;
-            //Instantiate(deadEnd, new Vector3(currDeadEnd.x, -.01f, currDeadEnd.y), tileRotation, this.gameObject.transform);
+            //Instantiate(deadEnd, new Vector3(currDeadEnd.x, -.01f, currDeadEnd.z), tileRotation, this.gameObject.transform);
             if (currDeadEnd.y > 0)
                 graph[currDeadEnd.x, currDeadEnd.y - 1] |= N;
             if (currDeadEnd.y < worldSize.y - 1)
@@ -688,9 +688,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 graph[currDeadEnd.x + 1, currDeadEnd.y] |= W;
 
             //InstantiateTile(currDeadEnd);
-            // if (currDeadEnd.y + 1 < worldSize.y) 
+            // if (currDeadEnd.z + 1 < worldSize.z) 
             // 	InstantiateTile(currDeadEnd + Vector2Int.up);
-            // if (currDeadEnd.y - 1 > 0) 
+            // if (currDeadEnd.z - 1 > 0) 
             // 	InstantiateTile(currDeadEnd + Vector2Int.down);
             // if (currDeadEnd.x + 1 < worldSize.x) 
             // 	InstantiateTile(currDeadEnd + Vector2Int.right);

@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4010806970511480766
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4689479674700238380}
+  m_Layer: 12
+  m_Name: BurnSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4689479674700238380
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4010806970511480766}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.723, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7892113966713732318}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7892113966713732309
 GameObject:
   m_ObjectHideFlags: 0
@@ -30,8 +60,9 @@ Transform:
   m_GameObject: {fileID: 7892113966713732309}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 69.83412, y: -26.17965, z: 72.21221}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_LocalScale: {x: 1, y: 0.7, z: 1}
+  m_Children:
+  - {fileID: 4689479674700238380}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -111,10 +142,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   burnTime: 2
-  fireparticles: {fileID: 9195308507420792288, guid: 75e54243e6d204bf7a1c6910b40e77f2, type: 3}
-  explosionParticles: {fileID: 6519082187826855582, guid: 333cb407bd051464898c89b94fff814d, type: 3}
-  barrelMesh: {fileID: 7892113966713732304}
   health: 50
+  damage: 10
+  barrelMesh: {fileID: 7892113966713732304}
+  burnSpot: {fileID: 4689479674700238380}
+  whatAreTargets:
+    serializedVersion: 2
+    m_Bits: 7168
 --- !u!54 &1514096121
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -235,7 +235,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arrow: {fileID: 87440345}
   player: {fileID: 574968144}
-  quest: {fileID: 1568695307}
+  quest1: {fileID: 0}
+  quest2: {fileID: 0}
   camRot: {x: -0.36929727, y: -0.1003358, z: 0.24223094, w: -0.8915584}
 --- !u!1 &167605070
 GameObject:
@@ -289,6 +290,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 87440345, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 189289680, guid: b209f022fae45446d8b04f34fbc1599e, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

@@ -9,85 +9,73 @@ public class AIData : MonoBehaviour {
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject bossBigBullet;
     [SerializeField] private GameObject bossSmallBullet;
-
-    private CallbackSystem.EventSystem eventSystem;
-    //private Transform bestCoverSpot;
-    private Vector3 bestCoverSpot;
-
-
-
-    //private List<Transform> activeCovers = new List<Transform>(); 
-    private List<Cover> activeCovers = new List<Cover>();
-    //[SerializeField] private GameObject muzzleflash;
+    [SerializeField] private ParticleSystem pulseAttackParticles;
+    [SerializeField] private ParticleSystem enemyHitParticles;
+    [SerializeField] private ParticleSystem enemyMuzzleflash;
+    [SerializeField] private ParticleSystem fireParticles;
 
     private void Start() {
-        eventSystem = FindObjectOfType<CallbackSystem.EventSystem>();
-
-        eventSystem.RegisterListener<CallbackSystem.ModuleSpawnEvent>(LoadModule);
-        eventSystem.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(UnLoadModule);
-
         Instance ??= this;
     }
 
-    public GameObject getBullet {
+    public GameObject Bullet {
         get { return bullet; }
     }
-    public GameObject getBossBullet
-    {
+    public GameObject BossBullet {
         get { return bossBigBullet; }
     }
-    public GameObject getSmallBullet
-    {
+    public GameObject SmallBullet {
         get { return bossSmallBullet; }
     }
-
-    /*     public void SetBestCoverSpot(Transform bestCoverSpot) {
-            this.bestCoverSpot = bestCoverSpot;
-        } */
-
-    public void SetBestCoverSpot(Vector3 bestCoverSpot) {
-        this.bestCoverSpot = bestCoverSpot;
+    public ParticleSystem PulseAttackParticles {
+        get { return pulseAttackParticles; }
+    }
+    public ParticleSystem EnemyHitParticles {
+        get { return enemyHitParticles; }
+    }
+    public ParticleSystem EnemyMuzzleflash {
+        get { return enemyMuzzleflash; }
+    }
+    public ParticleSystem FireParticles {
+        get { return fireParticles; }
     }
 
+    public class KeyValue<K, V> {
+        public K Key { get; set; }
+        public V Value { get; set; }
 
-    /*     public Transform GetBestCoverSpot() {
+        public KeyValue() { }
 
-            return bestCoverSpot;
-        } */
-
-    public Vector3 GetBestCoverSpot() {
-        return bestCoverSpot;
-    }
-    /* public List<Transform> GetActiveCovers()
-     {
-         return activeCovers;
-     }*/
-    public List<Cover> GetActiveCovers() {
-        return activeCovers;
+        public KeyValue(K key, V val) {
+            this.Key = key;
+            this.Value = val;
+        }
     }
 
+    private Dictionary<AI_Controller, KeyValue<int, int>> shotsToFireAndFired = new Dictionary<AI_Controller, KeyValue<int, int>>();
 
-    /* public GameObject getMuzzleflash
-     {
-         get { return muzzleflash; }
-     }
- */
-    //har en array av olika
-
-    private void LoadModule(CallbackSystem.ModuleSpawnEvent moduleSpawnEvent)//ska ha ett event i paramatern
-    {
-        activeCovers.Add(moduleSpawnEvent.GameObject.GetComponentInChildren<Cover>());
+    public int GetShotsFired(AI_Controller agent) {
+        if (shotsToFireAndFired.ContainsKey(agent)) return shotsToFireAndFired[agent].Value;
+        return 0;
     }
 
-    private void UnLoadModule(CallbackSystem.ModuleDeSpawnEvent moduleDeSpawnEvent) //ska ha ett event i paramatern
-    {
-        /*        for (int i = 0; i < activeCovers.size; i++)
-                {
+    public void SetShotRequirement(AI_Controller agent, int shotsToFire) {
+        if (!shotsToFireAndFired.ContainsKey(agent)) shotsToFireAndFired.Add(agent, new KeyValue<int, int>());
+        shotsToFireAndFired[agent].Key = shotsToFire;
+        shotsToFireAndFired[agent].Value = 0;
+    }
 
-                    activeCovers.RemoveRange(moduleDeSpawnEvent.GameObject.GetComponentInChildren<Cover>().GetCoverSpots());
-                }
-        */
+    public int GetShotRequirement(AI_Controller agent) {
+        if (!shotsToFireAndFired.ContainsKey(agent)) return -1;
+        return shotsToFireAndFired[agent].Key;
+    }
 
+    public void IncreaseShotsFired(AI_Controller agent) {
+        if (shotsToFireAndFired.ContainsKey(agent)) shotsToFireAndFired[agent].Value = shotsToFireAndFired[agent].Value + 1;
+    }
+
+    public void ResetShotsFired(AI_Controller agent) {
+        if (shotsToFireAndFired.ContainsKey(agent)) shotsToFireAndFired[agent].Value = 0;
     }
 
     private ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>>();
@@ -105,7 +93,5 @@ public class AIData : MonoBehaviour {
         if (potentialCoverSpots.ContainsKey(module)) return potentialCoverSpots[module];
         return null;
     }
-
-
 
 }

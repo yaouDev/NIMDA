@@ -12,6 +12,7 @@ public abstract class CameraState : ScriptableObject
 	public Transform DepthMaskHolder { get; set; }
 	public Transform DepthMaskPlane { get; set; }
 	public Transform thisTransform { get; set; }
+	
 	public PlayerController PlayerController { get; set; }
 
 	public abstract void Enter();

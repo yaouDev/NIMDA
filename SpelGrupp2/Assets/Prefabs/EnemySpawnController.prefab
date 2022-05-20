@@ -44,9 +44,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnThis:
+  - EnemyShoot
+  - EnemyMelee
+  - EnemyShield
+  spawnThisGO:
   - {fileID: 4102459122074449256, guid: 44d916e6bd66b1040987517827bf66bd, type: 3}
   - {fileID: 5426243921570954651, guid: d88c654af74e6dc4589cb0e201587a16, type: 3}
-  maxSpawnCount: 20
-  spawnCooldown: 4
-  spawnDistanceMax: 35
-  spawnDistanceMin: 0
+  - {fileID: 2315039527980796636, guid: 5b9cf07f82a73e840bfdf58102ec10c8, type: 3}
+  nMaxSpawnCount: 20
+  nMaxSpawnCooldown: 6
+  nMinSpawnCooldown: 4
+  nMaxSpawnThisMany: 2
+  nMinSpawnThisMany: 1
+  nSpawnDistanceMax: 35
+  nSpawnDistanceMin: 10
+  nEnemyShootRange: 60
+  nEnemyMeeleRange: 80
+  nEnemyShieldRange: 99
+  nightMaxSpawnCount: 25
+  nightMaxSpawnCooldown: 5
+  nightMinSpawnCooldown: 3
+  nightMaxSpawnThisMany: 3
+  nightMinSpawnThisMany: 1
+  nightSpawnDistanceMax: 35
+  nightSpawnDistanceMin: 5
+  nightEnemyShootRange: 30
+  nightEnemyMeeleRange: 70
+  nightEnemyShieldRange: 100
+  genMaxSpawnCount: 30
+  genMaxSpawnCooldown: 4
+  genMinSpawnCooldown: 3
+  genMaxSpawnThisMany: 5
+  genMinSpawnThisMany: 3
+  genSpawnDistanceMax: 50
+  genSpawnDistanceMin: 20
+  genEnemyShootRange: 40
+  genEnemyMeeleRange: 60
+  genEnemyShieldRange: 100

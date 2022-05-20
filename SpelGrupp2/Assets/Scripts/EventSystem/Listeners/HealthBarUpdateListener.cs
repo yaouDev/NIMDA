@@ -19,6 +19,8 @@ namespace CallbackSystem
             BatteryUI battery = uhu.isPlayerOne ? players[0] : players[1];
             battery.SetBatteryCount(uhu.batteries);
             battery.UpdateBatteryUI(uhu.health);
+            if (uhu.batteryDecreased)
+                battery.BreakBattery();
         }
     }
 }

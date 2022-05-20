@@ -100,7 +100,7 @@ public class TransitionToIsometric : CameraBaseState
     
     private void Input() {
 	    // mouseMovement.x += UnityEngine.Input.GetAxisRaw(MouseX) * mouseSensitivityX;
-	    // mouseMovement.y -= UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
-	    // mouseMovement.y = Mathf.Clamp(mouseMovement.y, Camera.clampLookupMax - lookOffset, Camera.clampLookupMin - lookOffset);
+	    // mouseMovement.z -= UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
+	    // mouseMovement.z = Mathf.Clamp(mouseMovement.z, Camera.clampLookupMax - lookOffset, Camera.clampLookupMin - lookOffset);
     }
 }

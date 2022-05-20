@@ -10,7 +10,6 @@ public class BreakableObject : MonoBehaviour
     [SerializeField] private int transitorRange;
     [SerializeField] private int batteryRange;
     [SerializeField] private int bulletRange;
-
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
     [SerializeField] private Vector3 rotatationRate;

@@ -66,15 +66,15 @@ public class BossBullet : MonoBehaviour
      /*   if (explosion != null)
         {
             Instantiate(explosion, transform.position, Quaternion.identity);
-            currentBullet1 = Instantiate(AIData.instance.getBossBullet, transform.position, Quaternion.identity);
-            currentBullet2 = Instantiate(AIData.instance.getBossBullet, transform.position, Quaternion.identity);
-            currentBullet3 = Instantiate(AIData.instance.getBossBullet, transform.position, Quaternion.identity);
-            currentBullet4 = Instantiate(AIData.instance.getBossBullet, transform.position, Quaternion.identity);
+            currentBullet1 = Instantiate(AIData.instance.BossBullet, transform.position, Quaternion.identity);
+            currentBullet2 = Instantiate(AIData.instance.BossBullet, transform.position, Quaternion.identity);
+            currentBullet3 = Instantiate(AIData.instance.BossBullet, transform.position, Quaternion.identity);
+            currentBullet4 = Instantiate(AIData.instance.BossBullet, transform.position, Quaternion.identity);
         }*/
-        currentBullet1 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
-        currentBullet2 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
-        currentBullet3 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
-        currentBullet4 = Instantiate(AIData.Instance.getSmallBullet, transform.position, Quaternion.identity);
+        currentBullet1 = Instantiate(AIData.Instance.SmallBullet, transform.position, Quaternion.identity);
+        currentBullet2 = Instantiate(AIData.Instance.SmallBullet, transform.position, Quaternion.identity);
+        currentBullet3 = Instantiate(AIData.Instance.SmallBullet, transform.position, Quaternion.identity);
+        currentBullet4 = Instantiate(AIData.Instance.SmallBullet, transform.position, Quaternion.identity);
         //AddForce to bullets
         currentBullet1.GetComponent<Rigidbody>().AddForce(Vector3.forward * shootForce, ForceMode.Impulse);
         currentBullet2.GetComponent<Rigidbody>().AddForce(Vector3.right * shootForce, ForceMode.Impulse);

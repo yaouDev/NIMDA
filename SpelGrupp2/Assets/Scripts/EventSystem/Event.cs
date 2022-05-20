@@ -23,6 +23,7 @@ namespace CallbackSystem {
     public class HealthUpdateEvent : Event {
         public float health;
         public int batteries;
+        public bool batteryDecreased;
 
     }
 
@@ -44,6 +45,23 @@ namespace CallbackSystem {
 
     }
 
+    public class WeaponCrosshairEvent : Event
+    {
+        public bool isAlive, usingProjectileWeapon, targetInSight;
+        public Vector3 crosshairPos;
+        public PlayerAttack attackScript;
+    }
+
+    public class FadingTextEvent : Event
+    {
+        public string text;
+    } 
+
+    public class ChangeColorEvent : Event
+    {
+        public Color color;
+    }
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.
@@ -61,6 +79,16 @@ namespace CallbackSystem {
     public class ModuleDeSpawnEvent : Event {
         public Vector2Int Position;
         public int Walls;
+    }
+
+    /// <summary>
+    /// <param name="magnitude"/> value betweel 0.0f and 1.0f
+    /// </summary>
+    public class CameraShakeEvent : Event
+    {
+        public bool affectsPlayerOne;
+        public bool affectsPlayerTwo;
+        public float magnitude;
     }
 
     public class SafeRoomEvent : Event { }

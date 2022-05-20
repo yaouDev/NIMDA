@@ -12,7 +12,9 @@ public class RangeNode : Node {
         /*  distance = Vector3.Distance(agent.ClosestTarget, agent.transform.position);
           return distance <= Range ? NodeState.SUCCESS : NodeState.FAILURE;*/
 
-        NodeState = Vector3.Distance(agent.CurrentTarget, agent.Position) <= Range ? NodeState.SUCCESS : NodeState.FAILURE;
+        float dist = Vector3.Distance(agent.CurrentTarget, agent.Position);
+
+        NodeState = dist <= Range ? NodeState.SUCCESS : NodeState.FAILURE;
         return NodeState;
     }
 
