@@ -16,9 +16,9 @@ public class BossSpawner : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        playerCount++;
         if (col.gameObject.tag == "Player")
         {
+            playerCount++;
             if (playerCount == 2)
             {
                 boss.SetActive(true);
