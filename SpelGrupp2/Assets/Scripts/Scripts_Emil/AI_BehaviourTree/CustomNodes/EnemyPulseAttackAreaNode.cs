@@ -72,6 +72,13 @@ public class EnemyPulseAttackAreaNode : Node
 
     void Attack()
     {
+        // schreenshake
+        CallbackSystem.CameraShakeEvent shakeEvent = new CallbackSystem.CameraShakeEvent();
+        shakeEvent.affectsPlayerOne = true;
+        shakeEvent.affectsPlayerTwo = true;
+        shakeEvent.magnitude = .4f;
+        CallbackSystem.EventSystem.Current.FireEvent(shakeEvent);
+
         //Particklesystem
         Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();

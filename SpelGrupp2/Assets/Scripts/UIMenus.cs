@@ -7,6 +7,9 @@ public class UIMenus : MonoBehaviour
 {
 
     [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private GameObject paused;
+    [SerializeField] private GameObject controls;
+    [SerializeField] private GameObject crafting;
     [SerializeField] private GameObject gameOverScreen;
     private bool isPaused = false;
     private int deadPlayerCount;
@@ -40,10 +43,30 @@ public class UIMenus : MonoBehaviour
         pauseScreen.SetActive(true);
     }
 
-    private void Unpause()
+    public void Unpause()
     {
         Time.timeScale = 1;
+        paused.SetActive(true);
         pauseScreen.SetActive(false);
+    }
+
+    public void ShowControls()
+    {
+        paused.SetActive(false);
+        controls.SetActive(true);
+    }
+
+    public void ShowCrafting()
+    {
+        paused.SetActive(false);
+        crafting.SetActive(true);
+    }
+
+    public void BackToPaused()
+    {
+        controls.SetActive(false);
+        crafting.SetActive(false);
+        paused.SetActive(true);
     }
 
     private void GameOver()

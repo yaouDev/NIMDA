@@ -166,6 +166,15 @@ namespace CallbackSystem
 
         public void WeaponSwap(InputAction.CallbackContext context)
         {
+            if (context.performed)
+            {
+                laserWeapon = !laserWeapon;
+                // TODO [Sound] Play weapon swap sound(s)
+            }
+        }
+
+        public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
+        {
             if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f)
             {
                 laserWeapon = !laserWeapon;
@@ -174,7 +183,7 @@ namespace CallbackSystem
         }
 
         //This method & Pass Through(Y) on Input Actions if up = laser & down = projectile.
-        public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
+        /*public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
         {
             if (context.performed)
             {
@@ -187,6 +196,7 @@ namespace CallbackSystem
                 }
             }
         }
+        */
 
         private void AimDirection()
         {
