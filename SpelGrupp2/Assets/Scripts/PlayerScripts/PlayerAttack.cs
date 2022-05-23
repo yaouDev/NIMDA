@@ -32,6 +32,8 @@ namespace CallbackSystem
         private System.Random random = new System.Random();
 
 
+        private AudioController ac;
+
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
          * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
@@ -64,6 +66,8 @@ namespace CallbackSystem
             laserWeaponCooldown = 0f;
             revolverCooldown = 0f;
         }
+
+        private void Start() => ac = AudioController.instance;
 
         [SerializeField] private Material bulletMat;
         [SerializeField] private Material laserMat;
@@ -115,9 +119,16 @@ namespace CallbackSystem
             if (!isAlive) return;
             if (context.started && !recentlyFired)
             {
-                if (laserWeapon && canShootLaser)
+                if (laserWeapon)
                 {
-                    StartCoroutine(AttackDelay(laserAttackDelay));
+                    if (canShootLaser)
+                    {
+                        StartCoroutine(AttackDelay(laserAttackDelay));
+                    }
+                    else
+                    {
+                        ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.noAmmo1 : ac.player2.noAmmo1, gameObject);
+                    }
                 }
                 else if (!laserWeapon)
                 {
@@ -131,7 +142,6 @@ namespace CallbackSystem
 
         IEnumerator AttackDelay(float channelTime)
         {
-            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
             ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
             yield return new WaitForSeconds(channelTime);
             LaserAttack();

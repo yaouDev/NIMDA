@@ -14,6 +14,8 @@ public class PlayerAudioContainer : AudioContainer
     [Header("Combat")]
     public EventReference fire1;
     public EventReference fire2;
+    public EventReference noAmmo1;
+    public EventReference noAmmo2;
     public EventReference hurt;
     public EventReference dodge;
     public EventReference death;
