@@ -20,7 +20,7 @@ namespace CallbackSystem
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float startDamage = 75f, teamDamage = 30f;
-        [SerializeField] private float damageIncreasePerSecond = 100;
+        [SerializeField] private float damageIncreasePerMilliSecond = 5;
         [SerializeField] private float maxDamage;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
@@ -32,7 +32,8 @@ namespace CallbackSystem
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
-        [SerializeField] private float damage; 
+        [SerializeField] private float damage;
+        private bool chargingUP = false; 
         //private float distanceToWall;
         //private RaycastHit wallHitInfo;
 
@@ -151,25 +152,49 @@ namespace CallbackSystem
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
-                if (damage <= maxDamage)
-                {
-                    damage += Time.deltaTime * damageIncreasePerSecond;
-                }
-                //add damage per second
-                AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                /*   while (damage <= maxDamage)
+                   {
+                       //add damage per second*/
+                chargingUP = true;
+                StartCoroutine(ChargeUp());
+
+                //add channelsound
+
+                //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
                 //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+                /*                }*/
             }
-            if (context.canceled && laserWeapon && canShootLaser)
+            else
             {
-                ShootLaser();
-                StartCoroutine(AnimateLineRenderer(aimingDirection));
+                chargingUP = false;
+            }
+            if (context.canceled && laserWeapon)
+            {
+                StopCoroutine(ChargeUp());
+                if (canShootLaser)
+                {
+                    ShootLaser();
+                    StartCoroutine(AnimateLineRenderer(aimingDirection));
+                    //add shootsound
+                    //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                    //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+                }
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
-                
+
             }
+            //damage = startDamage;
         }
 
+        IEnumerator ChargeUp()
+        {
+            while (damage < maxDamage && chargingUP)
+            {
+                yield return new WaitForSeconds(0.1f);
+                damage += damageIncreasePerMilliSecond;
+            }
+        }
         IEnumerator AttackDelay(float channelTime)
         {
             AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
