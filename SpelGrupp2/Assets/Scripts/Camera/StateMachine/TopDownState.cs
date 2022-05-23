@@ -13,20 +13,16 @@ public class TopDownState : CameraState
 {
 	[SerializeField] 
 	private LayerMask collisionMask;
-
-	[SerializeField]
-	private Vector2 topDownViewRotation;
 	
-	[SerializeField] 
-	private Vector3 topDownOffset;
+	private Vector2 topDownViewRotation = new Vector2(55, 45);
+	
+	private Vector3 topDownOffset = new Vector3(0.0f, 1.0f, -12.0f);
 	
 	[SerializeField]
 	private float headHeight = 1.6f;
 	
-	[SerializeField] [Range(1.0f, 20.0f)]
-	private float splitMagnitude = 6.0f;
-
-	[SerializeField] [Range(1.0f, 20.0f)] 
+	private float splitMagnitude = 7.0f;
+	
 	private float thirdPersonSplitDistance = 15.0f;
 
 	private Vector3 cameraPosition;
@@ -119,8 +115,6 @@ public class TopDownState : CameraState
 
 	public override void Run()
 	{
-		Input();
-		
 		// both cameras have the same rotation
 		CameraTransform.rotation = Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f);
 
@@ -128,7 +122,7 @@ public class TopDownState : CameraState
 		RotateScreenSplit();
 		
 		Vector3 dist = Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position);
-		dist.z *= 1.5f;
+		//dist.z *= 1.5f;
 		
 		// different splitMagnitude x/y axis on screen
 		float inv = Mathf.InverseLerp(0.0f, 9.0f, Mathf.Abs(dist.z));
@@ -137,7 +131,6 @@ public class TopDownState : CameraState
 		// both cameras follow the centroid point between the players, split when necessary
 		Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
 		centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, dynamicSplitMagnitude);
-		Debug.DrawRay(centroid, Vector3.up * 10.0f);
 
 		// Camera zoom
 		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / dynamicSplitMagnitude;
@@ -149,14 +142,16 @@ public class TopDownState : CameraState
 
 
 		
-		cameraPosition = centroid + abovePlayer + CameraTransform.rotation * topDownOffset; // TODO in progress
+		cameraPosition = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 
 		CameraTransform.position = cameraPosition + cameraShakeOffset; // TODO in progress // centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 		
 		LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
+		
+		
 
-		//if (Vector3.Distance(PlayerThis.position, PlayerOther.position) > thirdPersonSplitDistance)
-		//	stateMachine.TransitionTo<TransitionToSplitState>();
+		if (Vector3.Distance(PlayerThis.position, PlayerOther.position) > thirdPersonSplitDistance)
+			stateMachine.TransitionTo<TransitionToSplitState>();
 	}
 
 	private void LerpSplitScreenLineWidth(float offsetMagnitude, float dynamicSplitMagnitude) {
@@ -194,17 +189,10 @@ public class TopDownState : CameraState
 			//out  RaycastHit  hit, 
 			25.0f, 
 			collisionMask);
-		
-		Debug.DrawRay(
-			//centroidOffsetPosition + thisTransform.position + abovePlayer,
-			PlayerThis.position,
-			offsetDirection * 8.0f, 
-			Color.magenta);
-		
+
 		//Vector3 offset;
 		for (int i = 0; i < hits.Length; i++)
 		{
-			
 			if (hits[i].collider)
 			{
 				float dot = Vector3.Dot(
@@ -222,14 +210,7 @@ public class TopDownState : CameraState
 
 	public override void Exit() {
 	}
-	
-	protected void Input() {
-		// _mouseMovement.x += playerController.GetCameraMovement().x * mouseSensitivityX * 100;// 0;// TODO UnityEngine.Input.GetAxisRaw(MouseX) * mouseSensitivityX;
-		// Debug.Log(_mouseMovement.x);
-		// _mouseMovement.z -= playerController.GetCameraMovement().z * mouseSensitivityX * 100;// TODO UnityEngine.Input.GetAxisRaw(MouseY) * mouseSensitivityY;
-		// _mouseMovement.z = Mathf.Clamp(_mouseMovement.z, clampLookupMax - LookOffset, clampLookupMin - LookOffset);
-	}
-	
+
 	private void RotateScreenSplit() {
 		Vector3 angle = (PlayerOther.position - PlayerThis.position).normalized;
 		Vector3 quarterAngle = _ninetyDegrees * angle;
