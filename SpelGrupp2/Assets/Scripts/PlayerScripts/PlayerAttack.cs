@@ -19,9 +19,9 @@ namespace CallbackSystem
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
-        [SerializeField] private float startDamage = 75f, teamDamage = 30f;
+        [SerializeField] private float startDamage = 20f, teamDamage = 30f;
         [SerializeField] private float damageIncreasePerMilliSecond = 5;
-        [SerializeField] private float maxDamage;
+        [SerializeField] private float maxDamage = 110;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bullets, maxBullets;
