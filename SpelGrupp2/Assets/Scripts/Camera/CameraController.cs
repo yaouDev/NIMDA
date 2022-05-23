@@ -150,7 +150,7 @@ public class CameraController : MonoBehaviour {
 
 		// TODO clamp centroid to magnitude
 		
-		// both cameras have the same rotation (fixed?)
+		// both cameras have the same rotation
 		
 		// the split is rotating freely between the players
 		RotateScreenSplit();
