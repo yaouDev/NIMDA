@@ -13,22 +13,24 @@ namespace CallbackSystem
         [SerializeField] private LineRenderer aimLineRenderer;
         [SerializeField] private LayerMask enemyLayerMask, laserLayerMask;
         private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
+        private Camera cam;
         private PlayerHealth health;
         private PlayerController controller;
-        private Camera cam;
-        private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
         [SerializeField] private float damage = 75f, teamDamage = 30f;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets;
-        [SerializeField] private GameObject bullet, upgradedBullet;
+        [SerializeField] private GameObject currentBullet, bullet, upgradedBullet, explosiveBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
-        private bool laserWeapon = true;
-        private bool activated = false, isPlayerOne, recentlyFired;
-        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
+        private bool activated, isPlayerOne, recentlyFired, canShootLaser, 
+            revolverDamageUpgraded, explosiveBulletEnabled, targetInSight,
+            laserWeaponUpgraded, canShootRevolver = true, 
+            laserWeapon = true, isAlive = true;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
+        private System.Random random = new System.Random();
+
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
@@ -40,6 +42,7 @@ namespace CallbackSystem
         public bool IsPlayerOne() { return isPlayerOne; }
 
         public bool UsingLaserWeapon() { return laserWeapon; }
+
         public void UpdateBulletCount(int amount)
         {
             bullets += amount;
@@ -85,7 +88,7 @@ namespace CallbackSystem
                 resourceEvent.a = bullets;
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
-                crosshairEvent.usingProjectileWeapon = !laserWeapon;
+                crosshairEvent.usingRevolver = !laserWeapon;
                 crosshairEvent.isPlayerOne = isPlayerOne;
                 crosshairEvent.targetInSight = targetInSight;
                 EventSystem.Current.FireEvent(crosshairEvent);
@@ -96,21 +99,14 @@ namespace CallbackSystem
                 revolverCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
-            /*
-            if (ASCounter <= 0.1f)
-                ASCounter += Time.deltaTime;
-            else
-                canShootGun = true;
-            */
 
             if (isAlive)
-            {
-                AnimateLasers();
-                
-            }
+                AnimateLasers();                
             else
             {
                 aimLineRenderer.enabled = false;
+                targetInSight = false;
+                RenderCrosshair();
             }
         }
 
@@ -125,7 +121,7 @@ namespace CallbackSystem
                 }
                 else if (!laserWeapon)
                 {
-                    FireProjectileWeapon();
+                    FireRevolver();
                 }
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;
@@ -274,14 +270,15 @@ namespace CallbackSystem
 
         private void AnimateLaserSightLineRenderer(Vector3 dir)
         {
-            Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
-            aimLineRenderer.SetPositions(positions);
-            float lineWidth = 0.05f;
-            aimLineRenderer.startWidth = lineWidth;
-            aimLineRenderer.endWidth = lineWidth;
-            Color color = new Color(1f, 0.2f, 0.2f);
-            aimLineRenderer.startColor = color;
-            aimLineRenderer.endColor = color;
+
+                Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
+                aimLineRenderer.SetPositions(positions);
+                float lineWidth = 0.05f;
+                aimLineRenderer.startWidth = lineWidth;
+                aimLineRenderer.endWidth = lineWidth;
+                Color color = new Color(1f, 0.2f, 0.2f);
+                aimLineRenderer.startColor = color;
+                aimLineRenderer.endColor = color;          
         }
 
         private void UpdateLaserSightDistance()
@@ -334,14 +331,14 @@ namespace CallbackSystem
 
         private void RenderCrosshair()
         {
-            crosshairEvent.usingProjectileWeapon = laserWeapon ? false : true;
+            crosshairEvent.usingRevolver = laserWeapon ? false : true;
             crosshairEvent.isPlayerOne = isPlayerOne;
             crosshairEvent.crosshairPos = crosshairPoint;
             crosshairEvent.targetInSight = targetInSight;
             EventSystem.Current.FireEvent(crosshairEvent);
         }
 
-        private void FireProjectileWeapon()
+        private void FireRevolver()
         {
             if (bullets > 0)
             {
@@ -352,10 +349,13 @@ namespace CallbackSystem
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 UpdateBulletCount(-1);
-                if (projectionWeaponUpgraded)
-                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                int crit = random.Next(1, 4);
+                if (crit == 1 && explosiveBulletEnabled)
+                    currentBullet = explosiveBullet;
                 else
-                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                    currentBullet = revolverDamageUpgraded ? upgradedBullet : bullet;
+                Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+
             }
         }
 
@@ -371,17 +371,19 @@ namespace CallbackSystem
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 UpdateBulletCount(-1);
-                if (projectionWeaponUpgraded)
+                if (revolverDamageUpgraded)
                     Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
                 else
                     Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
             }
         }
 
-        public void UpgradeProjectileWeapon()
+        public void EnableExplosiveBullet() => explosiveBulletEnabled = true;
+
+        public void UpgradeRevolver()
         {
             Debug.Log("Projectile weapon upgraded!");
-            projectionWeaponUpgraded = true;
+            revolverDamageUpgraded = true;
         }
 
         public void UpgradeLaserWeapon()

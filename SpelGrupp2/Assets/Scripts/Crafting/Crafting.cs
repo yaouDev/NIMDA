@@ -17,9 +17,9 @@ namespace CallbackSystem
     {
         [HideInInspector] public PlayerAttack playerAttackScript;
         [SerializeField] private Recipe batteryRecipe, bulletRecipe, 
-        UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe, 
-        cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe, 
-        greenRecipe, blackRecipe;
+        UpgradedRevolverRecipe, UpgradedLaserWeaponRecipe, 
+        ExplosionCritRevolverRecipe, cyanRecipe, yellowRecipe, whiteRecipe, 
+        magentaRecipe, greenRecipe, blackRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
@@ -205,11 +205,23 @@ namespace CallbackSystem
             }
         }
 
-        public void CraftUpgradedProjectileWeapon()
+        public void CraftCritableRevolver()
         {
-            if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
+            if (TryCraftRecipe(ExplosionCritRevolverRecipe))
             {
-                playerAttackScript.UpgradeProjectileWeapon();
+                playerAttackScript.EnableExplosiveBullet();
+                fadingtextEvent.text = "Revolver Crit Enabled";
+                selectedButton.interactable = false;
+            }
+            else
+                fadingtextEvent.text = "Not Enough Resources";
+            EventSystem.Current.FireEvent(fadingtextEvent);
+        }
+        public void CraftUpgradedRevolver()
+        {
+            if (TryCraftRecipe(UpgradedRevolverRecipe))
+            {
+                playerAttackScript.UpgradeRevolver();
                 fadingtextEvent.text = "Revolver Upgraded";
                 selectedButton.interactable = false;
             }

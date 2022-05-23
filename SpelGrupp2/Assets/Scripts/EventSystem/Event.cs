@@ -47,7 +47,7 @@ namespace CallbackSystem {
 
     public class WeaponCrosshairEvent : Event
     {
-        public bool isAlive, usingProjectileWeapon, targetInSight;
+        public bool isAlive, usingRevolver, targetInSight;
         public Vector3 crosshairPos;
         public PlayerAttack attackScript;
     }
