@@ -85,4 +85,28 @@ public class Blink : MonoBehaviour
             blinking = true;
         }
     }
+/*      foreach (RaycastHit hitInfo in Physics.SphereCastAll(transform.position + transform.forward + Vector3.up, beamThickness, aimingDirection, 30.0f, enemyLayerMask)) // TODO change to firepoint
+                {
+                    if (hitInfo.collider != null)
+                    {
+                        if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
+                        {
+                            IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
+
+                            if (damageable != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
+                            {
+                                if (hitInfo.transform.tag == "Player")
+                                    damageable.TakeDamage(teamDamage);
+                                else
+                                    damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                            }
+                        }
+                        else if (hitInfo.transform.tag == "BreakableObject")
+{
+    BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
+    breakable.DropBoxLoot();
+}
+                    }
+
+                }*/
 }
