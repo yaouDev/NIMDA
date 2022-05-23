@@ -10,7 +10,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     [SerializeField] private GameObject entrance;
     [SerializeField] private GameObject exit;
     private float timeElapsed;
-    private bool doorOpen = true; 
+    private bool doorOpen = true;
     private int playerCount;
     private EnemySpawnController spawnController;
     private Compass compass;
@@ -21,93 +21,83 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitStartPosition;
     private Vector3 exitOpenPosition;
     private ObjectivesManager objectivesManager;
-    private bool bossNext;
+
 
     // Start is called before the first frame update
     void Start() {
         entranceOpenPosition = entrance.transform.position;
         exitOpenPosition = exit.transform.position;
         spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
-        compass = GameObject.Find("Compass").GetComponent<Compass>();
+        // compass = GameObject.Find("Compass").GetComponent<Compass>();
         objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
     }
 
     void OnTriggerEnter(Collider col) {
-        if (col.gameObject.tag == "Player")
-        {
+        if (col.gameObject.tag == "Player") {
             playerCount++;
             //Debug.Log("Playercount = " + playerCount);
-            if (playerCount == 2)
-            {
+            if (playerCount == 2) {
                 CloseEntrance();
-                compass.UpdateQuest();
+                //compass.UpdateQuest();
                 spawnController.GeneratorRunning(false);
                 CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
-                //Debug.Log("stäng entrance" + playerCount);
-                objectivesManager.RemoveObjective("enter safe room");
+                //Debug.Log("stï¿½ng entrance" + playerCount);
             }
         }
     }
-    private void OnTriggerExit(Collider col)
-    {
-        if (col.gameObject.tag == "Player")
-        {
+    private void OnTriggerExit(Collider col) {
+        if (col.gameObject.tag == "Player") {
             playerCount--;
             //Debug.Log("Playercount = " + playerCount);
-            //Debug.Log("stäng exit" + playerCount);
-            if (playerCount < 1)
-            {
+            //Debug.Log("stï¿½ng exit" + playerCount);
+            if (playerCount == 0) {
                 CloseExit();
-                compass.UpdateQuest();
-                if (!bossNext)
-                {
+                // compass.UpdateQuest();
+                if (!objectivesManager.BossNext()) {
                     objectivesManager.AddObjective("find the next safe room");
-                    bossNext = true;
-                }
-                else
-                {
+                    objectivesManager.FlipBossBool();
+                    spawnController.gameObject.SetActive(true);
+                    spawnController.StartCoroutine(spawnController.SpawnObject());
+                } else {
                     objectivesManager.AddObjective("kill the boss");
+
                 }
             }
         }
     }
 
-    void CloseEntrance()
-    {
-        if (doorOpen)
-        {
+    void CloseEntrance() {
+        if (doorOpen) {
             //Debug.Log("Opening");
             entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrence(entranceClosePosition, eventDuration));
             spawnController.GeneratorRunning(false);
+            spawnController.gameObject.SetActive(false);
+            objectivesManager.RemoveObjective("enter safe room");
         }
     }
-    void CloseExit()
-    {
-            //Debug.Log("Opening");
-            exitClosePosition = exitOpenPosition + Vector3.down * openHeight;
-            StartCoroutine(MoveExit(exitClosePosition, eventDuration));
+    void CloseExit() {
+        //Debug.Log("Opening");
+        exitClosePosition = exitOpenPosition + Vector3.down * openHeight;
+        StartCoroutine(MoveExit(exitClosePosition, eventDuration));
+        spawnController.gameObject.SetActive(true);
     }
 
-    IEnumerator MoveEntrence(Vector3 targetPosition, float duration)
-    {
+    IEnumerator MoveEntrence(Vector3 targetPosition, float duration) {
         timeElapsed = 0;
         entranceStartPosition = entrance.transform.position;
-        while (entrance.transform.position != targetPosition)
-        {
+        while (entrance.transform.position != targetPosition) {
             //Debug.Log("Moving Door");
             entrance.transform.position = Vector3.Lerp(entranceStartPosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        doorOpen = false;
+        doorOpen = !doorOpen;
     }
-    IEnumerator MoveExit(Vector3 targetPosition, float duration)
-    {
+    IEnumerator MoveExit(Vector3 targetPosition, float duration) {
         timeElapsed = 0;
         exitStartPosition = exit.transform.position;
-        while (exit.transform.position != targetPosition)
-        {
+        while (exit.transform.position != targetPosition) {
             //Debug.Log("Moving Door");
             exit.transform.position = Vector3.Lerp(exitStartPosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;

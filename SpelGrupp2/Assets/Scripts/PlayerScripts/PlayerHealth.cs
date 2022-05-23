@@ -23,6 +23,8 @@ namespace CallbackSystem {
         [SerializeField] private Material playerMaterial;
         private Color defaultColor;
 
+        private AudioController ac;
+
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake() {
             healthEvent = new HealthUpdateEvent();
@@ -40,6 +42,7 @@ namespace CallbackSystem {
             playerMaterial.color = defaultColor;
             colorEvent.color = playerMaterial.color;
             //EventSystem.Current.FireEvent(colorEvent);
+            ac = AudioController.instance;
         }
         private void Update() {
             if (!started) {
@@ -60,9 +63,21 @@ namespace CallbackSystem {
 
         public void TakeDamage(float damage) {
             currHealth -= damage;
+            if (alive)
+            {
+                CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
+                shakeEvent.affectsPlayerOne = isPlayerOne;
+                shakeEvent.affectsPlayerTwo = !isPlayerOne;
+                float magnitude = Mathf.Max(.28f, damage * .01f);
+                shakeEvent.magnitude = magnitude;
+                EventSystem.Current.FireEvent(shakeEvent);
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.hurt : ac.player2.hurt, gameObject);
+            }
+            
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.batteryDelpetion : ac.player2.batteryDelpetion, gameObject);
                 UpdateHealthUI(true);
             }
             if (currHealth <= 0f && batteryCount == 0) {
@@ -89,8 +104,7 @@ namespace CallbackSystem {
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
-
-            AudioController ac = AudioController.instance;
+            
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 

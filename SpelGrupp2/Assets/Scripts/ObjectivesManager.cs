@@ -10,6 +10,7 @@ public class ObjectivesManager : MonoBehaviour
     private float backgroundHeight = 125;
     private float backgroundWidth = 400;
     private int objectivesIndex = -1;
+    private bool bossNext = false;
 
     // Start is called before the first frame update
     void Start()
@@ -39,5 +40,15 @@ public class ObjectivesManager : MonoBehaviour
                 background.GetComponent<RectTransform>().sizeDelta = new Vector2(backgroundWidth, backgroundHeight);
             }
         }
+    }
+
+    public void FlipBossBool()
+    {
+        bossNext = !bossNext;
+    }
+
+    public bool BossNext()
+    {
+        return bossNext;
     }
 }

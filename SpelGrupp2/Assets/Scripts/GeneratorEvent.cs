@@ -18,6 +18,7 @@ public class GeneratorEvent : MonoBehaviour
     private Vector3 closePosition;
     private Vector3 openPosition;
     [SerializeField] private ObjectivesManager objectivesManager;
+    private bool isRunning;
 
     // Start is called before the first frame update
     void Start()
@@ -39,9 +40,10 @@ public class GeneratorEvent : MonoBehaviour
     }*/
     private void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag("Player"))
+        if (col.CompareTag("Player") && !isRunning)
         {
             textPopup.SetActive(true);
+            isRunning = true;
             StartGenerator();
         }
     }
@@ -60,6 +62,9 @@ public class GeneratorEvent : MonoBehaviour
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
             spawnController.GeneratorRunning(true);
+            objectivesManager.RemoveObjective("start the generator");
+            //objectivesManager.AddObjective("let the generator finish");
+            objectivesManager.AddObjective("survive the horde");
         }
     }
 
@@ -75,8 +80,9 @@ public class GeneratorEvent : MonoBehaviour
         }
         doorOpen = true;
         siren.enabled = false;
-        objectivesManager.RemoveObjective("open the safe room");
-        objectivesManager.RemoveObjective("let the generator finish");
+        //To-do: uppdatera inte objectives via coroutine
+        //objectivesManager.RemoveObjective("let the generator finish");
+        //objectivesManager.RemoveObjective("open the safe room");
         objectivesManager.RemoveObjective("survive the horde");
         objectivesManager.AddObjective("enter safe room");
     }

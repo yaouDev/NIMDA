@@ -89,7 +89,7 @@ public class EnemySpawnController : MonoBehaviour {
         }
     }
 
-    IEnumerator SpawnObject() {
+    public IEnumerator SpawnObject() {
         while (true) {
             nSpawnCooldown = Random.Range(nMinSpawnCooldown, nMaxSpawnCooldown);
             nightSpawnCooldown = Random.Range(nightMinSpawnCooldown, nightMinSpawnCooldown);

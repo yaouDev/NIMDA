@@ -42,6 +42,12 @@ public class PulseAreaAttackNode : Node {
 
 
     void Attack() {
+        CallbackSystem.CameraShakeEvent shakeEvent = new CallbackSystem.CameraShakeEvent();
+        shakeEvent.affectsPlayerOne = true;
+        shakeEvent.affectsPlayerTwo = true;
+        shakeEvent.magnitude = .4f;
+        CallbackSystem.EventSystem.Current.FireEvent(shakeEvent);
+
         Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
     }

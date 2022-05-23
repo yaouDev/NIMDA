@@ -6499,6 +6499,7 @@ GameObject:
   - component: {fileID: 3285090791863153378}
   - component: {fileID: 2937599656017976389}
   - component: {fileID: 2865737039854179439}
+  - component: {fileID: 248607172959777247}
   m_Layer: 0
   m_Name: CloseBehind
   m_TagString: Untagged
@@ -6531,8 +6532,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 40, y: 4, z: 45.69086}
-  m_Center: {x: 0, y: 0, z: -26.15457}
+  m_Size: {x: 25.722187, y: 4, z: 45.69086}
+  m_Center: {x: 7.1389065, y: 0, z: -26.15457}
 --- !u!114 &2937599656017976389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6565,6 +6566,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &248607172959777247
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4915441373095118741}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 14.983847, y: 4, z: 41.783314}
+  m_Center: {x: -12.469293, y: 0, z: -24.200796}
 --- !u!1 &7132479017126840856
 GameObject:
   m_ObjectHideFlags: 0
@@ -18402,7 +18416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8966433276165526010, guid: b68579dd7b6af9142bcf0f97a08d8207, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8966433276165526010, guid: b68579dd7b6af9142bcf0f97a08d8207, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18520,14 +18534,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
---- !u!1 &2908897572479627236 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8090096044299587051, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
-  m_PrefabInstance: {fileID: 6348863345313047055}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2908897572479627235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8090096044299587052, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
+  m_PrefabInstance: {fileID: 6348863345313047055}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2908897572479627236 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8090096044299587051, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
   m_PrefabInstance: {fileID: 6348863345313047055}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7605090415799102021
@@ -18589,6 +18603,10 @@ PrefabInstance:
       propertyPath: door
       value: 
       objectReference: {fileID: 2908897574066981411}
+    - target: {fileID: 7946937298264243847, guid: 044f0ae6fba1d92429dddd5077319949, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 044f0ae6fba1d92429dddd5077319949, type: 3}
 --- !u!4 &5053324179022334946 stripped
@@ -18681,6 +18699,10 @@ PrefabInstance:
       propertyPath: door
       value: 
       objectReference: {fileID: 2908897572479627236}
+    - target: {fileID: 614617765979801252, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+      propertyPath: eventDuration
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 614617765979801253, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -18725,9 +18747,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 614617765979801255, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 51b80a6bedd562548bd7e13d1881abb0, type: 2}
     - target: {fileID: 614617765979801257, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
       propertyPath: m_Name
       value: Generator
+      objectReference: {fileID: 0}
+    - target: {fileID: 614617766033636847, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+      propertyPath: m_text
+      value: '[F]/(A) - Start generator'
       objectReference: {fileID: 0}
     - target: {fileID: 614617767351572157, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
       propertyPath: m_IsActive
