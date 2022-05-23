@@ -423,6 +423,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d91a3d27651374039a22eb7246c923a0, type: 2}
   - {fileID: 11400000, guid: dc25233869ca542f2842bd7fba6e8c80, type: 2}
   - {fileID: 11400000, guid: 2548f33df763245a89f92d37b3a9b6e4, type: 2}
+  - {fileID: 11400000, guid: b948dbe66227a49bda7e31c8367a3ad9, type: 2}
   clampLookupMax: 1
   clampLookupMin: 179
   smoothDampMinVal: 0.05
@@ -708,7 +709,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8397479276426667862}
         m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
-        m_MethodName: WeaponSwap
+        m_MethodName: WeaponSwapWithMouseWheel
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1122,6 +1123,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e35fc1d6fd7e143a3b413b23a295c7dc, type: 2}
   - {fileID: 11400000, guid: 34e216cf9129343e699832b377694bf3, type: 2}
   - {fileID: 11400000, guid: 890e6de50f01d4f21a32904f7b8e015b, type: 2}
+  - {fileID: 11400000, guid: 33b94b55471cc4d6e80fd65edbd09495, type: 2}
   clampLookupMax: 1
   clampLookupMin: 179
   smoothDampMinVal: 0.05
@@ -1435,7 +1437,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3037943043123946253}
         m_TargetAssemblyTypeName: CallbackSystem.PlayerAttack, Assembly-CSharp
-        m_MethodName: WeaponSwap
+        m_MethodName: WeaponSwapWithMouseWheel
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3105,14 +3107,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
---- !u!4 &8107603632956009410 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 547628038294267999, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
-  m_PrefabInstance: {fileID: 8582293265251861405}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &8107603632956009409 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 547628038294267996, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
+  m_PrefabInstance: {fileID: 8582293265251861405}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8107603632956009410 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 547628038294267999, guid: e13c79474a4fbfe4aa599c6dd3e13a83, type: 3}
   m_PrefabInstance: {fileID: 8582293265251861405}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8897654419155254010
