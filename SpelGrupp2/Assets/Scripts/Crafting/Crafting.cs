@@ -24,8 +24,8 @@ namespace CallbackSystem
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
         [SerializeField] private Button defaultColorButton;
-        [SerializeField][Range(1f, 20f)] private float newMovementSpeed;
-        [SerializeField][Range(1f, 300f)] private float newHealth;
+        [SerializeField][Range(1f, 20f)] private float newMovementSpeed = 7.5f;
+        [SerializeField][Range(1f, 300f)] private float newHealth = 200f;
 
         private int[] resourceArray;
         private Button selectedButton;
@@ -213,7 +213,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(ExplosionCritRevolverRecipe))
             {
-                playerAttackScript.EnableExplosiveBullet();
+                //playerAttackScript.EnableExplosiveBullet();
                 fadingtextEvent.text = "Revolver Crit Enabled";
                 selectedButton.interactable = false;
             }
@@ -225,7 +225,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(UpgradedRevolverRecipe))
             {
-                playerAttackScript.UpgradeRevolver();
+                //playerAttackScript.UpgradeRevolver();
                 fadingtextEvent.text = "Revolver Upgraded";
                 selectedButton.interactable = false;
             }
@@ -255,7 +255,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(greenRecipe))
             {
                 ResetPreviousStats();
-                playerControllerScript.SetAcceleration(newMovementSpeed);
+                playerControllerScript.SetTerminalVelocity(newMovementSpeed);
                 playerHealthScript.ChooseMaterialColor(new Color(0.35f, 0.95f, 0f, 1f));
                 fadingtextEvent.text = "Color Green Crafted";
             }
@@ -269,7 +269,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(yellowRecipe))
             {
                 ResetPreviousStats();
-                playerControllerScript.SetAcceleration(newMovementSpeed);
+                playerControllerScript.SetTerminalVelocity(newMovementSpeed);
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
                 fadingtextEvent.text = "Color Yellow Crafted";
             }

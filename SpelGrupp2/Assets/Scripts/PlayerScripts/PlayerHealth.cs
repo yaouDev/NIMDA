@@ -133,7 +133,7 @@ namespace CallbackSystem {
         {
             maxHealth = 100f;
             currHealth = (currHealth > maxHealth) ? maxHealth : currHealth;
-            movement.SetDefaultAcceleration();
+            movement.SetDefaultVelocity();
         }
 
         private void UpdateHealthUI(bool batteryDecreased = false) {
