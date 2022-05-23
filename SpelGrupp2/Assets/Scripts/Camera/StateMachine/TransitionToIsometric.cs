@@ -7,16 +7,6 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(menuName = "Create CameraState/TransitionToIsometric")]
 public class TransitionToIsometric : CameraBaseState
 {
-
-	// [SerializeField] [Range(1.0f, 10.0f)]
-	// private float mouseSensitivityX = 10.0f;
-	//
-	// [SerializeField] [Range(1.0f, 10.0f)]
-	// private float mouseSensitivityY = 5.0f;
-
-	[SerializeField] 
-	private Vector3 topDownOffset;
-	
 	[SerializeField]
 	private float headHeight = 1.6f;
 	
@@ -24,8 +14,9 @@ public class TransitionToIsometric : CameraBaseState
 	private Vector3 centroid;
 	private Vector3 abovePlayer;
 
-	[SerializeField]
-	private Vector2 topDownViewRotation;
+	private Vector3 topDownOffset = new Vector3(0.0f, 1.0f, -16.0f);
+
+	private Vector2 topDownViewRotation = new Vector2(55, 45);
 
 	private float percentage = 0.0f;
 	
@@ -40,12 +31,13 @@ public class TransitionToIsometric : CameraBaseState
     }
 
     public override void Run() {
-	    Input();
+	    //Input();
 
 	    percentage += Time.deltaTime * 2.0f;
 	    
 	    // both cameras have the same rotation (fixed?)
-	    CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation,  Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f), percentage);
+	    CameraTransform.rotation = Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f);
+	    //CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation,  Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f), percentage);
 
 	    // the split is rotating freely between the players
 	    // RotateScreenSplit();
