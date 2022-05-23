@@ -24,10 +24,12 @@ namespace CallbackSystem
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
         [SerializeField] private Button defaultColorButton;
+        [SerializeField][Range(1f, 20f)] private float newMovementSpeed;
+        [SerializeField][Range(1f, 300f)] private float newHealth;
+
         private int[] resourceArray;
         private Button selectedButton;
-        private float sphereRadius = 1f; 
-        private float maxSphereDistance = 3f;
+        private float sphereRadius = 1f, maxSphereDistance = 3f;
         private int selectedButtonIndex;
         //Cyan, Yellow, Magenta, White, Black
         private static bool[] colorsTakenArray = new bool[5];
@@ -37,6 +39,7 @@ namespace CallbackSystem
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
         private PlayerHealth playerHealthScript;
+        private PlayerController playerControllerScript;
         private bool isPlayerOne, started = false, isCrafting = false;
         private PlayerInput playerInput;
 
@@ -57,6 +60,7 @@ namespace CallbackSystem
         {
             playerAttackScript = GetComponent<PlayerAttack>();
             playerHealthScript = GetComponent<PlayerHealth>();
+            playerControllerScript = GetComponent<PlayerController>();
             playerInput = GetComponent<PlayerInput>();
             fadingtextEvent = new FadingTextEvent();
             resourceEvent = new ResourceUpdateEvent();
@@ -245,21 +249,27 @@ namespace CallbackSystem
 
         //%-----------------------------------Colors------------------------------------%
 
-        public void CraftMaterialColorCyan()
+
+        public void CraftMaterialColorGreen()
         {
-            if (TryCraftRecipe(cyanRecipe))
+            if (TryCraftRecipe(greenRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.1f, 0.90f, 0.90f, 1f));
-                fadingtextEvent.text = "Color Cyan Crafted";
+                ResetPreviousStats();
+                playerControllerScript.SetAcceleration(newMovementSpeed);
+                playerHealthScript.ChooseMaterialColor(new Color(0.35f, 0.95f, 0f, 1f));
+                fadingtextEvent.text = "Color Green Crafted";
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
             EventSystem.Current.FireEvent(fadingtextEvent);
         }
+
         public void CraftMaterialColorYellow()
         {
             if (TryCraftRecipe(yellowRecipe))
             {
+                ResetPreviousStats();
+                playerControllerScript.SetAcceleration(newMovementSpeed);
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
@@ -267,21 +277,27 @@ namespace CallbackSystem
                 fadingtextEvent.text = "Not Enough Resources";
             EventSystem.Current.FireEvent(fadingtextEvent);
         }
-        public void CraftMaterialColorWhite()
+
+        public void CraftMaterialColorCyan()
         {
-            if (TryCraftRecipe(whiteRecipe))
+            if (TryCraftRecipe(cyanRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.95f, 0.95f, 0.95f, 1f));
-                fadingtextEvent.text = "Color White Crafted";
+                ResetPreviousStats();
+                playerHealthScript.SetNewHealth(newHealth);
+                playerHealthScript.ChooseMaterialColor(new Color(0.1f, 0.90f, 0.90f, 1f));
+                fadingtextEvent.text = "Color Cyan Crafted";
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
             EventSystem.Current.FireEvent(fadingtextEvent);
         }
+
         public void CraftMaterialColorMagenta()
         {
             if (TryCraftRecipe(magentaRecipe))
             {
+                ResetPreviousStats();
+                playerHealthScript.SetNewHealth(newHealth);
                 playerHealthScript.ChooseMaterialColor(new Color(0.85f, 0f, 0.85f, 1f));
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
@@ -290,12 +306,13 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(fadingtextEvent);
         }
 
-        public void CraftMaterialColorGreen()
+        public void CraftMaterialColorWhite()
         {
-            if (TryCraftRecipe(greenRecipe))
+            if (TryCraftRecipe(whiteRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.35f, 0.95f, 0f, 1f));
-                fadingtextEvent.text = "Color Green Crafted";
+                ResetPreviousStats();
+                playerHealthScript.ChooseMaterialColor(new Color(0.95f, 0.95f, 0.95f, 1f));
+                fadingtextEvent.text = "Color White Crafted";
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -306,6 +323,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(blackRecipe))
             {
+                ResetPreviousStats();
                 playerHealthScript.ChooseMaterialColor(new Color(0.25f, 0.25f, 0.25f, 1f));
                 fadingtextEvent.text = "Color Black Crafted";
             }
@@ -316,8 +334,14 @@ namespace CallbackSystem
 
         public void CraftDefaultColor()
         {
+            ResetPreviousStats();
             playerHealthScript.ChooseMaterialColor();
             fadingtextEvent.text = "Default Color Crafted";
+        }
+
+        private void ResetPreviousStats()
+        {
+            playerHealthScript.SetDefaultStats();
         }
 
         //%-----------------------------------------------------------------------------%

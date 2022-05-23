@@ -21,7 +21,8 @@ namespace CallbackSystem
         [SerializeField] private float damage = 75f, teamDamage = 30f;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets;
-        [SerializeField] private GameObject currentBullet, bullet, upgradedBullet, explosiveBullet;
+        [SerializeField] private GameObject bullet, upgradedBullet, explosiveBullet;
+        private GameObject currentBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
         private bool activated, isPlayerOne, recentlyFired, canShootLaser, 

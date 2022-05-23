@@ -32,6 +32,7 @@ namespace CallbackSystem {
             UIEvent = new ActivationUIEvent();
         }
         private void Start() {
+            //Cursor.visible = false;
             batteryCount = 3;
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
@@ -122,6 +123,19 @@ namespace CallbackSystem {
             uiMenus.DeadPlayers(-1);
         }
 
+        public void SetNewHealth(float value) 
+        { 
+            maxHealth = value;
+            currHealth = maxHealth;
+        }
+
+        public void SetDefaultStats()
+        {
+            maxHealth = 100f;
+            currHealth = (currHealth > maxHealth) ? maxHealth : currHealth;
+            movement.SetDefaultAcceleration();
+        }
+
         private void UpdateHealthUI(bool batteryDecreased = false) {
             if (batteryCount < 1) {
                 HealthRegeneration();
@@ -135,7 +149,7 @@ namespace CallbackSystem {
 
         private void HealthRegeneration() {
             currHealth += (Time.deltaTime * healthReg * 1f);
-            currHealth = Mathf.Min(currHealth, 100f);
+            currHealth = Mathf.Min(currHealth, maxHealth);
 
         }
         public void ChooseMaterialColor(Color color)

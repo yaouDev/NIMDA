@@ -54,8 +54,9 @@ public class PlayerController : MonoBehaviour
     [Space(10)]
     [Header("Character Design")]
     [SerializeField]
-    [Range(0.0f, 15.0f)]
+    [Range(0.0f, 20.0f)]
     private float _acceleration = 3.0f;
+    private float _defaultAcceleration;
 
     [SerializeField]
     [Range(0.0f, 10.0f)]
@@ -121,6 +122,7 @@ public class PlayerController : MonoBehaviour
     {
 
         //crafting = new Crafting();
+        _defaultAcceleration = _acceleration;
         _jumpVector = new Vector3(0.0f, _jumpForce);
         _defaultGravity = -Physics.gravity.y;
         _colliderRadius = _collider.radius;
@@ -474,6 +476,8 @@ public class PlayerController : MonoBehaviour
         visuals.SetActive(true);
         alive = true;
     }
-    
+
+    public void SetAcceleration(float value) => _acceleration = value;
+    public void SetDefaultAcceleration() => _acceleration = _defaultAcceleration;
     public void Respawn() => alive = true;
 }
