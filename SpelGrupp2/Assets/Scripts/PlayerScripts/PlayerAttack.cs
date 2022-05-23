@@ -45,6 +45,15 @@ namespace CallbackSystem
          * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
          */
 
+        public bool IsAlive
+        {
+            get { return isAlive; }
+        }
+        public Vector3 AimingDirection
+        {
+            get { return aimingDirection; }
+        }
+
         public void Die() => isAlive = false;
 
         public bool IsPlayerOne() { return isPlayerOne; }
@@ -170,6 +179,7 @@ namespace CallbackSystem
             {
                 chargingUP = false;
             }
+
             if (context.canceled && laserWeapon)
             {
                 StopCoroutine(ChargeUp());
@@ -199,13 +209,13 @@ namespace CallbackSystem
                 sightLineWidth += widthIncreacePerMilliSecond;
             }
         }
-/*        IEnumerator AttackDelay(float channelTime)
-        {
-            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-            ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
-            yield return new WaitForSeconds(channelTime);
-            //LaserAttack();
-        }*/
+        /*        IEnumerator AttackDelay(float channelTime)
+                {
+                    AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                    ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+                    yield return new WaitForSeconds(channelTime);
+                    //LaserAttack();
+                }*/
 
         /*        private void LaserAttack()
                 {
@@ -287,8 +297,10 @@ namespace CallbackSystem
             {
                 if (laserWeaponUpgraded)
                     laserSelfDmg = reducedSelfDmg;
-
-                health.TakeDamage(laserSelfDmg);
+                if (health != null)
+                {
+                    health.TakeDamage(laserSelfDmg);
+                }
 
                 //Check how far to not penetrable object
                 /*                Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out wallHitInfo, 30.0f, wallLayermask); // TODO change to firepoint
