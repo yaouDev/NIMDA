@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using FMODUnity;
 
 public class GeneratorEvent : MonoBehaviour
 {
@@ -20,6 +21,11 @@ public class GeneratorEvent : MonoBehaviour
     [SerializeField] private ObjectivesManager objectivesManager;
     private bool isRunning;
 
+    [SerializeField] private GameObject doorSoundSource;
+    [SerializeField] private EventReference doorSound;
+    private FMOD.Studio.EventInstance doorEvent;
+    private AudioController ac;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +33,8 @@ public class GeneratorEvent : MonoBehaviour
         siren.enabled = false; 
         spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
         objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
+
+        ac = AudioController.instance;
     }
 
 /*    private void OnTriggerStay(Collider col)
@@ -65,6 +73,7 @@ public class GeneratorEvent : MonoBehaviour
             objectivesManager.RemoveObjective("start the generator");
             //objectivesManager.AddObjective("let the generator finish");
             objectivesManager.AddObjective("survive the horde");
+            doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
         }
     }
 
@@ -80,6 +89,7 @@ public class GeneratorEvent : MonoBehaviour
         }
         doorOpen = true;
         siren.enabled = false;
+        doorEvent.setParameterByName("isOpen", 1f); //stop door sound
         //To-do: uppdatera inte objectives via coroutine
         //objectivesManager.RemoveObjective("let the generator finish");
         //objectivesManager.RemoveObjective("open the safe room");
