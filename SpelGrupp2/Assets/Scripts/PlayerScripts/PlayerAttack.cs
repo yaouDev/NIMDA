@@ -33,7 +33,10 @@ namespace CallbackSystem
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
         [SerializeField] private float damage;
-        private bool chargingUP = false; 
+        private bool chargingUP = false;
+        private float startSightLineWidth = 0.05f;
+        private float sightLineWidth;
+        private float widthIncreacePerMilliSecond = 0.05f;
         //private float distanceToWall;
         //private RaycastHit wallHitInfo;
 
@@ -68,6 +71,7 @@ namespace CallbackSystem
             laserWeaponCooldown = 0f;
             revolverCooldown = 0f;
             damage = startDamage;
+            sightLineWidth = startSightLineWidth;
         }
 
         [SerializeField] private Material bulletMat;
@@ -152,9 +156,7 @@ namespace CallbackSystem
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
-                /*   while (damage <= maxDamage)
-                   {
-                       //add damage per second*/
+
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
 
@@ -182,6 +184,7 @@ namespace CallbackSystem
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
+                sightLineWidth = startSightLineWidth;
 
             }
             //damage = startDamage;
@@ -189,19 +192,20 @@ namespace CallbackSystem
 
         IEnumerator ChargeUp()
         {
-            while (damage < maxDamage && chargingUP)
+            while (damage < maxDamage && chargingUP && sightLineWidth < beamThickness)
             {
                 yield return new WaitForSeconds(0.1f);
                 damage += damageIncreasePerMilliSecond;
+                sightLineWidth += widthIncreacePerMilliSecond;
             }
         }
-        IEnumerator AttackDelay(float channelTime)
+/*        IEnumerator AttackDelay(float channelTime)
         {
             AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
             ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
             yield return new WaitForSeconds(channelTime);
             //LaserAttack();
-        }
+        }*/
 
         /*        private void LaserAttack()
                 {
@@ -346,9 +350,9 @@ namespace CallbackSystem
         {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
             aimLineRenderer.SetPositions(positions);
-            float lineWidth = 0.05f;
-            aimLineRenderer.startWidth = lineWidth;
-            aimLineRenderer.endWidth = lineWidth;
+            //sightLineWidth = 0.05f;
+            aimLineRenderer.startWidth = sightLineWidth;
+            aimLineRenderer.endWidth = sightLineWidth;
             Color color = new Color(1f, 0.2f, 0.2f);
             aimLineRenderer.startColor = color;
             aimLineRenderer.endColor = color;
