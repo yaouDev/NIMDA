@@ -56,6 +56,7 @@ public class Blink : MonoBehaviour
             var dist = Vector3.Distance(transform.position, destination);
             if (dist > 0.5f)
             {
+                destination.y = 1f;
                 transform.position = Vector3.MoveTowards(transform.position + Vector3.up, destination, Time.deltaTime * blinkSpeed);
             }
             else
@@ -75,9 +76,10 @@ public class Blink : MonoBehaviour
             numberOfUses -= 1;
             UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
-            if(Physics.SphereCast(transform.position + Vector3.up, 0.5f, playerAttack.AimingDirection, out RaycastHit hitInfo, maxDistance, layerMask))
+            if(Physics.SphereCast(transform.position + Vector3.up, 2f, playerAttack.AimingDirection, out RaycastHit hitInfo, maxDistance, layerMask))
             {
                 destination = hitInfo.point * destinationMultiplier;
+               
             }
             else
             {
