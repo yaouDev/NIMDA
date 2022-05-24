@@ -285,9 +285,10 @@ namespace CallbackSystem
             {
                 aimingDirection.x = controller.GetRightJoystickInput().x;
                 aimingDirection.z = controller.GetRightJoystickInput().y;
+                int sign = aimingDirection.z > 0 ? 1 : -1;
+                aimingDirection.z = sign * Ease.EaseInCirc(Mathf.Abs(aimingDirection.z));
                 aimingDirection.Normalize();
                 aimingDirection = Quaternion.Euler(0, 45, 0) * aimingDirection;
-
             }
         }
 

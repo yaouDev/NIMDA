@@ -42,8 +42,6 @@ public class TransitionToSplitState : CameraBaseState {
 		depthMaskPlanePos.x = splitScreenWidth;
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
 		_cameraPos = PlayerThis.position;// CameraTransform.position;
-		
-		Debug.Log($"{CameraTransform.position}");
 	}
 
 	public override void Run() {
