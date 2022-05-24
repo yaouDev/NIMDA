@@ -18,9 +18,11 @@ namespace CallbackSystem
         private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
-        [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
+        [SerializeField] private float startLaserSelfDmg = 2f;
+        [SerializeField] private float laserSelfDamageIncreasePerMilliSecond = 0.5f;
+        [SerializeField] private float maxSelfDamage = 10;
         [SerializeField] private float startDamage = 20f, teamDamage = 30f;
-        [SerializeField] private float damageIncreasePerMilliSecond = 5;
+        [SerializeField] private float damageIncreasePerMilliSecond = 10;
         [SerializeField] private float maxDamage = 110;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
@@ -33,6 +35,7 @@ namespace CallbackSystem
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
         [SerializeField] private float damage;
+        [SerializeField] private float laserSelfDmg;
         private bool chargingUP = false;
         private float startSightLineWidth = 0.05f;
         private float sightLineWidth;
@@ -81,6 +84,8 @@ namespace CallbackSystem
             revolverCooldown = 0f;
             damage = startDamage;
             sightLineWidth = startSightLineWidth;
+            laserSelfDmg = startLaserSelfDmg;
+
         }
 
         [SerializeField] private Material bulletMat;
@@ -195,6 +200,7 @@ namespace CallbackSystem
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
                 sightLineWidth = startSightLineWidth;
+                laserSelfDmg = startLaserSelfDmg;
 
             }
             //damage = startDamage;
@@ -202,11 +208,18 @@ namespace CallbackSystem
 
         IEnumerator ChargeUp()
         {
-            while (damage < maxDamage && chargingUP && sightLineWidth < beamThickness)
+            while (damage < maxDamage && chargingUP)
             {
                 yield return new WaitForSeconds(0.1f);
                 damage += damageIncreasePerMilliSecond;
-                sightLineWidth += widthIncreacePerMilliSecond;
+                if (sightLineWidth < beamThickness)
+                {
+                    sightLineWidth += widthIncreacePerMilliSecond;
+                }
+                if (laserSelfDmg < maxSelfDamage)
+                {
+                    laserSelfDmg += laserSelfDamageIncreasePerMilliSecond;
+                }
             }
         }
         /*        IEnumerator AttackDelay(float channelTime)
