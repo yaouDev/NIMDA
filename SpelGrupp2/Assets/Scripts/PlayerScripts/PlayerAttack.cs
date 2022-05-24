@@ -18,12 +18,12 @@ namespace CallbackSystem
         private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
-        [SerializeField] private float startLaserSelfDmg = 2f;
-        [SerializeField] private float laserSelfDamageIncreasePerMilliSecond = 0.5f;
+        [SerializeField] private float startLaserSelfDmg = 1f;
+        [SerializeField] private float laserSelfDamageIncreasePerMilliSecond = 1f;
         [SerializeField] private float maxSelfDamage = 10;
-        [SerializeField] private float startDamage = 20f, teamDamage = 30f;
+        [SerializeField] private float startDamage = 10f, teamDamage = 30f;
         [SerializeField] private float damageIncreasePerMilliSecond = 10;
-        [SerializeField] private float maxDamage = 110;
+        [SerializeField] private float maxDamage = 100;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bullets, maxBullets;
