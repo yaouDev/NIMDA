@@ -69,7 +69,6 @@ public class Blink : MonoBehaviour
     public void DoBlink(InputAction.CallbackContext context)
     {
         if (!playerAttack.IsAlive) return;
-        Debug.Log("Tryckt på space och är inte död");
 
         if (context.started && numberOfUses > 0)
         {
@@ -77,16 +76,14 @@ public class Blink : MonoBehaviour
             numberOfUses -= 1;
             UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
-            if(Physics.SphereCast(transform.position + Vector3.up, 0.1f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
+            if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
             {
                 destination = hitInfo.point * destinationMultiplier;
-                Debug.Log(hitInfo.point);
-                Debug.DrawLine(transform.position + Vector3.up, hitInfo.point, Color.green, 5f);
+
             }
             else
             {
                 destination = (transform.position + playerAttack.AimingDirection.normalized * maxDistance * destinationMultiplier);
-                Debug.DrawLine(transform.position + Vector3.up, hitInfo.point, Color.green, 5f);
             }
             Instantiate(finnish, destination, Quaternion.identity);
             blinking = true;
