@@ -6,7 +6,7 @@ using UnityEngine;
 public class TransitionToSplitState : CameraBaseState {
 
 	[SerializeField] 
-	private LayerMask _collisionMask;
+	private LayerMask collisionMask;
 	
 	[SerializeField] [Range(0.0f, 2.0f)]
 	private float headHeight = 1.6f;
@@ -75,6 +75,7 @@ public class TransitionToSplitState : CameraBaseState {
 		Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
 		Vector3 centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, dynamicSplitMagnitude);
 
+		FadeObstacles();
 		
 		splitScreenOffset = Vector3.ProjectOnPlane( 
 			isRightMostPlayer
@@ -88,6 +89,39 @@ public class TransitionToSplitState : CameraBaseState {
 
 		if (percentage > 1.0f)
 			stateMachine.TransitionTo<SplitScreenState>();
+	}
+	
+	private RaycastHit[] hits = new RaycastHit[10];
+
+	private void FadeObstacles() {
+		Vector3 offsetDirection = -CameraTransform.forward;
+		hits = new RaycastHit[10];
+		
+		Physics.SphereCastNonAlloc(
+			PlayerThis.position,
+			2.0f,
+			offsetDirection.normalized,
+			hits,
+			//out  RaycastHit  hit, 
+			25.0f, 
+			collisionMask);
+
+		//Vector3 offset;
+		for (int i = 0; i < hits.Length; i++)
+		{
+			if (hits[i].collider)
+			{
+				float dot = Vector3.Dot(
+					(PlayerThis.position - hits[i].transform.position).normalized,
+					new Vector3(1.0f, 0.0f, 1.0f));
+				
+				TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
+				if (tf != null && dot > 0)
+				{
+					tf.FadeOut();
+				}
+			}
+		}
 	}
 
 	public override void Exit() {

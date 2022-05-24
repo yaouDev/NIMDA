@@ -20,6 +20,9 @@ public class TransitionToIsometric : CameraBaseState
 
 	private float percentage = 0.0f;
 	
+	[SerializeField] 
+	private LayerMask collisionMask;
+
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
 	}
@@ -77,14 +80,37 @@ public class TransitionToIsometric : CameraBaseState
 	    return to;
     }
 
+    private RaycastHit[] hits = new RaycastHit[10];
+
     private void FadeObstacles() {
-	    // todo spherecast and fade out objects between player and camera
-	    // Physics.SphereCast(_abovePlayer, 
-	    // 	_cameraCollisionRadius, 
-	    // 	_offsetDirection.normalized, 
-	    // 	out _hit, 
-	    // 	_offsetDirection.magnitude, 
-	    // 	collisionMask);
+	    Vector3 offsetDirection = -CameraTransform.forward;
+	    hits = new RaycastHit[10];
+		
+	    Physics.SphereCastNonAlloc(
+		    PlayerThis.position,
+		    2.0f,
+		    offsetDirection.normalized,
+		    hits,
+		    //out  RaycastHit  hit, 
+		    25.0f, 
+		    collisionMask);
+
+	    //Vector3 offset;
+	    for (int i = 0; i < hits.Length; i++)
+	    {
+		    if (hits[i].collider)
+		    {
+			    float dot = Vector3.Dot(
+				    (PlayerThis.position - hits[i].transform.position).normalized,
+				    new Vector3(1.0f, 0.0f, 1.0f));
+				
+			    TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
+			    if (tf != null && dot > 0)
+			    {
+				    tf.FadeOut();
+			    }
+		    }
+	    }
     }
 
     public override void Exit() {

@@ -94,6 +94,8 @@ public class SplitScreenState : CameraState {
 			Vector3.up);
 		
 		CameraTransform.position = splitScreenOffset + _abovePlayer + CameraTransform.rotation * topDownOffset;
+
+		FadeObstacles();
 		
 		if (Vector3.Distance(PlayerThis.position, PlayerOther.position) < isometricDistance)
 			stateMachine.TransitionTo<TransitionToIsometric>();
