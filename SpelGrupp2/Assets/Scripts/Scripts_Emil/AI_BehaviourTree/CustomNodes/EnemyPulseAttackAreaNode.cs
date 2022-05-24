@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyPulseAttack")]
-public class EnemyPulseAttackAreaNode : Node
-{
+public class EnemyPulseAttackAreaNode : Node, IResetableNode {
     [SerializeField] private float attackCoolDown = 5.0f;
     [SerializeField] private float damage = 50.0f;
     [SerializeField] private LayerMask whatAreTargets;
@@ -25,13 +24,11 @@ public class EnemyPulseAttackAreaNode : Node
 
     Collider[] colliders;
 
-    public override NodeState Evaluate()
-    {
+    public override NodeState Evaluate() {
 
         meshRenderer = agent.GetComponent<MeshRenderer>();
 
-        if (isAttacking && agent.TargetInSight)
-        {
+        if (isAttacking && agent.TargetInSight) {
             agent.IsStopped = true;
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
@@ -44,8 +41,7 @@ public class EnemyPulseAttackAreaNode : Node
         return NodeState;
 
     }
-    public IEnumerator AttackDelay()
-    {
+    public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
@@ -53,10 +49,8 @@ public class EnemyPulseAttackAreaNode : Node
 
     }
 
-    private IEnumerator FlashRoutine()
-    {
-        while (true)
-        {
+    private IEnumerator FlashRoutine() {
+        while (true) {
 
             meshRenderer.material = flashMaterial;
             yield return new WaitForSeconds(duration);
@@ -64,14 +58,10 @@ public class EnemyPulseAttackAreaNode : Node
             yield return new WaitForSeconds(duration);
 
         }
-
-
         //agent.StopCoroutine(FlashRoutine());
     }
 
-
-    void Attack()
-    {
+    void Attack() {
         // schreenshake
         CallbackSystem.CameraShakeEvent shakeEvent = new CallbackSystem.CameraShakeEvent();
         shakeEvent.affectsPlayerOne = true;
@@ -85,32 +75,32 @@ public class EnemyPulseAttackAreaNode : Node
 
     }
 
-    private void CheckForPlayers()
-    {
+    private void CheckForPlayers() {
         colliders = Physics.OverlapSphere(agent.Position, explosionRange, whatAreTargets);
-        foreach (Collider coll in colliders)
-        {
-            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy"))
-            {
+        foreach (Collider coll in colliders) {
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy")) {
                 damageable = coll.transform.GetComponent<IDamageable>();
 
-                if (damageable != null)
-                {
+                if (damageable != null) {
                     //damage
                     damageable.TakeDamage(damage);
 
                     //ExplosionForce
                     Rigidbody rbTemp = coll.GetComponent<Rigidbody>();
-                    if (rbTemp != null)
-                    {
+                    if (rbTemp != null) {
                         rbTemp.AddExplosionForce(explosionForce, agent.Position, explosionRange);
                     }
 
                     //Destroy gameobject
                     agent.Health.DieNoLoot();
                 }
-
             }
         }
     }
+
+    public void ResetNode() {
+        isAttacking = true;
+        damageable = null;
+    }
+
 }

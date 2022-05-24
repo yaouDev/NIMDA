@@ -8,7 +8,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
     [SerializeField] private float hitForce;
-    [SerializeField] string objectPoolTag;
+    [SerializeField] private string objectPoolTag;
+
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -22,7 +23,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int transitorRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
-    private EnemyShield shield;
     private Transform playersPos;
     private AI_Controller agent;
 
@@ -40,7 +40,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     private void Awake() {
         CurrentHealth = fullHealth;
         enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
-        shield = GetComponentInChildren<EnemyShield>();
         playersPos = GameObject.Find("Players").transform;
         agent = GetComponent<AI_Controller>();
     }
@@ -56,9 +55,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     public float GetFullHealth() {
         return fullHealth;
     }
-    /*     public GameObject GetFirePoint() {
-            return firePoint;
-        } */
 
     public Vector3 FirePoint {
         get { return firePoint.transform.position; }
@@ -70,18 +66,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        Destroy(gameObject);
-        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        //Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        Destroy(gameObject);
-        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        //Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
-
-    /*  public float GetCurrentHealth() {
-          return currHealth;
-      }*/
 
     public void DropLoot() {
 
@@ -116,14 +108,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
     public void OnSpawn() {
         CurrentHealth = fullHealth;
-        if (shield != null) {
-            shield.CurrentHealth = shield.FullHealth;
-            shield.gameObject.SetActive(true);
-        }
-        if (AIData.Instance.GetShotRequirement(agent) != -1) {
-            AIData.Instance.ResetShotsFired(agent);
-        }
-        agent.Destination = Vector3.zero + new Vector3(1, 0, 0);
+        agent.ResetAgent();
     }
 
 }

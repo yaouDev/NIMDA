@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/MeleeAttack")]
-public class MeleeAttackNode : Node {
+public class MeleeAttackNode : Node, IResetableNode {
     [SerializeField] private float attackCoolDown = 1.0f;
     [SerializeField] private float damage = 5.0f;
     [SerializeField] private LayerMask whatAreTargets;
@@ -28,7 +27,7 @@ public class MeleeAttackNode : Node {
         return NodeState;
 
     }
-    public IEnumerator AttackDelay() {
+    public IEnumerator<WaitForSeconds> AttackDelay() {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
@@ -58,5 +57,11 @@ public class MeleeAttackNode : Node {
 
             }
         }
+    }
+
+    public void ResetNode() {
+        damageable = null;
+        colliders = null;
+        isAttacking = true;
     }
 }
