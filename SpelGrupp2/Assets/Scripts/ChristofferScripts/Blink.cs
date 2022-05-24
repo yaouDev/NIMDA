@@ -9,13 +9,15 @@ public class Blink : MonoBehaviour
     [SerializeField] private int numberOfUses = 5;
     [SerializeField] private int maxUses = 5;
     [SerializeField] private float cooldown = 2;
-    [SerializeField] private float maxDistance = 10f;
+    [SerializeField] private float maxDistance = 5;
     [SerializeField] private float blinkSpeed = 100;
-    [SerializeField] private float destinationMultiplier = 0.9f;
+    [SerializeField] private float destinationMultiplier = 0.8f;
     [SerializeField] private float cameraheight;
     [SerializeField] private TextMeshProUGUI UIText;
     [SerializeField] private Transform cam;
     [SerializeField] private ParticleSystem trail;
+    [SerializeField] private ParticleSystem start;
+    [SerializeField] private ParticleSystem finnish;
     [SerializeField] private GameObject player;
     [SerializeField] private LayerMask layerMask;
     private float cooldownTimer;
@@ -54,7 +56,7 @@ public class Blink : MonoBehaviour
             var dist = Vector3.Distance(transform.position, destination);
             if (dist > 0.5f)
             {
-                transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * blinkSpeed);
+                transform.position = Vector3.MoveTowards(transform.position + Vector3.up, destination, Time.deltaTime * blinkSpeed);
             }
             else
             {
@@ -69,11 +71,11 @@ public class Blink : MonoBehaviour
 
         if (context.started && numberOfUses > 0)
         {
-
+            Instantiate(start, transform.position, Quaternion.identity);
             numberOfUses -= 1;
             UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
-            if(Physics.Raycast(transform.position + Vector3.up, playerAttack.AimingDirection, out RaycastHit hitInfo, maxDistance, layerMask))
+            if(Physics.SphereCast(transform.position + Vector3.up, 0.5f, playerAttack.AimingDirection, out RaycastHit hitInfo, maxDistance, layerMask))
             {
                 destination = hitInfo.point * destinationMultiplier;
             }
@@ -81,7 +83,7 @@ public class Blink : MonoBehaviour
             {
                 destination = (transform.position + playerAttack.AimingDirection * maxDistance) * destinationMultiplier;
             }
-
+            Instantiate(finnish, destination, Quaternion.identity);
             blinking = true;
         }
     }
