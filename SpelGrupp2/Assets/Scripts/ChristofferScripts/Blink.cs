@@ -83,7 +83,7 @@ public class Blink : MonoBehaviour
             }
             else
             {
-                destination = (transform.position + playerAttack.AimingDirection * maxDistance) * destinationMultiplier;
+                destination = ((transform.position + playerAttack.AimingDirection) * maxDistance) * destinationMultiplier;
             }
             Instantiate(finnish, destination, Quaternion.identity);
             blinking = true;
