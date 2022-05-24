@@ -110,6 +110,9 @@ public class PlayerController : MonoBehaviour
     private float _groundCheckDistance = 0.15f;
 
     [SerializeField] private GameObject visuals;
+    
+    private Vector2 reference;
+    private Vector2 inputVectorUnsmoothed;
 
     private void Awake()
     {
@@ -149,8 +152,6 @@ public class PlayerController : MonoBehaviour
 
                 anim.SetFloat("Speed", rotatedVelocity.x);
                 anim.SetFloat("Direction", rotatedVelocity.z);
-
-                //print(_inputMovement.x);
             }
         }
         else
@@ -181,18 +182,10 @@ public class PlayerController : MonoBehaviour
 
         joyStickLeftInput = context.ReadValue<Vector2>();
     }
-
-    // private DateTime time;
-    private Vector2 reference;
-    private Vector2 inputVectorUnsmoothed;
+    
     public void JoystickRight(InputAction.CallbackContext context)
     {
-        // TimeSpan t = DateTime.Now - time;
         inputVectorUnsmoothed = context.ReadValue<Vector2>();
-        // Debug.Log($"{inp.x} {inp.y} Time since last input {t.TotalMilliseconds}");
-        // time = DateTime.Now;
-        // joyStickRightInput = context.ReadValue<Vector2>();
-        // joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnsmoothed, ref reference, .1f, 1.0f);
     }
 
     public Vector2 GetRightStickVector()
@@ -209,18 +202,7 @@ public class PlayerController : MonoBehaviour
         _inputMovement.z = joyStickLeftInput.y;
 
         if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
-
-
-       /* if (anim != null)
-        {
-            Vector3 rotatedInputMovement;
-
-
-            anim.SetFloat("Speed", _inputMovement.x);
-            anim.SetFloat("Direction", _inputMovement.z);
-
-            //print(_inputMovement.x);
-        }*/
+        
         _inputMovement = InputToCameraProjection(_inputMovement);
         _inputMovement *= _acceleration * Time.deltaTime;
     }
@@ -425,7 +407,6 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        //gameObject.transform.position = otherPlayer.transform.position + Vector3.left;
         if (alive)
             StartCoroutine(ReturnToOtherPlayer());
         alive = false;
@@ -434,22 +415,13 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ReturnToOtherPlayer()
     {
         float t = 0.0f;
-        // Vector3 sPos = visuals.transform.localPosition;
-        // Quaternion sRot = visuals.transform.localRotation;
-        // visuals.transform.RotateAround(transform.position + Vector3.up * .05f, visuals.transform.right, -90);
-        // Vector3 ePos = visuals.transform.localPosition;
-        // Quaternion eRot = visuals.transform.localRotation;
-        // visuals.transform.localPosition = sPos;
-        // visuals.transform.localRotation = sRot;
+     
         Quaternion startRot = transform.rotation;
         Quaternion endRot = quaternion.Euler(-90, 0, 0) * startRot;
         transform.position += Vector3.up * .5f;
         while (t <= 1.0f)
         {
             transform.rotation = Quaternion.Slerp(startRot, endRot, Ease.EaseOutBounce(t));
-            //visuals.transform.RotateAround(transform.position + Vector3.up * 0.5f, transform.right, -90 * Time.deltaTime);
-            // visuals.transform.localRotation = Quaternion.Slerp(sRot, eRot, Ease.EaseOutBounce(t));
-            // visuals.transform.localPosition = Vector3.Lerp(sPos, ePos, Ease.EaseOutBounce(t));
             t += Time.deltaTime;
             yield return null;
         }
@@ -457,11 +429,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         visuals.SetActive(false);
         transform.rotation = startRot;
-        // visuals.transform.localRotation = sRot;
-        // visuals.transform.localPosition = sPos;
-        //visuals.transform.RotateAround(transform.position, transform.forward, 90);
 
-        // visuals.transform.localRotation = startRotation;
         t = 0.0f;
         Vector3 startPos = gameObject.transform.position;
         while (t <= 1.0f)
