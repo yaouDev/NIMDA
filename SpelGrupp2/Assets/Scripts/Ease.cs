@@ -97,6 +97,11 @@ public static class Ease {
                 * Mathf.Pow(x - 1f, 2f);
     }
     
+    /// <summary>
+    /// https://easings.net/#easeOutBounce
+    /// </summary>
+    /// <param name="x">usually a over time linearly increasing value between 0.0f and 1.0f</param>
+    /// <returns>a value that goes from 0.0f to 1.0f, increasing non-linearly</returns>
     public static float EaseOutBounce(float x){
 
         if (x < 1.0f / d1) {
