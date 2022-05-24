@@ -7,16 +7,6 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(menuName = "Create CameraState/TransitionToIsometric")]
 public class TransitionToIsometric : CameraBaseState
 {
-
-	// [SerializeField] [Range(1.0f, 10.0f)]
-	// private float mouseSensitivityX = 10.0f;
-	//
-	// [SerializeField] [Range(1.0f, 10.0f)]
-	// private float mouseSensitivityY = 5.0f;
-
-	[SerializeField] 
-	private Vector3 topDownOffset;
-	
 	[SerializeField]
 	private float headHeight = 1.6f;
 	
@@ -24,11 +14,15 @@ public class TransitionToIsometric : CameraBaseState
 	private Vector3 centroid;
 	private Vector3 abovePlayer;
 
-	[SerializeField]
-	private Vector2 topDownViewRotation;
+	private Vector3 topDownOffset = new Vector3(0.0f, 1.0f, -16.0f);
+
+	private Vector2 topDownViewRotation = new Vector2(55, 45);
 
 	private float percentage = 0.0f;
 	
+	[SerializeField] 
+	private LayerMask collisionMask;
+
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
 	}
@@ -40,12 +34,13 @@ public class TransitionToIsometric : CameraBaseState
     }
 
     public override void Run() {
-	    Input();
+	    //Input();
 
 	    percentage += Time.deltaTime * 2.0f;
 	    
 	    // both cameras have the same rotation (fixed?)
-	    CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation,  Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f), percentage);
+	    CameraTransform.rotation = Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f);
+	    //CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation,  Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f), percentage);
 
 	    // the split is rotating freely between the players
 	    // RotateScreenSplit();
@@ -85,14 +80,37 @@ public class TransitionToIsometric : CameraBaseState
 	    return to;
     }
 
+    private RaycastHit[] hits = new RaycastHit[10];
+
     private void FadeObstacles() {
-	    // todo spherecast and fade out objects between player and camera
-	    // Physics.SphereCast(_abovePlayer, 
-	    // 	_cameraCollisionRadius, 
-	    // 	_offsetDirection.normalized, 
-	    // 	out _hit, 
-	    // 	_offsetDirection.magnitude, 
-	    // 	collisionMask);
+	    Vector3 offsetDirection = -CameraTransform.forward;
+	    hits = new RaycastHit[10];
+		
+	    Physics.SphereCastNonAlloc(
+		    PlayerThis.position,
+		    2.0f,
+		    offsetDirection.normalized,
+		    hits,
+		    //out  RaycastHit  hit, 
+		    25.0f, 
+		    collisionMask);
+
+	    //Vector3 offset;
+	    for (int i = 0; i < hits.Length; i++)
+	    {
+		    if (hits[i].collider)
+		    {
+			    float dot = Vector3.Dot(
+				    (PlayerThis.position - hits[i].transform.position).normalized,
+				    new Vector3(1.0f, 0.0f, 1.0f));
+				
+			    TreeFader tf = hits[i].transform.GetComponent<TreeFader>();
+			    if (tf != null && dot > 0)
+			    {
+				    tf.FadeOut();
+			    }
+		    }
+	    }
     }
 
     public override void Exit() {

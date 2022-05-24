@@ -11,7 +11,7 @@ namespace CallbackSystem
     {
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private LineRenderer aimLineRenderer;
-        [SerializeField] private LayerMask enemyLayerMask, laserLayerMask;
+        [SerializeField] private LayerMask enemyLayerMask, laserLayerMask, wallLayermask;
         private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
         private PlayerHealth health;
         private PlayerController controller;
@@ -19,8 +19,11 @@ namespace CallbackSystem
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
-        [SerializeField] private float damage = 75f, teamDamage = 30f;
+        [SerializeField] private float startDamage = 20f, teamDamage = 30f;
+        [SerializeField] private float damageIncreasePerMilliSecond = 5;
+        [SerializeField] private float maxDamage = 110;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
+        [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bullets, maxBullets;
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
@@ -29,11 +32,27 @@ namespace CallbackSystem
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
+        [SerializeField] private float damage;
+        private bool chargingUP = false;
+        private float startSightLineWidth = 0.05f;
+        private float sightLineWidth;
+        private float widthIncreacePerMilliSecond = 0.05f;
+        //private float distanceToWall;
+        //private RaycastHit wallHitInfo;
 
         /*
          * From where the players weapon and ammunition is instantiated, stored and managed.
          * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
          */
+
+        public bool IsAlive
+        {
+            get { return isAlive; }
+        }
+        public Vector3 AimingDirection
+        {
+            get { return aimingDirection; }
+        }
 
         public void Die() => isAlive = false;
 
@@ -60,6 +79,8 @@ namespace CallbackSystem
             reducedSelfDmg = laserSelfDmg / 2;
             laserWeaponCooldown = 0f;
             revolverCooldown = 0f;
+            damage = startDamage;
+            sightLineWidth = startSightLineWidth;
         }
 
         [SerializeField] private Material bulletMat;
@@ -106,7 +127,7 @@ namespace CallbackSystem
             if (isAlive)
             {
                 AnimateLasers();
-                
+
             }
             else
             {
@@ -114,38 +135,93 @@ namespace CallbackSystem
             }
         }
 
+        /*        public void Fire(InputAction.CallbackContext context)
+                {
+                    if (!isAlive) return;
+                    if (context.started && !recentlyFired)
+                    {
+
+                        if (laserWeapon && canShootLaser)
+                        {
+                            StartCoroutine(AttackDelay(laserAttackDelay));
+                        }
+                        else if (!laserWeapon)
+                        {
+                            FireProjectileWeapon();
+                        }
+                        recentlyFired = true;
+                        laserWeaponCooldown = 0f;
+                        revolverCooldown = 0f;
+                    }
+                }*/
         public void Fire(InputAction.CallbackContext context)
         {
             if (!isAlive) return;
-            if (context.started && !recentlyFired)
+            if (context.started && !recentlyFired && !laserWeapon)
             {
-                if (laserWeapon && canShootLaser)
+                FireProjectileWeapon();
+                recentlyFired = true;
+                revolverCooldown = 0f;
+            }
+            if (context.performed && laserWeapon && canShootLaser)
+            {
+
+                chargingUP = true;
+                StartCoroutine(ChargeUp());
+
+                //add channelsound
+
+                //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+                /*                }*/
+            }
+            else
+            {
+                chargingUP = false;
+            }
+
+            if (context.canceled && laserWeapon)
+            {
+                StopCoroutine(ChargeUp());
+                if (canShootLaser)
                 {
-                    StartCoroutine(AttackDelay(laserAttackDelay));
-                }
-                else if (!laserWeapon)
-                {
-                    FireProjectileWeapon();
+                    ShootLaser();
+                    StartCoroutine(AnimateLineRenderer(aimingDirection));
+                    //add shootsound
+                    //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                    //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
                 }
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;
-                revolverCooldown = 0f;
+                damage = startDamage;
+                sightLineWidth = startSightLineWidth;
+
+            }
+            //damage = startDamage;
+        }
+
+        IEnumerator ChargeUp()
+        {
+            while (damage < maxDamage && chargingUP && sightLineWidth < beamThickness)
+            {
+                yield return new WaitForSeconds(0.1f);
+                damage += damageIncreasePerMilliSecond;
+                sightLineWidth += widthIncreacePerMilliSecond;
             }
         }
+        /*        IEnumerator AttackDelay(float channelTime)
+                {
+                    AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                    ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+                    yield return new WaitForSeconds(channelTime);
+                    //LaserAttack();
+                }*/
 
-        IEnumerator AttackDelay(float channelTime)
-        {
-            AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-            ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
-            yield return new WaitForSeconds(channelTime);
-            LaserAttack();
-        }
-
-        private void LaserAttack()
-        {
-            ShootLaser();
-            StartCoroutine(AnimateLineRenderer(aimingDirection));
-        }
+        /*        private void LaserAttack()
+                {
+                    ShootLaser();
+                    StartCoroutine(AnimateLineRenderer(aimingDirection));
+                }*/
         /*
         private void ProjectileFire(InputAction.CallbackContext context)
         {
@@ -209,9 +285,10 @@ namespace CallbackSystem
             {
                 aimingDirection.x = controller.GetRightJoystickInput().x;
                 aimingDirection.z = controller.GetRightJoystickInput().y;
+                int sign = aimingDirection.z > 0 ? 1 : -1;
+                aimingDirection.z = sign * Ease.EaseInCirc(Mathf.Abs(aimingDirection.z));
                 aimingDirection.Normalize();
                 aimingDirection = Quaternion.Euler(0, 45, 0) * aimingDirection;
-
             }
         }
 
@@ -221,31 +298,40 @@ namespace CallbackSystem
             {
                 if (laserWeaponUpgraded)
                     laserSelfDmg = reducedSelfDmg;
-
-                health.TakeDamage(laserSelfDmg);
-
- 
-
-                Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out RaycastHit hitInfo, 30.0f, enemyLayerMask);
-                if (hitInfo.collider != null)
+                if (health != null)
                 {
-                    if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
-                    {
-                        IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
+                    health.TakeDamage(laserSelfDmg);
+                }
 
-                        if (damageable != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
+                //Check how far to not penetrable object
+                /*                Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out wallHitInfo, 30.0f, wallLayermask); // TODO change to firepoint
+
+                                distanceToWall = wallHitInfo.distance;*/
+
+                //Check for enemies and onther penetrable objects
+                foreach (RaycastHit hitInfo in Physics.SphereCastAll(transform.position + transform.forward + Vector3.up, beamThickness, aimingDirection, 30.0f, enemyLayerMask)) // TODO change to firepoint
+                {
+                    if (hitInfo.collider != null)
+                    {
+                        if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
                         {
-                            if (hitInfo.transform.tag == "Player")
-                                damageable.TakeDamage(teamDamage);
-                            else
-                                damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                            IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
+
+                            if (damageable != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
+                            {
+                                if (hitInfo.transform.tag == "Player")
+                                    damageable.TakeDamage(teamDamage);
+                                else
+                                    damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                            }
+                        }
+                        else if (hitInfo.transform.tag == "BreakableObject")
+                        {
+                            BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
+                            breakable.DropBoxLoot();
                         }
                     }
-                    else if (hitInfo.transform.tag == "BreakableObject")
-                    {
-                        BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
-                        breakable.DropBoxLoot();
-                    }
+
                 }
             }
         }
@@ -254,6 +340,7 @@ namespace CallbackSystem
         {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + direction * 30.0f };
             lineRenderer.SetPositions(positions);
+
             float t = 0.0f;
             while (t < 1.0f)
             {
@@ -276,9 +363,9 @@ namespace CallbackSystem
         {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
             aimLineRenderer.SetPositions(positions);
-            float lineWidth = 0.05f;
-            aimLineRenderer.startWidth = lineWidth;
-            aimLineRenderer.endWidth = lineWidth;
+            //sightLineWidth = 0.05f;
+            aimLineRenderer.startWidth = sightLineWidth;
+            aimLineRenderer.endWidth = sightLineWidth;
             Color color = new Color(1f, 0.2f, 0.2f);
             aimLineRenderer.startColor = color;
             aimLineRenderer.endColor = color;
@@ -297,7 +384,7 @@ namespace CallbackSystem
             {
                 currentHitDistance = maxDistance;
                 targetInSight = false;
-            }  
+            }
         }
 
 
