@@ -10,6 +10,7 @@ public class AIData : MonoBehaviour {
     [SerializeField] private GameObject bossBigBullet;
     [SerializeField] private GameObject bossSmallBullet;
     [SerializeField] private ParticleSystem pulseAttackParticles;
+    [SerializeField] private ParticleSystem explosionParticles; 
     [SerializeField] private ParticleSystem enemyHitParticles;
     [SerializeField] private ParticleSystem enemyMuzzleflash;
     [SerializeField] private ParticleSystem fireParticles;
@@ -29,6 +30,10 @@ public class AIData : MonoBehaviour {
     }
     public ParticleSystem PulseAttackParticles {
         get { return pulseAttackParticles; }
+    }
+    public ParticleSystem ExplosionParticles
+    {
+        get { return explosionParticles; }
     }
     public ParticleSystem EnemyHitParticles {
         get { return enemyHitParticles; }

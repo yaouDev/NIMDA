@@ -80,7 +80,7 @@ public class EnemyPulseAttackAreaNode : Node
         CallbackSystem.EventSystem.Current.FireEvent(shakeEvent);
 
         //Particklesystem
-        Instantiate(AIData.Instance.PulseAttackParticles, agent.Position, Quaternion.identity);
+        Instantiate(AIData.Instance.ExplosionParticles, agent.Position, Quaternion.identity);
         CheckForPlayers();
 
     }
