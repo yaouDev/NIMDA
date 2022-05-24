@@ -24,7 +24,8 @@ public class Follow : MonoBehaviour
             {
                 transform.position += offset;
             }
-            transform.position = Vector3.SmoothDamp(transform.position, Target.transform.position, ref velocity, Time.deltaTime * Random.Range(minModifier, maxModifier));
+            transform.position = Vector3.SmoothDamp(transform.position, Target.transform.position, ref velocity, 
+            Time.deltaTime * Random.Range(minModifier, maxModifier));
         }
     }
 }

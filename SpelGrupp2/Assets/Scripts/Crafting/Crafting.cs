@@ -32,9 +32,9 @@ namespace CallbackSystem
         private float sphereRadius = 1f, maxSphereDistance = 3f;
         private int selectedButtonIndex;
         //Cyan, Yellow, Magenta, White, Black
-        private static bool[] colorsTakenArray = new bool[5];
+        //private static bool[] colorsTakenArray = new bool[5];
 
-        public int copper, transistor, iron;
+        public int copper, transistor, iron, coin;
 
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
@@ -48,13 +48,15 @@ namespace CallbackSystem
             resourceEvent.c = copper;
             resourceEvent.t = transistor;
             resourceEvent.i = iron;
+            resourceEvent.coins = coin;
             resourceEvent.ammoChange = false;
-            resourceArray = new int[] { copper, transistor, iron };
+            resourceArray = new int[] { copper, transistor, iron, coin };
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
 
         public bool IsPlayerOne() { return isPlayerOne; }
+        public int[] GetResourceArray() { return resourceArray; }
 
         private void Awake()
         {
@@ -370,6 +372,17 @@ namespace CallbackSystem
                 return true;
             }
             return false;
+        }
+        //%-------------------------------Forsaken methods-------------------------------%
+        public int GetHalfResourceAmount(int index) { return resourceArray[index]; }
+        public void ReduceResourceByHalf(int index)
+        {
+            if (index == 0)
+                copper /= 2;
+            else if (index == 1)
+                transistor /= 2;
+            else
+                iron /= 2;
         }
     }   
 }
