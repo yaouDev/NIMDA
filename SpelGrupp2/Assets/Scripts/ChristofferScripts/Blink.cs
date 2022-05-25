@@ -13,7 +13,7 @@ public class Blink : MonoBehaviour
     [SerializeField] private float blinkSpeed = 100;
     [SerializeField] private float destinationMultiplier = 0.95f;
     [SerializeField] private float cameraheight;
-    [SerializeField] private TextMeshProUGUI UIText;
+    //[SerializeField] private TextMeshProUGUI UIText;
     [SerializeField] private Transform cam;
     [SerializeField] private ParticleSystem trail;
     [SerializeField] private ParticleSystem start;
@@ -33,7 +33,7 @@ public class Blink : MonoBehaviour
         trail = GetComponentInChildren<ParticleSystem>();
         maxUses = numberOfUses;
         cooldownTimer = cooldown;
-        UIText.text = numberOfUses.ToString();
+        //UIText.text = numberOfUses.ToString();
     }
 
     // Update is called once per frame
@@ -49,7 +49,7 @@ public class Blink : MonoBehaviour
             {
                 numberOfUses += 1;
                 cooldownTimer = cooldown;
-                UIText.text = "Blink: " + numberOfUses.ToString();
+                //UIText.text = "Blink: " + numberOfUses.ToString();
             }
         }
         if (blinking)
@@ -58,7 +58,8 @@ public class Blink : MonoBehaviour
             if (dist > 0.5f)
             {
                 destination.y = 1f;
-                transform.position = Vector3.MoveTowards(transform.position + Vector3.up, destination, Time.deltaTime * blinkSpeed);
+                transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * blinkSpeed);
+                Debug.Log("Dest: " + destination);
             }
             else
             {
@@ -74,16 +75,18 @@ public class Blink : MonoBehaviour
         {
             Instantiate(start, transform.position, Quaternion.identity);
             numberOfUses -= 1;
-            UIText.text = "Blink: " + numberOfUses.ToString();
+            //UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
             {
                 destination = hitInfo.point * destinationMultiplier;
+                Debug.Log("Hit: " + hitInfo.collider.name);
 
             }
             else
             {
                 destination = (transform.position + playerAttack.AimingDirection.normalized * maxDistance * destinationMultiplier);
+                Debug.Log("Träffa inget");
             }
             Instantiate(finnish, destination, Quaternion.identity);
             blinking = true;
