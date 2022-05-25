@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using CallbackSystem;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -148,7 +149,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         neighbor.x >= worldSize.x && (possibilities[i] & E) == 0 ||
                         neighbor.y >= worldSize.y && (possibilities[i] & N) == 0 ||
                         (seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) == 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) != 0 ||   
-                         seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) != 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0))
+                         seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) != 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0) ||
+                        !IsValid(current, possibilities[i])
+                        )
                     {
                         possible = false;
                     }
@@ -168,7 +171,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 }
                 else
                 {
-                    UnityEngine.Debug.Log(15);
+                    //UnityEngine.Debug.Log(15);
                     graph[current.x, current.y] = 15;
                 }
 
@@ -216,9 +219,10 @@ public class ProceduralWorldGeneration : MonoBehaviour
         }
     }
 
-    private bool IsWithiMap(Vector2Int coord, uint possibility)
+    private bool IsValid(Vector2Int coord, uint possibility)
     {
-        bool within = false;
+        bool isValid = true;
+        bool inside = false;
         for (int set = 1; set < setTiles.Count; set++)
         {
             // is within a "level"
@@ -227,20 +231,63 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 coord.x >= setTiles[set - 1].x &&
                 coord.y > setTiles[set - 1].y)
             {
-                // TODO remember to check the corners first (coord is x && y)
+                inside = true;
+                
                 if (coord.x == setTiles[set].x && (possibility & E) == 0)   // hasn't got a wall to east  
-                    return false;
+                    isValid = false;
                 if (coord.x == setTiles[set - 1].x && (possibility & W) == 0) // hasn't got a wall to west
-                    return false;
-                if (coord.y == setTiles[set].y && (possibility & N) == 0) // hasn't got a wall to north 
-                    return false;
-                if (coord.y == setTiles[set - 1].y && (possibility & S) == 0) // hasn't got a wall to south
-                    return false;
-                //within = true;
+                    isValid = false;
+                if (coord.y == setTiles[set].y - 1 && (possibility & N) == 0) // hasn't got a wall to north 
+                    isValid = false;
+                if (coord.y == setTiles[set - 1].y + 1 && (possibility & S) == 0) // hasn't got a wall to south
+                    isValid = false;
             }
         }
 
-        return within;
+        return isValid && inside;
+    }
+
+    private bool jkajajkad()
+    {
+        Vector2Int coord = Vector2Int.down;
+        int set = 0;
+        int possibility = 0;
+        return false;
+        
+        
+        // North East corner
+        if (coord.x == setTiles[set].x && 
+            coord.y == setTiles[set].y - 1 && 
+            ((possibility & N) == 0 &&
+             (possibility & E) == 0))
+            return false;
+        // South East corner
+        if (coord.x == setTiles[set].x &&
+            coord.y == setTiles[set - 1].y + 1 &&
+            ((possibility & S) == 0 ||
+             (possibility & E) == 0))
+            return false;
+        // North West corner
+        if (coord.x == setTiles[set - 1].x &&
+            coord.y == setTiles[set].y - 1 &&
+            ((possibility & N) == 0 ||
+             (possibility & W) == 0))
+            return false;
+        // South West corner
+        if (coord.x == setTiles[set - 1].x &&
+            coord.y == setTiles[set - 1].y + 1 &&
+            ((possibility & S) == 0 ||
+             (possibility & W) == 0))
+            return false;
+                
+        if (coord.x == setTiles[set].x && (possibility & E) == 0)   // hasn't got a wall to east  
+            return false;
+        if (coord.x == setTiles[set - 1].x && (possibility & W) == 0) // hasn't got a wall to west
+            return false;
+        if (coord.y == setTiles[set].y - 1 && (possibility & N) == 0) // hasn't got a wall to north 
+            return false;
+        if (coord.y == setTiles[set - 1].y + 1 && (possibility & S) == 0) // hasn't got a wall to south
+            return false;
     }
 
     private void Debug(ModuleDeSpawnEvent eve)
