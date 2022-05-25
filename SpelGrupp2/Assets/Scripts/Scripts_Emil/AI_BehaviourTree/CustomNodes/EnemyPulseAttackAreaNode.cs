@@ -106,7 +106,6 @@ public class EnemyPulseAttackAreaNode : Node
                         rbTemp.AddExplosionForce(explosionForce, agent.Position, explosionRange);
                     }
 
-                    //Destroy gameobject
                     agent.Health.DieNoLoot();
                 }
 
