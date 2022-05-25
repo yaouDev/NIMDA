@@ -366,7 +366,7 @@ namespace CallbackSystem
                 copper -= recipe.copperNeeded;
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;
-                //currency -= recipe.currencyNeeded;
+                currency -= recipe.currencyNeeded;
                 UpdateResources();
                 if (selectedButton != defaultColorButton && isCrafting)
                     selectedButton.interactable = false;
