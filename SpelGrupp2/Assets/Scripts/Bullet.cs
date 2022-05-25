@@ -32,6 +32,7 @@ public class Bullet : MonoBehaviour
                 bulletSpeed * Time.deltaTime,
                 environmentLayerMask | enemyLayerMask))
         {
+            Debug.Log(hitInfo.transform.tag);
             transform.position += hitInfo.distance * transform.forward;
 
             if (1 << hitInfo.collider.gameObject.layer == environmentLayerMask)
@@ -43,18 +44,51 @@ public class Bullet : MonoBehaviour
                 BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
                 breakable.DropBoxLoot();
             }
-            else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
+            else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
             {
-                hit = true;
-                // TODO [Patrik] Update to call to IHealth Interface, thus we can shoot each other too <3
-                IDamageable target = hitInfo.transform.GetComponent<IDamageable>();
-                DamageEnemy(target);
-                if (hitInfo.rigidbody != null)
+                IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
+                
+                Debug.Log(damageable != null);
+
+                if (damageable != null)
                 {
-                    hitInfo.rigidbody.AddForce(-hitInfo.normal * impactForce);
+                    if (hitInfo.transform.tag == "Player")
+                        damageable.TakeDamage(damage * .5f);
+                    else
+                        damageable.TakeDamage(damage);
                 }
+                else
+                {
+                    Debug.Log("NO DAMAGEABLE");
+                }
+
                 Ricochet();
             }
+            
+            //else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
+            //{
+            //    hit = true;
+            //    IDamageable target = hitInfo.transform.GetComponent<IDamageable>();
+            //
+            //    DamageEnemy(target);
+            //    if (hitInfo.rigidbody != null)
+            //    {
+            //        hitInfo.rigidbody.AddForce(-hitInfo.normal * impactForce);
+            //    }
+            //    Ricochet();
+            //}
+            //else if (hitInfo.transform.tag == "Player")
+            //{
+            //    hit = true;
+            //    IDamageable target = hitInfo.transform.GetComponent<IDamageable>();
+            //
+            //    DamageEnemy(target);
+            //    if (hitInfo.rigidbody != null)
+            //    {
+            //        hitInfo.rigidbody.AddForce(-hitInfo.normal * impactForce);
+            //    }
+            //    Ricochet();
+            //}
         }
         else
         {
