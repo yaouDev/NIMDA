@@ -18,7 +18,8 @@ public class Compass : MonoBehaviour {
 
     [SerializeField] private Quaternion camRot;
     void Update() {
-        Vector3 dir = camRot * (new Vector2(quest.transform.position.x, quest.transform.position.z) - new Vector2(player.transform.position.x, player.transform.position.z));
+        Vector3 dir = camRot * (new Vector2(quest.transform.position.x, quest.transform.position.z) - 
+                                new Vector2(player.transform.position.x, player.transform.position.z));
         float angle = Vector2.SignedAngle(Vector2.right, dir);
         arrow.rotation = Quaternion.Euler(0, 0, angle);
     }
