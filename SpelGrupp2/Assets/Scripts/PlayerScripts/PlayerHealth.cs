@@ -117,7 +117,7 @@ namespace CallbackSystem
             if (alive)
             {
                 uiMenus.DeadPlayers(1);
-                //DropLoot();
+                DropLoot();
             }
             alive = false;
             attackAbility.Die();
@@ -215,6 +215,14 @@ namespace CallbackSystem
         public float GetCurrenthealth()
         {
             return currHealth;
+        }
+
+        public float GetMaxHealth() { return maxHealth; }
+
+        public void SetCurrentHealth(float value)
+        {
+            currHealth = value;
+            UpdateHealthUI();
         }
 
         public int GetCurrentBatteryCount()

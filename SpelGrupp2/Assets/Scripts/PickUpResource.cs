@@ -49,18 +49,20 @@ namespace CallbackSystem
                         break;
                     case (PickUp.Bullet):
                         if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
-                        {
                             playerAttack.UpdateBulletCount(1);
                             Destroy(parent);
-                        }
                         //Debug.Log("Picked up bullet");
                         break;
                     case (PickUp.Battery):
                         if (playerHealth.GetCurrentBatteryCount() < playerHealth.GetMaxBatteryCount())
-                        {
                             playerHealth.IncreaseBattery();
-                            Destroy(parent);
+                        else
+                        {
+                            playerHealth.SetCurrentHealth(playerHealth.GetMaxHealth());
+                            //Debug.Log("Battery count too high. Max hp set");
                         }
+                        Destroy(parent);
+                        
                         //Debug.Log("Picked up Battery");
                         break;
                 }

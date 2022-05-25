@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Follow : MonoBehaviour
 {
-    public GameObject Target;
+    [HideInInspector] public GameObject Target;
     public float minModifier = 7, maxModifier = 11;
     private bool isFollowing, kickoff;
     private Vector3 velocity = Vector3.zero, offset = Vector3.up/2;

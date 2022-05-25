@@ -14,7 +14,7 @@ public class TriggerPickup : MonoBehaviour
         players = FindObjectsOfType<CallbackSystem.PlayerHealth>();
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag.Equals("Player"))
         {
