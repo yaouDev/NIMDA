@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using CallbackSystem;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -206,24 +207,35 @@ public class ProceduralWorldGeneration : MonoBehaviour
                     neighbor.y < worldSize.y && // within worldSize
                     (graph[current.x, current.y] & walls[directions[dir]]) == 0) // this tile has an opening out to a neighbor
                 {
-                    // add neighbor to queue
-                    queue.Enqueue(neighbor);
+                    {
+                        // add neighbor to queue
+                        queue.Enqueue(neighbor);
+                    }
                 }
             }
         }
     }
-    
-    private bool IsWithiMap(Vector2Int coord, uint possibilities)
+
+    private bool IsWithiMap(Vector2Int coord, uint possibility)
     {
         bool within = false;
         for (int set = 1; set < setTiles.Count; set++)
         {
+            // is within a "level"
             if (coord.x <= setTiles[set].x && 
                 coord.y < setTiles[set].y && 
                 coord.x >= setTiles[set - 1].x &&
                 coord.y > setTiles[set - 1].y)
             {
-                //if (coord.x == setTiles[set].x)
+                // TODO remember to check the corners first (coord is x && y)
+                if (coord.x == setTiles[set].x && (possibility & E) == 0)   // hasn't got a wall to east  
+                    return false;
+                if (coord.x == setTiles[set - 1].x && (possibility & W) == 0) // hasn't got a wall to west
+                    return false;
+                if (coord.y == setTiles[set].y && (possibility & N) == 0) // hasn't got a wall to north 
+                    return false;
+                if (coord.y == setTiles[set - 1].y && (possibility & S) == 0) // hasn't got a wall to south
+                    return false;
                 //within = true;
             }
         }
