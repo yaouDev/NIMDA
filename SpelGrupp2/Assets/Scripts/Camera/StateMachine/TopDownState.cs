@@ -35,19 +35,7 @@ public class TopDownState : CameraState
 	private Vector3 depthMaskPlanePos;
 	private readonly Quaternion _ninetyDegrees = Quaternion.Euler(0.0f, 90.0f, 0.0f);
 	private readonly Quaternion fourtyFiveDegrees = quaternion.Euler(0.0f, 45.0f, 0.0f);
-
-	private void Awake() {
-		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
-		abovePlayer = Vector3.up * headHeight;
-	}
-
-	public override void Enter() {
-		isPlayerOne = owner.IsPlayerOne();
-		depthMaskPlanePos = DepthMaskPlane.localPosition;
-		depthMaskPlanePos.x = -.5f;
-		DepthMaskPlane.localPosition = depthMaskPlanePos;
-	}
-
+	
 	private Vector3 lerpOffset;
 	private float smoothDollyTime;
 	private float smoothDampMinVal = .1f;
@@ -67,6 +55,18 @@ public class TopDownState : CameraState
 	private bool isPlayerOne;
 	private CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
 
+	private void Awake() {
+		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
+		abovePlayer = Vector3.up * headHeight;
+	}
+
+	public override void Enter() {
+		isPlayerOne = owner.IsPlayerOne();
+		depthMaskPlanePos = DepthMaskPlane.localPosition;
+		depthMaskPlanePos.x = -.5f;
+		DepthMaskPlane.localPosition = depthMaskPlanePos;
+	}
+
 	private void ShakeCamera(CameraShakeEvent cameraShake)
 	{
 		if (cameraShake.affectsPlayerOne && isPlayerOne || cameraShake.affectsPlayerTwo && !isPlayerOne)
@@ -77,14 +77,6 @@ public class TopDownState : CameraState
 
 	private void CameraShake(float distanceFraction)
 	{
-		// Debug Timer in place of event
-		// s += Time.deltaTime;
-		// if (s >= 4.0f)
-		// {
-		// 	s = 0;
-		// 	trauma = 2f;
-		// }
-		
 		// perlin within Range(-1, 1)
 		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2;
 		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2;
@@ -140,14 +132,11 @@ public class TopDownState : CameraState
 
 		FadeObstacles();
 
-
-		
 		cameraPosition = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 
 		CameraTransform.position = cameraPosition + cameraShakeOffset; // TODO in progress // centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
 		
 		LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
-		
 		
 
 		if (Vector3.Distance(PlayerThis.position, PlayerOther.position) > thirdPersonSplitDistance)
@@ -182,15 +171,12 @@ public class TopDownState : CameraState
 		
 		Physics.SphereCastNonAlloc(
 			PlayerThis.position + offsetDirection * 6,
-			//(Vector3.Distance(PlayerOther.position, PlayerThis.position) < splitMagnitude * 2 ? centroidOffsetPosition : Vector3.zero) + thisTransform.position + abovePlayer, 
 			2.0f,
 			offsetDirection.normalized,
 			hits,
-			//out  RaycastHit  hit, 
 			25.0f, 
 			collisionMask);
 
-		//Vector3 offset;
 		for (int i = 0; i < hits.Length; i++)
 		{
 			if (hits[i].collider)

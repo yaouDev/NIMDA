@@ -48,7 +48,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
     [SerializeField] private Vector2Int[] criticalPoints;
     private AStar aStar;
     private List<Vector2Int> chokePoints = new List<Vector2Int>();
-
+    private List<Vector2Int> setTiles;
 
     public List<Vector2Int> GetChokePoints()
     {
@@ -70,7 +70,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
         random = new System.Random(worldSeed);
         graph = new uint[worldSize.x, worldSize.y];
 
-        List<Vector2Int> setTiles = new List<Vector2Int>();
+        setTiles = new List<Vector2Int>();
         setTiles.Add(new Vector2Int(1, 1));
         setTiles.Add(new Vector2Int(5, 5));
         setTiles.Add(new Vector2Int(10, 10));
@@ -128,7 +128,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 mapHolder);    
         }
         
-
         while (queue.Count > 0)
         {
             Vector2Int current = queue.Dequeue();
@@ -147,7 +146,6 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         neighbor.y < 0 && (possibilities[i] & S) == 0 ||
                         neighbor.x >= worldSize.x && (possibilities[i] & E) == 0 ||
                         neighbor.y >= worldSize.y && (possibilities[i] & N) == 0 ||
-                        
                         (seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) == 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) != 0 ||   
                          seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) != 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0))
                     {
@@ -213,6 +211,24 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 }
             }
         }
+    }
+    
+    private bool IsWithiMap(Vector2Int coord, uint possibilities)
+    {
+        bool within = false;
+        for (int set = 1; set < setTiles.Count; set++)
+        {
+            if (coord.x <= setTiles[set].x && 
+                coord.y < setTiles[set].y && 
+                coord.x >= setTiles[set - 1].x &&
+                coord.y > setTiles[set - 1].y)
+            {
+                //if (coord.x == setTiles[set].x)
+                //within = true;
+            }
+        }
+
+        return within;
     }
 
     private void Debug(ModuleDeSpawnEvent eve)

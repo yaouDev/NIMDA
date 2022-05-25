@@ -56,7 +56,7 @@ public class SplitScreenState : CameraState {
 	private float _cameraCollisionRadius = .5f;
 	private float _smoothDollyTime;
 	private float splitScreenWidth = -.497f;
-
+	private RaycastHit[] hits = new RaycastHit[10];
 	private bool isRightMostPlayer;
 
 	private void Awake() {
@@ -105,8 +105,6 @@ public class SplitScreenState : CameraState {
 			stateMachine.TransitionTo<TransitionToOtherSide>();
 		}
 	}
-
-	private RaycastHit[] hits = new RaycastHit[10];
 
 	private void FadeObstacles() {
 		Vector3 offsetDirection = -CameraTransform.forward;
