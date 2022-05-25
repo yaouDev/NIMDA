@@ -7,9 +7,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
-    [SerializeField] private float hitForce;
-    [SerializeField] private string objectPoolTag;
-
+    [SerializeField] private float hitForce = 10;
+    [SerializeField] string objectPoolTag;
     //public float currHealth;
     private float healthBarLength;
     private Vector3 dropOffset;
@@ -103,6 +102,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!! // -- fixed
         AudioController.instance.PlayOneShot(AudioController.instance.enemySound.hurt, playersPos.position);
         //Debug.Log(currentHealth);
+        agent.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -30), agent.transform.rotation.y, agent.transform.rotation.z, 0);
 
     }
 

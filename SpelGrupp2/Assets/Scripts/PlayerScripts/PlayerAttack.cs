@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using FMOD.Studio;
 
 namespace CallbackSystem
 {
@@ -18,10 +19,14 @@ namespace CallbackSystem
          private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
-        [SerializeField] [Range(0f, 100f)] private float laserSelfDmg = 10f;
-        [SerializeField] private float startDamage = 20f, teamDamage = 30f;
-        [SerializeField] private float damageIncreasePerMilliSecond = 5;
-        [SerializeField] private float maxDamage = 110;
+        [SerializeField] private float startLaserSelfDmg = 1f;
+        [SerializeField] private float laserSelfDamageIncreasePerTenthSecond = 1f;
+        [SerializeField] private float laserTeamDamageIncreasePerTenthSecond = 3f;
+        [SerializeField] private float maxSelfDamage = 10;
+        [SerializeField] private float startDamage = 10f, startTeamDamage = 3f;
+        [SerializeField] private float damageIncreasePerTenthSecond = 10;
+        [SerializeField] private float maxDamage = 100;
+        [SerializeField] private float maxTeamDamage = 30;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bullets, maxBullets;
@@ -32,11 +37,15 @@ namespace CallbackSystem
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
-        [SerializeField] private float damage;
+
+        private float damage;
+        private float laserSelfDmg;
+        private float teamDamage;
+
         private bool chargingUP = false;
         private float startSightLineWidth = 0.05f;
         private float sightLineWidth;
-        private float widthIncreacePerMilliSecond = 0.05f;
+        private float widthIncreacePerTenthSecond = 0.05f;
         //private float distanceToWall;
         //private RaycastHit wallHitInfo;
 
@@ -55,6 +64,10 @@ namespace CallbackSystem
         }
 
         public void Die() => isAlive = false;
+
+        private AudioController ac;
+        private EventInstance laserSound;
+        public void Start() => ac = AudioController.instance;
 
         public bool IsPlayerOne() { return isPlayerOne; }
 
@@ -81,6 +94,8 @@ namespace CallbackSystem
             revolverCooldown = 0f;
             damage = startDamage;
             sightLineWidth = startSightLineWidth;
+            laserSelfDmg = startLaserSelfDmg;
+            teamDamage = startTeamDamage;
         }
 
         [SerializeField] private Material bulletMat;
@@ -165,15 +180,10 @@ namespace CallbackSystem
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
+                laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
 
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
-
-                //add channelsound
-
-                //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-                //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
-                /*                }*/
             }
             else
             {
@@ -185,28 +195,41 @@ namespace CallbackSystem
                 StopCoroutine(ChargeUp());
                 if (canShootLaser)
                 {
+                    laserSound.setParameterByName("isReleased", 1f);
+
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
                     //add shootsound
-                    //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
-                    //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+
                 }
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
                 sightLineWidth = startSightLineWidth;
-
+                laserSelfDmg = startLaserSelfDmg;
+                teamDamage = startTeamDamage;
             }
             //damage = startDamage;
         }
 
         IEnumerator ChargeUp()
         {
-            while (damage < maxDamage && chargingUP && sightLineWidth < beamThickness)
+            while (damage < maxDamage && chargingUP)
             {
                 yield return new WaitForSeconds(0.1f);
-                damage += damageIncreasePerMilliSecond;
-                sightLineWidth += widthIncreacePerMilliSecond;
+                damage += damageIncreasePerTenthSecond;
+                if (sightLineWidth < beamThickness)
+                {
+                    sightLineWidth += widthIncreacePerTenthSecond;
+                }
+                if (laserSelfDmg < maxSelfDamage)
+                {
+                    laserSelfDmg += laserSelfDamageIncreasePerTenthSecond;
+                }
+                if(teamDamage < maxTeamDamage)
+                {
+                    teamDamage += laserTeamDamageIncreasePerTenthSecond;
+                }
             }
         }
         /*        IEnumerator AttackDelay(float channelTime)
