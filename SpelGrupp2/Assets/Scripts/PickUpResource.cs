@@ -11,7 +11,7 @@ namespace CallbackSystem
         [SerializeField] private GameObject parent;
         private enum PickUp
         {
-            Iron, Copper, Transistor, Bullet, Battery
+            Iron, Copper, Transistor, Bullet, Battery, Currency
         }
 
         [SerializeField] private PickUp pickUpType;
@@ -64,6 +64,12 @@ namespace CallbackSystem
                         Destroy(parent);
                         
                         //Debug.Log("Picked up Battery");
+                        break;
+
+                    case (PickUp.Currency):
+                        crafting.currency++;
+                        //Debug.Log("Picked up a bottlecap");
+                        Destroy(parent);
                         break;
                 }
                 crafting.UpdateResources();
