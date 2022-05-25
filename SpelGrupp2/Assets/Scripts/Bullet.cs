@@ -32,7 +32,6 @@ public class Bullet : MonoBehaviour
                 bulletSpeed * Time.deltaTime,
                 environmentLayerMask | enemyLayerMask))
         {
-            Debug.Log(hitInfo.transform.tag);
             transform.position += hitInfo.distance * transform.forward;
 
             if (1 << hitInfo.collider.gameObject.layer == environmentLayerMask)
@@ -48,18 +47,12 @@ public class Bullet : MonoBehaviour
             {
                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
                 
-                Debug.Log(damageable != null);
-
                 if (damageable != null)
                 {
                     if (hitInfo.transform.tag == "Player")
                         damageable.TakeDamage(damage * .5f);
                     else
                         damageable.TakeDamage(damage);
-                }
-                else
-                {
-                    Debug.Log("NO DAMAGEABLE");
                 }
 
                 Ricochet();
