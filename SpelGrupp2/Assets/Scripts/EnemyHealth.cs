@@ -87,7 +87,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
         int dropAmount = Random.Range(dropMin, dropMax);
         for (int i = 0; i < dropAmount; i++) {
-            dropOffset = new Vector3(Random.Range(-1.3f, 1.3f), 1f, Random.Range(-1.3f, 1.3f));
+            dropOffset = new Vector3(Random.Range(-.3f, .3f), 1f, Random.Range(-.3f, .3f));
             int dropRoll = Random.Range(0, 100);
             if (dropRoll <= ironRange) {
                 drop = dropList[0];
@@ -99,8 +99,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             //int item = Random.Range(0, dropList.Length);
             //drop = dropList[item];
             GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-            loot.transform.parent = null;
-            loot.SetActive(true);
+            //loot.transform.parent = null;
+            //loot.SetActive(true);
             Destroy(loot, 15f);
         }
     }
