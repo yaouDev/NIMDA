@@ -19,14 +19,14 @@ namespace CallbackSystem
         private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
-        [SerializeField] private float startLaserSelfDmg = 1f;
-        [SerializeField] private float laserSelfDamageIncreasePerTenthSecond = 1f;
-        [SerializeField] private float laserTeamDamageIncreasePerTenthSecond = 3f;
-        [SerializeField] private float maxSelfDamage = 10;
-        [SerializeField] private float startDamage = 10f, startTeamDamage = 3f;
-        [SerializeField] private float damageIncreasePerTenthSecond = 10;
-        [SerializeField] private float maxDamage = 100;
-        [SerializeField] private float maxTeamDamage = 30;
+        [SerializeField] private float startLaserSelfDmg;
+        [SerializeField] private float laserSelfDamageIncreasePerTenthSecond;
+        [SerializeField] private float laserTeamDamageIncreasePerTenthSecond;
+        [SerializeField] private float maxSelfDamage;
+        [SerializeField] private float startDamage, startTeamDamage;
+        [SerializeField] private float damageIncreasePerTenthSecond;
+        [SerializeField] private float maxDamage;
+        [SerializeField] private float maxTeamDamage;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bulletsInGun; //skott i revolvern
@@ -97,8 +97,8 @@ namespace CallbackSystem
             revolverCooldown = 0f;
             damage = startDamage;
             sightLineWidth = startSightLineWidth;
-            laserSelfDmg = startLaserSelfDmg;
-            teamDamage = startTeamDamage;
+            //laserSelfDmg = startLaserSelfDmg;
+            //teamDamage = startTeamDamage;
             bulletsInGun = maxBulletsInGun;
         }
 
@@ -179,10 +179,9 @@ namespace CallbackSystem
             if (!isAlive) return;
             if (context.started && !recentlyFired && !laserWeapon)
             {
-                    FireProjectileWeapon();
-                    recentlyFired = true;
-                    revolverCooldown = 0f;
-
+                FireProjectileWeapon();
+                recentlyFired = true;
+                revolverCooldown = 0f;
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
@@ -191,10 +190,13 @@ namespace CallbackSystem
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
             }
+            else
+            {
+                chargingUP = false;
+            }
 
             if (context.canceled && laserWeapon)
             {
-                chargingUP = false;
                 StopCoroutine(ChargeUp());
                 if (canShootLaser)
                 {
@@ -339,7 +341,7 @@ namespace CallbackSystem
                 {
                     if (hitInfo.collider != null)
                     {
-                        if (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player" )
+                        if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
                         {
                             IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -349,7 +351,6 @@ namespace CallbackSystem
                                     damageable.TakeDamage(teamDamage);
                                 else
                                     damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
-                                Debug.Log(damage);
                             }
                         }
                         else if (hitInfo.transform.tag == "BreakableObject")
