@@ -39,6 +39,7 @@ namespace CallbackSystem {
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
+        private System.Random rnd = new System.Random();
 
         [SerializeField] private float damage;
         [SerializeField] private float laserSelfDmg;
@@ -439,7 +440,13 @@ namespace CallbackSystem {
             EventSystem.Current.FireEvent(crosshairEvent);
         }
 
-        private void FireProjectileWeapon() {
+        public void EnableCrittableRevolver() => critEnabled = true;
+
+        private GameObject currentBullet, explosiveBullet;
+        private bool critEnabled;
+        private int critChance;
+        private void FireProjectileWeapon()
+        {
             //Debug.Log("Attempting to fire.");
             if (bulletsInGun > 0) {
                 if (AIData.Instance.EnemyMuzzleflash != null) {
@@ -449,11 +456,14 @@ namespace CallbackSystem {
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 bulletsInGun--;
-                if (projectionWeaponUpgraded)
-                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-                else
-                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-            } else if (bullets > 0) {
+                currentBullet = projectionWeaponUpgraded ? upgradedBullet : bullet;
+                critChance = rnd.Next(0, 20);
+                if (critEnabled && critChance == 20)
+                    currentBullet = explosiveBullet;
+                Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+            }
+            else if (bullets > 0)
+            {
                 //Debug.Log("Reloading.");
                 Reload();
             }
