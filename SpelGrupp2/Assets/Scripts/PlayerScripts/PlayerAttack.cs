@@ -127,7 +127,7 @@ namespace CallbackSystem {
                 resourceEvent.a = bullets;
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
-                crosshairEvent.usingProjectileWeapon = !laserWeapon;
+                crosshairEvent.usingRevolver = !laserWeapon;
                 crosshairEvent.isPlayerOne = isPlayerOne;
                 crosshairEvent.targetInSight = targetInSight;
                 EventSystem.Current.FireEvent(crosshairEvent);
@@ -408,8 +408,9 @@ namespace CallbackSystem {
             RenderCrosshair();
         }
 
-        private void RenderCrosshair() {
-            crosshairEvent.usingProjectileWeapon = laserWeapon ? false : true;
+        private void RenderCrosshair()
+        {
+            crosshairEvent.usingRevolver = laserWeapon ? false : true;
             crosshairEvent.isPlayerOne = isPlayerOne;
             crosshairEvent.crosshairPos = crosshairPoint;
             crosshairEvent.targetInSight = targetInSight;

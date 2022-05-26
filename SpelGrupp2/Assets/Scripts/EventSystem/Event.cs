@@ -36,7 +36,7 @@ namespace CallbackSystem {
     }
 
     public class ResourceUpdateEvent : Event {
-        public int c, t, i, a;
+        public int c, t, i, a, currency;
         public bool ammoChange;
     }
 
@@ -47,7 +47,7 @@ namespace CallbackSystem {
 
     public class WeaponCrosshairEvent : Event
     {
-        public bool isAlive, usingProjectileWeapon, targetInSight;
+        public bool isAlive, usingRevolver, targetInSight;
         public Vector3 crosshairPos;
         public PlayerAttack attackScript;
     }
