@@ -477,6 +477,9 @@ namespace CallbackSystem
         private GameObject currentBulletType, explosiveBullet;
         private int critChance;
         private bool revolverCrittable;
+
+        public void UpgradeRevolverCrittable() => revolverCrittable = true;
+            
   
         private void FireProjectileWeapon()
         {

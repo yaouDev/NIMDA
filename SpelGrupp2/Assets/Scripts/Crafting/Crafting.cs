@@ -226,7 +226,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
             {
                 playerAttackScript.UpgradeProjectileWeapon();
-                fadingtextEvent.text = "Revolver Upgraded";
+                fadingtextEvent.text = "Revolver damage Upgraded";
                 selectedButton.interactable = false;
             }
             else
@@ -238,9 +238,15 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(RevolverCritRecipe))
             {
-                playerAttackScript.
-            }
+                playerAttackScript.UpgradeRevolverCrittable();
+                fadingtextEvent.text = "Revolver Crit Enabled";
+                selectedButton.interactable = false;
+            }     
+            else
+                fadingtextEvent.text = "Not Enough Resources";
+            EventSystem.Current.FireEvent(fadingtextEvent);
         }
+
 
         public void CraftUpgradedLaserWeapon()
         {
