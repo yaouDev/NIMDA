@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CallbackSystem;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -59,17 +60,13 @@ public class Minimap : MonoBehaviour
         map[index].sprite = moduleImages[graph[x, y]];
         
         if (moduleType == 15)
-            map[index].color = Color.clear;
+            map[index].color = new Color(1,1,1,0);
         else if (moduleType == 16)
             map[index].color = Color.yellow;
         else if (moduleType == 17)
             map[index].color = Color.red;
         
-        int IndexFromCoord(int x, int y)
-        {
-            int index = x * 14 + y; 
-            return index;
-        }
+        
     }
 
     private void Update()
@@ -77,17 +74,51 @@ public class Minimap : MonoBehaviour
         UpdatePlayerPositions();
     }
 
+    private Vector2Int[] nineSquare = new Vector2Int[]
+    {
+        new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1,-1),
+        new Vector2Int(-1, 0), new Vector2Int(0,0), new Vector2Int(1, 0),
+        new Vector2Int(-1, 1), new Vector2Int(0, 1), new Vector2Int(1, 1)
+    };
     public float of = 6.3f;
-    public void UpdatePlayerPositions()
+    private void UpdatePlayerPositions()
     {
         Vector2 offset = new Vector3(28, -100);
         for (int player = 0; player < players.Length; player++)
         {
             Vector2 pos = new Vector3(players[player].transform.position.x, players[player].transform.position.z);
+            
             //Debug.Log($"{players[player].transform.position}");
             pos.x /= of;
             pos.y /= of;
             playerImages[player].rectTransform.anchoredPosition = pos + offset;
+            playerImages[player].rectTransform.rotation = Quaternion.Euler(0, 0, -players[player].transform.rotation.eulerAngles.y);
         }
+
+        Vector2Int off = new Vector2Int(3, 2);
+        for (int player = 0; player < players.Length; player++)
+        {
+                
+            Vector2Int playerPos = new Vector2Int((int)(players[player].transform.position.x / 50) + off.x, (int)(players[player].transform.position.z) / 50 + off.y);
+            Vector2Int df = new Vector2Int(14 - playerPos.x, playerPos.y);
+            for (int i = 0; i < nineSquare.Length; i++)
+            {
+                Color color = map[IndexFromCoord(df + nineSquare[i])].color;
+                color.a += Time.deltaTime;
+                map[ IndexFromCoord(df + nineSquare[i]) ].color = color;
+            }
+        }
+        
+        int IndexFromCoord(Vector2Int c)
+        {
+            int index = (14 - c.x) + (14 - c.y) * 14; 
+            return index;
+        }
+    }
+    
+    public int IndexFromCoord(int x, int y)
+    {
+        int index = x * 14 + y; 
+        return index;
     }
 }
