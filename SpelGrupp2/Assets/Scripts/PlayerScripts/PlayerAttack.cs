@@ -12,7 +12,7 @@ namespace CallbackSystem
     {
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private LineRenderer aimLineRenderer;
-        [SerializeField] private LayerMask enemyLayerMask, laserLayerMask, wallLayermask;
+        [SerializeField] private LayerMask enemyLayerMask, revolverLaserSightLayerMask, laserLaserSightLayermask, wallLayermask;
         private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
         private PlayerHealth health;
         private PlayerController controller;
@@ -40,9 +40,9 @@ namespace CallbackSystem
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
 
-        private float damage;
-        private float laserSelfDmg;
-        private float teamDamage;
+        [SerializeField] private float damage;
+        [SerializeField] private float laserSelfDmg;
+        [SerializeField] private float teamDamage;
 
         private bool chargingUP = false;
         private float startSightLineWidth = 0.05f;
@@ -178,9 +178,10 @@ namespace CallbackSystem
             if (!isAlive) return;
             if (context.started && !recentlyFired && !laserWeapon)
             {
-                FireProjectileWeapon();
-                recentlyFired = true;
-                revolverCooldown = 0f;
+                    FireProjectileWeapon();
+                    recentlyFired = true;
+                    revolverCooldown = 0f;
+
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
@@ -189,13 +190,10 @@ namespace CallbackSystem
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
             }
-            else
-            {
-                chargingUP = false;
-            }
 
             if (context.canceled && laserWeapon)
             {
+                chargingUP = false;
                 StopCoroutine(ChargeUp());
                 if (canShootLaser)
                 {
@@ -340,7 +338,7 @@ namespace CallbackSystem
                 {
                     if (hitInfo.collider != null)
                     {
-                        if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
+                        if (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player" )
                         {
                             IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -350,6 +348,7 @@ namespace CallbackSystem
                                     damageable.TakeDamage(teamDamage);
                                 else
                                     damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                                Debug.Log(damage);
                             }
                         }
                         else if (hitInfo.transform.tag == "BreakableObject")
@@ -400,17 +399,35 @@ namespace CallbackSystem
 
         private void UpdateLaserSightDistance()
         {
-            Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLayerMask);
-            if (hit.collider != null)
+            if (!laserWeapon)
             {
-                currentHitDistance = hit.distance;
-                targetInSight = true;
-                crosshairPoint = cam.WorldToScreenPoint(hit.point);
+                Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, revolverLaserSightLayerMask);
+                if (hit.collider != null)
+                {
+                    currentHitDistance = hit.distance;
+                    targetInSight = true;
+                    crosshairPoint = cam.WorldToScreenPoint(hit.point);
+                }
+                else
+                {
+                    currentHitDistance = maxDistance;
+                    targetInSight = false;
+                }
             }
             else
             {
-                currentHitDistance = maxDistance;
-                targetInSight = false;
+                Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLaserSightLayermask);
+                if (hit.collider != null)
+                {
+                    currentHitDistance = hit.distance;
+                    targetInSight = true;
+                    crosshairPoint = cam.WorldToScreenPoint(hit.point);
+                }
+                else
+                {
+                    currentHitDistance = maxDistance;
+                    targetInSight = false;
+                }
             }
         }
 
