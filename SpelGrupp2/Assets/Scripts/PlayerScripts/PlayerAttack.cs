@@ -24,11 +24,12 @@ namespace CallbackSystem
         [SerializeField] private float laserTeamDamageIncreasePerTenthSecond = 3f;
         [SerializeField] private float maxSelfDamage = 10;
         [SerializeField] private float startDamage = 10f, startTeamDamage = 3f;
-        [SerializeField] private float damageIncreasePerTenthSecond = 10;
+        [SerializeField] private float damageIncreasePerTenthSecond = 10; 
+        [SerializeField] private float maxBeamThickness = 0.5f;
+        [SerializeField] private float startBeamThickness = 0.05f;
         [SerializeField] private float maxDamage = 100;
         [SerializeField] private float maxTeamDamage = 30;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
-        [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bulletsInGun; //skott i revolvern
         [SerializeField] private int maxBulletsInGun; //max skott i revolvern
         [SerializeField] private int bullets, maxBullets; //reloads/ammo boxes - UPPDATERA NAMN
@@ -43,6 +44,7 @@ namespace CallbackSystem
         [SerializeField] private float damage;
         [SerializeField] private float laserSelfDmg;
         [SerializeField] private float teamDamage;
+        [SerializeField] private float beamThickness = 0.5f;
 
         private bool chargingUP = false;
         private float startSightLineWidth = 0.05f;
@@ -98,6 +100,7 @@ namespace CallbackSystem
             sightLineWidth = startSightLineWidth;
             laserSelfDmg = startLaserSelfDmg;
             teamDamage = startTeamDamage;
+            beamThickness = startBeamThickness;
             bulletsInGun = maxBulletsInGun;
         }
 
@@ -210,6 +213,7 @@ namespace CallbackSystem
                 sightLineWidth = startSightLineWidth;
                 laserSelfDmg = startLaserSelfDmg;
                 teamDamage = startTeamDamage;
+                beamThickness = startBeamThickness;
             }
             //damage = startDamage;
         }
@@ -220,9 +224,13 @@ namespace CallbackSystem
             {
                 yield return new WaitForSeconds(0.1f);
                 damage += damageIncreasePerTenthSecond;
-                if (sightLineWidth < beamThickness)
+                if (sightLineWidth < maxBeamThickness)
                 {
                     sightLineWidth += widthIncreacePerTenthSecond;
+                }
+                if(beamThickness < maxBeamThickness)
+                {
+                    beamThickness += widthIncreacePerTenthSecond;
                 }
                 if (laserSelfDmg < maxSelfDamage)
                 {
@@ -348,7 +356,6 @@ namespace CallbackSystem
                                     damageable.TakeDamage(teamDamage);
                                 else
                                     damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
-                                Debug.Log(damage);
                             }
                         }
                         else if (hitInfo.transform.tag == "BreakableObject")
