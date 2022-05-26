@@ -6,16 +6,18 @@ using CallbackSystem;
 [System.Serializable]
 public class SaveData {
 
-    float[] saferoomPosition;
+    public float[] saferoomPosition;
 
     // PlayerOne data
     public int playerOneIron;
-    public int plyerOnetransistor;
+    public int playerOneTransistor;
     public int playerOneCopper;
     public int playerOneBattery;
     public int playerOneAmmo;
     public float playerOneHealth;
     public float[] playerOneColor;
+    public bool playerOneLaserUpgraded;
+    public bool playerOneProjectileUpgraded;
 
     // PlayerTwo data
     public int playerTwoIron;
@@ -25,11 +27,22 @@ public class SaveData {
     public int playerTwoAmmo;
     public float playerTwoHealth;
     public float[] playerTwoColor;
+    public bool playerTwoLaserUpgraded;
+    public bool playerTwoProjectileUpgraded;
+
 
     public SaveData(bool enteringSafeRoom) {
-/*         Vector3 pos;// = SaveSystem.Instance.PlayerOneAttack.transform.position;
-        if (enteringSafeRoom) pos.z += 4f;
-        else pos.z -= 4f;
+        Vector3 pos;
+
+        if (enteringSafeRoom) {
+            pos = SaveSystem.Instance.PlayerOneAttack.transform.position.z > SaveSystem.Instance.PlayerTwoAttack.transform.position.z
+            ? SaveSystem.Instance.PlayerOneAttack.transform.position : SaveSystem.Instance.PlayerTwoAttack.transform.position;
+            pos.z += 4f;
+        } else {
+            pos = SaveSystem.Instance.PlayerOneAttack.transform.position.z < SaveSystem.Instance.PlayerTwoAttack.transform.position.z
+            ? SaveSystem.Instance.PlayerOneAttack.transform.position : SaveSystem.Instance.PlayerTwoAttack.transform.position;
+            pos.z -= 4f;
+        }
 
         Vector2Int safeRoomModulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(pos);
         saferoomPosition = new float[3];
@@ -38,11 +51,13 @@ public class SaveData {
         saferoomPosition[2] = safeRoomModulePos.y * 50;
 
         playerOneIron = SaveSystem.Instance.PlayerOneCrafting.iron;
-        plyerOnetransistor = SaveSystem.Instance.PlayerOneCrafting.transistor;
+        playerOneTransistor = SaveSystem.Instance.PlayerOneCrafting.transistor;
         playerOneCopper = SaveSystem.Instance.PlayerOneCrafting.copper;
         playerOneBattery = SaveSystem.Instance.PlayerOneHealth.GetCurrentBatteryCount();
         playerOneAmmo = SaveSystem.Instance.PlayerOneAttack.ReturnBullets();
         playerOneHealth = SaveSystem.Instance.PlayerOneHealth.GetCurrenthealth();
+        playerOneLaserUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserWeaponUpgraded;
+        playerOneProjectileUpgraded = SaveSystem.Instance.PlayerOneAttack.ProjectionWeaponUpgraded;
 
         playerOneColor = new float[4];
         Color playerOneColorRef = SaveSystem.Instance.PlayerOneHealth.GetCurrentMaterialColor();
@@ -57,13 +72,15 @@ public class SaveData {
         playerTwoBattery = SaveSystem.Instance.PlayerTwoHealth.GetCurrentBatteryCount();
         playerTwoAmmo = SaveSystem.Instance.PlayerTwoAttack.ReturnBullets();
         playerTwoHealth = SaveSystem.Instance.PlayerTwoHealth.GetCurrenthealth();
+        playerTwoLaserUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserWeaponUpgraded;
+        playerTwoProjectileUpgraded = SaveSystem.Instance.PlayerTwoAttack.ProjectionWeaponUpgraded;
 
         playerTwoColor = new float[4];
         Color playerTwoColorRef = SaveSystem.Instance.PlayerTwoHealth.GetCurrentMaterialColor();
         playerTwoColor[0] = playerTwoColorRef.r;
         playerTwoColor[1] = playerTwoColorRef.g;
         playerTwoColor[2] = playerTwoColorRef.b;
-        playerTwoColor[3] = playerTwoColorRef.a; */
+        playerTwoColor[3] = playerTwoColorRef.a;
     }
 
 }

@@ -42,6 +42,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
                 spawnController.GeneratorRunning(false);
                 CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
                 //Debug.Log("st�ng entrance" + playerCount);
+                SaveSystem.Instance.SaveGameData(true);
             }
         }
     }
@@ -62,6 +63,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
                     objectivesManager.AddObjective("kill the boss");
 
                 }
+                SaveSystem.Instance.SaveGameData(false);
             }
         }
     }

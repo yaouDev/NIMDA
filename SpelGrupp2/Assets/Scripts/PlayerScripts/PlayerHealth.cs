@@ -63,8 +63,7 @@ namespace CallbackSystem {
 
         public void TakeDamage(float damage) {
             currHealth -= damage;
-            if (alive)
-            {
+            if (alive) {
                 CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
                 shakeEvent.affectsPlayerOne = isPlayerOne;
                 shakeEvent.affectsPlayerTwo = !isPlayerOne;
@@ -73,7 +72,7 @@ namespace CallbackSystem {
                 EventSystem.Current.FireEvent(shakeEvent);
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.hurt : ac.player2.hurt, gameObject);
             }
-            
+
             if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
@@ -104,7 +103,7 @@ namespace CallbackSystem {
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
-            
+
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
@@ -138,14 +137,12 @@ namespace CallbackSystem {
             currHealth = Mathf.Min(currHealth, 100f);
 
         }
-        public void ChooseMaterialColor(Color color)
-        {
+        public void ChooseMaterialColor(Color color) {
             playerMaterial.color = color;
             colorEvent.color = color;
             EventSystem.Current.FireEvent(colorEvent);
         }
-        public void ChooseMaterialColor()
-        {
+        public void ChooseMaterialColor() {
             playerMaterial.color = defaultColor;
             colorEvent.color = defaultColor;
             EventSystem.Current.FireEvent(colorEvent);
@@ -160,9 +157,16 @@ namespace CallbackSystem {
             return batteryCount;
         }
 
-        public int GetMaxBatteryCount()
-        {
+        public int GetMaxBatteryCount() {
             return maxBatteryCount;
+        }
+
+        public void SetBatteriesOnLoad(int amount) {
+            batteryCount = amount;
+        }
+
+        public void SetHealthOnLoad(float healthToSet){
+            currHealth = healthToSet;
         }
     }
 }
