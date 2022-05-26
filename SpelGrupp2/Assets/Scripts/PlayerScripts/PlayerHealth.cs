@@ -117,7 +117,7 @@ namespace CallbackSystem
             if (alive)
             {
                 uiMenus.DeadPlayers(1);
-                DropLoot();
+                //DropLoot();
             }
             alive = false;
             attackAbility.Die();
@@ -180,6 +180,7 @@ namespace CallbackSystem
         private Vector3 dropOffset;
         private GameObject drop;
         [SerializeField] private GameObject[] dropTable = new GameObject[3];
+        /*
         public void DropLoot()
         {
             dropOffset = new Vector3(Random.Range(-1f, 1f), 1f, Random.Range(-1f, 1f));
@@ -197,7 +198,7 @@ namespace CallbackSystem
             }
             crafting.UpdateResources();
         }
-
+        */
         public void ChooseMaterialColor(Color color)
         {
             playerMaterial.color = color;
