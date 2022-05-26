@@ -14,7 +14,7 @@ public class SaveSystem : MonoBehaviour {
     [SerializeField] private bool loadGame = true;
 
     private void Start() {
-        Instance ??= this; 
+        Instance ??= this;
         path = Application.persistentDataPath + "/save.bin";
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         GameObject playerOne, playerTwo;
@@ -84,8 +84,15 @@ public class SaveSystem : MonoBehaviour {
             return data;
 
         } else {
-           // Debug.LogError("Save file not found");
+            // Debug.LogError("Save file not found");
             return null;
+        }
+    }
+
+    [ContextMenu("Clear savefile")]
+    public void ClearSaveFile() {
+        if (File.Exists(path)) {
+            File.Delete(path);
         }
     }
 
@@ -96,7 +103,7 @@ public class SaveSystem : MonoBehaviour {
 
             // playerOne
             playerOneAttack.LaserWeaponUpgraded = data.playerOneLaserUpgraded;
-            playerOneAttack.ProjectionWeaponUpgraded = data.playerOneProjectileUpgraded;
+            playerOneAttack.ProjectileWeaponUpgraded = data.playerOneProjectileUpgraded;
             playerOneAttack.SetBulletsOnLoad(data.playerOneAmmo);
             playerOneHealth.SetBatteriesOnLoad(data.playerOneBattery);
             playerOneHealth.SetHealthOnLoad(data.playerOneHealth);
@@ -108,7 +115,7 @@ public class SaveSystem : MonoBehaviour {
 
             // playerTwo
             playerTwoAttack.LaserWeaponUpgraded = data.playerTwoLaserUpgraded;
-            playerTwoAttack.ProjectionWeaponUpgraded = data.playerTwoProjectileUpgraded;
+            playerTwoAttack.ProjectileWeaponUpgraded = data.playerTwoProjectileUpgraded;
             playerTwoAttack.SetBulletsOnLoad(data.playerTwoAmmo);
             playerTwoHealth.SetBatteriesOnLoad(data.playerTwoBattery);
             playerTwoHealth.SetHealthOnLoad(data.playerTwoHealth);
@@ -117,7 +124,6 @@ public class SaveSystem : MonoBehaviour {
             playerTwoCrafting.copper = data.playerTwoCopper;
             playerTwoCrafting.transistor = data.playerTwoTransistor;
             playerTwoAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
-
         }
     }
 
