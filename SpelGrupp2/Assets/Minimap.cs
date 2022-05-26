@@ -93,9 +93,9 @@ public class Minimap : MonoBehaviour
             playerImages[player].rectTransform.rotation = Quaternion.Euler(0, 0, -players[player].transform.rotation.eulerAngles.y);
         }
 
-        Vector2Int playerPos = new Vector2Int(players[0].transform.position.x, players[0].transform.position.z);
-        Debug.Log();
+        Vector2Int playerPos = new Vector2Int((int)(players[0].transform.position.x / 50), (int)(players[0].transform.position.z) / 50);
+        Debug.Log(playerPos);
     }
     
-    private void 
+   
 }
