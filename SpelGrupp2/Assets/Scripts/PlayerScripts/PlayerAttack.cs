@@ -40,9 +40,9 @@ namespace CallbackSystem
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
 
-        private float damage;
-        private float laserSelfDmg;
-        private float teamDamage;
+        [SerializeField] private float damage;
+        [SerializeField] private float laserSelfDmg;
+        [SerializeField] private float teamDamage;
 
         private bool chargingUP = false;
         private float startSightLineWidth = 0.05f;
@@ -178,9 +178,10 @@ namespace CallbackSystem
             if (!isAlive) return;
             if (context.started && !recentlyFired && !laserWeapon)
             {
-                FireProjectileWeapon();
-                recentlyFired = true;
-                revolverCooldown = 0f;
+                    FireProjectileWeapon();
+                    recentlyFired = true;
+                    revolverCooldown = 0f;
+
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
@@ -189,13 +190,10 @@ namespace CallbackSystem
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
             }
-            else
-            {
-                chargingUP = false;
-            }
 
             if (context.canceled && laserWeapon)
             {
+                chargingUP = false;
                 StopCoroutine(ChargeUp());
                 if (canShootLaser)
                 {
@@ -340,7 +338,7 @@ namespace CallbackSystem
                 {
                     if (hitInfo.collider != null)
                     {
-                        if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
+                        if (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player" )
                         {
                             IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -350,6 +348,7 @@ namespace CallbackSystem
                                     damageable.TakeDamage(teamDamage);
                                 else
                                     damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
+                                Debug.Log(damage);
                             }
                         }
                         else if (hitInfo.transform.tag == "BreakableObject")
