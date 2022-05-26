@@ -14,6 +14,7 @@ public class SaveData {
     public int playerOneCopper;
     public int playerOneBattery;
     public int playerOneAmmo;
+    public int playerOneCurrency;
     public float playerOneHealth;
     public float[] playerOneColor;
     public bool playerOneLaserUpgraded;
@@ -25,6 +26,7 @@ public class SaveData {
     public int playerTwoCopper;
     public int playerTwoBattery;
     public int playerTwoAmmo;
+    public int playerTwoCurrency;
     public float playerTwoHealth;
     public float[] playerTwoColor;
     public bool playerTwoLaserUpgraded;
@@ -55,6 +57,7 @@ public class SaveData {
         playerOneCopper = SaveSystem.Instance.PlayerOneCrafting.copper;
         playerOneBattery = SaveSystem.Instance.PlayerOneHealth.GetCurrentBatteryCount();
         playerOneAmmo = SaveSystem.Instance.PlayerOneAttack.ReturnBullets();
+        playerOneCurrency = SaveSystem.Instance.PlayerOneCrafting.currency;
         playerOneHealth = SaveSystem.Instance.PlayerOneHealth.GetCurrenthealth();
         playerOneLaserUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserWeaponUpgraded;
         playerOneProjectileUpgraded = SaveSystem.Instance.PlayerOneAttack.ProjectileWeaponUpgraded;
@@ -71,6 +74,7 @@ public class SaveData {
         playerTwoCopper = SaveSystem.Instance.PlayerTwoCrafting.copper;
         playerTwoBattery = SaveSystem.Instance.PlayerTwoHealth.GetCurrentBatteryCount();
         playerTwoAmmo = SaveSystem.Instance.PlayerTwoAttack.ReturnBullets();
+        playerTwoCurrency = SaveSystem.Instance.PlayerTwoCrafting.currency;
         playerTwoHealth = SaveSystem.Instance.PlayerTwoHealth.GetCurrenthealth();
         playerTwoLaserUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserWeaponUpgraded;
         playerTwoProjectileUpgraded = SaveSystem.Instance.PlayerTwoAttack.ProjectileWeaponUpgraded;

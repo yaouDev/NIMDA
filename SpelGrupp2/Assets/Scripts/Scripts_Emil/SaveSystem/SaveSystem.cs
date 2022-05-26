@@ -89,10 +89,10 @@ public class SaveSystem : MonoBehaviour {
         }
     }
 
-    [ContextMenu("Clear savefile")]
+    [ContextMenu("Clear Save file")]
     public void ClearSaveFile() {
-        if (File.Exists(path)) {
-            File.Delete(path);
+        if (File.Exists(Application.persistentDataPath + "/save.bin")) {
+            File.Delete(Application.persistentDataPath + "/save.bin");
         }
     }
 
@@ -111,6 +111,7 @@ public class SaveSystem : MonoBehaviour {
             playerOneCrafting.iron = data.playerOneIron;
             playerOneCrafting.copper = data.playerOneCopper;
             playerOneCrafting.transistor = data.playerOneTransistor;
+            playerOneCrafting.currency = data.playerOneCurrency;
             playerOneAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
 
             // playerTwo
@@ -123,6 +124,7 @@ public class SaveSystem : MonoBehaviour {
             playerTwoCrafting.iron = data.playerTwoIron;
             playerTwoCrafting.copper = data.playerTwoCopper;
             playerTwoCrafting.transistor = data.playerTwoTransistor;
+            playerTwoCrafting.currency = data.playerTwoCurrency;
             playerTwoAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
         }
     }

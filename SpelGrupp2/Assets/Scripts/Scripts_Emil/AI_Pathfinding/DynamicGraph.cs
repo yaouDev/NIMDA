@@ -45,7 +45,7 @@ public class DynamicGraph : MonoBehaviour {
         CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
 
         if (usePlayTestModules) {
-            Vector2Int module1 = new Vector2Int(0, 0);
+            //Vector2Int module1 = new Vector2Int(0, 0);
             Vector2Int module2 = new Vector2Int(-1, 3);
             Vector2Int module3 = new Vector2Int(0, 3);
             Vector2Int module4 = new Vector2Int(0, 1);
@@ -73,7 +73,7 @@ public class DynamicGraph : MonoBehaviour {
             Vector2Int module26 = new Vector2Int(-1, 7);
             Vector2Int bossmod = new Vector2Int(0, 11);
 
-            loadedModules.Add(module1);
+           // loadedModules.Add(module1);
             loadedModules.Add(module2);
             loadedModules.Add(module3);
             loadedModules.Add(module4);
@@ -101,7 +101,7 @@ public class DynamicGraph : MonoBehaviour {
             loadedModules.Add(module26);
             loadedModules.Add(bossmod);
 
-            AddBlockedNodes(module1);
+          //  AddBlockedNodes(module1);
             AddBlockedNodes(module2);
             AddBlockedNodes(module3);
             AddBlockedNodes(module4);
