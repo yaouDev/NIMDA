@@ -16,9 +16,10 @@ namespace CallbackSystem
     public class Crafting : MonoBehaviour
     {
         [HideInInspector] public PlayerAttack playerAttackScript;
-        [SerializeField] private Recipe batteryRecipe, bulletRecipe, 
-        UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe, 
-        cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe, 
+        [SerializeField]
+        private Recipe batteryRecipe, bulletRecipe,
+        UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe,
+        cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe,
         greenRecipe, blackRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
@@ -26,7 +27,7 @@ namespace CallbackSystem
         [SerializeField] private Button defaultColorButton;
         private int[] resourceArray;
         private Button selectedButton;
-        private float sphereRadius = 1f; 
+        private float sphereRadius = 1f;
         private float maxSphereDistance = 3f;
         private int selectedButtonIndex;
         //Cyan, Yellow, Magenta, White, Black
@@ -88,11 +89,25 @@ namespace CallbackSystem
                 else
                 {
                     RaycastHit hit;
-                    Physics.SphereCast(transform.position, sphereRadius, transform.forward, 
+                    Physics.SphereCast(transform.position, sphereRadius, transform.forward,
                     out hit, maxSphereDistance, layerMask);
+
                     if (hit.collider != null)
                     {
-                        EnterCraftingUI();
+                        if (hit.transform.tag == "CraftinTable")
+                        {
+                            EnterCraftingUI();
+                        }
+                        else if(hit.transform.tag == "Generator")
+                        {
+                            GeneratorEvent generator = hit.transform.GetComponent<GeneratorEvent>();
+                            generator.StartGenerator();
+                        }
+                        else if (hit.transform.tag == "Exit")
+                        {
+                            OpenExit exit = hit.transform.GetComponentInParent<OpenExit>();
+                            exit.OpenDoor();
+                        }
                     }
                 }
             }
@@ -108,7 +123,7 @@ namespace CallbackSystem
                 selectedButton.image.color = Color.white;
                 selectedButtonIndex = 0;
                 playerInput.SwitchCurrentActionMap("Player");
-            } 
+            }
             else
             {
                 craftingTable.SetActive(true);
@@ -123,8 +138,8 @@ namespace CallbackSystem
             if (context.performed)
             {
                 selectedButtonIndex++;
-                if (selectedButtonIndex == craftingButtons.Length) 
-                        selectedButtonIndex = 0;
+                if (selectedButtonIndex == craftingButtons.Length)
+                    selectedButtonIndex = 0;
 
                 ChangeSelectedButton();
             }
@@ -136,7 +151,7 @@ namespace CallbackSystem
             {
                 selectedButtonIndex--;
                 if (selectedButtonIndex < 0)
-                    selectedButtonIndex = craftingButtons.Length-1;
+                    selectedButtonIndex = craftingButtons.Length - 1;
 
                 ChangeSelectedButton();
             }
@@ -160,7 +175,7 @@ namespace CallbackSystem
                     fadingtextEvent.text = "Unavailable Purchase";
                     EventSystem.Current.FireEvent(fadingtextEvent);
                 }
-                    
+
             }
         }
 
@@ -324,7 +339,7 @@ namespace CallbackSystem
             }
 
             if (!missingResources)
-            {   
+            {
                 copper -= recipe.copperNeeded;
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;
@@ -335,5 +350,5 @@ namespace CallbackSystem
             }
             return false;
         }
-    }   
+    }
 }

@@ -51,8 +51,6 @@ public class GeneratorEvent : MonoBehaviour
         if (col.CompareTag("Player") && !isRunning)
         {
             textPopup.SetActive(true);
-            isRunning = true;
-            StartGenerator();
         }
     }
 
@@ -61,7 +59,7 @@ public class GeneratorEvent : MonoBehaviour
         textPopup.SetActive(false);
     }
 
-    void StartGenerator()
+    public void StartGenerator()
     {
         if (!doorOpen)
         {
@@ -74,6 +72,7 @@ public class GeneratorEvent : MonoBehaviour
             //objectivesManager.AddObjective("let the generator finish");
             objectivesManager.AddObjective("survive the horde");
             doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
+            isRunning = true;
         }
     }
 
