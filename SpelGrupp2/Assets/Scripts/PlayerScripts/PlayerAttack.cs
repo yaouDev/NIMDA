@@ -39,6 +39,7 @@ namespace CallbackSystem
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
+        private System.Random rnd = new System.Random();
 
         [SerializeField] private float damage;
         [SerializeField] private float laserSelfDmg;
@@ -473,6 +474,13 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(crosshairEvent);
         }
 
+        private GameObject currentBulletType, explosiveBullet;
+        private int critChance;
+        private bool revolverCrittable;
+
+        public void UpgradeRevolverCrittable() => revolverCrittable = true;
+            
+  
         private void FireProjectileWeapon()
         {
             //Debug.Log("Attempting to fire.");
@@ -486,10 +494,12 @@ namespace CallbackSystem
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 bulletsInGun--;
-                if (projectionWeaponUpgraded)
-                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-                else
-                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+                currentBulletType = projectionWeaponUpgraded ? upgradedBullet : bullet;
+                critChance = rnd.Next(0, 20);
+                if(critChance == 20 && revolverCrittable)
+                    currentBulletType = explosiveBullet;
+                               
+                    Instantiate(currentBulletType, transform.position + transform.forward + Vector3.up, transform.rotation, null);
             }
             else if (bullets > 0)
             {
