@@ -16,7 +16,7 @@ namespace CallbackSystem
         private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
         private PlayerHealth health;
         private PlayerController controller;
-         private Camera cam;
+        private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] private float startLaserSelfDmg = 1f;
@@ -29,7 +29,9 @@ namespace CallbackSystem
         [SerializeField] private float maxTeamDamage = 30;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
-        [SerializeField] private int bullets, maxBullets;
+        [SerializeField] private int bulletsInGun; //skott i revolvern
+        [SerializeField] private int maxBulletsInGun; //max skott i revolvern
+        [SerializeField] private int bullets, maxBullets; //reloads/ammo boxes - UPPDATERA NAMN
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
@@ -96,6 +98,7 @@ namespace CallbackSystem
             sightLineWidth = startSightLineWidth;
             laserSelfDmg = startLaserSelfDmg;
             teamDamage = startTeamDamage;
+            bulletsInGun = maxBulletsInGun;
         }
 
         [SerializeField] private Material bulletMat;
@@ -103,6 +106,7 @@ namespace CallbackSystem
 
         private void Update()
         {
+            //Debug.Log(bulletsInGun);
             canShootLaser = (health.GetCurrenthealth() > laserSelfDmg || health.GetCurrentBatteryCount() > 0);
             // if (healthPercentage.ReturnHealth() > laserSelfDmg || healthPercentage.ReturnBatteries() > 0)
             // {
@@ -226,7 +230,7 @@ namespace CallbackSystem
                 {
                     laserSelfDmg += laserSelfDamageIncreasePerTenthSecond;
                 }
-                if(teamDamage < maxTeamDamage)
+                if (teamDamage < maxTeamDamage)
                 {
                     teamDamage += laserTeamDamageIncreasePerTenthSecond;
                 }
@@ -453,19 +457,26 @@ namespace CallbackSystem
 
         private void FireProjectileWeapon()
         {
-            if (bullets > 0)
+            //Debug.Log("Attempting to fire.");
+            if (bulletsInGun > 0)
             {
                 if (AIData.Instance.EnemyMuzzleflash != null)
                 {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
+                //Debug.Log("Firing. Shots left: " + bulletsInGun);
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
-                UpdateBulletCount(-1);
+                bulletsInGun--;
                 if (projectionWeaponUpgraded)
                     Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
                 else
                     Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+            }
+            else if (bullets > 0)
+            {
+                //Debug.Log("Reloading.");
+                Reload();
             }
         }
 
@@ -508,6 +519,12 @@ namespace CallbackSystem
         public int ReturnMaxBullets()
         {
             return maxBullets;
+        }
+
+        private void Reload()
+        {
+            bulletsInGun = maxBulletsInGun;
+            UpdateBulletCount(-1);
         }
     }
 }
