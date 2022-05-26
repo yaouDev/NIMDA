@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CallbackSystem;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -78,16 +79,23 @@ public class Minimap : MonoBehaviour
     }
 
     public float of = 6.3f;
-    public void UpdatePlayerPositions()
+    private void UpdatePlayerPositions()
     {
         Vector2 offset = new Vector3(28, -100);
         for (int player = 0; player < players.Length; player++)
         {
             Vector2 pos = new Vector3(players[player].transform.position.x, players[player].transform.position.z);
+            
             //Debug.Log($"{players[player].transform.position}");
             pos.x /= of;
             pos.y /= of;
-            playerImages[player].rectTransform.anchoredPosition = pos + offset;
+            playerImages[player].rectTransform.anchoredPosition = pos + offset; 
+            playerImages[player].rectTransform.rotation = Quaternion.Euler(0, 0, -players[player].transform.rotation.eulerAngles.y);
         }
+
+        Vector2Int playerPos = new Vector2Int(players[0].transform.position.x, players[0].transform.position.z);
+        Debug.Log();
     }
+    
+    private void 
 }
