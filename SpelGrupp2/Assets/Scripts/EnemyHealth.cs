@@ -105,7 +105,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!! // -- fixed
         AudioController.instance.PlayOneShot(AudioController.instance.enemySound.hurt, playersPos.position);
         //Debug.Log(currentHealth);
-        agent.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -30), agent.transform.rotation.y, agent.transform.rotation.z, 0);
+        agent.transform.rotation = new Quaternion(Mathf.PingPong(hitForce, -30), agent.transform.rotation.y, agent.transform.rotation.z, 0);
 
     }
 

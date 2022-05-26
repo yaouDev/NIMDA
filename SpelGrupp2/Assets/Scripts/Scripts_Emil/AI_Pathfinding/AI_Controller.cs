@@ -71,7 +71,11 @@ public class AI_Controller : MonoBehaviour {
         get {
             if (DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(activeTarget)) &&
             !DynamicGraph.Instance.AllNeighborsBlocked(activeTarget)) return true;
-            return false;
+            else {
+                updatingPath = false;
+                return false;
+            }
+
         }
     }
 

@@ -5,15 +5,17 @@ using CallbackSystem;
 
 public class SaveSystem : MonoBehaviour {
 
-    private string path = Application.persistentDataPath + "/save.bin";
+    private string path;
 
     public static SaveSystem Instance;
     private PlayerAttack playerOneAttack, playerTwoAttack;
     private PlayerHealth playerOneHealth, playerTwoHealth;
     private Crafting playerOneCrafting, playerTwoCrafting;
+    [SerializeField] private bool loadGame = true;
 
-    private void Awake() {
+    private void Start() {
         Instance ??= this;
+        path = Application.persistentDataPath + "/save.bin";
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         GameObject playerOne, playerTwo;
         PlayerAttack unknownPlayerAttack = players[0].GetComponent<PlayerAttack>();
@@ -35,6 +37,7 @@ public class SaveSystem : MonoBehaviour {
         playerTwoHealth = playerTwo.GetComponent<PlayerHealth>();
         playerTwoCrafting = playerTwo.GetComponent<Crafting>();
 
+        LoadGame();
     }
 
     public PlayerHealth PlayerOneHealth {
@@ -81,15 +84,48 @@ public class SaveSystem : MonoBehaviour {
             return data;
 
         } else {
-            Debug.LogError("Save file not found");
+            // Debug.LogError("Save file not found");
             return null;
         }
     }
 
-    private void LoadGame(){
+    [ContextMenu("Clear Save file")]
+    public void ClearSaveFile() {
+        if (File.Exists(Application.persistentDataPath + "/save.bin")) {
+            File.Delete(Application.persistentDataPath + "/save.bin");
+        }
+    }
+
+    private void LoadGame() {
         SaveData data = LoadGameData();
-        if(data != null){
+        if (data != null && loadGame) {
             // put all the info in the references here
+
+            // playerOne
+            playerOneAttack.LaserWeaponUpgraded = data.playerOneLaserUpgraded;
+            playerOneAttack.ProjectileWeaponUpgraded = data.playerOneProjectileUpgraded;
+            playerOneAttack.SetBulletsOnLoad(data.playerOneAmmo);
+            playerOneHealth.SetBatteriesOnLoad(data.playerOneBattery);
+            playerOneHealth.SetHealthOnLoad(data.playerOneHealth);
+            playerOneHealth.ChooseMaterialColor(new Color(data.playerOneColor[0], data.playerOneColor[1], data.playerOneColor[2], data.playerOneColor[3]));
+            playerOneCrafting.iron = data.playerOneIron;
+            playerOneCrafting.copper = data.playerOneCopper;
+            playerOneCrafting.transistor = data.playerOneTransistor;
+            playerOneCrafting.currency = data.playerOneCurrency;
+            playerOneAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
+
+            // playerTwo
+            playerTwoAttack.LaserWeaponUpgraded = data.playerTwoLaserUpgraded;
+            playerTwoAttack.ProjectileWeaponUpgraded = data.playerTwoProjectileUpgraded;
+            playerTwoAttack.SetBulletsOnLoad(data.playerTwoAmmo);
+            playerTwoHealth.SetBatteriesOnLoad(data.playerTwoBattery);
+            playerTwoHealth.SetHealthOnLoad(data.playerTwoHealth);
+            playerTwoHealth.ChooseMaterialColor(new Color(data.playerTwoColor[0], data.playerTwoColor[1], data.playerTwoColor[2], data.playerTwoColor[3]));
+            playerTwoCrafting.iron = data.playerTwoIron;
+            playerTwoCrafting.copper = data.playerTwoCopper;
+            playerTwoCrafting.transistor = data.playerTwoTransistor;
+            playerTwoCrafting.currency = data.playerTwoCurrency;
+            playerTwoAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
         }
     }
 
