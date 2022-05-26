@@ -24,6 +24,7 @@ namespace CallbackSystem
         [SerializeField] private float laserTeamDamageIncreasePerTenthSecond = 3f;
         [SerializeField] private float maxSelfDamage = 10;
         [SerializeField] private float startDamage = 10f, startTeamDamage = 3f;
+        [SerializeField] private float chargeTime = 0.1f;
         [SerializeField] private float damageIncreasePerTenthSecond = 10; 
         [SerializeField] private float maxBeamThickness = 0.5f;
         [SerializeField] private float startBeamThickness = 0.05f;
@@ -222,7 +223,7 @@ namespace CallbackSystem
         {
             while (damage < maxDamage && chargingUP)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(chargeTime);
                 damage += damageIncreasePerTenthSecond;
                 if (sightLineWidth < maxBeamThickness)
                 {
@@ -241,6 +242,22 @@ namespace CallbackSystem
                     teamDamage += laserTeamDamageIncreasePerTenthSecond;
                 }
             }
+        }
+
+        public void ChargeRateUpgrade()
+        {
+            chargeTime = 0.05f;
+        }
+        public void BeamWidthUpgrade()
+        {
+            maxBeamThickness = 0.75f;
+            widthIncreacePerTenthSecond = 0.075f;
+            startBeamThickness = 0.075f;
+            startSightLineWidth = 0.075f;
+        }
+        public void MagSizeUpgrade()
+        {
+            maxBulletsInGun += 1; 
         }
         /*        IEnumerator AttackDelay(float channelTime)
                 {
