@@ -12,7 +12,7 @@ namespace CallbackSystem
     {
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private LineRenderer aimLineRenderer;
-        [SerializeField] private LayerMask enemyLayerMask, laserLayerMask, wallLayermask;
+        [SerializeField] private LayerMask enemyLayerMask, revolverLaserSightLayerMask, laserLaserSightLayermask, wallLayermask;
         private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
         private PlayerHealth health;
         private PlayerController controller;
@@ -400,17 +400,35 @@ namespace CallbackSystem
 
         private void UpdateLaserSightDistance()
         {
-            Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLayerMask);
-            if (hit.collider != null)
+            if (!laserWeapon)
             {
-                currentHitDistance = hit.distance;
-                targetInSight = true;
-                crosshairPoint = cam.WorldToScreenPoint(hit.point);
+                Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, revolverLaserSightLayerMask);
+                if (hit.collider != null)
+                {
+                    currentHitDistance = hit.distance;
+                    targetInSight = true;
+                    crosshairPoint = cam.WorldToScreenPoint(hit.point);
+                }
+                else
+                {
+                    currentHitDistance = maxDistance;
+                    targetInSight = false;
+                }
             }
             else
             {
-                currentHitDistance = maxDistance;
-                targetInSight = false;
+                Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLaserSightLayermask);
+                if (hit.collider != null)
+                {
+                    currentHitDistance = hit.distance;
+                    targetInSight = true;
+                    crosshairPoint = cam.WorldToScreenPoint(hit.point);
+                }
+                else
+                {
+                    currentHitDistance = maxDistance;
+                    targetInSight = false;
+                }
             }
         }
 
