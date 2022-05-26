@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Strafe")]
-public class StrafeNode : Node {
+public class StrafeNode : Node, IResetableNode {
 
     [SerializeField] private float acceleration = 13.5f, maxSpeed = 16.5f, minStrafeDistance = 2, maxStrafeDistance = 5;
     [SerializeField] private int maxShotsToFire = 2, minShotsToFire = 5;
     [SerializeField] private float distanceFromTargetToStop;
     private Vector3 randomPos;
-    private int xPos;
-    private int zPos;
     Vector3 strafeTarget;
     int shotsToFire;
     public override NodeState Evaluate() {
@@ -56,5 +54,12 @@ public class StrafeNode : Node {
         }
 
         return NodeState;
+    }
+
+    public void ResetNode() {
+        randomPos = Vector3.zero;
+        strafeTarget = Vector3.zero;
+        shotsToFire = Random.Range(minShotsToFire, maxShotsToFire + 1);
+        AIData.Instance.SetShotRequirement(agent, shotsToFire);
     }
 }

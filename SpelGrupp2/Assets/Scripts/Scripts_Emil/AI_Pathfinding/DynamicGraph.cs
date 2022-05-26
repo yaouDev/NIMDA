@@ -42,8 +42,6 @@ public class DynamicGraph : MonoBehaviour {
             Vector2Int module12 = new Vector2Int(1, 3);
             Vector2Int module13 = new Vector2Int(1, 7);
             Vector2Int module14 = new Vector2Int(1, 8);
-
-
             Vector2Int module15 = new Vector2Int(-1, 9);
             Vector2Int module16 = new Vector2Int(-1, 6);
             Vector2Int module17 = new Vector2Int(1, 6);
@@ -84,8 +82,6 @@ public class DynamicGraph : MonoBehaviour {
             loadedModules.Add(module24);
             loadedModules.Add(module25);
             loadedModules.Add(module26);
-
-
             loadedModules.Add(bossmod);
 
             AddBlockedNodes(module1);
@@ -124,7 +120,6 @@ public class DynamicGraph : MonoBehaviour {
 
     public void Connect(Vector3 firstNode, Vector3 secondNode, float cost) {
         if (masterGraph.ContainsKey(firstNode) && masterGraph.ContainsKey(secondNode) && !IsConnected(firstNode, secondNode)) {
-            // if (HasBlockedNeighbor(firstNode) && HasBlockedNeighbor(secondNode)) cost *= 2;
             masterGraph[firstNode].TryAdd(secondNode, cost);
             masterGraph[secondNode].TryAdd(firstNode, cost);
         }
@@ -167,11 +162,11 @@ public class DynamicGraph : MonoBehaviour {
         return blockedNodes.Contains(node);
     }
 
-    private bool HasBlockedNeighbor(Vector3 node) {
+    public bool AllNeighborsBlocked(Vector3 node) {
         foreach (Vector3 neighbor in GetPossibleNeighbors(node)) {
-            if (IsNodeBlocked(neighbor)) return true;
+            if (!IsNodeBlocked(neighbor)) return false;
         }
-        return false;
+        return true;
     }
 
     /// <summary>

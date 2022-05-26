@@ -22,7 +22,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int transitorRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
-    private EnemyShield shield;
     private Transform playersPos;
     private AI_Controller agent;
 
@@ -40,7 +39,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     private void Awake() {
         CurrentHealth = fullHealth;
         enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
-        shield = GetComponentInChildren<EnemyShield>();
         playersPos = GameObject.Find("Players").transform;
         agent = GetComponent<AI_Controller>();
     }
@@ -56,9 +54,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     public float GetFullHealth() {
         return fullHealth;
     }
-    /*     public GameObject GetFirePoint() {
-            return firePoint;
-        } */
 
     public Vector3 FirePoint {
         get { return firePoint.transform.position; }
@@ -70,24 +65,20 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        Destroy(gameObject);
-        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        //Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        Destroy(gameObject);
-        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        //Destroy(gameObject);
+        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
-
-    /*  public float GetCurrentHealth() {
-          return currHealth;
-      }*/
 
     public void DropLoot() {
 
         int dropAmount = Random.Range(dropMin, dropMax);
         for (int i = 0; i < dropAmount; i++) {
-            dropOffset = new Vector3(Random.Range(-1.3f, 1.3f), 1f, Random.Range(-1.3f, 1.3f));
+            dropOffset = new Vector3(Random.Range(-.3f, .3f), 1f, Random.Range(-.3f, .3f));
             int dropRoll = Random.Range(0, 100);
             if (dropRoll <= ironRange) {
                 drop = dropList[0];
@@ -99,8 +90,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             //int item = Random.Range(0, dropList.Length);
             //drop = dropList[item];
             GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-            loot.transform.parent = null;
-            loot.SetActive(true);
+            //loot.transform.parent = null;
+            //loot.SetActive(true);
             Destroy(loot, 15f);
         }
     }
@@ -117,14 +108,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
     public void OnSpawn() {
         CurrentHealth = fullHealth;
-        if (shield != null) {
-            shield.CurrentHealth = shield.FullHealth;
-            shield.gameObject.SetActive(true);
-        }
-        if (AIData.Instance.GetShotRequirement(agent) != -1) {
-            AIData.Instance.ResetShotsFired(agent);
-        }
-        agent.Destination = Vector3.zero + new Vector3(1, 0, 0);
+        agent.ResetAgent();
     }
 
 }
