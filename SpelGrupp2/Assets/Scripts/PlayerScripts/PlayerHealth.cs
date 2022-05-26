@@ -112,6 +112,14 @@ namespace CallbackSystem
             UpdateHealthUI();
         }
 
+        public void SetBatteriesOnLoad(int amount){
+            batteryCount = amount;
+        }
+
+        public void SetHealthOnLoad(float amount){
+            currHealth = amount;
+        }
+
         public void Die()
         {
             if (alive)
