@@ -6,10 +6,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using FMOD.Studio;
 
-namespace CallbackSystem
-{
-    public class PlayerAttack : MonoBehaviour
-    {
+namespace CallbackSystem {
+    public class PlayerAttack : MonoBehaviour {
         [SerializeField] private LineRenderer lineRenderer;
         [SerializeField] private LineRenderer aimLineRenderer;
         [SerializeField] private LayerMask enemyLayerMask, revolverLaserSightLayerMask, laserLaserSightLayermask, wallLayermask;
@@ -18,18 +16,18 @@ namespace CallbackSystem
         private PlayerController controller;
         private Camera cam;
         private bool isAlive = true;
-        [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
+        [SerializeField][Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] private float startLaserSelfDmg = 1f;
         [SerializeField] private float laserSelfDamageIncreasePerTenthSecond = 1f;
         [SerializeField] private float laserTeamDamageIncreasePerTenthSecond = 3f;
         [SerializeField] private float maxSelfDamage = 10;
         [SerializeField] private float startDamage = 10f, startTeamDamage = 3f;
-        [SerializeField] private float damageIncreasePerTenthSecond = 10; 
+        [SerializeField] private float damageIncreasePerTenthSecond = 10;
         [SerializeField] private float maxBeamThickness = 0.5f;
         [SerializeField] private float startBeamThickness = 0.05f;
         [SerializeField] private float maxDamage = 100;
         [SerializeField] private float maxTeamDamage = 30;
-        [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
+        [SerializeField][Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bulletsInGun; //skott i revolvern
         [SerializeField] private int maxBulletsInGun; //max skott i revolvern
         [SerializeField] private int bullets, maxBullets; //reloads/ammo boxes - UPPDATERA NAMN
@@ -58,12 +56,10 @@ namespace CallbackSystem
          * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
          */
 
-        public bool IsAlive
-        {
+        public bool IsAlive {
             get { return isAlive; }
         }
-        public Vector3 AimingDirection
-        {
+        public Vector3 AimingDirection {
             get { return aimingDirection; }
         }
 
@@ -76,8 +72,7 @@ namespace CallbackSystem
         public bool IsPlayerOne() { return isPlayerOne; }
 
         public bool UsingLaserWeapon() { return laserWeapon; }
-        public void UpdateBulletCount(int amount)
-        {
+        public void UpdateBulletCount(int amount) {
             bullets += amount;
             //resourceEvent.isPlayerOne = isPlayerOne;
             resourceEvent.ammoChange = true;
@@ -85,8 +80,7 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
-        private void Awake()
-        {
+        private void Awake() {
             controller = GetComponent<PlayerController>();
             cam = GetComponentInChildren<Camera>();
             health = GetComponent<PlayerHealth>();
@@ -107,8 +101,7 @@ namespace CallbackSystem
         [SerializeField] private Material bulletMat;
         [SerializeField] private Material laserMat;
 
-        private void Update()
-        {
+        private void Update() {
             //Debug.Log(bulletsInGun);
             canShootLaser = (health.GetCurrenthealth() > laserSelfDmg || health.GetCurrentBatteryCount() > 0);
             // if (healthPercentage.ReturnHealth() > laserSelfDmg || healthPercentage.ReturnBatteries() > 0)
@@ -121,8 +114,7 @@ namespace CallbackSystem
             // }
 
             // TODO joystick laser 
-            if (!activated)
-            {
+            if (!activated) {
                 resourceEvent.ammoChange = true;
                 resourceEvent.isPlayerOne = isPlayerOne;
                 resourceEvent.a = bullets;
@@ -146,13 +138,10 @@ namespace CallbackSystem
                 canShootGun = true;
             */
 
-            if (isAlive)
-            {
+            if (isAlive) {
                 AnimateLasers();
 
-            }
-            else
-            {
+            } else {
                 aimLineRenderer.enabled = false;
             }
         }
@@ -176,30 +165,25 @@ namespace CallbackSystem
                         revolverCooldown = 0f;
                     }
                 }*/
-        public void Fire(InputAction.CallbackContext context)
-        {
+        public void Fire(InputAction.CallbackContext context) {
             if (!isAlive) return;
-            if (context.started && !recentlyFired && !laserWeapon)
-            {
-                    FireProjectileWeapon();
-                    recentlyFired = true;
-                    revolverCooldown = 0f;
+            if (context.started && !recentlyFired && !laserWeapon) {
+                FireProjectileWeapon();
+                recentlyFired = true;
+                revolverCooldown = 0f;
 
             }
-            if (context.performed && laserWeapon && canShootLaser)
-            {
+            if (context.performed && laserWeapon && canShootLaser) {
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
 
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
             }
 
-            if (context.canceled && laserWeapon)
-            {
+            if (context.canceled && laserWeapon) {
                 chargingUP = false;
                 StopCoroutine(ChargeUp());
-                if (canShootLaser)
-                {
+                if (canShootLaser) {
                     laserSound.setParameterByName("isReleased", 1f);
 
                     ShootLaser();
@@ -218,26 +202,20 @@ namespace CallbackSystem
             //damage = startDamage;
         }
 
-        IEnumerator ChargeUp()
-        {
-            while (damage < maxDamage && chargingUP)
-            {
+        IEnumerator ChargeUp() {
+            while (damage < maxDamage && chargingUP) {
                 yield return new WaitForSeconds(0.1f);
                 damage += damageIncreasePerTenthSecond;
-                if (sightLineWidth < maxBeamThickness)
-                {
+                if (sightLineWidth < maxBeamThickness) {
                     sightLineWidth += widthIncreacePerTenthSecond;
                 }
-                if(beamThickness < maxBeamThickness)
-                {
+                if (beamThickness < maxBeamThickness) {
                     beamThickness += widthIncreacePerTenthSecond;
                 }
-                if (laserSelfDmg < maxSelfDamage)
-                {
+                if (laserSelfDmg < maxSelfDamage) {
                     laserSelfDmg += laserSelfDamageIncreasePerTenthSecond;
                 }
-                if (teamDamage < maxTeamDamage)
-                {
+                if (teamDamage < maxTeamDamage) {
                     teamDamage += laserTeamDamageIncreasePerTenthSecond;
                 }
             }
@@ -273,19 +251,15 @@ namespace CallbackSystem
         }
         */
 
-        public void WeaponSwap(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
+        public void WeaponSwap(InputAction.CallbackContext context) {
+            if (context.performed) {
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
             }
         }
 
-        public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
-        {
-            if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f)
-            {
+        public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context) {
+            if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f) {
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
             }
@@ -307,15 +281,12 @@ namespace CallbackSystem
         }
         */
 
-        private void AimDirection()
-        {
+        private void AimDirection() {
             transform.LookAt(transform.position + aimingDirection);
         }
 
-        private void ApplyJoystickFireDirection()
-        {
-            if (controller.GetRightJoystickInput().magnitude > 0.1f)
-            {
+        private void ApplyJoystickFireDirection() {
+            if (controller.GetRightJoystickInput().magnitude > 0.1f) {
                 aimingDirection.x = controller.GetRightJoystickInput().x;
                 aimingDirection.z = controller.GetRightJoystickInput().y;
                 int sign = aimingDirection.z > 0 ? 1 : -1;
@@ -325,14 +296,11 @@ namespace CallbackSystem
             }
         }
 
-        private void ShootLaser()
-        {
-            if (canShootLaser)
-            {
+        private void ShootLaser() {
+            if (canShootLaser) {
                 if (laserWeaponUpgraded)
                     laserSelfDmg = reducedSelfDmg;
-                if (health != null)
-                {
+                if (health != null) {
                     health.TakeDamage(laserSelfDmg);
                 }
 
@@ -344,10 +312,8 @@ namespace CallbackSystem
                 //Check for enemies and onther penetrable objects
                 foreach (RaycastHit hitInfo in Physics.SphereCastAll(transform.position + transform.forward + Vector3.up, beamThickness, aimingDirection, 30.0f, enemyLayerMask)) // TODO change to firepoint
                 {
-                    if (hitInfo.collider != null)
-                    {
-                        if (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player" )
-                        {
+                    if (hitInfo.collider != null) {
+                        if (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player") {
                             IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
                             if (damageable != null) // Enemies were colliding with pickups, so moved them to enemy ( for now ) layer thus this nullcheck to avoid pickups causing issues here
@@ -357,9 +323,7 @@ namespace CallbackSystem
                                 else
                                     damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
                             }
-                        }
-                        else if (hitInfo.transform.tag == "BreakableObject")
-                        {
+                        } else if (hitInfo.transform.tag == "BreakableObject") {
                             BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
                             breakable.DropBoxLoot();
                         }
@@ -369,14 +333,12 @@ namespace CallbackSystem
             }
         }
 
-        private IEnumerator AnimateLineRenderer(Vector3 direction)
-        {
+        private IEnumerator AnimateLineRenderer(Vector3 direction) {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + direction * 30.0f };
             lineRenderer.SetPositions(positions);
 
             float t = 0.0f;
-            while (t < 1.0f)
-            {
+            while (t < 1.0f) {
                 float e = Mathf.Lerp(Ease.EaseOutQuint(t), Ease.EaseOutBounce(t), t);
                 float lineWidth = Mathf.Lerp(.5f, .0f, e);
                 lineRenderer.startWidth = lineWidth;
@@ -392,8 +354,7 @@ namespace CallbackSystem
             lineRenderer.endWidth = 0.0f;
         }
 
-        private void AnimateLaserSightLineRenderer(Vector3 dir)
-        {
+        private void AnimateLaserSightLineRenderer(Vector3 dir) {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
             aimLineRenderer.SetPositions(positions);
             //sightLineWidth = 0.05f;
@@ -404,34 +365,24 @@ namespace CallbackSystem
             aimLineRenderer.endColor = color;
         }
 
-        private void UpdateLaserSightDistance()
-        {
-            if (!laserWeapon)
-            {
+        private void UpdateLaserSightDistance() {
+            if (!laserWeapon) {
                 Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, revolverLaserSightLayerMask);
-                if (hit.collider != null)
-                {
+                if (hit.collider != null) {
                     currentHitDistance = hit.distance;
                     targetInSight = true;
                     crosshairPoint = cam.WorldToScreenPoint(hit.point);
-                }
-                else
-                {
+                } else {
                     currentHitDistance = maxDistance;
                     targetInSight = false;
                 }
-            }
-            else
-            {
+            } else {
                 Physics.Raycast(transform.position + Vector3.up, aimingDirection, out RaycastHit hit, maxDistance, laserLaserSightLayermask);
-                if (hit.collider != null)
-                {
+                if (hit.collider != null) {
                     currentHitDistance = hit.distance;
                     targetInSight = true;
                     crosshairPoint = cam.WorldToScreenPoint(hit.point);
-                }
-                else
-                {
+                } else {
                     currentHitDistance = maxDistance;
                     targetInSight = false;
                 }
@@ -439,27 +390,23 @@ namespace CallbackSystem
         }
 
 
-        public void TargetMousePos(InputAction.CallbackContext context)
-        {
+        public void TargetMousePos(InputAction.CallbackContext context) {
             Vector3 mousePos = context.ReadValue<Vector2>();
             mousePos.z = 15.0f;
             Plane plane = new Plane(Vector3.up, transform.position + Vector3.up);
             Ray ray = cam.ScreenPointToRay(mousePos);
 
-            if (plane.Raycast(ray, out float enter))
-            {
+            if (plane.Raycast(ray, out float enter)) {
                 Vector3 hitPoint = ray.GetPoint(enter);
                 aimingDirection = hitPoint + Vector3.down - transform.position;
             }
         }
-        public void Respawn()
-        {
+        public void Respawn() {
             isAlive = true;
             AnimateLasers();
         }
 
-        private void AnimateLasers()
-        {
+        private void AnimateLasers() {
             aimLineRenderer.enabled = true;
             aimLineRenderer.material = laserWeapon ? laserMat : bulletMat;
 
@@ -470,8 +417,7 @@ namespace CallbackSystem
             RenderCrosshair();
         }
 
-        private void RenderCrosshair()
-        {
+        private void RenderCrosshair() {
             crosshairEvent.usingRevolver = laserWeapon ? false : true;
             crosshairEvent.isPlayerOne = isPlayerOne;
             crosshairEvent.crosshairPos = crosshairPoint;
@@ -479,13 +425,10 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(crosshairEvent);
         }
 
-        private void FireProjectileWeapon()
-        {
+        private void FireProjectileWeapon() {
             //Debug.Log("Attempting to fire.");
-            if (bulletsInGun > 0)
-            {
-                if (AIData.Instance.EnemyMuzzleflash != null)
-                {
+            if (bulletsInGun > 0) {
+                if (AIData.Instance.EnemyMuzzleflash != null) {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
                 //Debug.Log("Firing. Shots left: " + bulletsInGun);
@@ -496,20 +439,15 @@ namespace CallbackSystem
                     Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
                 else
                     Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-            }
-            else if (bullets > 0)
-            {
+            } else if (bullets > 0) {
                 //Debug.Log("Reloading.");
                 Reload();
             }
         }
 
-        private void AutomaticProjectileWeapon()
-        {
-            if (bullets > 0)
-            {
-                if (AIData.Instance.EnemyMuzzleflash != null)
-                {
+        private void AutomaticProjectileWeapon() {
+            if (bullets > 0) {
+                if (AIData.Instance.EnemyMuzzleflash != null) {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
                 Debug.Log("Standard projectile weapon fired!");
@@ -523,32 +461,41 @@ namespace CallbackSystem
             }
         }
 
-        public void UpgradeProjectileWeapon()
-        {
+        public void UpgradeProjectileWeapon() {
             Debug.Log("Projectile weapon upgraded!");
             projectionWeaponUpgraded = true;
         }
 
-        public void UpgradeLaserWeapon()
-        {
+        public void UpgradeLaserWeapon() {
             Debug.Log("Projectile weapon upgraded!");
             laserWeaponUpgraded = true;
         }
 
-        public int ReturnBullets()
-        {
+        public int ReturnBullets() {
             return bullets;
         }
 
-        public int ReturnMaxBullets()
-        {
+        public int ReturnMaxBullets() {
             return maxBullets;
         }
 
-        private void Reload()
-        {
+        private void Reload() {
             bulletsInGun = maxBulletsInGun;
             UpdateBulletCount(-1);
+        }
+
+        public bool LaserWeaponUpgraded {
+            get { return laserWeaponUpgraded; }
+            set { laserWeaponUpgraded = value; }
+        }
+
+        public bool ProjectionWeaponUpgraded {
+            get { return projectionWeaponUpgraded; }
+            set { projectionWeaponUpgraded = value; }
+        }
+
+        public void SetBulletsOnLoad(int amount) {
+            bullets = amount;
         }
     }
 }
