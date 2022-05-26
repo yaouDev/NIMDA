@@ -271,6 +271,7 @@ GameObject:
   - component: {fileID: 8077681745524283063}
   - component: {fileID: 8077681745524283057}
   - component: {fileID: 8077681745524283056}
+  - component: {fileID: 8063017462657314035}
   m_Layer: 17
   m_Name: CollisionArea
   m_TagString: Untagged
@@ -317,6 +318,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 217e693cd041fac459090e79c48214db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &8063017462657314035
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077681745524283062}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &8077681745728919515
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,7 +344,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8077681745728919508}
   - component: {fileID: 8077681745728919510}
-  - component: {fileID: 8077681745728919509}
   m_Layer: 17
   m_Name: Drop object
   m_TagString: Untagged
@@ -366,22 +382,6 @@ MonoBehaviour:
   Target: {fileID: 0}
   minModifier: 7
   maxModifier: 11
---- !u!54 &8077681745728919509
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8077681745728919515}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &8077681747453517423
 GameObject:
   m_ObjectHideFlags: 0

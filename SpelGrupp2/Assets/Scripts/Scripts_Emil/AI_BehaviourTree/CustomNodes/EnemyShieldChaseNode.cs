@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyShieldChase")]
-public class EnemyShieldChaseNode : Node {
+public class EnemyShieldChaseNode : Node, IResetableNode {
 
     [SerializeField] private float shieldAcceleration = 13f, shieldMaxSpeed = 2.5f, noShieldAcceleration = 15f, noShieldMaxSpeed = 16f;
 
     [SerializeField] private float distanceFromTargetToStop;
     private EnemyShield enemyShield;
     public override NodeState Evaluate() {
-        enemyShield = agent.GetComponentInChildren<EnemyShield>();
+        if (enemyShield == null)
+            enemyShield = agent.GetComponentInChildren<EnemyShield>();
+
         if (enemyShield != null) {
             if (enemyShield.CurrentHealth <= 0) {
                 agent.Acceleration = noShieldAcceleration;
@@ -22,7 +24,7 @@ public class EnemyShieldChaseNode : Node {
         }
 
         agent.transform.rotation = new Quaternion(0, agent.transform.rotation.y, 0, agent.transform.rotation.w);
-        if (agent.Destination != agent.ClosestPlayer) {
+        if (agent.Destination != agent.ClosestPlayer || (agent.Destination == agent.ClosestPlayer && agent.CurrentPath == null)) {
             agent.Acceleration = shieldAcceleration;
             agent.Destination = agent.ClosestPlayer;
             agent.IsStopped = false;
@@ -35,5 +37,13 @@ public class EnemyShieldChaseNode : Node {
             NodeState = NodeState.SUCCESS;
         }
         return NodeState;
+    }
+
+    public void ResetNode() {
+        if (enemyShield != null) {
+            enemyShield.CurrentHealth = enemyShield.FullHealth;
+            enemyShield.gameObject.SetActive(true);
+        }
+
     }
 }
