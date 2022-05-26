@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
-using FMOD.Studio;
 
 namespace CallbackSystem
 {
@@ -64,10 +63,6 @@ namespace CallbackSystem
         }
 
         public void Die() => isAlive = false;
-
-        private AudioController ac;
-        private EventInstance laserSound;
-        public void Start() => ac = AudioController.instance;
 
         public bool IsPlayerOne() { return isPlayerOne; }
 
@@ -180,10 +175,15 @@ namespace CallbackSystem
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
-                laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
 
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
+
+                //add channelsound
+
+                //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
+                /*                }*/
             }
             else
             {
@@ -195,12 +195,11 @@ namespace CallbackSystem
                 StopCoroutine(ChargeUp());
                 if (canShootLaser)
                 {
-                    laserSound.setParameterByName("isReleased", 1f);
-
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
                     //add shootsound
-
+                    //AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
+                    //ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "laser_channel", channelTime); //laser sound
                 }
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;

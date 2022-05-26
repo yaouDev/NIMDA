@@ -40,7 +40,7 @@ public class OpenExit : MonoBehaviour {
         }
     }
 
-    public void OpenDoor() {
+    void OpenDoor() {
         if (!doorOpen) {
             //Debug.Log("Opening");
             openPosition = closePosition + Vector3.up * openHeight;

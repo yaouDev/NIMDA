@@ -11,5 +11,4 @@ public class EnemyAudioContainer : AudioContainer
     public EventReference melee;
     public EventReference hurt;
     public EventReference death;
-    public EventReference explosion;
 }

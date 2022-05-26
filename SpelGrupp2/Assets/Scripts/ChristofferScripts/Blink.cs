@@ -59,6 +59,7 @@ public class Blink : MonoBehaviour
             {
                 destination.y = 1f;
                 transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * blinkSpeed);
+                Debug.Log("Dest: " + destination);
             }
             else
             {
@@ -79,10 +80,13 @@ public class Blink : MonoBehaviour
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
             {
                 destination = hitInfo.point * destinationMultiplier;
+                Debug.Log("Hit: " + hitInfo.collider.name);
+
             }
             else
             {
                 destination = (transform.position + playerAttack.AimingDirection.normalized * maxDistance * destinationMultiplier);
+                Debug.Log("Träffa inget");
             }
             Instantiate(finnish, destination, Quaternion.identity);
             blinking = true;

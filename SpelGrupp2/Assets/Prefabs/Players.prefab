@@ -360,21 +360,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   maxDistance: 30
-  startLaserSelfDmg: 1
-  laserSelfDamageIncreasePerTenthSecond: 1
-  laserTeamDamageIncreasePerTenthSecond: 3
-  maxSelfDamage: 10
+  laserSelfDmg: 25
   startDamage: 20
-  startTeamDamage: 3
-  damageIncreasePerTenthSecond: 10
+  teamDamage: 30
+  damageIncreasePerMilliSecond: 5
   maxDamage: 110
-  maxTeamDamage: 30
   laserAttackDelay: 0.5
   beamThickness: 0.5
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  damage: 65
   bulletMat: {fileID: 2100000, guid: e3d71b91e69896c498036f2258b873fa, type: 2}
   laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607570548879
@@ -583,7 +580,7 @@ MonoBehaviour:
   blackRecipe: {fileID: 11400000, guid: dec980b9f0400dd40a0b8c180c552fa0, type: 2}
   layerMask:
     serializedVersion: 2
-    m_Bits: 1048832
+    m_Bits: 1048576
   craftingTable: {fileID: 0}
   craftingButtons:
   - {fileID: 0}
@@ -906,6 +903,7 @@ MonoBehaviour:
   blinkSpeed: 100
   destinationMultiplier: 0.9
   cameraheight: 0
+  UIText: {fileID: 0}
   cam: {fileID: 326990608734731273}
   trail: {fileID: 5371080335133204322}
   start: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
@@ -1099,21 +1097,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   maxDistance: 30
-  startLaserSelfDmg: 1
-  laserSelfDamageIncreasePerTenthSecond: 1
-  laserTeamDamageIncreasePerTenthSecond: 3
-  maxSelfDamage: 10
+  laserSelfDmg: 25
   startDamage: 20
-  startTeamDamage: 3
-  damageIncreasePerTenthSecond: 10
+  teamDamage: 30
+  damageIncreasePerMilliSecond: 5
   maxDamage: 110
-  maxTeamDamage: 30
   laserAttackDelay: 0.5
   beamThickness: 0.5
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  damage: 65
   bulletMat: {fileID: 2100000, guid: fcb4d715143e6724bae637ae8ebe0232, type: 2}
   laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607881322125
@@ -1322,7 +1317,7 @@ MonoBehaviour:
   blackRecipe: {fileID: 11400000, guid: dec980b9f0400dd40a0b8c180c552fa0, type: 2}
   layerMask:
     serializedVersion: 2
-    m_Bits: 1048832
+    m_Bits: 1048576
   craftingTable: {fileID: 0}
   craftingButtons:
   - {fileID: 0}
@@ -1673,6 +1668,7 @@ MonoBehaviour:
   blinkSpeed: 100
   destinationMultiplier: 0.9
   cameraheight: 0
+  UIText: {fileID: 0}
   cam: {fileID: 326990608769707818}
   trail: {fileID: 6892499171766090955}
   start: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
