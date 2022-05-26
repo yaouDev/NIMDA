@@ -380,10 +380,9 @@ MonoBehaviour:
   maxDamage: 100
   maxTeamDamage: 50
   laserAttackDelay: 0.5
-  bulletsInGun: 5
-  maxBulletsInGun: 5
-  bullets: 100
-  maxBullets: 30
+  bullets: 5
+  maxBullets: 5
+  bulletChambers: 15
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
   damage: 0
@@ -586,6 +585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAttackScript: {fileID: 0}
+  playerBlinkScript: {fileID: 0}
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
   UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
@@ -599,7 +599,8 @@ MonoBehaviour:
   RevolverCritRecipe: {fileID: 11400000, guid: fce2d222128ced64e9163cf4a0cc336b, type: 2}
   laserbeamWidthRecipe: {fileID: 11400000, guid: 7d7bcb19c67dbc247a2a28e191876d78, type: 2}
   largeMagazineRecipe: {fileID: 11400000, guid: 6505a778fd457204986caaad81c12d92, type: 2}
-  laserbeamChargeRecipe: {fileID: 11400000, guid: 3c3a7f96ed1400e4a9c8a8c9289deb44, type: 2}
+  laserbeamChargeRecipe: {fileID: 11400000, guid: 4d202d4c762fb9444bbc07fed7331a37, type: 2}
+  blinkUpgradeRecipe: {fileID: 11400000, guid: c0b9f921d509caf48875d2a81787fd81, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 1048832
@@ -616,10 +617,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   defaultColorButton: {fileID: 0}
-  copper: 100
-  transistor: 100
-  iron: 100
-  currency: 100
+  copper: 0
+  transistor: 0
+  iron: 0
+  currency: 0
 --- !u!114 &326990607570548867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1143,10 +1144,9 @@ MonoBehaviour:
   maxDamage: 100
   maxTeamDamage: 50
   laserAttackDelay: 0.5
-  bulletsInGun: 5
-  maxBulletsInGun: 5
-  bullets: 15
-  maxBullets: 30
+  bullets: 5
+  maxBullets: 5
+  bulletChambers: 15
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
   damage: 0
@@ -1349,6 +1349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAttackScript: {fileID: 0}
+  playerBlinkScript: {fileID: 0}
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
   UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
@@ -1362,7 +1363,8 @@ MonoBehaviour:
   RevolverCritRecipe: {fileID: 11400000, guid: fce2d222128ced64e9163cf4a0cc336b, type: 2}
   laserbeamWidthRecipe: {fileID: 11400000, guid: 7d7bcb19c67dbc247a2a28e191876d78, type: 2}
   largeMagazineRecipe: {fileID: 11400000, guid: 6505a778fd457204986caaad81c12d92, type: 2}
-  laserbeamChargeRecipe: {fileID: 11400000, guid: 3c3a7f96ed1400e4a9c8a8c9289deb44, type: 2}
+  laserbeamChargeRecipe: {fileID: 11400000, guid: 4d202d4c762fb9444bbc07fed7331a37, type: 2}
+  blinkUpgradeRecipe: {fileID: 11400000, guid: c0b9f921d509caf48875d2a81787fd81, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 1048832
@@ -1379,10 +1381,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   defaultColorButton: {fileID: 0}
-  copper: 100
-  transistor: 100
-  iron: 100
-  currency: 100
+  copper: 0
+  transistor: 0
+  iron: 0
+  currency: 0
 --- !u!114 &1652920257267338416
 MonoBehaviour:
   m_ObjectHideFlags: 0
