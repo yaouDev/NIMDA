@@ -20,7 +20,7 @@ namespace CallbackSystem
         private Recipe batteryRecipe, bulletRecipe,
         UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe,
         cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe,
-        greenRecipe, blackRecipe;
+        greenRecipe, blackRecipe, RevolverCritRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
@@ -232,6 +232,14 @@ namespace CallbackSystem
             else
                 fadingtextEvent.text = "Not Enough Resources";
             EventSystem.Current.FireEvent(fadingtextEvent);
+        }
+
+        public void CraftCrittableRevolver()
+        {
+            if (TryCraftRecipe(RevolverCritRecipe))
+            {
+                playerAttackScript.
+            }
         }
 
         public void CraftUpgradedLaserWeapon()
