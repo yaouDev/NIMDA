@@ -20,7 +20,8 @@ namespace CallbackSystem
         private Recipe batteryRecipe, bulletRecipe,
         UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe,
         cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe,
-        greenRecipe, blackRecipe, RevolverCritRecipe;
+        greenRecipe, blackRecipe, RevolverCritRecipe, laserbeamWidthRecipe,
+        largeMagazineRecipe, laserbeamChargeRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
@@ -247,6 +248,45 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(fadingtextEvent);
         }
 
+        public void CraftUpgradedRevolverAmmo()
+        {
+            if (TryCraftRecipe(largeMagazineRecipe))
+            {
+                playerAttackScript.MagSizeUpgrade();
+                fadingtextEvent.text = "Revolver Ammo Upgraded";
+                selectedButton.interactable = false;
+            }
+            else
+                fadingtextEvent.text = "Not Enough Resources";
+            EventSystem.Current.FireEvent(fadingtextEvent);
+        }
+
+
+        public void CraftReducedBeamCharge()
+        {
+            if (TryCraftRecipe(laserbeamChargeRecipe))
+            {
+                playerAttackScript.ChargeRateUpgrade();
+                fadingtextEvent.text = "Lasergun Upgraded";
+                selectedButton.interactable = false;
+            }
+            else
+                fadingtextEvent.text = "Not Enough Resources";
+            EventSystem.Current.FireEvent(fadingtextEvent);
+        }
+
+        public void CraftIncreaseBeamWidth()
+        {
+            if (TryCraftRecipe(laserbeamWidthRecipe))
+            {
+                playerAttackScript.BeamWidthUpgrade();
+                fadingtextEvent.text = "Lasergun Upgraded";
+                selectedButton.interactable = false;
+            }
+            else
+                fadingtextEvent.text = "Not Enough Resources";
+            EventSystem.Current.FireEvent(fadingtextEvent);
+        }
 
         public void CraftUpgradedLaserWeapon()
         {
