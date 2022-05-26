@@ -20,7 +20,7 @@ namespace CallbackSystem
         private Recipe batteryRecipe, bulletRecipe,
         UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe,
         cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe,
-        greenRecipe, blackRecipe;
+        greenRecipe, blackRecipe, RevolverCritRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
@@ -48,7 +48,7 @@ namespace CallbackSystem
             resourceEvent.i = iron;
             resourceEvent.currency = currency;
             resourceEvent.ammoChange = false;
-            resourceArray = new int[] { copper, transistor, iron };
+            resourceArray = new int[] { copper, transistor, iron, currency };
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
@@ -95,7 +95,7 @@ namespace CallbackSystem
 
                     if (hit.collider != null)
                     {
-                        if (hit.transform.tag == "CraftinTable")
+                        if (hit.transform.tag == "CraftingTable")
                         {
                             EnterCraftingUI();
                         }
@@ -226,13 +226,27 @@ namespace CallbackSystem
             if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
             {
                 playerAttackScript.UpgradeProjectileWeapon();
-                fadingtextEvent.text = "Revolver Upgraded";
+                fadingtextEvent.text = "Revolver damage Upgraded";
                 selectedButton.interactable = false;
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
             EventSystem.Current.FireEvent(fadingtextEvent);
         }
+
+        public void CraftCrittableRevolver()
+        {
+            if (TryCraftRecipe(RevolverCritRecipe))
+            {
+                playerAttackScript.UpgradeRevolverCrittable();
+                fadingtextEvent.text = "Revolver Crit Enabled";
+                selectedButton.interactable = false;
+            }     
+            else
+                fadingtextEvent.text = "Not Enough Resources";
+            EventSystem.Current.FireEvent(fadingtextEvent);
+        }
+
 
         public void CraftUpgradedLaserWeapon()
         {
