@@ -10,6 +10,7 @@ public class BreakableObject : MonoBehaviour
     [SerializeField] private int transitorRange;
     [SerializeField] private int batteryRange;
     [SerializeField] private int bulletRange;
+    [SerializeField] private int currencyRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
     [SerializeField] private Vector3 rotatationRate;
@@ -54,6 +55,10 @@ public class BreakableObject : MonoBehaviour
             else if (dropRoll <= bulletRange)
             {
                 drop = dropList[4];
+            }
+            else if(dropRoll <= currencyRange)
+            {
+                drop = dropList[5];
             }
             GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
             loot.transform.parent = null;

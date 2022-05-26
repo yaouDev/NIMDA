@@ -48,7 +48,7 @@ namespace CallbackSystem
             resourceEvent.i = iron;
             resourceEvent.currency = currency;
             resourceEvent.ammoChange = false;
-            resourceArray = new int[] { copper, transistor, iron };
+            resourceArray = new int[] { copper, transistor, iron, currency };
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
@@ -95,7 +95,7 @@ namespace CallbackSystem
 
                     if (hit.collider != null)
                     {
-                        if (hit.transform.tag == "CraftinTable")
+                        if (hit.transform.tag == "CraftingTable")
                         {
                             EnterCraftingUI();
                         }

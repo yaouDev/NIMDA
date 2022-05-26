@@ -20,6 +20,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int ironRange;
     [SerializeField] private int copperRange;
     [SerializeField] private int transitorRange;
+    [SerializeField] private int currencyRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
     private Transform playersPos;
@@ -86,6 +87,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
                 drop = dropList[1];
             } else if (dropRoll <= transitorRange) {
                 drop = dropList[2];
+            } else if(dropRoll <= currencyRange) {
+                drop = dropList[3];
             }
             //int item = Random.Range(0, dropList.Length);
             //drop = dropList[item];

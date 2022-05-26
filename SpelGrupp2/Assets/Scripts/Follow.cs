@@ -4,27 +4,50 @@ using UnityEngine;
 
 public class Follow : MonoBehaviour
 {
-    [HideInInspector] public GameObject Target;
+    [HideInInspector] public CallbackSystem.Crafting[] targets;
+    [HideInInspector] public CallbackSystem.Crafting target;
     public float minModifier = 7, maxModifier = 11;
-    private bool isFollowing, kickoff;
+    private bool targetFound, kickoff;
     private Vector3 velocity = Vector3.zero, offset = Vector3.up/2;
 
+    private void Start()
+    {
+        targets = FindObjectsOfType<CallbackSystem.Crafting>();
+    }
+    
     public void StartFollowing(GameObject player)
     {
-        Target = player;
-        isFollowing = true;
+        targetFound = true;
     }
+    
 
     void Update()
     {
         transform.LookAt(Camera.main.transform.position, Vector3.up);
-        if (isFollowing)
+
+        if(!targetFound)
+        {
+            if ((targets[0].transform.position - transform.position).sqrMagnitude < 30 * 3)
+            {
+                target = targets[0];
+                targetFound = true;
+            }
+            if ((targets[1].transform.position - transform.position).sqrMagnitude < 30 * 3)
+            {
+                target = targets[1];
+                targetFound = true;
+            }
+        }
+        
+        
+        if (targetFound)
         {
             if (!kickoff)
             {
                 transform.position += offset;
+                kickoff = true;
             }
-            transform.position = Vector3.SmoothDamp(transform.position, Target.transform.position, 
+            transform.position = Vector3.SmoothDamp(transform.position, target.transform.position, 
                 ref velocity, Time.deltaTime * Random.Range(minModifier, maxModifier));
         }
     }
