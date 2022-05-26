@@ -336,6 +336,10 @@ MonoBehaviour:
   maxBatteryCount: 5
   healthReg: 10
   playerMaterial: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
+  dropTable:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &8397479276426667862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,9 +357,12 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 6144
-  laserLayerMask:
+  revolverLaserSightLayerMask:
     serializedVersion: 2
-    m_Bits: 34610432
+    m_Bits: 2147491072
+  laserLaserSightLayermask:
+    serializedVersion: 2
+    m_Bits: 256
   wallLayermask:
     serializedVersion: 2
     m_Bits: 0
@@ -371,6 +378,8 @@ MonoBehaviour:
   maxTeamDamage: 30
   laserAttackDelay: 0.5
   beamThickness: 0.5
+  bulletsInGun: 0
+  maxBulletsInGun: 0
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
@@ -596,6 +605,7 @@ MonoBehaviour:
   copper: 0
   transistor: 0
   iron: 0
+  currency: 0
 --- !u!114 &326990607570548867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1075,6 +1085,10 @@ MonoBehaviour:
   maxBatteryCount: 5
   healthReg: 10
   playerMaterial: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
+  dropTable:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &3037943043123946253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1092,9 +1106,12 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 5120
-  laserLayerMask:
+  revolverLaserSightLayerMask:
     serializedVersion: 2
-    m_Bits: 34610432
+    m_Bits: 2147491072
+  laserLaserSightLayermask:
+    serializedVersion: 2
+    m_Bits: 256
   wallLayermask:
     serializedVersion: 2
     m_Bits: 0
@@ -1110,6 +1127,8 @@ MonoBehaviour:
   maxTeamDamage: 30
   laserAttackDelay: 0.5
   beamThickness: 0.5
+  bulletsInGun: 0
+  maxBulletsInGun: 0
   bullets: 15
   maxBullets: 30
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
@@ -1335,6 +1354,7 @@ MonoBehaviour:
   copper: 0
   transistor: 0
   iron: 0
+  currency: 0
 --- !u!114 &1652920257267338416
 MonoBehaviour:
   m_ObjectHideFlags: 0

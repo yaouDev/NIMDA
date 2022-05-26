@@ -20,6 +20,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int ironRange;
     [SerializeField] private int copperRange;
     [SerializeField] private int transitorRange;
+    [SerializeField] private int currencyRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
     private Transform playersPos;
@@ -78,7 +79,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
         int dropAmount = Random.Range(dropMin, dropMax);
         for (int i = 0; i < dropAmount; i++) {
-            dropOffset = new Vector3(Random.Range(-.3f, .3f), 1f, Random.Range(-.3f, .3f));
+            dropOffset = new Vector3(Random.Range(-1.3f, 1.3f), 1f, Random.Range(-1.3f, 1.3f));
             int dropRoll = Random.Range(0, 100);
             if (dropRoll <= ironRange) {
                 drop = dropList[0];
@@ -86,12 +87,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
                 drop = dropList[1];
             } else if (dropRoll <= transitorRange) {
                 drop = dropList[2];
+            } else if(dropRoll <= currencyRange) {
+                drop = dropList[3];
             }
             //int item = Random.Range(0, dropList.Length);
             //drop = dropList[item];
             GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-            //loot.transform.parent = null;
-            //loot.SetActive(true);
+            loot.transform.parent = null;
+            loot.SetActive(true);
             Destroy(loot, 15f);
         }
     }
