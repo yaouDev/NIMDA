@@ -188,6 +188,7 @@ namespace CallbackSystem
         private Vector3 dropOffset;
         private GameObject drop;
         [SerializeField] private GameObject[] dropTable = new GameObject[3];
+        
         /*
         public void DropLoot()
         {

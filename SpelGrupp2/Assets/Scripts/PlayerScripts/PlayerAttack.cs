@@ -29,9 +29,7 @@ namespace CallbackSystem {
         [SerializeField] private float maxDamage = 100;
         [SerializeField] private float maxTeamDamage = 30;
         [SerializeField][Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
-        [SerializeField] private int bulletsInGun; //skott i revolvern
-        [SerializeField] private int maxBulletsInGun; //max skott i revolvern
-        [SerializeField] private int bullets, maxBullets; //reloads/ammo boxes - UPPDATERA NAMN
+        [SerializeField] private int bullets, maxBullets, bulletChambers; //reloads/ammo boxes - UPPDATERA NAMN
         [SerializeField] private GameObject bullet, upgradedBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
@@ -74,13 +72,6 @@ namespace CallbackSystem {
         public bool IsPlayerOne() { return isPlayerOne; }
 
         public bool UsingLaserWeapon() { return laserWeapon; }
-        public void UpdateBulletCount(int amount) {
-            bullets += amount;
-            //resourceEvent.isPlayerOne = isPlayerOne;
-            resourceEvent.ammoChange = true;
-            resourceEvent.a = bullets;
-            EventSystem.Current.FireEvent(resourceEvent);
-        }
 
         private void Awake() {
             controller = GetComponent<PlayerController>();
@@ -97,7 +88,6 @@ namespace CallbackSystem {
             laserSelfDmg = startLaserSelfDmg;
             teamDamage = startTeamDamage;
             beamThickness = startBeamThickness;
-            bulletsInGun = maxBulletsInGun;
         }
 
         [SerializeField] private Material bulletMat;
@@ -117,15 +107,13 @@ namespace CallbackSystem {
 
             // TODO joystick laser 
             if (!activated) {
-                resourceEvent.ammoChange = true;
                 resourceEvent.isPlayerOne = isPlayerOne;
-                resourceEvent.a = bullets;
-                EventSystem.Current.FireEvent(resourceEvent);
-                activated = true;
+                UpdateBulletCount(0);
                 crosshairEvent.usingRevolver = !laserWeapon;
                 crosshairEvent.isPlayerOne = isPlayerOne;
                 crosshairEvent.targetInSight = targetInSight;
                 EventSystem.Current.FireEvent(crosshairEvent);
+                activated = true;
             }
             if (recentlyFired && laserWeaponCooldown < 0.5f && laserWeapon)
                 laserWeaponCooldown += Time.deltaTime;
@@ -177,7 +165,6 @@ namespace CallbackSystem {
             }
             if (context.performed && laserWeapon && canShootLaser) {
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
-
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
             }
@@ -233,7 +220,7 @@ namespace CallbackSystem {
             startSightLineWidth = 0.075f;
         }
         public void MagSizeUpgrade() {
-            maxBulletsInGun += 1;
+            maxBullets += 5;
         }
         /*        IEnumerator AttackDelay(float channelTime)
                 {
@@ -448,15 +435,15 @@ namespace CallbackSystem {
         private void FireProjectileWeapon()
         {
             //Debug.Log("Attempting to fire.");
-            if (bulletsInGun > 0) {
+            if (bullets > 0 && bulletChambers != 0) {
                 if (AIData.Instance.EnemyMuzzleflash != null) {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
                 //Debug.Log("Firing. Shots left: " + bulletsInGun);
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
-                bulletsInGun--;
                 currentBullet = projectionWeaponUpgraded ? upgradedBullet : bullet;
+                UpdateBulletCount(-1);
                 critChance = rnd.Next(0, 20);
                 if (critEnabled && critChance == 20)
                     currentBullet = explosiveBullet;
@@ -503,9 +490,35 @@ namespace CallbackSystem {
             return maxBullets;
         }
 
+        public void UpdateBulletCount(int amount)
+        {
+            bullets += amount;
+            if (bullets == 0 && bulletChambers != 0)
+                Reload();
+            if(bullets > maxBullets)
+            {
+                bulletChambers++;
+                bullets = 1;
+            }
+            resourceEvent.ammoChange = true;
+            resourceEvent.a = bullets;
+            resourceEvent.magAmmo = bulletChambers;
+            EventSystem.Current.FireEvent(resourceEvent);
+        }
+
+        /*
+        public void UpdateMagCount(int amount, int magMax)
+        {
+            bulletsInGun += amount;
+            resourceEvent.magAmmo = bulletsInGun;
+            resourceEvent.maxAmmo = magMax;
+            EventSystem.Current.FireEvent(resourceEvent);
+        }
+        */
+
         private void Reload() {
-            bulletsInGun = maxBulletsInGun;
-            UpdateBulletCount(-1);
+            bullets = maxBullets;
+            bulletChambers--;
         }
 
         public bool LaserWeaponUpgraded {
