@@ -238,7 +238,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(RevolverCritRecipe))
             {
-                playerAttackScript.UpgradeRevolverCrittable();
+                //playerAttackScript.UpgradeRevolverCrittable();
                 fadingtextEvent.text = "Revolver Crit Enabled";
                 selectedButton.interactable = false;
             }     
