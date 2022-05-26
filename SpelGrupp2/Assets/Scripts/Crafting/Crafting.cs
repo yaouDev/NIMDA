@@ -16,12 +16,13 @@ namespace CallbackSystem
     public class Crafting : MonoBehaviour
     {
         [HideInInspector] public PlayerAttack playerAttackScript;
+        [HideInInspector] public Blink playerBlinkScript;
         [SerializeField]
         private Recipe batteryRecipe, bulletRecipe,
         UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe,
         cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe,
         greenRecipe, blackRecipe, RevolverCritRecipe, laserbeamWidthRecipe,
-        largeMagazineRecipe, laserbeamChargeRecipe;
+        largeMagazineRecipe, laserbeamChargeRecipe, blinkUpgradeRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         [SerializeField] private Button[] craftingButtons;
@@ -39,6 +40,7 @@ namespace CallbackSystem
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
         private PlayerHealth playerHealthScript;
+        private PlayerController playerControllerScript;
         private bool isPlayerOne, started = false, isCrafting = false;
         private PlayerInput playerInput;
 
@@ -58,6 +60,8 @@ namespace CallbackSystem
 
         private void Awake()
         {
+            playerControllerScript = GetComponent<PlayerController>();
+            playerBlinkScript = GetComponent<Blink>();
             playerAttackScript = GetComponent<PlayerAttack>();
             playerHealthScript = GetComponent<PlayerHealth>();
             playerInput = GetComponent<PlayerInput>();
@@ -308,6 +312,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(cyanRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.1f, 0.90f, 0.90f, 1f));
+                playerHealthScript.SetNewHealth(playerHealthScript.GetMaxHealth() * 2);
                 fadingtextEvent.text = "Color Cyan Crafted";
             }
             else
@@ -319,6 +324,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(yellowRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
+                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity());
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
             else
@@ -330,6 +336,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(whiteRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.95f, 0.95f, 0.95f, 1f));
+                playerBlinkScript.DecreaseBlinkCooldown();
                 fadingtextEvent.text = "Color White Crafted";
             }
             else
@@ -341,6 +348,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(magentaRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.85f, 0f, 0.85f, 1f));
+                playerHealthScript.SetNewHealth(playerHealthScript.GetMaxHealth() * 2);
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
             else
@@ -353,6 +361,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(greenRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.35f, 0.95f, 0f, 1f));
+                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity());
                 fadingtextEvent.text = "Color Green Crafted";
             }
             else
@@ -365,6 +374,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(blackRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.25f, 0.25f, 0.25f, 1f));
+                playerBlinkScript.DecreaseBlinkCooldown();
                 fadingtextEvent.text = "Color Black Crafted";
             }
             else
@@ -375,6 +385,7 @@ namespace CallbackSystem
         public void CraftDefaultColor()
         {
             playerHealthScript.ChooseMaterialColor();
+            playerHealthScript.SetDefaultStats();
             fadingtextEvent.text = "Default Color Crafted";
         }
 
