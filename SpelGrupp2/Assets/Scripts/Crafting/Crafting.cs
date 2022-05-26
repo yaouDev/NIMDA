@@ -33,7 +33,7 @@ namespace CallbackSystem
         //Cyan, Yellow, Magenta, White, Black
         private static bool[] colorsTakenArray = new bool[5];
 
-        public int copper, transistor, iron;
+        public int copper, transistor, iron, currency;
 
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
@@ -46,6 +46,7 @@ namespace CallbackSystem
             resourceEvent.c = copper;
             resourceEvent.t = transistor;
             resourceEvent.i = iron;
+            resourceEvent.currency = currency;
             resourceEvent.ammoChange = false;
             resourceArray = new int[] { copper, transistor, iron };
             EventSystem.Current.FireEvent(resourceEvent);
@@ -62,7 +63,7 @@ namespace CallbackSystem
             fadingtextEvent = new FadingTextEvent();
             resourceEvent = new ResourceUpdateEvent();
             craftingTable.SetActive(false);
-            resourceArray = new int[] { copper, transistor, iron };
+            resourceArray = new int[] { copper, transistor, iron, currency };
 
         }
 
@@ -98,7 +99,7 @@ namespace CallbackSystem
                         {
                             EnterCraftingUI();
                         }
-                        else if(hit.transform.tag == "Generator")
+                        else if (hit.transform.tag == "Generator")
                         {
                             GeneratorEvent generator = hit.transform.GetComponent<GeneratorEvent>();
                             generator.StartGenerator();
@@ -343,6 +344,7 @@ namespace CallbackSystem
                 copper -= recipe.copperNeeded;
                 iron -= recipe.ironNeeded;
                 transistor -= recipe.transistorNeeded;
+                currency -= recipe.currencyNeeded;
                 UpdateResources();
                 if (selectedButton != defaultColorButton && isCrafting)
                     selectedButton.interactable = false;

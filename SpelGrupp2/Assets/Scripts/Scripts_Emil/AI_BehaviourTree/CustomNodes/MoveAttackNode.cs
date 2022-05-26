@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/MoveAttack")]
-public class MoveAttackNode : Node {
+public class MoveAttackNode : Node, IResetableNode {
 
     [SerializeField] private float spread;
     [SerializeField] private float shootForce = 20.0f;
@@ -20,7 +20,6 @@ public class MoveAttackNode : Node {
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
 
-    RaycastHit checkCover;
 
     public override NodeState Evaluate() {
 
@@ -49,7 +48,7 @@ public class MoveAttackNode : Node {
     void Attack() {
 
         //Calculate direction from attackpoint to targetpoint
-        directionWithoutSpread = checkCover.point - agent.Health.FirePoint;
+        directionWithoutSpread = agent.ClosestPlayer - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
@@ -76,5 +75,12 @@ public class MoveAttackNode : Node {
                         Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
                     }*/
 
+    }
+
+    public void ResetNode() {
+        currentBullet = null;
+        isShooting = true;
+        x = 0f;
+        y = 0f;
     }
 }

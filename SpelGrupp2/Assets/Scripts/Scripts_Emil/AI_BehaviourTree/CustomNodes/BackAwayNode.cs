@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Back Away")]
-public class BackAwayNode : Node {
+public class BackAwayNode : Node, IResetableNode {
 
     [SerializeField] private float turnSpeed = 70.0f, distanceToBackOff, acceleration = 15f, maxSpeed = 15f;
     Vector3 backOffPos;
@@ -37,7 +37,10 @@ public class BackAwayNode : Node {
             NodeState = NodeState.FAILURE;
             backOffPos = Vector3.zero;
         }
-
         return NodeState;
+    }
+
+    public void ResetNode() {
+        backOffPos = Vector3.zero;
     }
 }

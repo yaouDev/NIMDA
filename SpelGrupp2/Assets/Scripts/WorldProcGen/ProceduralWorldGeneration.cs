@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using CallbackSystem;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -117,13 +119,17 @@ public class ProceduralWorldGeneration : MonoBehaviour
             3, 12,          // 2-way straight
             5, 6, 10, 9     // 2-way elbow
             };
+        PutUpWalls();
+
         Queue<Vector2Int> queue = new Queue<Vector2Int>(setTiles);
         HashSet<Vector2Int> seen = new HashSet<Vector2Int>(setTiles);
-
+        
         for (int i = 0; i < setTiles.Count; i++)
         {
             int tType = (int) graph[setTiles[i].x, setTiles[i].y];
-            GameObject t = Instantiate(this.tileTypes[tType], new Vector3(setTiles[i].x, 14, setTiles[i].y),
+            GameObject t = Instantiate(
+                this.tileTypes[tType], 
+                new Vector3(setTiles[i].x, 14, setTiles[i].y),
                 tileRotation,
                 mapHolder);    
         }
@@ -147,7 +153,9 @@ public class ProceduralWorldGeneration : MonoBehaviour
                         neighbor.x >= worldSize.x && (possibilities[i] & E) == 0 ||
                         neighbor.y >= worldSize.y && (possibilities[i] & N) == 0 ||
                         (seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) == 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) != 0 ||   
-                         seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) != 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0))
+                         seen.Contains(neighbor) && (possibilities[i] & walls[directions[dir]]) != 0 && (graph[neighbor.x, neighbor.y] & walls[-directions[dir]]) == 0)// ||
+                        //!IsValid(current, possibilities[i])
+                        )
                     {
                         possible = false;
                     }
@@ -167,7 +175,7 @@ public class ProceduralWorldGeneration : MonoBehaviour
                 }
                 else
                 {
-                    UnityEngine.Debug.Log(15);
+                    //UnityEngine.Debug.Log(15);
                     graph[current.x, current.y] = 15;
                 }
 
@@ -206,29 +214,192 @@ public class ProceduralWorldGeneration : MonoBehaviour
                     neighbor.y < worldSize.y && // within worldSize
                     (graph[current.x, current.y] & walls[directions[dir]]) == 0) // this tile has an opening out to a neighbor
                 {
-                    // add neighbor to queue
-                    queue.Enqueue(neighbor);
+                    {
+                        // add neighbor to queue
+                        queue.Enqueue(neighbor);
+                    }
                 }
             }
         }
     }
-    
-    private bool IsWithiMap(Vector2Int coord, uint possibilities)
+
+    private void PutUpWalls()
     {
-        bool within = false;
+        int debug = 0;
+        List<Vector2Int> tiles = new List<Vector2Int>();
+        
+        for (int set = 0; set < setTiles.Count; set++)
+        {
+            // South Walls
+            int xWalls = setTiles[set].x + 1;
+            int yWalls = set == 0 ? setTiles[set].y -1 : setTiles[set].y;
+            while (//xWalls < graph.GetLength(0) && 
+                   //yWalls < graph.GetLength(1) &&
+                   xWalls >= 0 &&
+                   yWalls >= 0 &&
+                   debug < 10000)
+            {
+                debug++;
+                graph[xWalls, yWalls] = (N | S | E | W);
+                tiles.Add(new Vector2Int(xWalls, yWalls));
+                yWalls--;
+            }
+            
+            // North Walls
+            xWalls = setTiles[set].x - 1;
+            yWalls = setTiles[set].y;
+            while (xWalls < graph.GetLength(0) && 
+                   yWalls < graph.GetLength(1) &&
+                   xWalls >= 0 &&
+                   yWalls >= 0 &&
+                   debug < 10000)
+            {
+                debug++;
+                graph[xWalls, yWalls] = (N | S | E | W);
+                tiles.Add(new Vector2Int(xWalls, yWalls));
+                yWalls++;
+            }
+            
+            // East West Walls
+            xWalls = 0;
+            yWalls = setTiles[set].y;
+            if (set == 0) continue;
+            while (xWalls < graph.GetLength(0) && 
+                   yWalls < graph.GetLength(1) &&
+                   xWalls >= 0 &&
+                   yWalls >= 0 &&
+                   debug < 10000)
+            {
+                debug++;
+                if (xWalls != setTiles[set].x)
+                {
+                    UnityEngine.Debug.Log("is setTiles");
+                    graph[xWalls, yWalls] = (N | S | E | W);
+                    tiles.Add(new Vector2Int(xWalls, yWalls));    
+                }
+                
+                xWalls++;
+            }
+        }
+
+        for (int tile = 0; tile < tiles.Count; tile++)
+        {
+            setTiles.Add(tiles[tile]);
+        }
+        
+        UnityEngine.Debug.Log(debug);
+    }
+    
+    private bool IsValid(Vector2Int coord, uint possibility)
+    {
+        bool inside = false;
         for (int set = 1; set < setTiles.Count; set++)
         {
+            // is within a "level"
             if (coord.x <= setTiles[set].x && 
                 coord.y < setTiles[set].y && 
                 coord.x >= setTiles[set - 1].x &&
                 coord.y > setTiles[set - 1].y)
             {
-                //if (coord.x == setTiles[set].x)
-                //within = true;
+                inside = true;
+                
+                // North East corner
+                if (coord.x == setTiles[set].x &&
+                    coord.y == setTiles[set].y - 1 &&
+                    ( //(possibility & N) == 0 &&
+                        (possibility & E) == 0))
+                {
+                    UnityEngine.Debug.Log($"North East Corner Not Fitting {coord} {possibility}");
+                    return false;
+                }
+                // South East corner
+                if (coord.x == setTiles[set].x &&
+                    coord.y == setTiles[set - 1].y + 1 &&
+                    ((possibility & S) == 0 ||
+                     (possibility & E) == 0))
+                {
+                    UnityEngine.Debug.Log($"South East Corner Not Fitting {coord} {possibility}");
+                    return false;
+                    
+                }
+                // North West corner
+                if (coord.x == setTiles[set - 1].x &&
+                    coord.y == setTiles[set].y - 1 &&
+                    ((possibility & N) == 0 ||
+                     (possibility & W) == 0))
+                {
+                    UnityEngine.Debug.Log($"North West Corner Not Fitting {coord} {possibility}");
+                    return false;
+                    
+                }
+                // South West corner
+                if (coord.x == setTiles[set - 1].x &&
+                    coord.y == setTiles[set - 1].y + 1 &&
+                    ( //(possibility & S) == 0 ||
+                        (possibility & W) == 0))
+                {
+                    UnityEngine.Debug.Log($"South West Corner Not Fitting {coord} {possibility}");
+                    return false;
+                    
+                }
+                
+                if (coord.x == setTiles[set].x && (possibility & E) == 0)   // hasn't got a wall to east  
+                    return false;
+                if (coord.x == setTiles[set - 1].x && (possibility & W) == 0) // hasn't got a wall to west
+                    return false;
+                if (coord.y == setTiles[set].y - 1 && (possibility & N) == 0) // hasn't got a wall to north 
+                    return false;
+                if (coord.y == setTiles[set - 1].y + 1 && (possibility & S) == 0) // hasn't got a wall to south
+                    return false;
             }
         }
 
-        return within;
+        //UnityEngine.Debug.Log($"inside {inside}");
+        
+        return inside;
+    }
+
+    private bool jkajajkad()
+    {
+        Vector2Int coord = Vector2Int.down;
+        int set = 0;
+        int possibility = 0;
+        return false;
+        
+        
+        // North East corner
+        if (coord.x == setTiles[set].x && 
+            coord.y == setTiles[set].y - 1 && 
+            ((possibility & N) == 0 &&
+             (possibility & E) == 0))
+            return false;
+        // South East corner
+        if (coord.x == setTiles[set].x &&
+            coord.y == setTiles[set - 1].y + 1 &&
+            ((possibility & S) == 0 ||
+             (possibility & E) == 0))
+            return false;
+        // North West corner
+        if (coord.x == setTiles[set - 1].x &&
+            coord.y == setTiles[set].y - 1 &&
+            ((possibility & N) == 0 ||
+             (possibility & W) == 0))
+            return false;
+        // South West corner
+        if (coord.x == setTiles[set - 1].x &&
+            coord.y == setTiles[set - 1].y + 1 &&
+            ((possibility & S) == 0 ||
+             (possibility & W) == 0))
+            return false;
+                
+        if (coord.x == setTiles[set].x && (possibility & E) == 0)   // hasn't got a wall to east  
+            return false;
+        if (coord.x == setTiles[set - 1].x && (possibility & W) == 0) // hasn't got a wall to west
+            return false;
+        if (coord.y == setTiles[set].y - 1 && (possibility & N) == 0) // hasn't got a wall to north 
+            return false;
+        if (coord.y == setTiles[set - 1].y + 1 && (possibility & S) == 0) // hasn't got a wall to south
+            return false;
     }
 
     private void Debug(ModuleDeSpawnEvent eve)

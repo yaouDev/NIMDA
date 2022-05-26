@@ -116,8 +116,8 @@ public class EnemySpawnController : MonoBehaviour {
                 spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
                 EnemyRange();
                 for (int i = 0; i < spawnThisMany; i++) {
-                    Instantiate(spawnedEnemyGO, spawnPos.position, spawnPos.rotation);
-                    //ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
+                    //Instantiate(spawnedEnemyGO, spawnPos.position, spawnPos.rotation);
+                    ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
                     nearbySpawners.Clear();
                     spawnCount += 1;
                 }
@@ -184,10 +184,13 @@ public class EnemySpawnController : MonoBehaviour {
 
             if (dropRoll <= enemyShootRange) {
                 spawnedEnemyGO = spawnThisGO[0];
+                spawnedEnemy = spawnThis[0];
             } else if (dropRoll <= enemyMeeleRange) {
                 spawnedEnemyGO = spawnThisGO[1];
+                spawnedEnemy = spawnThis[1];
             } else if (dropRoll <= enemyShieldRange) {
                 spawnedEnemyGO = spawnThisGO[2];
+                spawnedEnemy = spawnThis[2];
             }
         }
 
