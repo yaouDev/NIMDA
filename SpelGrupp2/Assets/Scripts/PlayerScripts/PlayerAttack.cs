@@ -30,7 +30,7 @@ namespace CallbackSystem {
         [SerializeField] private float maxTeamDamage = 30;
         [SerializeField][Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets, bulletChambers; //reloads/ammo boxes - UPPDATERA NAMN
-        [SerializeField] private GameObject bullet, upgradedBullet;
+        [SerializeField] private GameObject bullet, upgradedBullet, explosiveBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
         private bool laserWeapon = true;
@@ -429,7 +429,7 @@ namespace CallbackSystem {
 
         public void EnableCrittableRevolver() => critEnabled = true;
 
-        private GameObject currentBullet, explosiveBullet;
+        private GameObject currentBullet;
         private bool critEnabled;
         private int critChance;
         private void FireProjectileWeapon()
