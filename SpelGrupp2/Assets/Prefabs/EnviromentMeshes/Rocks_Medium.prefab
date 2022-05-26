@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 6038003472921271652}
   - component: {fileID: 7234073751179170497}
   - component: {fileID: 4863994208581838347}
+  - component: {fileID: 4539131400889378455}
+  - component: {fileID: 2017740929944271355}
   m_Layer: 8
   m_Name: Rocks_Medium
   m_TagString: Untagged
@@ -81,3 +83,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &4539131400889378455
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6377269173419788254}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.0080628, y: 0.7118107, z: 0.8205142}
+  m_Center: {x: -0.41401172, y: 0.26028484, z: 1.2196147}
+--- !u!65 &2017740929944271355
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6377269173419788254}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.185204, y: 1.1869942, z: 1.1324406}
+  m_Center: {x: -0.5025823, y: 0.49787658, z: 0.26324558}

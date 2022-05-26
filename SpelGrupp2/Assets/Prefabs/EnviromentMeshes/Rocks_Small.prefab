@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 2753224300128787699}
   - component: {fileID: 1268521394047112022}
   - component: {fileID: 3926653119638382492}
+  - component: {fileID: 1153915035307048133}
+  - component: {fileID: 5125804818289426404}
+  - component: {fileID: 6712479621143617894}
   m_Layer: 8
   m_Name: Rocks_Small
   m_TagString: Untagged
@@ -81,3 +84,42 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1153915035307048133
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3278262386277353033}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.78422546, y: 0.42912954, z: 1.059277}
+  m_Center: {x: -0.8475723, y: 0.20143369, z: 1.4035351}
+--- !u!65 &5125804818289426404
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3278262386277353033}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8332577, y: 0.49089855, z: 0.9834719}
+  m_Center: {x: -0.37211895, y: 0.2323182, z: 0.86884546}
+--- !u!65 &6712479621143617894
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3278262386277353033}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.50855064, y: 0.3154425, z: 0.45485687}
+  m_Center: {x: -0.22348118, y: 0.14459017, z: 0.20744038}

@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4381681990590626291}
   - component: {fileID: 819944421346670166}
   - component: {fileID: 3208234546898043548}
+  - component: {fileID: 8673956595814562702}
+  - component: {fileID: 8599055983926982438}
   m_Layer: 8
   m_Name: TvScreen
   m_TagString: Untagged
@@ -81,3 +83,29 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8673956595814562702
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4000617187333186377}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.353859, y: 0.88776636, z: 0.51495504}
+  m_Center: {x: -0.5421982, y: 0.43875527, z: 0.4083221}
+--- !u!65 &8599055983926982438
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4000617187333186377}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.1341591, y: 0.7061634, z: 0.29207516}
+  m_Center: {x: -0.55441093, y: 0.3479538, z: 0.08701277}
