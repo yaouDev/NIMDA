@@ -444,6 +444,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void SetTerminalVelocity(float value) => _terminalVelocity = value;
+    public float GetTerminalVelocity() { return _terminalVelocity; }
     public void SetDefaultVelocity() => _terminalVelocity = _defaultTerminalVelocity;
     public void Respawn() => alive = true;
 }
