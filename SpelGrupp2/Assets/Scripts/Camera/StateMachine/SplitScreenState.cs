@@ -112,8 +112,8 @@ public class SplitScreenState : CameraState {
 		hits = new RaycastHit[10];
 		
 		Physics.SphereCastNonAlloc(
-			PlayerThis.position,
-			2.0f,
+			PlayerThis.position + splitScreenOffset,
+			4.0f,
 			offsetDirection.normalized,
 			hits,
 			//out  RaycastHit  hit, 
