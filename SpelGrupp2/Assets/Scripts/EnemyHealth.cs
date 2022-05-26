@@ -6,7 +6,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
-    [SerializeField][Range(0, 2000)] private int fullHealth = 100;
+    [SerializeField][Range(0, 10000)] private int fullHealth = 100;
     [SerializeField] private float hitForce = 10;
     [SerializeField] string objectPoolTag;
     //public float currHealth;
