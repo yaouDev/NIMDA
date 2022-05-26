@@ -19,14 +19,14 @@ namespace CallbackSystem
         private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
-        [SerializeField] private float startLaserSelfDmg = 1f;
-        [SerializeField] private float laserSelfDamageIncreasePerTenthSecond = 1f;
-        [SerializeField] private float laserTeamDamageIncreasePerTenthSecond = 3f;
-        [SerializeField] private float maxSelfDamage = 10;
-        [SerializeField] private float startDamage = 10f, startTeamDamage = 3f;
-        [SerializeField] private float damageIncreasePerTenthSecond = 10;
-        [SerializeField] private float maxDamage = 100;
-        [SerializeField] private float maxTeamDamage = 30;
+        [SerializeField] private float startLaserSelfDmg;
+        [SerializeField] private float laserSelfDamageIncreasePerTenthSecond;
+        [SerializeField] private float laserTeamDamageIncreasePerTenthSecond;
+        [SerializeField] private float maxSelfDamage;
+        [SerializeField] private float startDamage, startTeamDamage;
+        [SerializeField] private float damageIncreasePerTenthSecond;
+        [SerializeField] private float maxDamage;
+        [SerializeField] private float maxTeamDamage;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private float beamThickness = 0.5f;
         [SerializeField] private int bulletsInGun; //skott i revolvern
@@ -40,9 +40,9 @@ namespace CallbackSystem
         private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
 
-        private float damage;
-        private float laserSelfDmg;
-        private float teamDamage;
+        [SerializeField] private float damage;
+        [SerializeField] private float laserSelfDmg;
+        [SerializeField] private float teamDamage;
 
         private bool chargingUP = false;
         private float startSightLineWidth = 0.05f;
@@ -96,8 +96,8 @@ namespace CallbackSystem
             revolverCooldown = 0f;
             damage = startDamage;
             sightLineWidth = startSightLineWidth;
-            laserSelfDmg = startLaserSelfDmg;
-            teamDamage = startTeamDamage;
+            //laserSelfDmg = startLaserSelfDmg;
+            //teamDamage = startTeamDamage;
             bulletsInGun = maxBulletsInGun;
         }
 
