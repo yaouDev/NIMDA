@@ -15,7 +15,24 @@ public class DynamicGraph : MonoBehaviour {
     public static DynamicGraph Instance;
     private HashSet<Vector2Int> loadedModules;
     private Queue<Vector3> nodesToRemove;
-
+    private int graphXOffset = 12, graphYOffset = 3;
+    private uint north = 8, south = 4, east = 2, west = 1;
+    private uint[,] graph = {
+        {15,15,15,15,15,15,15,15,15,15,15,15,15,15},
+        {15,15,15,17,15,15,15,15,15,15,15,15,15,15},
+        {15,15,15,16,15,15,15,15,15,15,15,15,15,15},
+        {15,15, 9, 4,14,15,15,15,15,15,15,15,15,15},
+        {15,15, 1,10,11,15,15,15,15,15,15,15,15,15},
+        {15,15, 5, 4, 2,15,15,15,15,15,15,15,15,15},
+        {15,15,13, 8, 6,15,15,15,15,15,15,15,15,15},
+        {15,15,15,16,15,15,15,15,15,15,15,15,15,15},
+        {15,15,13, 0,10,15,15,15,15,15,15,15,15,15},
+        {15,15, 9, 6, 7,15,15,15,15,15,15,15,15,15},
+        {15,15, 1,12,14,15,15,15,15,15,15,15,15,15},
+        {15,15, 5,10,15,15,15,15,15,15,15,15,15,15},
+        {15,15,15, 7,15,15,15,15,15,15,15,15,15,15},
+        {15,15,15,15,15,15,15,15,15,15,15,15,15,15}
+    };
 
     void Start() {
         masterGraph = new ConcurrentDictionary<Vector3, ConcurrentDictionary<Vector3, float>>();
@@ -268,6 +285,39 @@ public class DynamicGraph : MonoBehaviour {
         if (yOffset <= -((float)moduleSize / 2) + nodeHalfextent) yAdd = -1;
         if (yOffset >= ((float)moduleSize / 2) - nodeHalfextent) yAdd = +1;
         return new Vector2Int((int)worldPos.x / moduleSize + xAdd, (int)worldPos.z / moduleSize + yAdd);
+    }
+
+    private KeyValuePair<int, int> GetGraphIndexFromModulePos(Vector2Int modulePos) {
+        int xIndex = graphXOffset - modulePos.y;
+        int yIndex = graphYOffset + modulePos.x;
+        return new KeyValuePair<int, int>(xIndex, yIndex);
+    }
+
+    public bool ModulesAdjacent(Vector2Int firstModule, Vector2Int secondModule) {
+        if(firstModule == secondModule) return true;
+
+        if (Mathf.Abs(firstModule.x - secondModule.x) <= 1 || Mathf.Abs(firstModule.y - secondModule.y) <= 1) {
+            KeyValuePair<int, int> firstModuleIndex = GetGraphIndexFromModulePos(firstModule);
+            KeyValuePair<int, int> secondModuleIndex = GetGraphIndexFromModulePos(secondModule);
+
+            uint firstModuleType = graph[firstModuleIndex.Key, firstModuleIndex.Value];
+            uint secondModuleType = graph[secondModuleIndex.Key, secondModuleIndex.Value];
+
+            if (firstModuleType < 15 && secondModuleType < 15) {
+                uint res;
+                if (firstModule.x == secondModule.x) {
+                    if (firstModuleIndex.Value > secondModuleIndex.Value) res = firstModuleType & north;
+                    else res = secondModuleType & north;
+                } else {
+                    if (firstModuleIndex.Key < secondModuleIndex.Key) res = secondModuleType & east;
+                    else res = firstModuleType & east;
+                }
+                return res != 0;
+            }
+
+        }
+        return false;
+
     }
 
     public bool IsModuleLoaded(Vector2Int modulePos) {
