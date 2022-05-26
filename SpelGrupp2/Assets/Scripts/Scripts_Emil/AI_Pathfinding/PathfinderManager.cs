@@ -15,14 +15,14 @@ public class PathfinderManager : MonoBehaviour {
     JobHandle job;
     List<AI_Controller> agentsToUpdate = new List<AI_Controller>();
     NativeList<Vector3> startPositionsTmp;
-    NativeList<Vector3> endPositionsTmp;
+    NativeList<Vector3> endPositionsTMp;
 
     void Awake() {
         Instance ??= this;
         pathQueue = new PriorityQueue<AI_Controller>();
         job = new JobHandle();
         startPositionsTmp = new NativeList<Vector3>(Allocator.Persistent);
-        endPositionsTmp = new NativeList<Vector3>(Allocator.Persistent);
+        endPositionsTMp = new NativeList<Vector3>(Allocator.Persistent);
     }
 
 
@@ -77,19 +77,19 @@ public class PathfinderManager : MonoBehaviour {
 
             agentsToUpdate.Clear();
             startPositionsTmp.Clear();
-            endPositionsTmp.Clear();
+            endPositionsTMp.Clear();
 
             while (!pathQueue.IsEmpty()) {
                 AI_Controller agent = pathQueue.DeleteMin();
                 if (agent == null) continue;
                 agentsToUpdate.Add(agent);
                 startPositionsTmp.Add(agent.Position);
-                endPositionsTmp.Add(agent.CurrentTarget);
+                endPositionsTMp.Add(agent.CurrentTarget);
             }
 
             AStarJob aStarJob = new AStarJob {
                 startPositions = startPositionsTmp,
-                endPositions = endPositionsTmp,
+                endPositions = endPositionsTMp,
             };
 
             int perThread;
@@ -103,7 +103,7 @@ public class PathfinderManager : MonoBehaviour {
     private void OnDestroy() {
         try {
             startPositionsTmp.Dispose();
-            endPositionsTmp.Dispose();
+            endPositionsTMp.Dispose();
         } catch (System.Exception) {
             // so it doesn't spam on exit playmode
         }

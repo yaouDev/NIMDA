@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CallbackSystem;
 
 public class AI_Controller : MonoBehaviour {
 
@@ -39,6 +38,9 @@ public class AI_Controller : MonoBehaviour {
             if (value < 0) maxSpeed = 0;
             else maxSpeed = value;
         }
+
+
+
     }
 
     public Vector3 ClosestPlayer {
@@ -65,18 +67,6 @@ public class AI_Controller : MonoBehaviour {
             }
             currentPathIndex = 0;
         }
-    }
-
-    public bool TargetReachable {
-        get {
-            if (DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(activeTarget)) &&
-            !DynamicGraph.Instance.AllNeighborsBlocked(activeTarget)) return true;
-            return false;
-        }
-    }
-
-    public bool TargetStationary {
-        get { return ClosestPlayer.x != Destination.x && ClosestPlayer.z != Destination.z; }
     }
 
     public EnemyHealth Health { get { return enemyHealth; } }
@@ -118,10 +108,10 @@ public class AI_Controller : MonoBehaviour {
         get {
             bool nullCond = currentPath != null && currentPath.Count != 0;
             bool indexCond = nullCond && currentPath.Count - currentPathIndex <= 5;
-            bool discrepancyCond = nullCond && !TargetStationary &&
+            bool discrepancyCond = nullCond && currentPath[currentPath.Count - 1] != activeTarget &&
             Vector3.Distance(currentPath[currentPath.Count - 1], activeTarget) >= allowedTargetDiscrepancy;
             float distToTarget = Vector3.Distance(Position, activeTarget);
-            bool criticalRangeCond = distToTarget < critRange && !TargetStationary;
+            bool criticalRangeCond = distToTarget < critRange && Destination == ClosestPlayer;
             bool distCond = distToTarget > critRange && isStopped;
             return ((currentPath == null || currentPath.Count == 0) || distCond || discrepancyCond || (criticalRangeCond && discrepancyCond) || indexCond) && !updatingPath;
         }
@@ -144,8 +134,8 @@ public class AI_Controller : MonoBehaviour {
 
         Physics.IgnoreLayerCollision(12, 12);
 
-        EventSystem.Current.RegisterListener<SafeRoomEvent>(OnPlayerEnterSafeRoom);
-        EventSystem.Current.RegisterListener<ModuleDeSpawnEvent>(OnModuleUnload);
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
+        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
     }
 
     private void FixedUpdate() {
@@ -170,7 +160,7 @@ public class AI_Controller : MonoBehaviour {
         UpdateRotation();
         behaviorTree.Update();
 
-        if (TargetReachable && PathRequestAllowed) StartCoroutine(updatePath());
+        if (PathRequestAllowed) StartCoroutine(updatePath());
 
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -218,13 +208,6 @@ public class AI_Controller : MonoBehaviour {
         activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
     }
 
-    public void ResetAgent() {
-        CurrentPath = null;
-        IsStopped = false;
-        behaviorTree.ResetTree();
-        updatingPath = false;
-    }
-
     void MoveFromBlock() {
         Vector3 forceToAdd = Vector3.zero;
         if (currentPath != null && currentPathIndex != currentPath.Count - 1) {
@@ -259,6 +242,7 @@ public class AI_Controller : MonoBehaviour {
 
             bool anyNodeBlocked = false;
             Vector3 dirToMoveBack = Vector3.zero;
+            int lerpCount = 2;
             for (int i = 0; i < pathNeighbors.Length; i++) {
                 if (blockedNeighbors[i]) {
                     anyNodeBlocked = true;
@@ -270,6 +254,7 @@ public class AI_Controller : MonoBehaviour {
                         if (dot < 0.5f || (dot >= 0.5f && !sideBlocked)) lerpVal = 0.5f;
                         else if (dot >= 0.5f && sideBlocked) lerpVal = 0.3f;
                         dirToMoveBack = Vector3.Lerp(dirToMoveBack, (currentNode - pathNeighbors[i]).normalized, lerpVal);
+                        lerpCount++;
                     }
                     dirToMoveBack.y = 0;
                     dirToMoveBack = dirToMoveBack.normalized;
@@ -320,14 +305,14 @@ public class AI_Controller : MonoBehaviour {
 
     private void OnDestroy() {
         try {
-            EventSystem.Current.UnregisterListener<SafeRoomEvent>(OnPlayerEnterSafeRoom);
-            EventSystem.Current.UnregisterListener<ModuleDeSpawnEvent>(OnModuleUnload);
+            CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.SafeRoomEvent>(OnPlayerEnterSafeRoom);
+            CallbackSystem.EventSystem.Current.UnregisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
         } catch (System.Exception) {
             // only so it doesn't spam nullreference on exit playmode
         }
     }
 
-    private void OnModuleUnload(ModuleDeSpawnEvent deSpawnEvent) {
+    private void OnModuleUnload(CallbackSystem.ModuleDeSpawnEvent deSpawnEvent) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(Position);
         if (deSpawnEvent.Position == modulePos) Health.DieNoLoot();
     }
@@ -335,9 +320,7 @@ public class AI_Controller : MonoBehaviour {
     // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
     private void OnTriggerStay(Collider other) {
         if (other != null && other.tag == "Enemy") {
-            Vector3 offset = Vector3.zero;
-            if (other.transform.position == Position) offset.x += 0.1f;
-            Vector3 directionOfOtherEnemy = ((other.transform.position + offset) - Position).normalized;
+            Vector3 directionOfOtherEnemy = (other.transform.position - Position).normalized;
             Vector3 valueToTest = transform.position;
             if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
             float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);

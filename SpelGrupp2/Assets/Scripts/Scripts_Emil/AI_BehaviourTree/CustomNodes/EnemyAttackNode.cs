@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyRangeAttack")]
-public class EnemyAttackNode : Node, IResetableNode {
+public class EnemyAttackNode : Node {
 
     [SerializeField] private float spread = 0.1f;
     [SerializeField] private float shootForce = 20.0f;
@@ -68,15 +68,14 @@ public class EnemyAttackNode : Node, IResetableNode {
         directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
 
         //Instatiate bullet
-        //currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.FirePoint, Quaternion.identity);
-        currentBullet = ObjectPool.Instance.GetFromPool("SimpleBullet", agent.Health.FirePoint, Quaternion.identity, null, true);
+        currentBullet = Instantiate(AIData.Instance.Bullet, agent.Health.FirePoint, Quaternion.identity);
 
         //Rotate bullet to shoot direction
         currentBullet.transform.forward = directionWithSpread.normalized;
 
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-
+        
         //Add sounds
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.fire1, agent.gameObject);
 
@@ -87,11 +86,6 @@ public class EnemyAttackNode : Node, IResetableNode {
         if (AIData.Instance.EnemyMuzzleflash != null) {
             Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
-    }
 
-    public void ResetNode() {
-        isShooting = true;
-        x = 0f;
     }
-
 }

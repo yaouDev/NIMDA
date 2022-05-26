@@ -46,20 +46,7 @@ public class EnemyPulseAttackAreaNode : Node
     }
     public IEnumerator AttackDelay()
     {
-        float end = Time.realtimeSinceStartup + attackCoolDown;
-        bool soundStarted = false;
-
-        while(end > Time.realtimeSinceStartup)
-        {
-            if(end - Time.realtimeSinceStartup <= 0.3f && !soundStarted)
-            {
-                soundStarted = true;
-                AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.explosion, agent.gameObject);
-            }
-            yield return null;
-        }
-
-       // yield return new WaitForSeconds(attackCoolDown);
+        yield return new WaitForSeconds(attackCoolDown);
         Attack();
         //agent.StartCoroutine(AnimateLineRenderer());
         isAttacking = true;

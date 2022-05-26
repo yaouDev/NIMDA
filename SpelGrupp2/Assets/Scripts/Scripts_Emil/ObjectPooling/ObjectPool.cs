@@ -23,13 +23,11 @@ public class ObjectPool : MonoBehaviour {
 
     public GameObject GetFromPool(string tag, Vector3 position, Quaternion rotation, Transform parent = null, bool poolable = false) {
         if (poolDictionary.ContainsKey(tag)) {
-            bool firstTimeInit = false;
             GameObject objectToSpawn;
             if (poolDictionary[tag].ObjectPool.Count > 0) {
                 objectToSpawn = poolDictionary[tag].ObjectPool.Dequeue();
             } else {
                 objectToSpawn = Instantiate(poolDictionary[tag].Prefab);
-                firstTimeInit = true;
             }
             objectToSpawn.SetActive(true);
             objectToSpawn.transform.position = position;
@@ -38,7 +36,7 @@ public class ObjectPool : MonoBehaviour {
             poolDictionary[tag].ActiveObjects++;
             poolDictionary[tag].InactiveObjects--;
 
-            if (poolable && !firstTimeInit) {
+            if (poolable) {
                 IPoolable poolableObj = objectToSpawn.GetComponent<IPoolable>();
                 if (poolableObj != null) poolableObj.OnSpawn();
             }
@@ -97,5 +95,8 @@ public class ObjectPool : MonoBehaviour {
                 else inactiveObjects = 0;
             }
         }
+
+
     }
+
 }

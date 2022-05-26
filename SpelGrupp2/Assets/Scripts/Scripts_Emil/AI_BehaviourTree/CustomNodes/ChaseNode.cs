@@ -9,7 +9,7 @@ public class ChaseNode : Node {
     [SerializeField] private float distanceFromTargetToStop;
     public override NodeState Evaluate() {
 
-        if (agent.Destination != agent.ClosestPlayer || (agent.Destination == agent.ClosestPlayer && agent.CurrentPath == null)) {
+        if (agent.Destination != agent.ClosestPlayer) {
             agent.Acceleration = acceleration;
             agent.MaxSpeed = maxSpeed;
             agent.Destination = agent.ClosestPlayer;

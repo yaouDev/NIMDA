@@ -100,9 +100,8 @@ public class SplitScreenState : CameraState {
 		if (Vector3.Distance(PlayerThis.position, PlayerOther.position) < isometricDistance)
 			stateMachine.TransitionTo<TransitionToIsometric>();
 
-		if (Vector3.Distance(PlayerOther.position, PlayerThis.position) < isometricDistance * 1.5f &&
-			(!isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0 ||
-		    isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x < 0 )) {
+		if (!isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0 ||
+		    isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x < 0 ) {
 			stateMachine.TransitionTo<TransitionToOtherSide>();
 		}
 	}

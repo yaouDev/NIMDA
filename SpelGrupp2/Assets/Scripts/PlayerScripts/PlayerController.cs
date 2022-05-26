@@ -71,7 +71,6 @@ public class PlayerController : MonoBehaviour
     [Range(0.0f, 20.0f)]
     [Tooltip("Max speed")]
     private float _terminalVelocity = 12.0f;
-    private float _defaultTerminalVelocity;
 
     [SerializeField]
     [Range(0.0f, 20.0f)]
@@ -123,7 +122,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _defaultTerminalVelocity = _terminalVelocity;
+
+        //crafting = new Crafting();
         _jumpVector = new Vector3(0.0f, _jumpForce);
         _defaultGravity = -Physics.gravity.y;
         _colliderRadius = _collider.radius;
@@ -442,8 +442,6 @@ public class PlayerController : MonoBehaviour
         visuals.SetActive(true);
         alive = true;
     }
-
-    public void SetTerminalVelocity(float value) => _terminalVelocity = value;
-    public void SetDefaultVelocity() => _terminalVelocity = _defaultTerminalVelocity;
+    
     public void Respawn() => alive = true;
 }

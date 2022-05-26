@@ -45,28 +45,4 @@ public class BehaviorTree : MonoBehaviour {
         rootNode.Evaluate();
     }
 
-    public void ResetTree() {
-        Reset(rootNode);
-    }
-
-    private void Reset(Node node) {
-        if ((node.GetType() == typeof(Selector) || node.GetType() == typeof(Sequence))) {
-            List<Node> innerNodes = new List<Node>();
-            if (node.GetType() == typeof(Selector)) {
-                innerNodes = ((Selector)node).GetInnerNodes();
-            } else if (node.GetType() == typeof(Sequence)) {
-                innerNodes = ((Sequence)node).GetInnerNodes();
-            }
-            foreach (Node innerNode in innerNodes) {
-                Reset(innerNode);
-            }
-        } else {
-
-            if (node.GetType().GetInterface(nameof(IResetableNode)) != null) {
-                IResetableNode resetableNode = (IResetableNode)node;
-                resetableNode.ResetNode();
-            }
-        }
-    }
-
 }

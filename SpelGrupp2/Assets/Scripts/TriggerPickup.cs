@@ -12,19 +12,18 @@ public class TriggerPickup : MonoBehaviour
     {
         parent = GetComponentInParent<Follow>();
         players = FindObjectsOfType<CallbackSystem.PlayerHealth>();
-    }
 
-    private void OnTriggerEnter(Collider other)
+    }
+    private void OnTriggerEnter(Collider collider)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (collider.gameObject.tag.Equals("Player"))
         {
-            closestPlayer =
-                Vector3.Distance(parent.gameObject.transform.position, players[0].gameObject.transform.position) <
-                Vector3.Distance(parent.gameObject.transform.position, players[1].gameObject.transform.position) ?
+            closestPlayer = 
+                Vector3.Distance(parent.gameObject.transform.position, players[0].gameObject.transform.position) < 
+                Vector3.Distance(parent.gameObject.transform.position, players[1].gameObject.transform.position) ? 
                 players[0].gameObject : players[1].gameObject;
 
             parent.StartFollowing(closestPlayer);
-            //Debug.Log($"{closestPlayer.transform.name}");
         }
     }
 }

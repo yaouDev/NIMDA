@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CallbackSystem
-{
-    public class PlayerHealth : MonoBehaviour, IDamageable
-    {
+namespace CallbackSystem {
+    public class PlayerHealth : MonoBehaviour, IDamageable {
         [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 5.0f;
         [SerializeField] private bool isPlayerOne;
@@ -18,7 +16,6 @@ namespace CallbackSystem
         private PlayerAttack attackAbility;
         private PlayerController movement;
         private HealthUpdateEvent healthEvent;
-        private Crafting crafting;
         private ActivationUIEvent UIEvent;
         private ChangeColorEvent colorEvent;
         private bool started = false;
@@ -29,17 +26,13 @@ namespace CallbackSystem
         private AudioController ac;
 
         public bool IsPlayerOne() { return isPlayerOne; }
-        private void Awake()
-        {
+        private void Awake() {
             healthEvent = new HealthUpdateEvent();
             colorEvent = new ChangeColorEvent();
             UIEvent = new ActivationUIEvent();
         }
-        private void Start()
-        {
-            //Cursor.visible = false;
+        private void Start() {
             batteryCount = 3;
-            crafting = GetComponent<Crafting>();
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
             colorEvent.isPlayerOne = isPlayerOne;
@@ -51,31 +44,24 @@ namespace CallbackSystem
             //EventSystem.Current.FireEvent(colorEvent);
             ac = AudioController.instance;
         }
-        private void Update()
-        {
-            if (!started)
-            {
+        private void Update() {
+            if (!started) {
                 UpdateHealthUI();
                 started = true;
             }
-            if (alive && currHealth != maxHealth)
-            {
+            if (alive && currHealth != maxHealth) {
                 UpdateHealthUI();
                 respawnTimer = 0.0f;
-            }
-            else
-            {
+            } else {
                 respawnTimer += Time.deltaTime;
             }
 
-            if (!alive && respawnTimer > respawnTime)
-            {
+            if (!alive && respawnTimer > respawnTime) {
                 Respawn();
             }
         }
 
-        public void TakeDamage(float damage)
-        {
+        public void TakeDamage(float damage) {
             currHealth -= damage;
             if (alive)
             {
@@ -87,38 +73,30 @@ namespace CallbackSystem
                 EventSystem.Current.FireEvent(shakeEvent);
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.hurt : ac.player2.hurt, gameObject);
             }
-
-            if (currHealth <= float.Epsilon && batteryCount > 0)
-            {
+            
+            if (currHealth <= float.Epsilon && batteryCount > 0) {
                 currHealth = maxHealth;
                 batteryCount--;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.batteryDelpetion : ac.player2.batteryDelpetion, gameObject);
                 UpdateHealthUI(true);
             }
-            if (currHealth <= 0f && batteryCount == 0)
-            {
+            if (currHealth <= 0f && batteryCount == 0) {
                 Die();
             }
         }
 
-        public bool Alive
-        {
+        public bool Alive {
             get { return alive; }
         }
 
-        public void IncreaseBattery()
-        {
+        public void IncreaseBattery() {
             batteryCount++;
             UpdateHealthUI();
         }
 
-        public void Die()
-        {
+        public void Die() {
             if (alive)
-            {
                 uiMenus.DeadPlayers(1);
-                //DropLoot();
-            }
             alive = false;
             attackAbility.Die();
             movement.Die();
@@ -126,11 +104,11 @@ namespace CallbackSystem
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
+            
             ac.PlayOneShotAttatched(isPlayerOne ? ac.player1.death : ac.player2.death, gameObject);
         }
 
-        public void Respawn()
-        {
+        public void Respawn() {
             alive = true;
             currHealth = maxHealth;
             batteryCount = batteryRespawnCount;
@@ -144,23 +122,8 @@ namespace CallbackSystem
             uiMenus.DeadPlayers(-1);
         }
 
-        public void SetNewHealth(float value)
-        {
-            maxHealth = value;
-            currHealth = maxHealth;
-        }
-
-        public void SetDefaultStats()
-        {
-            maxHealth = 100f;
-            currHealth = (currHealth > maxHealth) ? maxHealth : currHealth;
-            movement.SetDefaultVelocity();
-        }
-
-        private void UpdateHealthUI(bool batteryDecreased = false)
-        {
-            if (batteryCount < 1)
-            {
+        private void UpdateHealthUI(bool batteryDecreased = false) {
+            if (batteryCount < 1) {
                 HealthRegeneration();
             }
             healthEvent.isPlayerOne = isPlayerOne;
@@ -170,35 +133,11 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(healthEvent);
         }
 
-        private void HealthRegeneration()
-        {
+        private void HealthRegeneration() {
             currHealth += (Time.deltaTime * healthReg * 1f);
-            currHealth = Mathf.Min(currHealth, maxHealth);
+            currHealth = Mathf.Min(currHealth, 100f);
 
         }
-
-        private Vector3 dropOffset;
-        private GameObject drop;
-        [SerializeField] private GameObject[] dropTable = new GameObject[3];
-        /*
-        public void DropLoot()
-        {
-            dropOffset = new Vector3(Random.Range(-1f, 1f), 1f, Random.Range(-1f, 1f));
-            //dropOffset = Random.onUnitSphere * 2f;
-            dropOffset.y = Mathf.Abs(dropOffset.y);
-            for(int index = 0; index < 3; index++)
-            {
-                for (int i = 0; i < crafting.GetHalfResourceAmount(index); i++)
-                {
-                    drop = dropTable[index];
-                    GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-                    Destroy(loot, 15f);
-                }
-                crafting.ReduceResourceByHalf(index);
-            }
-            crafting.UpdateResources();
-        }
-        */
         public void ChooseMaterialColor(Color color)
         {
             playerMaterial.color = color;
@@ -213,21 +152,11 @@ namespace CallbackSystem
         }
         public Color GetCurrentMaterialColor() { return playerMaterial.color; }
 
-        public float GetCurrenthealth()
-        {
+        public float GetCurrenthealth() {
             return currHealth;
         }
 
-        public float GetMaxHealth() { return maxHealth; }
-
-        public void SetCurrentHealth(float value)
-        {
-            currHealth = value;
-            UpdateHealthUI();
-        }
-
-        public int GetCurrentBatteryCount()
-        {
+        public int GetCurrentBatteryCount() {
             return batteryCount;
         }
 

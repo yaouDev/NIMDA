@@ -83,5 +83,6 @@ public class AttackNode : Node {
         if (AIData.Instance.EnemyMuzzleflash != null) {
             Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
+
     }
 }

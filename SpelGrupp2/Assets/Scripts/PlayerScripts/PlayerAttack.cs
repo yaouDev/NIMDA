@@ -16,7 +16,7 @@ namespace CallbackSystem
         private Vector3 aimingDirection = Vector3.forward, crosshairPoint;
         private PlayerHealth health;
         private PlayerController controller;
-         private Camera cam;
+        private Camera cam;
         private bool isAlive = true;
         [SerializeField] [Range(0f, 50f)] private float maxDistance = 30f;
         [SerializeField] private float startLaserSelfDmg = 1f;
@@ -121,7 +121,7 @@ namespace CallbackSystem
                 resourceEvent.a = bullets;
                 EventSystem.Current.FireEvent(resourceEvent);
                 activated = true;
-                crosshairEvent.usingRevolver = !laserWeapon;
+                crosshairEvent.usingProjectileWeapon = !laserWeapon;
                 crosshairEvent.isPlayerOne = isPlayerOne;
                 crosshairEvent.targetInSight = targetInSight;
                 EventSystem.Current.FireEvent(crosshairEvent);
@@ -444,7 +444,7 @@ namespace CallbackSystem
 
         private void RenderCrosshair()
         {
-            crosshairEvent.usingRevolver = laserWeapon ? false : true;
+            crosshairEvent.usingProjectileWeapon = laserWeapon ? false : true;
             crosshairEvent.isPlayerOne = isPlayerOne;
             crosshairEvent.crosshairPos = crosshairPoint;
             crosshairEvent.targetInSight = targetInSight;
