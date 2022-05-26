@@ -421,7 +421,7 @@ public class PlayerController : MonoBehaviour
         transform.position += Vector3.up * .5f;
         while (t <= 1.0f)
         {
-            transform.rotation = Quaternion.Slerp(startRot, endRot, Ease.EaseOutBounce(t));
+            transform.rotation = Quaternion.Slerp(startRot, endRot, Ease.EaseOutCirc(t));
             t += Time.deltaTime;
             yield return null;
         }
@@ -434,7 +434,7 @@ public class PlayerController : MonoBehaviour
         Vector3 startPos = gameObject.transform.position;
         while (t <= 1.0f)
         {
-            gameObject.transform.position = Vector3.LerpUnclamped(startPos, otherPlayer.transform.position + Vector3.left, Ease.EaseOutBack(t));
+            gameObject.transform.position = Vector3.LerpUnclamped(startPos, otherPlayer.transform.position + Vector3.left, Ease.EaseOutCirc(t));
             t += Time.deltaTime;
             yield return null;
         }
@@ -444,6 +444,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void SetTerminalVelocity(float value) => _terminalVelocity = value;
+    public float GetTerminalVelocity() { return _terminalVelocity; }
     public void SetDefaultVelocity() => _terminalVelocity = _defaultTerminalVelocity;
     public void Respawn() => alive = true;
 }
