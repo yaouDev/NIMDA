@@ -302,8 +302,6 @@ namespace CallbackSystem {
 
         private void ShootLaser() {
             if (canShootLaser) {
-                if (laserWeaponUpgraded)
-                    laserSelfDmg = reducedSelfDmg;
                 if (health != null) {
                     health.TakeDamage(laserSelfDmg);
                 }
@@ -437,7 +435,7 @@ namespace CallbackSystem {
         private void FireProjectileWeapon()
         {
             //Debug.Log("Attempting to fire.");
-            if (bullets > 0 && bulletChambers != 0) {
+            if (bullets > 0 && bulletChambers >= 0) {
                 if (AIData.Instance.EnemyMuzzleflash != null) {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
@@ -450,11 +448,6 @@ namespace CallbackSystem {
                 if (critEnabled && critChance == 20)
                     currentBullet = explosiveBullet;
                 Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-            }
-            else if (bullets > 0)
-            {
-                //Debug.Log("Reloading.");
-                Reload();
             }
         }
 
@@ -480,8 +473,7 @@ namespace CallbackSystem {
         }
 
         public void UpgradeLaserWeapon() {
-            Debug.Log("Projectile weapon upgraded!");
-            laserWeaponUpgraded = true;
+            laserSelfDamageIncreasePerTenthSecond /= 2;
         }
 
         public int ReturnBullets() {
@@ -495,7 +487,7 @@ namespace CallbackSystem {
         public void UpdateBulletCount(int amount)
         {
             bullets += amount;
-            if (bullets == 0 && bulletChambers != 0)
+            if (bullets == 0 && bulletChambers > 0)
                 Reload();
             if(bullets > maxBullets)
             {

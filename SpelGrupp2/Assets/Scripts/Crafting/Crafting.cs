@@ -312,7 +312,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(cyanRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.1f, 0.90f, 0.90f, 1f));
-                playerHealthScript.SetNewHealth(playerHealthScript.GetMaxHealth() * 2);
+                playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Color Cyan Crafted";
             }
             else
@@ -324,7 +324,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(yellowRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
-                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity());
+                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity() * 1.5f);
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
             else
@@ -348,7 +348,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(magentaRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.85f, 0f, 0.85f, 1f));
-                playerHealthScript.SetNewHealth(playerHealthScript.GetMaxHealth() * 2);
+                playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
             else
@@ -361,7 +361,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(greenRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(new Color(0.35f, 0.95f, 0f, 1f));
-                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity());
+                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity() * 1.5f);
                 fadingtextEvent.text = "Color Green Crafted";
             }
             else
