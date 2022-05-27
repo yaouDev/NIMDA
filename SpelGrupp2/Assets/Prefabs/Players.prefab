@@ -385,6 +385,7 @@ MonoBehaviour:
   bulletChambers: 15
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  explosiveBullet: {fileID: 3404951615968842901, guid: c2473f957eb86ca40ba477feb6fed709, type: 3}
   damage: 0
   laserSelfDmg: 0
   teamDamage: 0
@@ -432,6 +433,7 @@ MonoBehaviour:
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
   visuals: {fileID: 326990607699453844}
+  movementSpeedReduced: 1
 --- !u!114 &326990607570548866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,7 +601,7 @@ MonoBehaviour:
   RevolverCritRecipe: {fileID: 11400000, guid: fce2d222128ced64e9163cf4a0cc336b, type: 2}
   laserbeamWidthRecipe: {fileID: 11400000, guid: 7d7bcb19c67dbc247a2a28e191876d78, type: 2}
   largeMagazineRecipe: {fileID: 11400000, guid: 6505a778fd457204986caaad81c12d92, type: 2}
-  laserbeamChargeRecipe: {fileID: 11400000, guid: 4d202d4c762fb9444bbc07fed7331a37, type: 2}
+  laserbeamChargeRecipe: {fileID: 11400000, guid: 93f670534a4e6b74689c78074d9ad1b1, type: 2}
   blinkUpgradeRecipe: {fileID: 11400000, guid: c0b9f921d509caf48875d2a81787fd81, type: 2}
   layerMask:
     serializedVersion: 2
@@ -924,9 +926,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1930a923ae53f214189750a95228b2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfUses: 5
-  maxUses: 5
-  cooldown: 2
+  numberOfUses: 2
+  maxUses: 2
+  cooldown: 15
   maxDistance: 5
   blinkSpeed: 100
   destinationMultiplier: 0.9
@@ -1149,6 +1151,7 @@ MonoBehaviour:
   bulletChambers: 15
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  explosiveBullet: {fileID: 3404951615968842901, guid: c2473f957eb86ca40ba477feb6fed709, type: 3}
   damage: 0
   laserSelfDmg: 0
   teamDamage: 0
@@ -1196,6 +1199,7 @@ MonoBehaviour:
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
   visuals: {fileID: 326990609148873030}
+  movementSpeedReduced: 1
 --- !u!114 &326990607881322124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1363,7 +1367,7 @@ MonoBehaviour:
   RevolverCritRecipe: {fileID: 11400000, guid: fce2d222128ced64e9163cf4a0cc336b, type: 2}
   laserbeamWidthRecipe: {fileID: 11400000, guid: 7d7bcb19c67dbc247a2a28e191876d78, type: 2}
   largeMagazineRecipe: {fileID: 11400000, guid: 6505a778fd457204986caaad81c12d92, type: 2}
-  laserbeamChargeRecipe: {fileID: 11400000, guid: 4d202d4c762fb9444bbc07fed7331a37, type: 2}
+  laserbeamChargeRecipe: {fileID: 11400000, guid: 93f670534a4e6b74689c78074d9ad1b1, type: 2}
   blinkUpgradeRecipe: {fileID: 11400000, guid: c0b9f921d509caf48875d2a81787fd81, type: 2}
   layerMask:
     serializedVersion: 2
@@ -1716,9 +1720,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1930a923ae53f214189750a95228b2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfUses: 5
-  maxUses: 5
-  cooldown: 2
+  numberOfUses: 2
+  maxUses: 2
+  cooldown: 15
   maxDistance: 5
   blinkSpeed: 100
   destinationMultiplier: 0.9
