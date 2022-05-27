@@ -66,13 +66,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        //Destroy(gameObject);
-        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        //Destroy(gameObject);
-        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
     public void DropLoot() {

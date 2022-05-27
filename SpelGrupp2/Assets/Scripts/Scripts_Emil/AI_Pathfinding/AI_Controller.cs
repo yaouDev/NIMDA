@@ -174,6 +174,8 @@ public class AI_Controller : MonoBehaviour {
         UpdateRotation();
         behaviorTree.Update();
 
+        if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
+
         if (TargetReachable && PathRequestAllowed) StartCoroutine(updatePath());
 
         // This code is for debugging purposes only, shows current calculated path
