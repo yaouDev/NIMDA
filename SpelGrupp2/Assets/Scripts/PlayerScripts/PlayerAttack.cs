@@ -435,7 +435,7 @@ namespace CallbackSystem {
         private void FireProjectileWeapon()
         {
             //Debug.Log("Attempting to fire.");
-            if (bullets > 0 && bulletChambers != 0) {
+            if (bullets > 0 && bulletChambers >= 0) {
                 if (AIData.Instance.EnemyMuzzleflash != null) {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
@@ -448,11 +448,6 @@ namespace CallbackSystem {
                 if (critEnabled && critChance == 20)
                     currentBullet = explosiveBullet;
                 Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-            }
-            else if (bullets > 0)
-            {
-                //Debug.Log("Reloading.");
-                Reload();
             }
         }
 
@@ -492,7 +487,7 @@ namespace CallbackSystem {
         public void UpdateBulletCount(int amount)
         {
             bullets += amount;
-            if (bullets == 0 && bulletChambers != 0)
+            if (bullets == 0 && bulletChambers > 0)
                 Reload();
             if(bullets > maxBullets)
             {
