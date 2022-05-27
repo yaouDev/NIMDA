@@ -7,7 +7,7 @@ namespace CallbackSystem
     public class PlayerHealth : MonoBehaviour, IDamageable
     {
         [SerializeField] private GameObject visuals;
-        [SerializeField] private float respawnTime = 5.0f;
+        [SerializeField] private float respawnTime = 10.0f;
         [SerializeField] private bool isPlayerOne;
         [SerializeField] private int batteryCount, batteryRespawnCount, maxBatteryCount;
         [SerializeField] private float healthReg;

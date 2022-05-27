@@ -167,11 +167,13 @@ namespace CallbackSystem {
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
+                controller.MovementSpeedReduction(true);
             }
 
             if (context.canceled && laserWeapon) {
                 chargingUP = false;
                 StopCoroutine(ChargeUp());
+                controller.MovementSpeedReduction(false);
                 if (canShootLaser) {
                     laserSound.setParameterByName("isReleased", 1f);
 
