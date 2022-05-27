@@ -302,8 +302,6 @@ namespace CallbackSystem {
 
         private void ShootLaser() {
             if (canShootLaser) {
-                if (laserWeaponUpgraded)
-                    laserSelfDmg = reducedSelfDmg;
                 if (health != null) {
                     health.TakeDamage(laserSelfDmg);
                 }
@@ -480,8 +478,7 @@ namespace CallbackSystem {
         }
 
         public void UpgradeLaserWeapon() {
-            Debug.Log("Projectile weapon upgraded!");
-            laserWeaponUpgraded = true;
+            laserSelfDamageIncreasePerTenthSecond /= 2;
         }
 
         public int ReturnBullets() {

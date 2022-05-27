@@ -156,6 +156,7 @@ namespace CallbackSystem
         {
             maxHealth = value;
             currHealth = maxHealth;
+            UpdateHealthUI();
         }
 
         public void SetDefaultStats()
