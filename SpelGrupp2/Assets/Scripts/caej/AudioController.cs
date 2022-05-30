@@ -26,6 +26,7 @@ public class AudioController : MonoBehaviour
 
     public EventReference testReference;
     public Transform testPosition;
+    public EliasPlayer elias;
 
     public PlayerAudioContainer player1;
     public PlayerAudioContainer player2;
