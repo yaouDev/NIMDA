@@ -4,17 +4,15 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/EnemyRangeAttack")]
 public class EnemyAttackNode : Node, IResetableNode {
-
     [SerializeField] private float spread = 0.1f;
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
     [SerializeField] private float attackDelay = 1.0f;
     [SerializeField] private LayerMask whatIsTarget;
-    //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
+    private bool coverIsValid;
     private float x;
-    //private float z;
 
     private GameObject currentBullet;
 
@@ -22,7 +20,7 @@ public class EnemyAttackNode : Node, IResetableNode {
     Vector3 directionWithSpread;
     public override NodeState Evaluate() {
 
-        bool coverIsValid = !agent.TargetInSight;
+        coverIsValid = !agent.TargetInSight;
 
         if (isShooting && !coverIsValid) {
             agent.IsStopped = true;
@@ -49,9 +47,6 @@ public class EnemyAttackNode : Node, IResetableNode {
         yield return new WaitForSeconds(attackDelay);
         Attack();
         isShooting = true;
-        //agent.StartCoroutine(AnimateLineRenderer());
-
-        //yield return new WaitForSeconds(3f);
     }
 
 

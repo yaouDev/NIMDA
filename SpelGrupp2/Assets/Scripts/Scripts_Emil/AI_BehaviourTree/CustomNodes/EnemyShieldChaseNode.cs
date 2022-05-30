@@ -6,7 +6,6 @@ using UnityEngine;
 public class EnemyShieldChaseNode : Node, IResetableNode {
 
     [SerializeField] private float shieldAcceleration = 13f, shieldMaxSpeed = 2.5f, noShieldAcceleration = 15f, noShieldMaxSpeed = 16f;
-
     [SerializeField] private float distanceFromTargetToStop;
     private EnemyShield enemyShield;
     public override NodeState Evaluate() {

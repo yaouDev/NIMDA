@@ -26,7 +26,6 @@ public class RotatingShield : MonoBehaviour {
             if (healthPercentage < 0.3f) {
                 gameObject.layer = LayerMask.NameToLayer("Bouncing");
                 transform.Rotate(rotation * (rotationSpeed * rotationSpeedMultiplier) * Time.deltaTime);
-                Debug.Log("Hej och h�" + rotation);
             }
 
         }

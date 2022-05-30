@@ -32,7 +32,6 @@ public class Blink : MonoBehaviour
     private RaycastHit hitInfo;
     private IDamageable damageable;
 
-    // Start is called before the first frame update
     void Start()
     {
         playerAttack = player.GetComponent<CallbackSystem.PlayerAttack>();
@@ -42,7 +41,6 @@ public class Blink : MonoBehaviour
         //UIText.text = numberOfUses.ToString();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (numberOfUses < maxUses)
@@ -60,8 +58,7 @@ public class Blink : MonoBehaviour
         }
         if (blinking)
         {
-            var dist = Vector3.Distance(transform.position, destination);
-            if (dist > 0.5f)
+            if (Vector3.Distance(transform.position, destination) > 0.5f)
             {
                 destination.y = 1f;
                 transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * blinkSpeed);
@@ -86,8 +83,6 @@ public class Blink : MonoBehaviour
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
             {
                 destination = hitInfo.point + -playerAttack.AimingDirection.normalized * destinationMultiplier;
-                //destination = hitInfo.point * destinationMultiplier;
-                
             }
             else
             {
@@ -107,8 +102,6 @@ public class Blink : MonoBehaviour
         shakeEvent.magnitude = .4f;
         CallbackSystem.EventSystem.Current.FireEvent(shakeEvent);
 
-        //Particklesystem
-        //Instantiate(AIData.Instance.ExplosionParticles, destination, Quaternion.identity);
         CheckForPlayers();
 
     }
@@ -127,14 +120,13 @@ public class Blink : MonoBehaviour
                     //damage
                     damageable.TakeDamage(damage);
 
-                    //ExplosionForce
+                    //ExplosionForce - check with Will if keep
                     Rigidbody rbTemp = coll.GetComponent<Rigidbody>();
                     if (rbTemp != null)
                     {
                         rbTemp.AddExplosionForce(explosionForce, destination, explosionRange);
                     }
 
-                   
                 }
 
             }
