@@ -32,13 +32,12 @@ namespace CallbackSystem
         private float sphereRadius = 1f;
         private float maxSphereDistance = 3f;
         private int selectedButtonIndex;
-        //Cyan, Yellow, Magenta, White, Black
-        private static bool[] colorsTakenArray = new bool[5];
 
         public int copper, transistor, iron, currency;
 
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
+        private CraftingEvent craftingEvent;
         private PlayerHealth playerHealthScript;
         private PlayerController playerControllerScript;
         private bool isPlayerOne, started = false, isCrafting = false;
@@ -67,6 +66,8 @@ namespace CallbackSystem
             playerInput = GetComponent<PlayerInput>();
             fadingtextEvent = new FadingTextEvent();
             resourceEvent = new ResourceUpdateEvent();
+            craftingEvent = new CraftingEvent();
+            craftingEvent.isPlayerOne = playerAttackScript.IsPlayerOne();
             craftingTable.SetActive(false);
             resourceArray = new int[] { copper, transistor, iron, currency };
 
@@ -79,6 +80,8 @@ namespace CallbackSystem
                 isPlayerOne = playerAttackScript.IsPlayerOne();
                 resourceEvent.isPlayerOne = isPlayerOne;
                 fadingtextEvent.isPlayerOne = isPlayerOne;
+                craftingEvent.activate = false;
+                EventSystem.Current.FireEvent(craftingEvent);
                 UpdateResources();
                 started = true;
             }
@@ -122,13 +125,18 @@ namespace CallbackSystem
         private void EnterCraftingUI()
         {
             isCrafting = !isCrafting;
-
+            /*
             if (!isCrafting)
             {
                 craftingTable.SetActive(false);
                 selectedButton.image.color = Color.white;
                 selectedButtonIndex = 0;
                 playerInput.SwitchCurrentActionMap("Player");
+
+                //test
+                craftingEvent.activate = false;
+
+
             }
             else
             {
@@ -137,6 +145,18 @@ namespace CallbackSystem
                 selectedButton.image.color = Color.red;
                 playerInput.SwitchCurrentActionMap("Crafting");
             }
+            */
+
+            if (!isCrafting)
+            {
+                craftingEvent.activate = false;
+                playerInput.SwitchCurrentActionMap("Player");
+            } else
+            {
+                craftingEvent.activate = true;
+                playerInput.SwitchCurrentActionMap("Crafting");
+            }
+            EventSystem.Current.FireEvent(craftingEvent);
         }
 
         public void NextButton(InputAction.CallbackContext context)
