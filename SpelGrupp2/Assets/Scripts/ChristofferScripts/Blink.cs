@@ -80,6 +80,7 @@ public class Blink : MonoBehaviour
         if (context.started && numberOfUses > 0)
         {
             Instantiate(start, transform.position, Quaternion.identity);
+            //start.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             numberOfUses -= 1;
             //UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
