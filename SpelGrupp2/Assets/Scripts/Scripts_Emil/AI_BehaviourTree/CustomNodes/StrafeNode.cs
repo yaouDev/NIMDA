@@ -20,7 +20,7 @@ public class StrafeNode : Node, IResetableNode {
         if (shotReqCond) {
             strafeTarget = Vector3.zero;
             int tries = 0;
-            while ((strafeTarget == Vector3.zero || DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) && tries < 10) {
+            while ((strafeTarget == Vector3.zero || DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.TranslateToGrid(strafeTarget))) && tries < 10) {
                 float angleOffset;
                 int strafeRight = Random.Range(0, 2);
                 if (strafeRight == 0) angleOffset = Random.Range(50, 121);
@@ -37,7 +37,7 @@ public class StrafeNode : Node, IResetableNode {
                 tries++;
             }
             // no strafeLocation was found
-            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(strafeTarget))) NodeState = NodeState.FAILURE;
+            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.TranslateToGrid(strafeTarget))) NodeState = NodeState.FAILURE;
 
         } else if (runningCond) {
             NodeState = NodeState.RUNNING;

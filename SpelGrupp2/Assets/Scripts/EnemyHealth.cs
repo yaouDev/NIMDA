@@ -65,13 +65,13 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        //Destroy(gameObject);
-        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        Destroy(gameObject);
+        // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        //Destroy(gameObject);
-        ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        Destroy(gameObject);
+        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
     public void DropLoot() {
@@ -86,7 +86,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
                 drop = dropList[1];
             } else if (dropRoll <= transitorRange) {
                 drop = dropList[2];
-            } else if(dropRoll <= currencyRange) {
+            } else if (dropRoll <= currencyRange) {
                 drop = dropList[3];
             }
             //int item = Random.Range(0, dropList.Length);

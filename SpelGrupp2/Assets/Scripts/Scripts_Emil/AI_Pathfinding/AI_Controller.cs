@@ -159,14 +159,6 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
-    IEnumerator updatePath() {
-        updatingPath = true;
-        UpdateTarget();
-        PathfinderManager.Instance.RequestPath(this, Position, CurrentTarget);
-        yield return new WaitForSeconds(0.5f);
-        updatingPath = false;
-    }
-
     void Update() {
 
         UpdateTarget();
@@ -176,7 +168,7 @@ public class AI_Controller : MonoBehaviour {
 
         if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
 
-        if (TargetReachable && PathRequestAllowed) StartCoroutine(updatePath());
+        if (TargetReachable && PathRequestAllowed) StartCoroutine(UpdatePath());
 
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -189,6 +181,14 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
+    IEnumerator UpdatePath() {
+        updatingPath = true;
+        UpdateTarget();
+        PathfinderManager.Instance.RequestPath(this, Position, CurrentTarget);
+        yield return new WaitForSeconds(0.5f);
+        updatingPath = false;
+    }
+
     private void UpdateRotation() {
         //Find Closest Player
         Vector3 relativePos = ClosestPlayer - Position;
@@ -198,11 +198,6 @@ public class AI_Controller : MonoBehaviour {
         transform.rotation = Quaternion.RotateTowards(transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
         transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
-    }
-
-    private void UpdatePath() {
-        UpdateTarget();
-        PathfinderManager.Instance.RequestPath(this, Position, activeTarget);
     }
 
     private void UpdateTargetInSight() {
@@ -221,7 +216,7 @@ public class AI_Controller : MonoBehaviour {
 
     public void UpdateTarget() {
         activeTarget = Destination;
-        activeTarget = DynamicGraph.Instance.GetClosestNode(activeTarget);
+        activeTarget = DynamicGraph.Instance.TranslateToGrid(activeTarget);
     }
 
     public void ResetAgent() {
@@ -231,6 +226,10 @@ public class AI_Controller : MonoBehaviour {
         updatingPath = false;
     }
 
+    /// <summary>
+    /// Method to ensure agents don't get stuck on colliders
+    /// regardles of if they are in a stopped state or not.
+    /// </summary>
     void MoveFromBlock() {
         Vector3 forceToAdd = Vector3.zero;
         if (currentPath != null && currentPathIndex != currentPath.Count - 1) {
@@ -239,6 +238,15 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Calculates the force with which an agent should move away from a collider/module edge from.
+    /// Uses DynamicGraph's pathfinding grid to check where colliders are as to avoid using overlaps or raycasts.
+    /// The avoid force is applied differently depending on if what's in front of the agent is blocked or not as to
+    /// make agents move more smoothly instead of always in the opposite direction of the block.
+    /// </summary>
+    /// <param name="index"> index of the desired path node </param>
+    /// <param name="forceMultiplier"> value to multiply the avoidforce with </param>
+    /// <returns> the calculated force with which to avoid any potential blocked colliders </returns>
     Vector3 CalculateAvoidForce(int index, float forceMultiplier) {
         bool velocityCond = Rigidbody.velocity.magnitude < 0.05f;
         if (isBoss) {
@@ -289,6 +297,11 @@ public class AI_Controller : MonoBehaviour {
         return force;
     }
 
+    /// <summary>
+    /// Moves the current agent forward. To achieve smoother movement on a grid, movementdirection and applied force
+    /// is calculated as an interpolation between the currently relevant grid position/node and up to four indexes
+    /// forward. If the agent is close enough to the end or the next node the current grid position is advanced.
+    /// </summary>
     private void Move() {
         if (currentPath != null && currentPath.Count != 0) {
 
@@ -318,7 +331,7 @@ public class AI_Controller : MonoBehaviour {
 
     // Callback functions below
 
-    public void OnPlayerEnterSafeRoom(CallbackSystem.SafeRoomEvent safeRoomEvent) {
+    public void OnPlayerEnterSafeRoom(SafeRoomEvent safeRoomEvent) {
         if (!isBoss) {
             Health.DieNoLoot();
         }
@@ -338,7 +351,12 @@ public class AI_Controller : MonoBehaviour {
         if (deSpawnEvent.Position == modulePos) Health.DieNoLoot();
     }
 
-    // causes FPS to tank with many enemies, sometimes. Needs a better solution. moves enemies away form each other.
+    /// <summary>
+    /// Makes agents move away from each other if they continously overlap with each other. if agent is in motion the 
+    /// avoid force is interpolated with the current direction of movement. Otherwise it is the direction of the other agent.
+    /// Unfortunately creates a lot of garbage, which may cause performance issues if too many agents are crammed in a small space.
+    /// </summary>
+    /// <param name="other"> The collider of the other agent </param>
     private void OnTriggerStay(Collider other) {
         if (other != null && other.tag == "Enemy") {
             Vector3 offset = Vector3.zero;
@@ -353,7 +371,6 @@ public class AI_Controller : MonoBehaviour {
                 if (!isStopped) multiplier = 0.05f;
                 forceToAdd.y = 0;
                 rBody.AddForce(forceToAdd * multiplier, ForceMode.Force);
-                //Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
             }
         }
     }

@@ -24,7 +24,7 @@ public class BackAwayNode : Node, IResetableNode {
             agent.MaxSpeed = maxSpeed;
             agent.Destination = backOffPos;
             agent.IsStopped = false;
-            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.GetClosestNode(backOffPos))) {
+            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.TranslateToGrid(backOffPos))) {
                 NodeState = NodeState.FAILURE;
                 backOffPos = Vector3.zero;
             } else
