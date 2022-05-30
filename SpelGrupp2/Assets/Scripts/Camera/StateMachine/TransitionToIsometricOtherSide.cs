@@ -1,11 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.InputSystem;
 
-[CreateAssetMenu(menuName = "Create CameraState/TransitionToIsometric")]
-public class TransitionToIsometric : CameraBaseState
+[CreateAssetMenu(menuName = "Create CameraState/TransitionToIsometricOtherSide")]
+public class TransitionToIsometricOtherSide : CameraBaseState
 {
 	[SerializeField]
 	private float headHeight = 1.6f;

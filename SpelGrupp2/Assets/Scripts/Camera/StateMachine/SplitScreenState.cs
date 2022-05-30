@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [CreateAssetMenu(menuName = "Create CameraState/CameraSplitScreenState")]
 public class SplitScreenState : CameraState {
@@ -28,7 +29,7 @@ public class SplitScreenState : CameraState {
 
 	private Vector2 topDownViewRotation = new Vector2(55, 45);
 	
-	private Vector3 topDownOffset = new Vector3(0.0f, 1.0f, -16.0f);
+	private Vector3 topDownOffset = new Vector3(0.0f, 1.0f, -20.0f);
     
 	[SerializeField] [Range(0.0f, 1.0f)] 
 	private float _smoothCameraPosTime = 0.105f;
@@ -62,14 +63,28 @@ public class SplitScreenState : CameraState {
 	private void Awake() {
 	}
 	
-	public override void Enter() {
+
+	private float splitMagnitude = 13.0f;
+	private float lateralSplitMagnitude = 7.5f;
+	private float zoomedInDistance = -12.0f;
+	private float zoomedOutDistance = -20.0f;
+	private float timeSinceStateStarted;
+	private float zoomDistance;
+	public override void Enter()
+	{
+		timeSinceStateStarted = 0;
 		_cameraPos = thisTransform.position;
-		Vector3 initialCameraRotation = CameraTransform.rotation.eulerAngles;
-		mouseMovement.x = initialCameraRotation.y;
-		mouseMovement.y = initialCameraRotation.x;
 		depthMaskPlanePos = DepthMaskPlane.localPosition;
 		depthMaskPlanePos.x = splitScreenWidth;
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
+		
+		
+		// different splitMagnitude x/y axis on screen
+		float distanceInCameraViewSpace = (Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position)).z;
+		float inv = Mathf.InverseLerp(0.0f, 20.0f, Mathf.Abs(distanceInCameraViewSpace));
+		float dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, inv);
+		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / dynamicSplitMagnitude;
+		zoomDistance = Mathf.Lerp(zoomedInDistance, zoomedOutDistance, distanceFraction);
 		
 		// split rotation is kept vertical on the screen
 		isRightMostPlayer = (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0;
@@ -77,11 +92,12 @@ public class SplitScreenState : CameraState {
 		DepthMaskHolder.rotation = Quaternion.LookRotation(CameraTransform.forward, screenAngle);
 	}
 
-	public override void Run() {
+	public override void Run()
+	{
+		timeSinceStateStarted += Time.deltaTime;
 		
 		CameraTransform.rotation = Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f);
 		
-
 		_cameraPos = Vector3.SmoothDamp(_cameraPos, thisTransform.position, 
 			ref _smoothDampCurrentVelocityLateral, _smoothCameraPosTime);
 
@@ -91,19 +107,29 @@ public class SplitScreenState : CameraState {
 			isRightMostPlayer
 				? -CameraTransform.transform.right * splitScreenOffsetFactor
 				: CameraTransform.transform.right * splitScreenOffsetFactor, 
-			Vector3.up);
+			Vector3.up); 
 		
+		// Camera zoom
+		topDownOffset.z = Mathf.Lerp(zoomDistance, zoomedOutDistance, timeSinceStateStarted);
+		
+		// Camera Position
 		CameraTransform.position = splitScreenOffset + _abovePlayer + CameraTransform.rotation * topDownOffset;
 
 		FadeObstacles();
+
+		// different splitMagnitude x/y axis on screen
+		float distanceInCameraViewSpace = (Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position)).z;
+		float inv = Mathf.InverseLerp(0.0f, 20.0f, Mathf.Abs(distanceInCameraViewSpace));
+		float dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, inv);
+		float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / dynamicSplitMagnitude;
 		
-		if (Vector3.Distance(PlayerThis.position, PlayerOther.position) < isometricDistance)
+		if (distanceFraction < 0.95f)//Vector3.Distance(PlayerThis.position, PlayerOther.position) < isometricDistance)
 			stateMachine.TransitionTo<TransitionToIsometric>();
 
-		if (Vector3.Distance(PlayerOther.position, PlayerThis.position) < isometricDistance * 1.5f &&
-			(!isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0 ||
-		    isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x < 0 )) {
-			stateMachine.TransitionTo<TransitionToOtherSide>();
+		if (distanceFraction < 0.95f &&
+		    (!isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0 ||
+		     isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x < 0 )) {
+			stateMachine.TransitionTo<TransitionToIsometricOtherSide>();
 		}
 	}
 
