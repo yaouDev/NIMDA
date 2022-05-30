@@ -80,13 +80,14 @@ public class Blink : MonoBehaviour
         if (context.started && numberOfUses > 0)
         {
             Instantiate(start, transform.position, Quaternion.identity);
-            //start.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             numberOfUses -= 1;
             //UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
             {
-                destination = hitInfo.point * destinationMultiplier;
+                destination = hitInfo.point + -playerAttack.AimingDirection.normalized * destinationMultiplier;
+                //destination = hitInfo.point * destinationMultiplier;
+                
             }
             else
             {
