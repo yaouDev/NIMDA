@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private ParticleSystem ricochetParticleSystem;
     [SerializeField] private float bulletSpeed = 150.0f;
     [SerializeField] private float impactForce = 40f;
+    [SerializeField] private float hitForce = 10;
     private bool hit;
     private float destroyTime = 5.0f;
     private float timeAlive = 0.0f;
@@ -46,7 +47,8 @@ public class Bullet : MonoBehaviour
             else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
             {
                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
-                
+                hitInfo.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -30), hitInfo.transform.rotation.y, hitInfo.transform.rotation.z, 0);
+
                 if (damageable != null)
                 {
                     if (hitInfo.transform.tag == "Player")
