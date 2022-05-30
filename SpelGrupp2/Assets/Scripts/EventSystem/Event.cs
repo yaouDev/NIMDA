@@ -37,6 +37,8 @@ namespace CallbackSystem {
 
     public class ResourceUpdateEvent : Event {
         public int c, t, i, a, currency;
+        public int maxAmmo;
+        public int magAmmo;
         public bool ammoChange;
     }
 

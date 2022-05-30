@@ -7,7 +7,7 @@ namespace CallbackSystem
     public class PlayerHealth : MonoBehaviour, IDamageable
     {
         [SerializeField] private GameObject visuals;
-        [SerializeField] private float respawnTime = 5.0f;
+        [SerializeField] private float respawnTime = 10.0f;
         [SerializeField] private bool isPlayerOne;
         [SerializeField] private int batteryCount, batteryRespawnCount, maxBatteryCount;
         [SerializeField] private float healthReg;
@@ -112,6 +112,14 @@ namespace CallbackSystem
             UpdateHealthUI();
         }
 
+        public void SetBatteriesOnLoad(int amount){
+            batteryCount = amount;
+        }
+
+        public void SetHealthOnLoad(float amount){
+            currHealth = amount;
+        }
+
         public void Die()
         {
             if (alive)
@@ -148,6 +156,7 @@ namespace CallbackSystem
         {
             maxHealth = value;
             currHealth = maxHealth;
+            UpdateHealthUI();
         }
 
         public void SetDefaultStats()
@@ -180,6 +189,7 @@ namespace CallbackSystem
         private Vector3 dropOffset;
         private GameObject drop;
         [SerializeField] private GameObject[] dropTable = new GameObject[3];
+        
         /*
         public void DropLoot()
         {

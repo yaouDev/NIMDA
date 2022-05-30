@@ -38,7 +38,7 @@ public class StateMachine {
         _owner.UpdateVelocity();
         _owner.ResolveOverlap();
         
-        _owner.transform.position +=  Time.deltaTime * _owner._velocity;
+        _owner.transform.position +=  Time.deltaTime * _owner._velocity * _owner.movementSpeedReduced;
         _owner._inputMovement = Vector3.zero;
         _owner._pressedJump = false;
         _owner._releasedJump = false;

@@ -8,7 +8,7 @@ namespace CallbackSystem
     public class ResourceChangeListener : MonoBehaviour
     {
         [Header("Each array consists of the players resources. Hover elements for tooltip")]
-        [Tooltip("'Copper', 'Transistor' and 'Iron' can be found under ResourceUI and 'AmmoCount' under BatteryUI \n Element 0 = Copper \n Element 1 = Transistor \n Element 2 = Iron \n Element 3 = AmmoCount \n Element 4 = Currency")]
+        [Tooltip("'Copper', 'Transistor' and 'Iron' can be found under ResourceUI and 'AmmoCount' under BatteryUI \n Element 0 = Copper \n Element 1 = Transistor \n Element 2 = Iron \n Element 3 = AmmoCount \n Element 4 = Currency \n Element 5 = MagAmmo")]
         [SerializeField] private TextMeshProUGUI[] player1, player2;
         private TextMeshProUGUI[] currPlayer;
         void Start()
@@ -20,7 +20,10 @@ namespace CallbackSystem
         {
             currPlayer = eve.isPlayerOne ? player1 : player2;
             if (eve.ammoChange)
+            {
                 currPlayer[3].text = eve.a.ToString();
+                currPlayer[5].text = eve.magAmmo.ToString();
+            }         
             else
             {
                 currPlayer[0].text = eve.c.ToString();

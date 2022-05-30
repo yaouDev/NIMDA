@@ -32,11 +32,11 @@ public class PlayerController : MonoBehaviour
 
     protected bool alive = true;
 
-    [HideInInspector] public Vector3 _velocity;  
-    [HideInInspector] public Vector3 _jumpVector; 
+    [HideInInspector] public Vector3 _velocity;
+    [HideInInspector] public Vector3 _jumpVector;
     [HideInInspector] public Vector3 _inputMovement;
     [HideInInspector] public float airControl = 1.0f;
-    [HideInInspector] public bool _jumped;    
+    [HideInInspector] public bool _jumped;
     public Color _debugColor = new Color(10, 20, 30);
     public bool _pressedJump;
     public bool _releasedJump;
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Set default gravity in:\nEdit > Project Settings > Physics > Gravity")]
     public float _defaultGravity;
 
-    [SerializeField][Range(0.0f, 4.0f)] public float jumpFallVelocityMultiplier = 2.0f;
+    [SerializeField] [Range(0.0f, 4.0f)] public float jumpFallVelocityMultiplier = 2.0f;
 
     [Space(10)]
     [Header("Character Design")]
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
     private float _groundCheckDistance = 0.15f;
 
     [SerializeField] private GameObject visuals;
-    
+
     private Vector2 reference;
     private Vector2 inputVectorUnsmoothed;
 
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
             if (anim != null)
             {
                 Vector3 rot = transform.rotation.eulerAngles;
-                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) *_velocity;
+                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * _velocity;
 
                 anim.SetFloat("Speed", rotatedVelocity.x);
                 anim.SetFloat("Direction", rotatedVelocity.z);
@@ -182,7 +182,7 @@ public class PlayerController : MonoBehaviour
 
         joyStickLeftInput = context.ReadValue<Vector2>();
     }
-    
+
     public void JoystickRight(InputAction.CallbackContext context)
     {
         inputVectorUnsmoothed = context.ReadValue<Vector2>();
@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour
         _inputMovement.z = joyStickLeftInput.y;
 
         if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
-        
+
         _inputMovement = InputToCameraProjection(_inputMovement);
         _inputMovement *= _acceleration * Time.deltaTime;
     }
@@ -415,13 +415,13 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ReturnToOtherPlayer()
     {
         float t = 0.0f;
-     
+        MovementSpeedReduction(false);
         Quaternion startRot = transform.rotation;
         Quaternion endRot = quaternion.Euler(-90, 0, 0) * startRot;
         transform.position += Vector3.up * .5f;
         while (t <= 1.0f)
         {
-            transform.rotation = Quaternion.Slerp(startRot, endRot, Ease.EaseOutBounce(t));
+            transform.rotation = Quaternion.Slerp(startRot, endRot, Ease.EaseOutCirc(t));
             t += Time.deltaTime;
             yield return null;
         }
@@ -434,7 +434,7 @@ public class PlayerController : MonoBehaviour
         Vector3 startPos = gameObject.transform.position;
         while (t <= 1.0f)
         {
-            gameObject.transform.position = Vector3.LerpUnclamped(startPos, otherPlayer.transform.position + Vector3.left, Ease.EaseOutBack(t));
+            gameObject.transform.position = Vector3.LerpUnclamped(startPos, otherPlayer.transform.position + Vector3.left, Ease.EaseOutCirc(t));
             t += Time.deltaTime;
             yield return null;
         }
@@ -444,6 +444,20 @@ public class PlayerController : MonoBehaviour
     }
 
     public void SetTerminalVelocity(float value) => _terminalVelocity = value;
+    public float GetTerminalVelocity() { return _terminalVelocity; }
     public void SetDefaultVelocity() => _terminalVelocity = _defaultTerminalVelocity;
     public void Respawn() => alive = true;
+
+    [HideInInspector] public float movementSpeedReduced = 1f;
+    public void MovementSpeedReduction(bool slow)
+    {
+        if (slow)
+        {
+            movementSpeedReduced = 0.5f;
+        }
+        else
+        {
+            movementSpeedReduced = 1f;
+        }
+    }
 }

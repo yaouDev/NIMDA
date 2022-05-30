@@ -89,4 +89,5 @@ public class Blink : MonoBehaviour
         }
     }
 
+    public void DecreaseBlinkCooldown() => cooldown /= 2;
 }

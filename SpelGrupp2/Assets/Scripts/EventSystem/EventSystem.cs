@@ -49,7 +49,7 @@ namespace CallbackSystem {
 
         public void FireEvent(Event eventToFire) {
             System.Type eventType = eventToFire.GetType();
-            if (eventListeners[eventType] == null) return;
+            if (!eventListeners.ContainsKey(eventType) || eventListeners[eventType] == null) return;
             /* walks up the event hierarchy and makes sure that listeners to the superclass of the event also get called */
             do {
                 foreach (EventListener eventListener in eventListeners[eventType]) {

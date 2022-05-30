@@ -71,7 +71,11 @@ public class AI_Controller : MonoBehaviour {
         get {
             if (DynamicGraph.Instance.IsModuleLoaded(DynamicGraph.Instance.GetModulePosFromWorldPos(activeTarget)) &&
             !DynamicGraph.Instance.AllNeighborsBlocked(activeTarget)) return true;
-            return false;
+            else {
+                updatingPath = false;
+                return false;
+            }
+
         }
     }
 
@@ -169,6 +173,8 @@ public class AI_Controller : MonoBehaviour {
         UpdateTargetInSight();
         UpdateRotation();
         behaviorTree.Update();
+
+        if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
 
         if (TargetReachable && PathRequestAllowed) StartCoroutine(updatePath());
 

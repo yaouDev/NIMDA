@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 47074358}
   - component: {fileID: 47074359}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: LaserSightHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47074357}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 4.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 326990607570548877}
@@ -72,8 +72,8 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 2, z: 0}
+  - {x: 0, y: 2, z: 1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -94,9 +94,9 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 0.019607844}
-      key1: {r: 1, g: 1, b: 1, a: 0.03529412}
-      key2: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 1, g: 0, b: 0, a: 1}
+      key1: {r: 1, g: 0, b: 0, a: 1}
+      key2: {r: 1, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -104,13 +104,13 @@ LineRenderer:
       key7: {r: 0, g: 0, b: 0, a: 0}
       ctime0: 0
       ctime1: 65535
-      ctime2: 0
+      ctime2: 65535
       ctime3: 0
       ctime4: 0
       ctime5: 0
       ctime6: 0
       ctime7: 0
-      atime0: 771
+      atime0: 0
       atime1: 65535
       atime2: 0
       atime3: 0
@@ -139,7 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2121336704}
   - component: {fileID: 2121336705}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: LaserSightHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,8 +201,8 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  - {x: 0, y: 2, z: 0}
+  - {x: 0, y: 2, z: 1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -223,8 +223,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 0.019607844}
-      key1: {r: 1, g: 1, b: 1, a: 0.03529412}
+      key0: {r: 1, g: 0, b: 0, a: 1}
+      key1: {r: 1, g: 0, b: 0, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -239,7 +239,7 @@ LineRenderer:
       ctime5: 0
       ctime6: 0
       ctime7: 0
-      atime0: 771
+      atime0: 0
       atime1: 65535
       atime2: 0
       atime3: 0
@@ -367,23 +367,29 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   maxDistance: 30
-  startLaserSelfDmg: 1
-  laserSelfDamageIncreasePerTenthSecond: 1
-  laserTeamDamageIncreasePerTenthSecond: 3
-  maxSelfDamage: 10
-  startDamage: 20
-  startTeamDamage: 3
+  startLaserSelfDmg: 0
+  laserSelfDamageIncreasePerTenthSecond: 3
+  laserTeamDamageIncreasePerTenthSecond: 5
+  maxSelfDamage: 30
+  startDamage: 0
+  startTeamDamage: 0
+  chargeTime: 0.1
   damageIncreasePerTenthSecond: 10
-  maxDamage: 110
-  maxTeamDamage: 30
+  maxBeamThickness: 0.5
+  startBeamThickness: 0.05
+  maxDamage: 100
+  maxTeamDamage: 50
   laserAttackDelay: 0.5
-  beamThickness: 0.5
-  bulletsInGun: 0
-  maxBulletsInGun: 0
-  bullets: 15
-  maxBullets: 30
+  bullets: 5
+  maxBullets: 5
+  bulletChambers: 15
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  explosiveBullet: {fileID: 3404951615968842901, guid: c2473f957eb86ca40ba477feb6fed709, type: 3}
+  damage: 0
+  laserSelfDmg: 0
+  teamDamage: 0
+  beamThickness: 0.5
   bulletMat: {fileID: 2100000, guid: e3d71b91e69896c498036f2258b873fa, type: 2}
   laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607570548879
@@ -427,6 +433,7 @@ MonoBehaviour:
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
   visuals: {fileID: 326990607699453844}
+  movementSpeedReduced: 1
 --- !u!114 &326990607570548866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,6 +587,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAttackScript: {fileID: 0}
+  playerBlinkScript: {fileID: 0}
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
   UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
@@ -590,11 +598,20 @@ MonoBehaviour:
   magentaRecipe: {fileID: 11400000, guid: b00a534573c159644ac4bb336244f8cd, type: 2}
   greenRecipe: {fileID: 11400000, guid: 12a13220b6258c14a899bfe9b631f3ff, type: 2}
   blackRecipe: {fileID: 11400000, guid: dec980b9f0400dd40a0b8c180c552fa0, type: 2}
+  RevolverCritRecipe: {fileID: 11400000, guid: fce2d222128ced64e9163cf4a0cc336b, type: 2}
+  laserbeamWidthRecipe: {fileID: 11400000, guid: 7d7bcb19c67dbc247a2a28e191876d78, type: 2}
+  largeMagazineRecipe: {fileID: 11400000, guid: 6505a778fd457204986caaad81c12d92, type: 2}
+  laserbeamChargeRecipe: {fileID: 11400000, guid: 93f670534a4e6b74689c78074d9ad1b1, type: 2}
+  blinkUpgradeRecipe: {fileID: 11400000, guid: c0b9f921d509caf48875d2a81787fd81, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 1048832
   craftingTable: {fileID: 0}
   craftingButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -909,9 +926,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1930a923ae53f214189750a95228b2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfUses: 5
-  maxUses: 5
-  cooldown: 2
+  numberOfUses: 2
+  maxUses: 2
+  cooldown: 15
   maxDistance: 5
   blinkSpeed: 100
   destinationMultiplier: 0.9
@@ -1116,23 +1133,29 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   maxDistance: 30
-  startLaserSelfDmg: 1
-  laserSelfDamageIncreasePerTenthSecond: 1
-  laserTeamDamageIncreasePerTenthSecond: 3
-  maxSelfDamage: 10
-  startDamage: 20
-  startTeamDamage: 3
+  startLaserSelfDmg: 0
+  laserSelfDamageIncreasePerTenthSecond: 3
+  laserTeamDamageIncreasePerTenthSecond: 5
+  maxSelfDamage: 30
+  startDamage: 0
+  startTeamDamage: 0
+  chargeTime: 0.1
   damageIncreasePerTenthSecond: 10
-  maxDamage: 110
-  maxTeamDamage: 30
+  maxBeamThickness: 0.5
+  startBeamThickness: 0.05
+  maxDamage: 100
+  maxTeamDamage: 50
   laserAttackDelay: 0.5
-  beamThickness: 0.5
-  bulletsInGun: 0
-  maxBulletsInGun: 0
-  bullets: 15
-  maxBullets: 30
+  bullets: 5
+  maxBullets: 5
+  bulletChambers: 15
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
+  explosiveBullet: {fileID: 3404951615968842901, guid: c2473f957eb86ca40ba477feb6fed709, type: 3}
+  damage: 0
+  laserSelfDmg: 0
+  teamDamage: 0
+  beamThickness: 0.5
   bulletMat: {fileID: 2100000, guid: fcb4d715143e6724bae637ae8ebe0232, type: 2}
   laserMat: {fileID: 2100000, guid: 7a6f28661f6dc47fba829f71fe9ad9e9, type: 2}
 --- !u!114 &326990607881322125
@@ -1176,6 +1199,7 @@ MonoBehaviour:
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
   visuals: {fileID: 326990609148873030}
+  movementSpeedReduced: 1
 --- !u!114 &326990607881322124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1329,6 +1353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAttackScript: {fileID: 0}
+  playerBlinkScript: {fileID: 0}
   batteryRecipe: {fileID: 11400000, guid: 50993634281a7d149af9b477184d438e, type: 2}
   bulletRecipe: {fileID: 11400000, guid: c03a578d268042645bff82f97416d4bb, type: 2}
   UpgradedProjectileWeaponRecipe: {fileID: 11400000, guid: f0fdb96e618692b42916734fb952c601, type: 2}
@@ -1339,11 +1364,20 @@ MonoBehaviour:
   magentaRecipe: {fileID: 11400000, guid: b00a534573c159644ac4bb336244f8cd, type: 2}
   greenRecipe: {fileID: 11400000, guid: 12a13220b6258c14a899bfe9b631f3ff, type: 2}
   blackRecipe: {fileID: 11400000, guid: dec980b9f0400dd40a0b8c180c552fa0, type: 2}
+  RevolverCritRecipe: {fileID: 11400000, guid: fce2d222128ced64e9163cf4a0cc336b, type: 2}
+  laserbeamWidthRecipe: {fileID: 11400000, guid: 7d7bcb19c67dbc247a2a28e191876d78, type: 2}
+  largeMagazineRecipe: {fileID: 11400000, guid: 6505a778fd457204986caaad81c12d92, type: 2}
+  laserbeamChargeRecipe: {fileID: 11400000, guid: 93f670534a4e6b74689c78074d9ad1b1, type: 2}
+  blinkUpgradeRecipe: {fileID: 11400000, guid: c0b9f921d509caf48875d2a81787fd81, type: 2}
   layerMask:
     serializedVersion: 2
     m_Bits: 1048832
   craftingTable: {fileID: 0}
   craftingButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1686,9 +1720,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1930a923ae53f214189750a95228b2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfUses: 5
-  maxUses: 5
-  cooldown: 2
+  numberOfUses: 2
+  maxUses: 2
+  cooldown: 15
   maxDistance: 5
   blinkSpeed: 100
   destinationMultiplier: 0.9
