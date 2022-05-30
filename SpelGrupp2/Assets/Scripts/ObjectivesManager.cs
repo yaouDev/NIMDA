@@ -5,50 +5,50 @@ using TMPro;
 
 public class ObjectivesManager : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI[] objectives; // Array of objective "spots" to be used -Willow
-    [SerializeField] private GameObject background; // Panel behind objectives text -Willow
-    private float backgroundHeight = 85; // Starting height of background panel -Willow
-    private float backgroundWidth = 400; // Background panel width. Needed for RectTransform.sizeDelta() method -Willow
-    private int objectivesIndex = -1; // Index used for TMP array -Willow
-    private bool bossNext = false; // bool used by safe rooms calling on manager -Willow
+    [SerializeField] private TextMeshProUGUI[] objectives;
+    [SerializeField] private GameObject background;
+    private float backgroundHeight = 125;
+    private float backgroundWidth = 400;
+    private int objectivesIndex = -1;
+    private bool bossNext = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        AddObjective("destroy the virus");
+        objectives[0].text = "destroy the virus";
+        objectivesIndex++;
         AddObjective("find the first safe room");
     }
 
     public void AddObjective(string newObjective)
     {
-        objectivesIndex++; // Updates objectivesIndex -Willow
-        objectives[objectivesIndex].text = newObjective; // Sets TextMeshPro-element in index's position to match string parameter -Willow
-        backgroundHeight += 40; // Updates background panel height to correspond to new objective in list -Willow
-        background.GetComponent<RectTransform>().sizeDelta = new Vector2(backgroundWidth, backgroundHeight); // Sets background panel to have said height -Willow
+        objectivesIndex++;
+        objectives[objectivesIndex].text = newObjective;
+        backgroundHeight += 40;
+        background.GetComponent<RectTransform>().sizeDelta = new Vector2(backgroundWidth, backgroundHeight);
     }
 
     public void RemoveObjective(string oldObjective)
     {
-        for (int i = 0; i < objectives.Length; i++) // Iterates through TextMeshPro-elements -Willow
+        for (int i = 0; i < objectives.Length; i++)
         {
-            if (objectives[i].text == oldObjective) // Compares text component (string) of current TMP element to the parameter (string) -Willow
+            if (objectives[i].text == oldObjective)
             {
-                objectives[objectivesIndex].text = ""; // Sets text component of the relevant TMP element to be blank -Willow
-                objectivesIndex--; // Updates objectivesIndex -Willow
-                backgroundHeight -= 40; // Updates background panel height to correspond to removed objective -Willow
-                background.GetComponent<RectTransform>().sizeDelta = new Vector2(backgroundWidth, backgroundHeight); // Sets background panel to have said height -Willow
+                objectives[objectivesIndex].text = "";
+                objectivesIndex--;
+                backgroundHeight -= 40;
+                background.GetComponent<RectTransform>().sizeDelta = new Vector2(backgroundWidth, backgroundHeight);
             }
         }
     }
 
-    public bool BossNext()
-    {
-        return bossNext; // Used by Safe Room scripts to determine which objective to add to the list upon safe room exit.
-    }
-
     public void FlipBossBool()
     {
-        bossNext = !bossNext; // Used by Safe Room scripts. Called by first Safe Room in level so the next one will know not to add the wrong objective to the list.
+        bossNext = !bossNext;
     }
 
+    public bool BossNext()
+    {
+        return bossNext;
+    }
 }

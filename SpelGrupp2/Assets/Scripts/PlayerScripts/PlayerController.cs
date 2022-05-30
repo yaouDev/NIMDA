@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
     private float _groundCheckDistance = 0.15f;
 
     [SerializeField] private GameObject visuals;
-    [SerializeField] private ParticleSystem respawn;
+
     private Vector2 reference;
     private Vector2 inputVectorUnsmoothed;
 
@@ -439,7 +439,6 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(2);
-        Instantiate(respawn, gameObject.transform.position, Quaternion.identity);
         visuals.SetActive(true);
         alive = true;
     }
