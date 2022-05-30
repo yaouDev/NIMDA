@@ -6,17 +6,15 @@ using UnityEngine.UI;
 public class BossHealthBar : MonoBehaviour
 {
     [SerializeField] private Image fillImage;
+    private float fillValue;
     private Slider slider;
     private EnemyHealth health;
-    private float fillValue;
-    // Start is called before the first frame update
     private void Awake()
     {
         slider = FindObjectOfType<Slider>();
         health = gameObject.GetComponent<EnemyHealth>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (health != null)
@@ -27,7 +25,6 @@ public class BossHealthBar : MonoBehaviour
             {
                 slider.enabled = false;
             }
-
         }
     }
 }

@@ -15,8 +15,7 @@ public class MeleeAttackNode : Node, IResetableNode {
 
     public override NodeState Evaluate() {
 
-        if (isAttacking && agent.TargetInSight) {//CheckIfCoverIsValid() == false) {
-            //agent.IsStopped = true;
+        if (isAttacking && agent.TargetInSight) {
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
             NodeState = NodeState.RUNNING;
@@ -30,7 +29,6 @@ public class MeleeAttackNode : Node, IResetableNode {
     public IEnumerator<WaitForSeconds> AttackDelay() {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
-        //agent.StartCoroutine(AnimateLineRenderer());
         isAttacking = true;
 
     }
@@ -52,9 +50,7 @@ public class MeleeAttackNode : Node, IResetableNode {
 
                 if (damageable != null) {
                     damageable.TakeDamage(damage);
-
                 }
-
             }
         }
     }

@@ -21,7 +21,6 @@ public class Inverter : Decorator {
         }
         return NodeState;
     }
-
     public Inverter(Node node) {
         this.node = node;
     }
