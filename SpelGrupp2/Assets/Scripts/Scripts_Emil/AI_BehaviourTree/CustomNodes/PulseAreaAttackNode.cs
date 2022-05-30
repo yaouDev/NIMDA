@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/PulseAttack")]
 public class PulseAreaAttackNode : Node {
     [SerializeField] private float attackRange;
@@ -35,11 +36,9 @@ public class PulseAreaAttackNode : Node {
     public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackCoolDown);
         Attack();
-        //agent.StartCoroutine(AnimateLineRenderer());
         isAttacking = true;
 
     }
-
 
     void Attack() {
         CallbackSystem.CameraShakeEvent shakeEvent = new CallbackSystem.CameraShakeEvent();

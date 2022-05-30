@@ -66,6 +66,9 @@ public class EnemySpawnController : MonoBehaviour {
     private List<GameObject> nearbySpawners = new List<GameObject>();
     private Transform spawnPos;
     private DayNightSystem dayNightSystem;
+    private Vector2Int playerOneModule;
+    private Vector2Int playerTwoModule;
+    private Vector2Int spwanPosModule;
 
 
     void Start() {
@@ -96,11 +99,6 @@ public class EnemySpawnController : MonoBehaviour {
             genSpawnCooldown = Random.Range(genMinSpawnCooldown, genMaxSpawnCooldown);
             spawnThisMany = Random.Range(minSpawnThisMany, maxSpawnThisMany);
 
-            if (spawnLocations.Length == 0) {
-                spawnLocations = GameObject.FindGameObjectsWithTag("SpawnLocation");
-            }
-            // Debug.Log("hello");
-            // Debug.Log(spawnLocations.Length);
 
             for (int i = 0; i < spawnLocations.Length; i++) {
                 distanceP1 = Vector3.Distance(players[0].transform.position, spawnLocations[i].transform.position);
@@ -199,14 +197,15 @@ public class EnemySpawnController : MonoBehaviour {
 
     private bool CheckModuleAdjacent(Vector3 position) {
         // nuvarande modul
-        Vector2Int playerOneModule = DynamicGraph.Instance.GetModulePosFromWorldPos(players[0].transform.position);
-        Vector2Int playerTwoModule = DynamicGraph.Instance.GetModulePosFromWorldPos(players[1].transform.position);
+        playerOneModule = DynamicGraph.Instance.GetModulePosFromWorldPos(players[0].transform.position);
+        playerTwoModule = DynamicGraph.Instance.GetModulePosFromWorldPos(players[1].transform.position);
 
         // spawnpos modul
-        Vector2Int spwanPosModule = DynamicGraph.Instance.GetModulePosFromWorldPos(position);
+        spwanPosModule = DynamicGraph.Instance.GetModulePosFromWorldPos(position);
 
         // kolla om nuvarande modul har en entrance mot spwanpos
-        return DynamicGraph.Instance.ModulesAdjacent(playerOneModule, spwanPosModule) || DynamicGraph.Instance.ModulesAdjacent(playerTwoModule, spwanPosModule);
+        return DynamicGraph.Instance.ModulesAdjacent(playerOneModule, spwanPosModule)
+            || DynamicGraph.Instance.ModulesAdjacent(playerTwoModule, spwanPosModule);
     }
 
 

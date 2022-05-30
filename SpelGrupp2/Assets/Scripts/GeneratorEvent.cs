@@ -15,7 +15,6 @@ public class GeneratorEvent : MonoBehaviour
     [SerializeField] private Light siren;
     private float timeElapsed;
     private bool doorOpen;
-    private bool interactableRange = false; 
     private Vector3 closePosition;
     private Vector3 openPosition;
     [SerializeField] private ObjectivesManager objectivesManager;
@@ -31,21 +30,12 @@ public class GeneratorEvent : MonoBehaviour
     {
         closePosition = door.transform.position;
         siren.enabled = false; 
-        spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
-        objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
+        spawnController = FindObjectOfType<EnemySpawnController>();
+        objectivesManager = FindObjectOfType<ObjectivesManager>();
 
         ac = AudioController.instance;
     }
 
-/*    private void OnTriggerStay(Collider col)
-    {
-        if (col.CompareTag("Player"))
-        {
-            textPopup.SetActive(true);
-            interactableRange = true;
-
-        }
-    }*/
     private void OnTriggerEnter(Collider col)
     {
         if (col.CompareTag("Player") && !isRunning)
@@ -63,7 +53,6 @@ public class GeneratorEvent : MonoBehaviour
     {
         if (!doorOpen)
         {
-            //Debug.Log("Opening");
             siren.enabled = true;
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
@@ -95,18 +84,5 @@ public class GeneratorEvent : MonoBehaviour
         objectivesManager.RemoveObjective("survive the horde");
         objectivesManager.AddObjective("enter safe room");
     }
-/*    public void Interact(InputAction.CallbackContext value)
-    {
-       
-        if (value.performed && interactableRange)
-        {
-            Debug.Log(value);
-            Debug.Log("startas");
-            StartGenerator();
-            textPopup.GetComponent<TextMeshPro>().text = "";
-            objectivesManager.RemoveObjective("start the generator");
-            objectivesManager.AddObjective("let the generator finish");
-            objectivesManager.AddObjective("survive the horde");
-        }
-    }*/
+
 }

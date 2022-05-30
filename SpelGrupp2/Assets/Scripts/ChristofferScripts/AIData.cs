@@ -15,6 +15,9 @@ public class AIData : MonoBehaviour {
     [SerializeField] private ParticleSystem enemyMuzzleflash;
     [SerializeField] private ParticleSystem fireParticles;
 
+    private ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>>
+        potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, 
+        byte>>();
     private void Start() {
         Instance ??= this;
     }
@@ -83,7 +86,6 @@ public class AIData : MonoBehaviour {
         if (shotsToFireAndFired.ContainsKey(agent)) shotsToFireAndFired[agent].Value = 0;
     }
 
-    private ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>> potentialCoverSpots = new ConcurrentDictionary<Vector2Int, ConcurrentDictionary<Vector3, byte>>();
     public void AddCoverSpot(Vector3 coverSpot) {
         Vector2Int modulePos = DynamicGraph.Instance.GetModulePosFromWorldPos(coverSpot);
         if (!potentialCoverSpots.ContainsKey(modulePos)) {
