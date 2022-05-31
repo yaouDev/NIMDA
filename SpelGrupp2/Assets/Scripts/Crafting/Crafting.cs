@@ -62,7 +62,6 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
-
         public bool IsPlayerOne() { return isPlayerOne; }
 
         private void Awake()
@@ -79,7 +78,6 @@ namespace CallbackSystem
             craftingEvent = new CraftingEvent();
             craftingTable.SetActive(false);
             resourceArray = new int[] { copper, transistor, iron, currency };
-            defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
 
         }
 
@@ -94,6 +92,8 @@ namespace CallbackSystem
                 craftingEvent.activate = false;
                 EventSystem.Current.FireEvent(craftingEvent);
                 UpdateResources();
+
+                defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
                 started = true;
             }
         }
