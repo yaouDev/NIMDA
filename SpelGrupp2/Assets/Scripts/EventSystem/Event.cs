@@ -24,7 +24,12 @@ namespace CallbackSystem {
         public float health;
         public int batteries;
         public bool batteryDecreased;
+    }
 
+    public class CraftingEvent : Event
+    {
+        public bool activate, successfulCraft;
+        
     }
 
     public class RespawnEvent : Event {
