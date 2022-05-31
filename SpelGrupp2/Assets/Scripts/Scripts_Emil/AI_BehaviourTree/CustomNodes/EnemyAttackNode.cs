@@ -10,6 +10,8 @@ public class EnemyAttackNode : Node, IResetableNode {
     [SerializeField] private float attackDelay = 1.0f;
     [SerializeField] private LayerMask whatIsTarget;
 
+    [SerializeField] private Animator anim;
+
     private bool isShooting = true;
     private bool coverIsValid;
     private float x;
@@ -19,6 +21,8 @@ public class EnemyAttackNode : Node, IResetableNode {
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
     public override NodeState Evaluate() {
+
+        anim = agent.GetComponent<Animator>();
 
         coverIsValid = !agent.TargetInSight;
 
@@ -38,6 +42,9 @@ public class EnemyAttackNode : Node, IResetableNode {
         if ((AIData.Instance.GetShotRequirement(agent) > AIData.Instance.GetShotsFired(agent)) && !coverIsValid) {
             NodeState = NodeState.RUNNING;
         } else if ((AIData.Instance.GetShotRequirement(agent) < AIData.Instance.GetShotsFired(agent)) || coverIsValid) {
+
+            anim.SetBool("shooting", false);
+
             NodeState = NodeState.FAILURE;
         }
         return NodeState;
@@ -46,6 +53,9 @@ public class EnemyAttackNode : Node, IResetableNode {
     public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackDelay);
         Attack();
+
+        anim.SetBool("shooting", true);
+
         isShooting = true;
     }
 
