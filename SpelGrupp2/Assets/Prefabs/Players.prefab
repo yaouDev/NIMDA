@@ -937,11 +937,17 @@ MonoBehaviour:
   blinkSpeed: 100
   destinationMultiplier: 0.9
   cameraheight: 0
+  explosionRange: 4
+  damage: 50
+  explosionForce: 50
   cam: {fileID: 326990608734731273}
   trail: {fileID: 5371080335133204322}
-  start: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
+  start: {fileID: 19855466, guid: a6b4217bfe4780a4db70838861dde746, type: 3}
   finnish: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
   player: {fileID: 326990607570548878}
+  whatAreTargets:
+    serializedVersion: 2
+    m_Bits: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 8448
@@ -1619,23 +1625,83 @@ MonoBehaviour:
     m_ActionId: 1caed3ad-0efe-4e3f-97aa-c087ded56323
     m_ActionName: Player/Interact[/Keyboard/f]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
+        m_MethodName: NextButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 6239a5d8-05e6-4fc7-81f6-85094a0ca529
     m_ActionName: Crafting/Next[/Keyboard/d,/Keyboard/rightArrow,/XInputControllerWindows/dpad/right]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5657999587282274127}
+        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 234df8f2-c809-49b1-b0ef-985cabf2ced1
     m_ActionName: Crafting/Interact[/Keyboard/f,/XInputControllerWindows/buttonNorth]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
+        m_MethodName: SelectButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 50459c6b-5f8c-4271-8469-4f7e0c944ea9
     m_ActionName: Crafting/Select[/Keyboard/enter,/XInputControllerWindows/buttonSouth]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
+        m_MethodName: PreviousButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 2f4eb106-32fc-48a1-b90e-2e5dc3878bc0
     m_ActionName: Crafting/Previous[/Keyboard/a,/Keyboard/leftArrow,/XInputControllerWindows/dpad/left]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
+        m_MethodName: ReturnToMain
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 56dda97c-7611-493d-985e-7402158d5b62
     m_ActionName: Crafting/Backspace[/Keyboard/escape,/XInputControllerWindows/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
@@ -1675,11 +1741,17 @@ MonoBehaviour:
   blinkSpeed: 100
   destinationMultiplier: 0.9
   cameraheight: 0
+  explosionRange: 4
+  damage: 50
+  explosionForce: 50
   cam: {fileID: 326990608769707818}
   trail: {fileID: 6892499171766090955}
-  start: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
+  start: {fileID: 19869518, guid: c093f20f7fecffe40968c260ab8382a2, type: 3}
   finnish: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
   player: {fileID: 326990607881322127}
+  whatAreTargets:
+    serializedVersion: 2
+    m_Bits: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 8448
