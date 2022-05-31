@@ -5,6 +5,8 @@ using CallbackSystem;
 
 public class AI_Controller : MonoBehaviour {
 
+    [SerializeField] private Animator anim;
+
     [SerializeField] private float acceleration = 13.5f, maxSpeed = 13.5f, critRange, allowedTargetDiscrepancy, turnSpeed = 100f;
     [SerializeField] private LayerMask targetMask;
     [SerializeField] private bool drawPath = false, isBoss = false, isStopped = true;
@@ -143,6 +145,8 @@ public class AI_Controller : MonoBehaviour {
         avoidTrigger = GetComponentInChildren<SphereCollider>();
         rBody = GetComponent<Rigidbody>();
 
+        anim = GetComponent<Animator>();
+
         activeTarget = targets[0].transform.position;
         Destination = ClosestPlayer;
 
@@ -165,6 +169,7 @@ public class AI_Controller : MonoBehaviour {
         UpdateTargetInSight();
         UpdateRotation();
         behaviorTree.Update();
+
 
         if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
 

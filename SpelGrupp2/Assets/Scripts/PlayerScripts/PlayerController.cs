@@ -11,7 +11,7 @@ using UnityEngine.Serialization;
 public class PlayerController : MonoBehaviour
 {
     //cc animation
-    public Animator anim;
+   [SerializeField] private Animator anim;
 
 
     private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
