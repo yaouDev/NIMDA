@@ -208,7 +208,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(RevolverCritRecipe))
             {
-                //playerAttackScript.UpgradeRevolverCrittable();
+                playerAttackScript.RevolverCritUpgrade();
                 fadingtextEvent.text = "Revolver Crit Enabled";
             }     
             else
@@ -220,7 +220,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(largeMagazineRecipe))
             {
-                playerAttackScript.MagSizeUpgrade();
+                playerAttackScript.RevolverMagazineUpgrade();
                 fadingtextEvent.text = "Revolver Ammo Upgraded";
             }
             else
@@ -233,7 +233,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(laserbeamChargeRecipe))
             {
-                playerAttackScript.ChargeRateUpgrade();
+                playerAttackScript.LaserChargeRateUpgrade();
                 fadingtextEvent.text = "Lasergun Upgraded";
             }
             else
@@ -245,7 +245,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(laserbeamWidthRecipe))
             {
-                playerAttackScript.BeamWidthUpgrade();
+                playerAttackScript.LaserBeamWidthUpgrade();
                 fadingtextEvent.text = "Lasergun Upgraded";
             }
             else
@@ -284,7 +284,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(yellowRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
-                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity() * 1.5f);
+                playerControllerScript.MovementSpeedUpgrade();
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
             else
@@ -321,7 +321,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(greenRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(greenColor);
-                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity() * 1.5f);
+                playerControllerScript.MovementSpeedUpgrade();
                 fadingtextEvent.text = "Color Green Crafted";
             }
             else

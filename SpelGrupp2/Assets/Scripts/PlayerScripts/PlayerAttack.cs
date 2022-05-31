@@ -31,14 +31,19 @@ namespace CallbackSystem
         [SerializeField] private float maxDamage = 100;
         [SerializeField] private float maxTeamDamage = 30;
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
-        [SerializeField] private int bullets, maxBullets, bulletChambers; //reloads/ammo boxes - UPPDATERA NAMN
+        [SerializeField] private int bullets, maxBullets, ammoBoxes, bulletUpgradeIncrease = 5; //reloads/ammo boxes - UPPDATERA NAMN
         [SerializeField] private GameObject bullet, upgradedBullet, explosiveBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
-        private bool canShootLaser, projectionWeaponUpgraded, laserWeaponUpgraded, automaticFireUpgraded = true, canShootGun = true, targetInSight = false;
-        private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown;
+        private bool canShootLaser, canShootGun = true, targetInSight = false;
+        private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown,
+            reducedChargeTime, decreasedBeamWidth = 0.075f, decreasedThickness = 0.75f;
+
+        private bool revolverDamageUpgraded, revolverCritUpgraded, revolverMagazineUpgraded, 
+            laserDamageUpgraded, laserChargeRateUpgraded, laserBeamWidthUpgraded; 
+
         private System.Random rnd = new System.Random();
 
         [SerializeField] private float damage;
@@ -86,7 +91,8 @@ namespace CallbackSystem
             resourceEvent = new ResourceUpdateEvent();
             crosshairEvent = new WeaponCrosshairEvent();
             isPlayerOne = health.IsPlayerOne();
-            reducedSelfDmg = laserSelfDmg / 2;
+            reducedSelfDmg = laserSelfDamageIncreasePerTenthSecond / 2;
+            reducedChargeTime = chargeTime / 2;
             laserWeaponCooldown = 0f;
             revolverCooldown = 0f;
             damage = startDamage;
@@ -201,19 +207,22 @@ namespace CallbackSystem
                 recentlyFired = true;
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
-                sightLineWidth = startSightLineWidth;
+                sightLineWidth = laserBeamWidthUpgraded ? decreasedBeamWidth : startSightLineWidth;
                 laserSelfDmg = startLaserSelfDmg;
                 teamDamage = startTeamDamage;
-                beamThickness = startBeamThickness;
+                beamThickness = laserBeamWidthUpgraded ? decreasedBeamWidth : startBeamThickness;
             }
             //damage = startDamage;
         }
 
         IEnumerator ChargeUp()
         {
+            maxBeamThickness = laserBeamWidthUpgraded ? decreasedThickness : maxBeamThickness;
+            widthIncreacePerTenthSecond = laserBeamWidthUpgraded ? decreasedBeamWidth : widthIncreacePerTenthSecond;
+
             while (damage < maxDamage && chargingUP)
             {
-                yield return new WaitForSeconds(chargeTime);
+                yield return new WaitForSeconds(laserChargeRateUpgraded ?  reducedChargeTime : chargeTime);
                 damage += damageIncreasePerTenthSecond;
                 if (sightLineWidth < maxBeamThickness)
                 {
@@ -225,7 +234,7 @@ namespace CallbackSystem
                 }
                 if (laserSelfDmg < maxSelfDamage)
                 {
-                    laserSelfDmg += laserSelfDamageIncreasePerTenthSecond;
+                    laserSelfDmg += laserDamageUpgraded ? reducedSelfDmg : laserSelfDamageIncreasePerTenthSecond;
                 }
                 if (teamDamage < maxTeamDamage)
                 {
@@ -234,21 +243,6 @@ namespace CallbackSystem
             }
         }
 
-        public void ChargeRateUpgrade()
-        {
-            chargeTime = 0.05f;
-        }
-        public void BeamWidthUpgrade()
-        {
-            maxBeamThickness = 0.75f;
-            widthIncreacePerTenthSecond = 0.075f;
-            startBeamThickness = 0.075f;
-            startSightLineWidth = 0.075f;
-        }
-        public void MagSizeUpgrade()
-        {
-            maxBullets += 5;
-        }
         /*        IEnumerator AttackDelay(float channelTime)
                 {
                     AudioController ac = AudioController.instance; //TODO: change audio parameter to fire with channel time!
@@ -348,6 +342,7 @@ namespace CallbackSystem
 
                 //Check for enemies and onther penetrable objects
                 bool hitObstacle = false;
+                bool hitShield = false;
                 RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward + Vector3.up, beamThickness, aimingDirection, maxBeamLenght, enemyLayerMask);
                 if (hits.Length > 0)
                 {
@@ -366,10 +361,15 @@ namespace CallbackSystem
                             if (hitInfo.transform.gameObject.layer == 8)// (1 << LayerMask.NameToLayer("SeeThrough")))
                             {
                                 hitObstacle = true;
-                                Debug.Log($"{hitInfo.transform.gameObject.name}");
                                 return;
                             }
-                            else if (!hitObstacle && (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
+                            if(hitInfo.transform.gameObject.layer == 25)
+                            {
+                                hitShield = true;
+                                IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
+                                damageable.TakeDamage(damage);
+                            }
+                            else if (!hitObstacle && !hitShield &&(hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
                             {
                                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -381,7 +381,7 @@ namespace CallbackSystem
                                         damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
                                 }
                             }
-                            else if (!hitObstacle && hitInfo.transform.tag == "BreakableObject")
+                            else if (!hitObstacle && !hitShield && hitInfo.transform.tag == "BreakableObject")
                             {
                                 BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
                                 breakable.DropBoxLoot();
@@ -503,15 +503,12 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(crosshairEvent);
         }
 
-        public void EnableCrittableRevolver() => critEnabled = true;
-
         private GameObject currentBullet;
-        private bool critEnabled;
         private int critChance;
         private void FireProjectileWeapon()
         {
             //Debug.Log("Attempting to fire.");
-            if (bullets > 0 && bulletChambers >= 0)
+            if (bullets > 0 && ammoBoxes >= 0)
             {
                 if (AIData.Instance.EnemyMuzzleflash != null)
                 {
@@ -520,43 +517,13 @@ namespace CallbackSystem
                 //Debug.Log("Firing. Shots left: " + bulletsInGun);
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
-                currentBullet = projectionWeaponUpgraded ? upgradedBullet : bullet;
+                currentBullet = revolverDamageUpgraded ? upgradedBullet : bullet;
                 UpdateBulletCount(-1);
                 critChance = rnd.Next(0, 20);
-                if (critEnabled && critChance == 20)
+                if (revolverCritUpgraded && critChance == 20)
                     currentBullet = explosiveBullet;
                 Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
             }
-        }
-
-        private void AutomaticProjectileWeapon()
-        {
-            if (bullets > 0)
-            {
-                if (AIData.Instance.EnemyMuzzleflash != null)
-                {
-                    Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
-                }
-                Debug.Log("Standard projectile weapon fired!");
-                AudioController ac = AudioController.instance;
-                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
-                UpdateBulletCount(-1);
-                if (projectionWeaponUpgraded)
-                    Instantiate(upgradedBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-                else
-                    Instantiate(bullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-            }
-        }
-
-        public void UpgradeProjectileWeapon()
-        {
-            Debug.Log("Projectile weapon upgraded!");
-            projectionWeaponUpgraded = true;
-        }
-
-        public void UpgradeLaserWeapon()
-        {
-            laserSelfDamageIncreasePerTenthSecond /= 2;
         }
 
         public int ReturnBullets()
@@ -566,56 +533,72 @@ namespace CallbackSystem
 
         public int ReturnMaxBullets()
         {
-            return maxBullets;
+            return revolverMagazineUpgraded ? maxBullets + bulletUpgradeIncrease : maxBullets;
         }
 
         public void UpdateBulletCount(int amount)
         {
             bullets += amount;
-            if (bullets == 0 && bulletChambers > 0)
+            if (bullets == 0 && ammoBoxes > 0)
                 Reload();
-            if (bullets > maxBullets)
+            if (bullets > ReturnMaxBullets())
             {
-                bulletChambers++;
+                ammoBoxes++;
                 bullets = 1;
             }
             resourceEvent.ammoChange = true;
             resourceEvent.a = bullets;
-            resourceEvent.magAmmo = bulletChambers;
+            resourceEvent.magAmmo = ammoBoxes;
             EventSystem.Current.FireEvent(resourceEvent);
         }
-
-        /*
-        public void UpdateMagCount(int amount, int magMax)
-        {
-            bulletsInGun += amount;
-            resourceEvent.magAmmo = bulletsInGun;
-            resourceEvent.maxAmmo = magMax;
-            EventSystem.Current.FireEvent(resourceEvent);
-        }
-        */
-
         private void Reload()
         {
-            bullets = maxBullets;
-            bulletChambers--;
+            bullets = ReturnMaxBullets();
+            ammoBoxes--;
+        }
+        public void SetBulletsOnLoad(int amount) => bullets = amount;
+       
+        public void UpgradeLaserWeapon() => LaserDamageUpgraded = true;
+        public void LaserChargeRateUpgrade() => LaserChargeRateUpgraded = true;
+        public void LaserBeamWidthUpgrade() => LaserBeamWidthUpgraded = true;
+        public void UpgradeProjectileWeapon() => ProjectileWeaponUpgraded = true;
+        public void RevolverCritUpgrade() => RevolverCritUpgraded = true;
+        public void RevolverMagazineUpgrade() => RevolverMagazineUpgraded = true;
+
+        public bool LaserDamageUpgraded
+        {
+            get { return laserDamageUpgraded; }
+            set { laserDamageUpgraded = value; }
         }
 
-        public bool LaserWeaponUpgraded
+        public bool LaserChargeRateUpgraded
         {
-            get { return laserWeaponUpgraded; }
-            set { laserWeaponUpgraded = value; }
+            get { return laserChargeRateUpgraded; }
+            set { laserChargeRateUpgraded = value; }
+        }
+
+        public bool LaserBeamWidthUpgraded
+        {
+            get { return laserBeamWidthUpgraded; }
+            set { laserBeamWidthUpgraded = value; }
         }
 
         public bool ProjectileWeaponUpgraded
         {
-            get { return projectionWeaponUpgraded; }
-            set { projectionWeaponUpgraded = value; }
+            get { return revolverDamageUpgraded; }
+            set { revolverDamageUpgraded = value; }
         }
 
-        public void SetBulletsOnLoad(int amount)
+        public bool RevolverCritUpgraded
         {
-            bullets = amount;
+            get { return revolverCritUpgraded; }
+            set { revolverCritUpgraded = value; }
+        }
+
+        public bool RevolverMagazineUpgraded
+        {
+            get { return revolverMagazineUpgraded; }
+            set { revolverMagazineUpgraded = value; }
         }
     }
 }

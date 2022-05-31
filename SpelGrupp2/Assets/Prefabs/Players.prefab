@@ -356,7 +356,7 @@ MonoBehaviour:
   aimLineRenderer: {fileID: 47074359}
   enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 6400
+    m_Bits: 33560832
   revolverLaserSightLayerMask:
     serializedVersion: 2
     m_Bits: 2147491072
@@ -382,7 +382,8 @@ MonoBehaviour:
   laserAttackDelay: 0.5
   bullets: 5
   maxBullets: 5
-  bulletChambers: 15
+  ammoBoxes: 0
+  bulletUpgradeIncrease: 5
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
   explosiveBullet: {fileID: 3404951615968842901, guid: c2473f957eb86ca40ba477feb6fed709, type: 3}
@@ -433,7 +434,6 @@ MonoBehaviour:
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
   visuals: {fileID: 326990607699453844}
-  respawn: {fileID: 0}
   movementSpeedReduced: 1
 --- !u!114 &326990607570548866
 MonoBehaviour:
@@ -934,6 +934,7 @@ MonoBehaviour:
   numberOfUses: 2
   maxUses: 2
   cooldown: 15
+  reducedCooldown: 1
   maxDistance: 5
   blinkSpeed: 100
   destinationMultiplier: 0.9
@@ -1133,7 +1134,7 @@ MonoBehaviour:
   aimLineRenderer: {fileID: 2121336705}
   enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 5376
+    m_Bits: 33559808
   revolverLaserSightLayerMask:
     serializedVersion: 2
     m_Bits: 2147491072
@@ -1159,7 +1160,8 @@ MonoBehaviour:
   laserAttackDelay: 0.5
   bullets: 5
   maxBullets: 5
-  bulletChambers: 15
+  ammoBoxes: 0
+  bulletUpgradeIncrease: 5
   bullet: {fileID: 2561397290436481035, guid: c26153bde35133d409fa4e7d90727922, type: 3}
   upgradedBullet: {fileID: 8633690795862413451, guid: 4f4b061d74d2bf54f8ae592f29186f02, type: 3}
   explosiveBullet: {fileID: 3404951615968842901, guid: c2473f957eb86ca40ba477feb6fed709, type: 3}
@@ -1210,7 +1212,6 @@ MonoBehaviour:
   _skinWidth: 0.1
   _groundCheckDistance: 0.15
   visuals: {fileID: 326990609148873030}
-  respawn: {fileID: 0}
   movementSpeedReduced: 1
 --- !u!114 &326990607881322124
 MonoBehaviour:
@@ -1739,6 +1740,7 @@ MonoBehaviour:
   numberOfUses: 2
   maxUses: 2
   cooldown: 15
+  reducedCooldown: 1
   maxDistance: 5
   blinkSpeed: 100
   destinationMultiplier: 0.9

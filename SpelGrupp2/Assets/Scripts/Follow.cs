@@ -10,7 +10,7 @@ public class Follow : MonoBehaviour
     public float minModifier = 7, maxModifier = 11;
     private bool targetFound, kickoff;
     private Vector3 velocity = Vector3.zero, offset = Vector3.up/2;
-
+    [SerializeField] private Vector3 rotatationRate;
     [SerializeField] private EventReference pickupSound;
     private AudioController ac;
     private bool isSoundPlayed;
@@ -30,9 +30,10 @@ public class Follow : MonoBehaviour
 
     void Update()
     {
-        transform.LookAt(Camera.main.transform.position, Vector3.up);
+        //transform.LookAt(Camera.main.transform.position, Vector3.up);
+        transform.Rotate(rotatationRate);
 
-        if(!targetFound)
+        if (!targetFound)
         {
             if ((targets[0].transform.position - transform.position).sqrMagnitude < 30 * 3)
             {

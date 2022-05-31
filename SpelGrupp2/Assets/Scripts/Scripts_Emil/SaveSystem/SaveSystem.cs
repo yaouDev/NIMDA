@@ -102,7 +102,7 @@ public class SaveSystem : MonoBehaviour {
             // put all the info in the references here
 
             // playerOne
-            playerOneAttack.LaserWeaponUpgraded = data.playerOneLaserUpgraded;
+            playerOneAttack.LaserDamageUpgraded = data.playerOneLaserUpgraded;
             playerOneAttack.ProjectileWeaponUpgraded = data.playerOneProjectileUpgraded;
             playerOneAttack.SetBulletsOnLoad(data.playerOneAmmo);
             playerOneHealth.SetBatteriesOnLoad(data.playerOneBattery);
@@ -115,7 +115,7 @@ public class SaveSystem : MonoBehaviour {
             playerOneAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
 
             // playerTwo
-            playerTwoAttack.LaserWeaponUpgraded = data.playerTwoLaserUpgraded;
+            playerTwoAttack.LaserDamageUpgraded = data.playerTwoLaserUpgraded;
             playerTwoAttack.ProjectileWeaponUpgraded = data.playerTwoProjectileUpgraded;
             playerTwoAttack.SetBulletsOnLoad(data.playerTwoAmmo);
             playerTwoHealth.SetBatteriesOnLoad(data.playerTwoBattery);
