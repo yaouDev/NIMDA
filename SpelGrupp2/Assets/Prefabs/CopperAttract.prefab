@@ -150,9 +150,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0ab245b6c9173d43bfb08b260cc84d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 0}
+  targets: []
+  target: {fileID: 0}
   minModifier: 7
   maxModifier: 11
+  pickupSound:
+    Guid:
+      Data1: 1151595013
+      Data2: 1265349086
+      Data3: 585550758
+      Data4: 443694945
+    Path: event:/Sources/PickUp
 --- !u!1 &1395718256198299552
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14cca06ad5359074282d8f2c3f182cfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 479024149273734875}
   pickUpType: 1
 --- !u!65 &3610448603543018543
 BoxCollider:
