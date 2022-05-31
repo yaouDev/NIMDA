@@ -8,7 +8,7 @@ public class Blink : MonoBehaviour
 {
     [SerializeField] private int numberOfUses = 5;
     [SerializeField] private int maxUses = 5;
-    [SerializeField] private float cooldown = 2;
+    [SerializeField] private float cooldown = 2, reducedCooldown = 1;
     [SerializeField] private float maxDistance = 5;
     [SerializeField] private float blinkSpeed = 100;
     [SerializeField] private float destinationMultiplier = 0.95f;
@@ -31,13 +31,14 @@ public class Blink : MonoBehaviour
     private Vector3 destination;
     private RaycastHit hitInfo;
     private IDamageable damageable;
+    private bool blinkUpgraded;
 
     void Start()
     {
         playerAttack = player.GetComponent<CallbackSystem.PlayerAttack>();
         trail = GetComponentInChildren<ParticleSystem>();
         maxUses = numberOfUses;
-        cooldownTimer = cooldown;
+        cooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;
         //UIText.text = numberOfUses.ToString();
     }
 
@@ -52,7 +53,7 @@ public class Blink : MonoBehaviour
             else
             {
                 numberOfUses += 1;
-                cooldownTimer = cooldown;
+                cooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;
                 //UIText.text = "Blink: " + numberOfUses.ToString();
             }
         }
@@ -133,5 +134,10 @@ public class Blink : MonoBehaviour
         }
     }
 
-    public void DecreaseBlinkCooldown() => cooldown /= 2;
+    public void DecreaseBlinkCooldown() => blinkUpgraded = true;
+    public bool BlinkUpgraded
+    {
+        get { return blinkUpgraded; }
+        set { blinkUpgraded = value; }
+    }
 }

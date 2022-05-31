@@ -59,7 +59,7 @@ public class SaveData {
         playerOneAmmo = SaveSystem.Instance.PlayerOneAttack.ReturnBullets();
         playerOneCurrency = SaveSystem.Instance.PlayerOneCrafting.currency;
         playerOneHealth = SaveSystem.Instance.PlayerOneHealth.GetCurrenthealth();
-        playerOneLaserUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserWeaponUpgraded;
+        playerOneLaserUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserDamageUpgraded;
         playerOneProjectileUpgraded = SaveSystem.Instance.PlayerOneAttack.ProjectileWeaponUpgraded;
 
         playerOneColor = new float[4];
@@ -76,7 +76,7 @@ public class SaveData {
         playerTwoAmmo = SaveSystem.Instance.PlayerTwoAttack.ReturnBullets();
         playerTwoCurrency = SaveSystem.Instance.PlayerTwoCrafting.currency;
         playerTwoHealth = SaveSystem.Instance.PlayerTwoHealth.GetCurrenthealth();
-        playerTwoLaserUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserWeaponUpgraded;
+        playerTwoLaserUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserDamageUpgraded;
         playerTwoProjectileUpgraded = SaveSystem.Instance.PlayerTwoAttack.ProjectileWeaponUpgraded;
 
         playerTwoColor = new float[4];
