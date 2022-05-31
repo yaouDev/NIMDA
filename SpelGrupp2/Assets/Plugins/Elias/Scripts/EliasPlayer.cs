@@ -10,7 +10,7 @@ using FMODUnity;
 [RequireComponent(typeof(AudioSource))]
 public class EliasPlayer : MonoBehaviour
 {
-	//[HideInInspector]
+	[HideInInspector]
 	public string file;
 	[HideInInspector]
 	public int actionPreset = -1;
