@@ -342,6 +342,7 @@ namespace CallbackSystem
 
                 //Check for enemies and onther penetrable objects
                 bool hitObstacle = false;
+                bool hitShield = false;
                 RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward + Vector3.up, beamThickness, aimingDirection, maxBeamLenght, enemyLayerMask);
                 if (hits.Length > 0)
                 {
@@ -360,10 +361,15 @@ namespace CallbackSystem
                             if (hitInfo.transform.gameObject.layer == 8)// (1 << LayerMask.NameToLayer("SeeThrough")))
                             {
                                 hitObstacle = true;
-                                Debug.Log($"{hitInfo.transform.gameObject.name}");
                                 return;
                             }
-                            else if (!hitObstacle && (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
+                            if(hitInfo.transform.gameObject.layer == 25)
+                            {
+                                hitShield = true;
+                                IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
+                                damageable.TakeDamage(damage);
+                            }
+                            else if (!hitObstacle && !hitShield &&(hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
                             {
                                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -375,7 +381,7 @@ namespace CallbackSystem
                                         damageable.TakeDamage(damage); //TODO pickUp-object should not be on enemy-layer! // maybe they should have their own layer?
                                 }
                             }
-                            else if (!hitObstacle && hitInfo.transform.tag == "BreakableObject")
+                            else if (!hitObstacle && !hitShield && hitInfo.transform.tag == "BreakableObject")
                             {
                                 BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
                                 breakable.DropBoxLoot();
