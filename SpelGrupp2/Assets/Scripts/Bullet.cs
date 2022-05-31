@@ -44,22 +44,31 @@ public class Bullet : MonoBehaviour
                 BreakableObject breakable = hitInfo.transform.GetComponent<BreakableObject>();
                 breakable.DropBoxLoot();
             }
-            else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player")
+            else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "Player" || hitInfo.transform.tag == "Shield")
             {
                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
-                hitInfo.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -30), hitInfo.transform.rotation.y, hitInfo.transform.rotation.z, 0);
 
                 if (damageable != null)
                 {
                     if (hitInfo.transform.tag == "Player")
+                    {
                         damageable.TakeDamage(damage * .5f);
+                        hitInfo.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -30), 
+                            hitInfo.transform.rotation.y, hitInfo.transform.rotation.z, 0);
+                    }
+                    else if (hitInfo.transform.tag == "Enemy")
+                    {
+                        damageable.TakeDamage(damage);
+                        hitInfo.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -30), 
+                            hitInfo.transform.rotation.y, hitInfo.transform.rotation.z, 0);
+                    }
                     else
                         damageable.TakeDamage(damage);
                 }
 
                 Ricochet();
             }
-            
+
             //else if (1 << hitInfo.collider.gameObject.layer == enemyLayerMask)
             //{
             //    hit = true;

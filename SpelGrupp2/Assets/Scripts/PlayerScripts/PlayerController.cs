@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 joyStickRightInput;
     private bool _grounded;
     private float _colliderRadius;
+    bool _movementSpeedUpgraded;
 
     protected bool alive = true;
 
@@ -71,7 +72,7 @@ public class PlayerController : MonoBehaviour
     [Range(0.0f, 20.0f)]
     [Tooltip("Max speed")]
     private float _terminalVelocity = 12.0f;
-    private float _defaultTerminalVelocity;
+    private float _defaultTerminalVelocity, _upgradedTerminalVelocity;
 
     [SerializeField]
     [Range(0.0f, 20.0f)]
@@ -124,6 +125,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         _defaultTerminalVelocity = _terminalVelocity;
+        _upgradedTerminalVelocity = _terminalVelocity * 2;
         _jumpVector = new Vector3(0.0f, _jumpForce);
         _defaultGravity = -Physics.gravity.y;
         _colliderRadius = _collider.radius;
@@ -229,7 +231,7 @@ public class PlayerController : MonoBehaviour
         _velocity += input *
                      ((Vector3.Dot(input, _velocity) < 0.0f ? _turnSpeedModifier : 1.0f) *
                       _acceleration);
-        _velocity = Vector3.ClampMagnitude(_velocity, _terminalVelocity);
+        _velocity = Vector3.ClampMagnitude(_velocity, _movementSpeedUpgraded ? _upgradedTerminalVelocity : _terminalVelocity);
     }
 
     public void Decelerate()
@@ -445,7 +447,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetTerminalVelocity(float value) => _terminalVelocity = value;
     public float GetTerminalVelocity() { return _terminalVelocity; }
-    public void SetDefaultVelocity() => _terminalVelocity = _defaultTerminalVelocity;
+    public void SetDefaultMovementSpeed() => _movementSpeedUpgraded = false;
     public void Respawn() => alive = true;
 
     [HideInInspector] public float movementSpeedReduced = 1f;
@@ -459,5 +461,12 @@ public class PlayerController : MonoBehaviour
         {
             movementSpeedReduced = 1f;
         }
+    }
+    public void MovementSpeedUpgrade() => _movementSpeedUpgraded = true;
+
+    public bool MovementSpeedUpgraded
+    {
+        get { return _movementSpeedUpgraded; }
+        set { _movementSpeedUpgraded = value; }
     }
 }

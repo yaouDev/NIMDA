@@ -12,6 +12,10 @@ public class AIData : MonoBehaviour {
     [SerializeField] private ParticleSystem pulseAttackParticles;
     [SerializeField] private ParticleSystem explosionParticles; 
     [SerializeField] private ParticleSystem enemyHitParticles;
+    [SerializeField] private ParticleSystem blueShieldHitParticles;
+    [SerializeField] private ParticleSystem greenShieldHitParticles;
+    [SerializeField] private ParticleSystem purpleShieldHitParticles;
+    [SerializeField] private ParticleSystem yellowShieldHitParticles;
     [SerializeField] private ParticleSystem enemyMuzzleflash;
     [SerializeField] private ParticleSystem fireParticles;
 
@@ -40,6 +44,22 @@ public class AIData : MonoBehaviour {
     }
     public ParticleSystem EnemyHitParticles {
         get { return enemyHitParticles; }
+    }
+    public ParticleSystem BlueShieldHitParticles
+    {
+        get { return blueShieldHitParticles; }
+    }
+    public ParticleSystem GreenShieldHitParticles
+    {
+        get { return greenShieldHitParticles; }
+    }
+    public ParticleSystem PurpleShieldHitParticles
+    {
+        get { return purpleShieldHitParticles; }
+    }
+    public ParticleSystem YellowShieldHitParticles
+    {
+        get { return yellowShieldHitParticles; }
     }
     public ParticleSystem EnemyMuzzleflash {
         get { return enemyMuzzleflash; }

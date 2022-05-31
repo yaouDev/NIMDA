@@ -21,7 +21,7 @@ namespace CallbackSystem
         private Crafting crafting;
         private ActivationUIEvent UIEvent;
         private ChangeColorEvent colorEvent;
-        private bool started = false;
+        private bool started = false, decreaseDamageUpgrade;
         private UIMenus uiMenus;
         [SerializeField] private Material playerMaterial;
         private Color defaultColor;
@@ -76,7 +76,7 @@ namespace CallbackSystem
 
         public void TakeDamage(float damage)
         {
-            currHealth -= damage;
+            currHealth -= decreaseDamageUpgrade ? damage * 0.5f : damage;
             if (alive)
             {
                 CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
@@ -163,7 +163,7 @@ namespace CallbackSystem
         {
             maxHealth = 100f;
             currHealth = (currHealth > maxHealth) ? maxHealth : currHealth;
-            movement.SetDefaultVelocity();
+            movement.SetDefaultMovementSpeed();
         }
 
         private void UpdateHealthUI(bool batteryDecreased = false)
@@ -244,6 +244,14 @@ namespace CallbackSystem
         public int GetMaxBatteryCount()
         {
             return maxBatteryCount;
+        }
+
+        public void DecreaseDamageUpgrade() => DecreaseDamageUpgraded = true;
+
+        public bool DecreaseDamageUpgraded
+        {
+            get { return decreaseDamageUpgrade; }
+            set { decreaseDamageUpgrade = value; }
         }
     }
 }
