@@ -348,26 +348,28 @@ namespace CallbackSystem
 
                 //Check for enemies and onther penetrable objects
                 bool hitObstacle = false;
-
                 RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward + Vector3.up, beamThickness, aimingDirection, maxBeamLenght, enemyLayerMask);
                 if (hits.Length > 0)
                 {
                     List<RaycastHit> hitList = new List<RaycastHit>(hits);
                     hitList.Sort((x, y) => x.distance.CompareTo(y.distance));
-                    for (int i = 0; i < hitList.Count; i++)
-                    {
-                        Debug.Log(hitList[i].transform.gameObject.name);
-                    }
+                    //for (int i = 0; i < hitList.Count; i++)
+                    //{
+                    //    Debug.Log(hitList[i].transform.gameObject.name);
+                    //}
                     foreach (RaycastHit hitInfo in hitList) // TODO change to firepoint
                     {
+                        
                         if (hitInfo.collider != null)
                         {
-                            if (hitInfo.transform.gameObject.layer == 1 << LayerMask.NameToLayer("SeeThrough"))
+                            Debug.Log(hitInfo.transform.gameObject.layer + " " + (1 << LayerMask.NameToLayer("SeeThrough")));
+                            if (hitInfo.transform.gameObject.layer == 8)// (1 << LayerMask.NameToLayer("SeeThrough")))
                             {
                                 hitObstacle = true;
+                                Debug.Log($"{hitInfo.transform.gameObject.name}");
                                 return;
                             }
-                            if (!hitObstacle && (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
+                            else if (!hitObstacle && (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
                             {
                                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -386,9 +388,8 @@ namespace CallbackSystem
                             }
                         }
                     }
+
                 }
-
-
             }
         }
 
