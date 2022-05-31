@@ -28,7 +28,8 @@ namespace CallbackSystem {
 
     public class CraftingEvent : Event
     {
-        public bool activate;
+        public bool activate, successfulCraft;
+        
     }
 
     public class RespawnEvent : Event {

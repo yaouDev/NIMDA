@@ -607,18 +607,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1048832
   craftingTable: {fileID: 0}
-  craftingButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  defaultColorButton: {fileID: 0}
   copper: 0
   transistor: 0
   iron: 0
@@ -834,8 +822,8 @@ MonoBehaviour:
     m_ActionName: Player/Interact[/Keyboard/f]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1021181802951838962}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
         m_MethodName: NextButton
         m_Mode: 0
         m_Arguments:
@@ -866,8 +854,8 @@ MonoBehaviour:
     m_ActionName: Crafting/Interact[/Keyboard/f,/XInputControllerWindows/buttonSouth]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1021181802951838962}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
         m_MethodName: SelectButton
         m_Mode: 0
         m_Arguments:
@@ -882,8 +870,8 @@ MonoBehaviour:
     m_ActionName: Crafting/Select[/Keyboard/enter,/XInputControllerWindows/buttonSouth]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1021181802951838962}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
         m_MethodName: PreviousButton
         m_Mode: 0
         m_Arguments:
@@ -896,6 +884,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 64aa5f3f-cebc-40c9-9e0f-edf748513fcb
     m_ActionName: Crafting/Previous[/Keyboard/w,/Keyboard/upArrow,/XInputControllerWindows/dpad/up]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: TabGroup, Assembly-CSharp
+        m_MethodName: ReturnToMain
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 25258768-1df6-41c1-b0b9-f342d19594a9
+    m_ActionName: Crafting/Backspace[/Keyboard/backspace,/XInputControllerWindows/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: MouseKeyboard
   m_DefaultActionMap: Player
@@ -1373,18 +1377,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1048832
   craftingTable: {fileID: 0}
-  craftingButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  defaultColorButton: {fileID: 0}
   copper: 0
   transistor: 0
   iron: 0
@@ -1627,69 +1619,25 @@ MonoBehaviour:
     m_ActionId: 1caed3ad-0efe-4e3f-97aa-c087ded56323
     m_ActionName: Player/Interact[/Keyboard/f]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: NextButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 30d8afce-739f-49ee-a571-26a85db7a67a
-    m_ActionName: Crafting/Next[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow,/XInputControllerWindows/dpad/up,/XInputControllerWindows/dpad/down]
+      m_Calls: []
+    m_ActionId: 6239a5d8-05e6-4fc7-81f6-85094a0ca529
+    m_ActionName: Crafting/Next[/Keyboard/d,/Keyboard/rightArrow,/XInputControllerWindows/dpad/right]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: Interact
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: d255f17d-4e4a-4738-b3e2-44f0fd8050df
-    m_ActionName: Crafting/Interact[/Keyboard/f,/XInputControllerWindows/buttonSouth]
+      m_Calls: []
+    m_ActionId: 234df8f2-c809-49b1-b0ef-985cabf2ced1
+    m_ActionName: Crafting/Interact[/Keyboard/f,/XInputControllerWindows/buttonNorth]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: SelectButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 825579d9-fbef-4e42-b790-626cad010d28
+      m_Calls: []
+    m_ActionId: 50459c6b-5f8c-4271-8469-4f7e0c944ea9
     m_ActionName: Crafting/Select[/Keyboard/enter,/XInputControllerWindows/buttonSouth]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5657999587282274127}
-        m_TargetAssemblyTypeName: CallbackSystem.Crafting, Assembly-CSharp
-        m_MethodName: PreviousButton
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 3c8efc56-8cc3-4c4a-8b78-8f3579a8f579
-    m_ActionName: Crafting/Previous[/Keyboard/w,/Keyboard/upArrow,/XInputControllerWindows/dpad/up]
+      m_Calls: []
+    m_ActionId: 2f4eb106-32fc-48a1-b90e-2e5dc3878bc0
+    m_ActionName: Crafting/Previous[/Keyboard/a,/Keyboard/leftArrow,/XInputControllerWindows/dpad/left]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 56dda97c-7611-493d-985e-7402158d5b62
+    m_ActionName: Crafting/Backspace[/Keyboard/escape,/XInputControllerWindows/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: GamePad
   m_DefaultActionMap: Player
