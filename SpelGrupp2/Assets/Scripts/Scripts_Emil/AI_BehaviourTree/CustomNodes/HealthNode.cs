@@ -5,13 +5,13 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/HealthNode")]
 public class HealthNode : Node {
 
-    //public float fleeThereshold;
     [SerializeField] private float healthTheresholdPercent;
+    private float roundedHealth;
+    private float coinFlip;
     public override NodeState Evaluate() {
-        //NodeState = agent.Health.CurrentHealthPercentage <= healthTheresholdPercent ? NodeState.SUCCESS : NodeState.FAILURE;
 
-        float roundedHealth = Mathf.Round(agent.Health.CurrentHealthPercentage * 10) * 0.1f;
-        int coinFlip = Random.Range(0, 100);
+        roundedHealth = Mathf.Round(agent.Health.CurrentHealthPercentage * 10) * 0.1f;
+        coinFlip = Random.Range(0, 100);
 
         if (roundedHealth <= 0.5f) {
             if (roundedHealth > 0.4f) {

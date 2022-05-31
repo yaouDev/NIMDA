@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using UnityEngine;
+using CallbackSystem;
 
 public class DynamicGraph : MonoBehaviour {
     [Header("World attributes")]
@@ -41,9 +42,10 @@ public class DynamicGraph : MonoBehaviour {
         Instance ??= this;
         loadedModules = new HashSet<Vector2Int>();
 
-        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleSpawnEvent>(OnModuleLoad);
-        CallbackSystem.EventSystem.Current.RegisterListener<CallbackSystem.ModuleDeSpawnEvent>(OnModuleUnload);
+        EventSystem.Current.RegisterListener<ModuleSpawnEvent>(OnModuleLoad);
+        EventSystem.Current.RegisterListener<ModuleDeSpawnEvent>(OnModuleUnload);
 
+        // hardcoded modules used for playtesting without proc-gen
         if (usePlayTestModules) {
             //Vector2Int module1 = new Vector2Int(0, 0);
             Vector2Int module2 = new Vector2Int(-1, 3);
@@ -208,7 +210,14 @@ public class DynamicGraph : MonoBehaviour {
         return extremePos;
     }
 
-    public Vector3 GetClosestNode(Vector3 pos) {
+    /// <summary>
+    /// Translates a world position to a grid position in O(1) time.
+    /// if pos' x or z value is larger/smaller than the nodes at the current module's edges
+    /// the value will be set to the edge position.
+    /// </summary>
+    /// <param name="pos"> The position to translate </param>
+    /// <returns> the translated position </returns>
+    public Vector3 TranslateToGrid(Vector3 pos) {
 
         float[] edgePos = GetModuleEdgePositions(GetModulePosFromWorldPos(pos));
         float x = 0, y = groundLevel, z = x;
@@ -228,15 +237,22 @@ public class DynamicGraph : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
-    public Vector3 GetClosestNodeNotBlocked(Vector3 target) {
+    /// <summary>
+    /// Tries to return an unblocked neighbor of the passed target. Only works on grid positions.
+    /// Will not work on a node where all neighbors, and the neighbors of those neighbors are blocked.
+    /// Is performance heavy because of heavy overlap usage, preferably not used regurlarly. 
+    /// </summary>
+    /// <param name="target"> The target node / grid position </param>
+    /// <returns> Vector3.zero if no unblocked neighbor is found, or the closest unblocked neighbor </returns>
+    private Vector3 GetUnblockedNeighbor(Vector3 target) {
         Vector3[] pNeighbors = GetPossibleNeighbors(target);
         Vector3 closestNode = Vector3.zero;
         foreach (Vector3 pNeighbor in pNeighbors) {
-            if (GetBlockedNode(pNeighbor).Length == 0 && (closestNode == Vector3.zero || Vector3.Distance(closestNode, target) > Vector3.Distance(pNeighbor, closestNode)))
+            if (CheckNodeOverlap(pNeighbor).Length == 0 && (closestNode == Vector3.zero || Vector3.Distance(closestNode, target) > Vector3.Distance(pNeighbor, closestNode)))
                 closestNode = pNeighbor;
             else {
                 foreach (Vector3 nPNeighbor in GetPossibleNeighbors(pNeighbor)) {
-                    if (GetBlockedNode(pNeighbor).Length == 0 && (closestNode == Vector3.zero || Vector3.Distance(closestNode, target) > Vector3.Distance(nPNeighbor, closestNode)))
+                    if (CheckNodeOverlap(pNeighbor).Length == 0 && (closestNode == Vector3.zero || Vector3.Distance(closestNode, target) > Vector3.Distance(nPNeighbor, closestNode)))
                         closestNode = nPNeighbor;
                 }
             }
@@ -244,6 +260,11 @@ public class DynamicGraph : MonoBehaviour {
         return closestNode;
     }
 
+    /// <summary>
+    /// Gets all possible neighbors of a node regardless of if the graph contains them or not. 
+    /// </summary>
+    /// <param name="node"> the node to get possible neighbors for </param>
+    /// <returns> All possible neighbors of passed node </returns>
     public Vector3[] GetPossibleNeighbors(Vector3 node) {
         Vector3 firstPossibleXNeighbor = new Vector3(node.x + nodeHalfextent * 2, node.y, node.z),
         secondPossibleXNeighbor = new Vector3(node.x - nodeHalfextent * 2, node.y, node.z),
@@ -257,7 +278,7 @@ public class DynamicGraph : MonoBehaviour {
         firstTopDiagonalNeighbor, secondTopDiagonalNeighbor, firstBottomDiagnoalNeighbor, secondBottomDiagonalNeighbor };
     }
 
-    private Collider[] GetBlockedNode(Vector3 position) {
+    private Collider[] CheckNodeOverlap(Vector3 position) {
         return Physics.OverlapBox(position, new Vector3(nodeHalfextent, nodeHalfextent, nodeHalfextent), Quaternion.identity, colliderMask);
     }
 
@@ -277,6 +298,11 @@ public class DynamicGraph : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Translates a world position to a module position
+    /// </summary>
+    /// <param name="worldPos"> the world position to translate </param>
+    /// <returns> the translated module position </returns>
     public Vector2Int GetModulePosFromWorldPos(Vector3 worldPos) {
         int xOffset = (int)worldPos.x % moduleSize, yOffset = (int)worldPos.z % moduleSize;
         int xAdd = 0, yAdd = 0;
@@ -293,6 +319,15 @@ public class DynamicGraph : MonoBehaviour {
         return new KeyValuePair<int, int>(xIndex, yIndex);
     }
 
+    /// <summary>
+    /// Uses the playtest graph to check if two modules are adjacent to each other. To be used 
+    /// to prevent enemies from spawning in unconnected modules. Always returns true if modules are within 1 distance of each other
+    /// on x or y axis. Always returns false if they are further away than 1 on x or y axis.
+    /// Returns true if moduels are adjacent and share an opening between each other.
+    /// </summary>
+    /// <param name="firstModule"> the first module to check </param>
+    /// <param name="secondModule"> the second module to check </param>
+    /// <returns> bool indicating whether or not modules are adjacent </returns>
     public bool ModulesAdjacent(Vector2Int firstModule, Vector2Int secondModule) {
         if(firstModule == secondModule) return true;
 
@@ -314,10 +349,8 @@ public class DynamicGraph : MonoBehaviour {
                 }
                 return res != 0;
             }
-
         }
         return false;
-
     }
 
     public bool IsModuleLoaded(Vector2Int modulePos) {
@@ -328,6 +361,12 @@ public class DynamicGraph : MonoBehaviour {
         return loadedModules;
     }
 
+    /// <summary>
+    /// Creates and connects any uncreated neighbors of the passed node / grid position. Is to be used by agents to create
+    /// Nodes as needed when pathfinding. Works concurrently with multiple threads.
+    /// </summary>
+    /// <param name="node"> the node to create neighbors for </param>
+    /// <param name="possibleNeighbors"> array of possible neighbors of passed node </param>
     public void CreateNeighbors(Vector3 node, Vector3[] possibleNeighbors) {
         for (int i = 0; i < possibleNeighbors.Length; i++) {
             if (IsModuleLoaded(GetModulePosFromWorldPos(node)) && !masterGraph.ContainsKey(possibleNeighbors[i])) {
@@ -392,9 +431,9 @@ public class DynamicGraph : MonoBehaviour {
         Vector3 node = new Vector3(edgePos[0], groundLevel, edgePos[2]);
 
         for (int i = 0; i <= moduleSize * moduleSize; i++) {
-            if (GetBlockedNode(node).Length != 0) {
+            if (CheckNodeOverlap(node).Length != 0) {
                 blockedNodes.Add(node);
-                AIData.Instance.AddCoverSpot(GetClosestNodeNotBlocked(node));
+                AIData.Instance.AddCoverSpot(GetUnblockedNeighbor(node));
             }
             if (node.x == edgePos[1]) {
                 node.x = edgePos[0];

@@ -42,7 +42,14 @@ public class PathfinderManager : MonoBehaviour {
         return path;
     }
 
-
+    /// <summary>
+    /// Inserts an agent and its requested destination into the path priority queue. If the agent in question
+    /// is close enough to the starting point of a previously calculated path and that path shares the end destination of the current agent
+    /// the agent is immedately returned that same path. Multiple pathrequests cannot be made, each must first be completed before a new one is made. 
+    /// </summary>
+    /// <param name="agent"> the agent to request a new path </param>
+    /// <param name="currentPosition"> the current position of the agent </param>
+    /// <param name="endPos"> the desired end position of the agent </param>
     public void RequestPath(AI_Controller agent, Vector3 currentPosition, Vector3 endPos) {
         if (latestCalculatedPath != null && latestCalculatedPath.Count != 0) {
 
@@ -119,7 +126,7 @@ public class PathfinderManager : MonoBehaviour {
         Vector3 node = Vector3.zero;
         Dictionary<float3, float3> via = new Dictionary<float3, float3>();
         Dictionary<float3, float> cost = new Dictionary<float3, float>();
-        Vector3 closestNode = DynamicGraph.Instance.GetClosestNode(startPos);
+        Vector3 closestNode = DynamicGraph.Instance.TranslateToGrid(startPos);
         DynamicGraph.Instance.Insert(closestNode);
         DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighbors(closestNode));
 
@@ -138,7 +145,6 @@ public class PathfinderManager : MonoBehaviour {
                 float tmpCost = cost[node] + DynamicGraph.Instance.GetCost(node, neighbor);
 
                 bool nodeIsFree = !DynamicGraph.Instance.IsNodeBlocked(neighbor); //.Length == 0;
-
 
                 if (DynamicGraph.Instance.Contains(neighbor) && (!cost.ContainsKey(neighbor) || tmpCost < cost[neighbor]) &&
                 nodeIsFree || neighbor == endPos) {
@@ -164,7 +170,7 @@ public class PathfinderManager : MonoBehaviour {
             Vector3 node = Vector3.zero;
             Dictionary<float3, float3> via = new Dictionary<float3, float3>();
             Dictionary<float3, float> cost = new Dictionary<float3, float>();
-            Vector3 closestNode = DynamicGraph.Instance.GetClosestNode(startPositions[index]);
+            Vector3 closestNode = DynamicGraph.Instance.TranslateToGrid(startPositions[index]);
             DynamicGraph.Instance.Insert(closestNode);
             DynamicGraph.Instance.CreateNeighbors(closestNode, DynamicGraph.Instance.GetPossibleNeighbors(closestNode));
 

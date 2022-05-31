@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMODUnity;
 
 public class Follow : MonoBehaviour
 {
@@ -10,9 +11,15 @@ public class Follow : MonoBehaviour
     private bool targetFound, kickoff;
     private Vector3 velocity = Vector3.zero, offset = Vector3.up/2;
 
+    [SerializeField] private EventReference pickupSound;
+    private AudioController ac;
+    private bool isSoundPlayed;
+
     private void Start()
     {
         targets = FindObjectsOfType<CallbackSystem.Crafting>();
+
+        ac = AudioController.instance;
     }
     
     public void StartFollowing(GameObject player)
@@ -46,6 +53,11 @@ public class Follow : MonoBehaviour
             {
                 transform.position += offset;
                 kickoff = true;
+            }
+            if (!isSoundPlayed)
+            {
+                ac.PlayOneShotAttatched(pickupSound, gameObject);
+                isSoundPlayed = true;
             }
             transform.position = Vector3.SmoothDamp(transform.position, target.transform.position, 
                 ref velocity, Time.deltaTime * Random.Range(minModifier, maxModifier));

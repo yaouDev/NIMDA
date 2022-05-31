@@ -8,26 +8,30 @@ using UnityEngine;
 
 public class IsCoverAvailableNode : Node {
     [SerializeField] private LayerMask layerMask;
-
+    private bool distanceCondition;
+    private Vector3 bestCoverSpot;
+    private RaycastHit hit;
+    private Vector3 direction;
+    private Vector2Int currentModule;
+    private ConcurrentDictionary<Vector3, byte> possibleCovers;
     private bool CheckIfSpotIsValid(Vector3 spot) {
-        RaycastHit hit;
-        Vector3 direction = agent.ClosestPlayer - spot;
+        
+        direction = agent.ClosestPlayer - spot;
         if (Physics.Raycast(spot, direction, out hit, Mathf.Infinity, layerMask)) {
             if (!hit.collider.CompareTag("Player") && Vector3.Distance(spot, agent.ClosestPlayer) > 4f && DynamicGraph.Instance.Contains(spot)) {
                 return true;
             }
-
         }
         return false;
     }
 
     private Vector3 GetValidCoverFromModule(Vector2Int module) {
-        ConcurrentDictionary<Vector3, byte> possibleCovers = AIData.Instance.GetNearbyCoverSpots(module);
-        Vector3 bestCoverSpot = new Vector3(Mathf.Infinity, 0, 0);
+        possibleCovers = AIData.Instance.GetNearbyCoverSpots(module);
+        bestCoverSpot = new Vector3(Mathf.Infinity, 0, 0);
         if (possibleCovers != null) {
             foreach (Vector3 cover in possibleCovers.Keys) {
-                bool distCond = Vector3.Distance(agent.Position, cover) < Vector3.Distance(agent.Position, bestCoverSpot);
-                if (CheckIfSpotIsValid(cover) && (bestCoverSpot.x == Mathf.Infinity || distCond)) {
+                distanceCondition = Vector3.Distance(agent.Position, cover) < Vector3.Distance(agent.Position, bestCoverSpot);
+                if (CheckIfSpotIsValid(cover) && (bestCoverSpot.x == Mathf.Infinity || distanceCondition)) {
                     bestCoverSpot = cover;
                     break; // breaking as to avoid looping through all of the covers but might be desirable to do so to find the closest one
                 }
@@ -39,8 +43,8 @@ public class IsCoverAvailableNode : Node {
 
     public override NodeState Evaluate() {
 
-        Vector2Int currentModule = DynamicGraph.Instance.GetModulePosFromWorldPos(agent.Position);
-        Vector3 bestCoverSpot = GetValidCoverFromModule(currentModule);
+        currentModule = DynamicGraph.Instance.GetModulePosFromWorldPos(agent.Position);
+        bestCoverSpot = GetValidCoverFromModule(currentModule);
 
         if (bestCoverSpot.x == Mathf.Infinity) {
             foreach (Vector2Int module in DynamicGraph.Instance.GetLoadedModules()) {

@@ -13,20 +13,25 @@ public class Blink : MonoBehaviour
     [SerializeField] private float blinkSpeed = 100;
     [SerializeField] private float destinationMultiplier = 0.95f;
     [SerializeField] private float cameraheight;
+    [SerializeField] private float explosionRange = 4f;
+    [SerializeField] private float damage = 50.0f;
+    [SerializeField] private float explosionForce = 50f;
     //[SerializeField] private TextMeshProUGUI UIText;
     [SerializeField] private Transform cam;
     [SerializeField] private ParticleSystem trail;
     [SerializeField] private ParticleSystem start;
     [SerializeField] private ParticleSystem finnish;
     [SerializeField] private GameObject player;
+    [SerializeField] private LayerMask whatAreTargets;
     [SerializeField] private LayerMask layerMask;
+    private Collider[] colliders;
     private float cooldownTimer;
     private bool blinking = false;
     private CallbackSystem.PlayerAttack playerAttack;
     private Vector3 destination;
     private RaycastHit hitInfo;
+    private IDamageable damageable;
 
-    // Start is called before the first frame update
     void Start()
     {
         playerAttack = player.GetComponent<CallbackSystem.PlayerAttack>();
@@ -36,7 +41,6 @@ public class Blink : MonoBehaviour
         //UIText.text = numberOfUses.ToString();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (numberOfUses < maxUses)
@@ -54,11 +58,11 @@ public class Blink : MonoBehaviour
         }
         if (blinking)
         {
-            var dist = Vector3.Distance(transform.position, destination);
-            if (dist > 0.5f)
+            if (Vector3.Distance(transform.position, destination) > 0.5f)
             {
                 destination.y = 1f;
                 transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * blinkSpeed);
+                PulseAttack();
             }
             else
             {
@@ -78,7 +82,7 @@ public class Blink : MonoBehaviour
             trail.Play();
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
             {
-                destination = hitInfo.point * destinationMultiplier;
+                destination = hitInfo.point + -playerAttack.AimingDirection.normalized * destinationMultiplier;
             }
             else
             {
@@ -86,6 +90,46 @@ public class Blink : MonoBehaviour
             }
             Instantiate(finnish, destination, Quaternion.identity);
             blinking = true;
+        }
+    }
+
+    void PulseAttack()
+    {
+        // schreenshake
+        CallbackSystem.CameraShakeEvent shakeEvent = new CallbackSystem.CameraShakeEvent();
+        shakeEvent.affectsPlayerOne = true;
+        shakeEvent.affectsPlayerTwo = true;
+        shakeEvent.magnitude = .4f;
+        CallbackSystem.EventSystem.Current.FireEvent(shakeEvent);
+
+        CheckForPlayers();
+
+    }
+
+    private void CheckForPlayers()
+    {
+        colliders = Physics.OverlapSphere(destination, explosionRange, whatAreTargets);
+        foreach (Collider coll in colliders)
+        {
+            if (coll.CompareTag("Player") || coll.CompareTag("BreakableObject") || coll.CompareTag("Enemy"))
+            {
+                damageable = coll.transform.GetComponent<IDamageable>();
+
+                if (damageable != null)
+                {
+                    //damage
+                    damageable.TakeDamage(damage);
+
+                    //ExplosionForce - check with Will if keep
+                    Rigidbody rbTemp = coll.GetComponent<Rigidbody>();
+                    if (rbTemp != null)
+                    {
+                        rbTemp.AddExplosionForce(explosionForce, destination, explosionRange);
+                    }
+
+                }
+
+            }
         }
     }
 

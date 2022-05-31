@@ -9,7 +9,6 @@ public class MoveAttackNode : Node, IResetableNode {
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
     [SerializeField] private float attackDelay = 1.0f;
-    //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
     private float x;
@@ -20,11 +19,9 @@ public class MoveAttackNode : Node, IResetableNode {
     Vector3 directionWithoutSpread;
     Vector3 directionWithSpread;
 
-
     public override NodeState Evaluate() {
 
         if (isShooting && agent.TargetInSight) {
-            //agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
             NodeState = NodeState.RUNNING;
@@ -39,9 +36,6 @@ public class MoveAttackNode : Node, IResetableNode {
         yield return new WaitForSeconds(attackDelay);
         Attack();
         isShooting = true;
-        //agent.StartCoroutine(AnimateLineRenderer());
-
-        //yield return new WaitForSeconds(3f);
     }
 
 
@@ -69,7 +63,7 @@ public class MoveAttackNode : Node, IResetableNode {
         //Recoil
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
-        /*            //MuzzleFlash
+        /*            //MuzzleFlash - Check with Will 
                     if (AIData.instance.getMuzzleflash != null)
                     {
                         Instantiate(AIData.instance.getMuzzleflash, agent.transform.position, Quaternion.identity);
