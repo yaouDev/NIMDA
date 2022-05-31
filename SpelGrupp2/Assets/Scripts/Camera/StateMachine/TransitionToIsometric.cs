@@ -7,7 +7,6 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(menuName = "Create CameraState/TransitionToIsometric")]
 public class TransitionToIsometric : CameraBaseState
 {
-	[SerializeField]
 	private float headHeight = 1.6f;
 	
 	private Vector3 depthMaskPlanePos;
@@ -25,7 +24,12 @@ public class TransitionToIsometric : CameraBaseState
 	private LayerMask collisionMask;
 
 	private Vector3 initialSplitScreenPosition;
-
+	
+	private float zoomedInDistance = -12.0f;
+	private float zoomedOutDistance = -20.0f;
+	private float splitMagnitude = 13.0f;
+	private float lateralSplitMagnitude = 7.5f;
+	
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
 	}
@@ -49,12 +53,18 @@ public class TransitionToIsometric : CameraBaseState
 	    //CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation,  Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f), percentage);
 
 	    // the split is rotating freely between the players
-	     RotateScreenSplit(easedPercentage);
+	    RotateScreenSplit(easedPercentage);
 		
 	    // both cameras follow the centroid point between the players, split when necessary
 	    Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
 	    centroid = PlayerThis.position + centroidOffsetPosition;
-		
+
+	    float distanceInCameraViewSpace = (Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position)).z;
+	    float inv = Mathf.InverseLerp(0.0f, 20.0f, Mathf.Abs(distanceInCameraViewSpace));
+	    float dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, inv);
+	    float distanceFraction = Vector3.Distance(PlayerThis.position, PlayerOther.position) * .5f / dynamicSplitMagnitude;
+	    float zoom = Mathf.Lerp(zoomedInDistance, zoomedOutDistance, distanceFraction);
+	    topDownOffset.z = Mathf.Lerp(zoomedOutDistance, zoom, easedPercentage);
 	    CameraTransform.position = Vector3.Lerp(CameraTransform.position,  centroid + abovePlayer + CameraTransform.rotation * topDownOffset, easedPercentage);
 	    
 	    LerpSplitScreenLineWidth(easedPercentage);

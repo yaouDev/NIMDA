@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using CallbackSystem;
 
 [CreateAssetMenu(menuName = "Create CameraState/CameraSplitScreenState")]
 public class SplitScreenState : CameraState {
@@ -20,8 +21,7 @@ public class SplitScreenState : CameraState {
 	
 	[SerializeField] [Range(1.0f, 150.0f)] 
 	private float rightStickSpeedY = 85.0f;
-
-	[SerializeField] [Range(0.0f, 2.0f)]
+	
 	private float headHeight = 1.6f;
 
 	[SerializeField]
@@ -60,9 +60,10 @@ public class SplitScreenState : CameraState {
 	private RaycastHit[] hits = new RaycastHit[10];
 	private bool isRightMostPlayer;
 
-	private void Awake() {
+	private void Awake() 
+	{
+		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
 	}
-	
 
 	private float splitMagnitude = 13.0f;
 	private float lateralSplitMagnitude = 7.5f;
@@ -72,6 +73,9 @@ public class SplitScreenState : CameraState {
 	private float zoomDistance;
 	public override void Enter()
 	{
+		trauma = 0;
+		isPlayerOne = owner.IsPlayerOne();
+
 		timeSinceStateStarted = 0;
 		_cameraPos = thisTransform.position;
 		depthMaskPlanePos = DepthMaskPlane.localPosition;
@@ -115,6 +119,8 @@ public class SplitScreenState : CameraState {
 		// Camera Position
 		CameraTransform.position = splitScreenOffset + _abovePlayer + CameraTransform.rotation * topDownOffset;
 
+		CameraShake(1);
+
 		FadeObstacles();
 
 		// different splitMagnitude x/y axis on screen
@@ -128,9 +134,13 @@ public class SplitScreenState : CameraState {
 
 		if (distanceFraction < 0.95f &&
 		    (!isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0 ||
-		     isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x < 0 )) {
+		     isRightMostPlayer && (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x < 0 )) 
+		{
 			stateMachine.TransitionTo<TransitionToIsometricOtherSide>();
 		}
+		
+		if (bossRoom)
+			stateMachine.TransitionTo<BossRoomState>();
 	}
 
 	private void FadeObstacles() {
@@ -162,6 +172,51 @@ public class SplitScreenState : CameraState {
 				}
 			}
 		}
+	}
+	
+	private float trauma;
+	private float easedTrauma;
+	private float cameraShakeFalloffSpeed = 2.0f;
+	private Vector3 cameraShakeOffset;
+	private float shakeSpeed = 10.0f;
+	private float vibrationSpeed = 20.0f;
+	private float rotationFactor = 5.0f;
+	private bool isPlayerOne;
+	private CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
+
+	private void ShakeCamera(CameraShakeEvent cameraShake)
+	{
+		if (cameraShake.affectsPlayerOne && isPlayerOne || cameraShake.affectsPlayerTwo && !isPlayerOne)
+			ShakeCamera(cameraShake.magnitude);
+	}
+
+	public void ShakeCamera(float magnitude) => trauma += magnitude;
+
+	private void CameraShake(float distanceFraction)
+	{
+		// perlin within Range(-1, 1)
+		float perlinNoiseX = (Mathf.PerlinNoise(0, Time.time * shakeSpeed) - .5f) * 2;
+		float perlinNoiseY = (Mathf.PerlinNoise(.5f, Time.time * shakeSpeed) - .5f) * 2;
+		// add perlin within Range(-.25, .25)
+		perlinNoiseX += (Mathf.PerlinNoise(.25f, Time.time * vibrationSpeed) - .5f) * .5f;
+		perlinNoiseY += (Mathf.PerlinNoise(.75f, Time.time * vibrationSpeed) - .5f) * .5f;
+
+		// decrease trauma over time
+		trauma = Mathf.Clamp(trauma -= Time.deltaTime * cameraShakeFalloffSpeed, 0.0f, 1.0f);
+		
+		easedTrauma = Ease.EaseInQuad(trauma);
+		
+		// Gamepad.current.SetMotorSpeeds(trauma, easedTrauma);
+
+		cameraShakeOffset = 
+			CameraTransform.rotation * 
+			new Vector3(perlinNoiseX * easedTrauma, perlinNoiseY * easedTrauma, 0.0f);
+		
+		CameraTransform.rotation *= 
+			Quaternion.Euler(
+				perlinNoiseX * easedTrauma * rotationFactor, 
+				perlinNoiseY * easedTrauma * rotationFactor, 
+				Mathf.Lerp(perlinNoiseX, perlinNoiseY, .5f) * easedTrauma * rotationFactor);
 	}
 
 	public override void Exit() {

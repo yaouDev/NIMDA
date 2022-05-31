@@ -19,7 +19,6 @@ public class TopDownState : CameraState
 	
 	private Vector3 topDownOffset = new Vector3(0.0f, 1.0f, -12.0f);
 	
-	[SerializeField]
 	private float headHeight = 1.6f;
 	
 	private float thirdPersonSplitDistance = 15.0f;
@@ -58,12 +57,16 @@ public class TopDownState : CameraState
 	private CallbackSystem.CameraShakeEvent shakeEvent = new CameraShakeEvent();
 
 	private void Awake() {
-		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
 		abovePlayer = Vector3.up * headHeight;
+		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
 	}
 
-	public override void Enter() {
+	public override void Enter() 
+	{
+		trauma = 0;
+		sharedTrauma = 0;
 		isPlayerOne = owner.IsPlayerOne();
+		
 		depthMaskPlanePos = DepthMaskPlane.localPosition;
 		depthMaskPlanePos.x = -.5f;
 		DepthMaskPlane.localPosition = depthMaskPlanePos;
@@ -94,14 +97,17 @@ public class TopDownState : CameraState
 		
 		FadeObstacles();
 		
-		cameraPosition = centroid + abovePlayer + CameraTransform.rotation * topDownOffset;
+		cameraPosition = centroid + abovePlayer + cameraShakeOffset + CameraTransform.rotation * topDownOffset;
 		
-		CameraTransform.position = cameraPosition + cameraShakeOffset;
+		CameraTransform.position = cameraPosition;
 		
 		//LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
 
 		if (distanceFraction > 1f)
 			stateMachine.TransitionTo<TransitionToSplitState>();
+
+		if (bossRoom)
+			stateMachine.TransitionTo<BossRoomState>();
 	}
 
 	private void LerpSplitScreenLineWidth(float offsetMagnitude, float dynamicSplitMagnitude) {
@@ -182,7 +188,7 @@ public class TopDownState : CameraState
 
 		easedTrauma = Ease.EaseInQuad(trauma);
 		
-		Gamepad.current.SetMotorSpeeds(trauma, easedTrauma);
+		// Gamepad.current.SetMotorSpeeds(trauma, easedTrauma);
 
 		cameraShakeOffset = 
 			CameraTransform.rotation * 
