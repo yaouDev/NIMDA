@@ -19492,7 +19492,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6670914664102855644
 Transform:
   m_ObjectHideFlags: 0
@@ -26066,7 +26066,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6670914664804947120
 Transform:
   m_ObjectHideFlags: 0
@@ -28966,6 +28966,7 @@ Transform:
   - {fileID: 6670914664102855644}
   - {fileID: 6670914664804947120}
   - {fileID: 3376704351594653614}
+  - {fileID: 5686423388694196139}
   m_Father: {fileID: 6348733979714303754}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -30617,6 +30618,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (7)
@@ -31110,6 +31115,100 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5809906697295894228, guid: 53416688ff7f2dc43adf894bf0d157c1, type: 3}
   m_PrefabInstance: {fileID: 1302738297887958801}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1322908961504312083
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6670914665568438411}
+    m_Modifications:
+    - target: {fileID: 41946349851290024, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Name
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241733991729711837, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4af03be4122da954c8db09f5c521de2b, type: 2}
+    - target: {fileID: 8241733991729711838, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241733991729711839, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241733991729711843, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241733992095735177, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4af03be4122da954c8db09f5c521de2b, type: 2}
+    - target: {fileID: 8241733992095735178, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241733992095735179, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8241733992095735183, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+--- !u!4 &5686423388694196139 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6679349798081008824, guid: 56d546ccfd65ee847a736fc97c979c44, type: 3}
+  m_PrefabInstance: {fileID: 1322908961504312083}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1374099837516234100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31555,6 +31654,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (1)
@@ -31691,6 +31794,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (5)
@@ -32463,6 +32570,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (2)
@@ -32591,6 +32702,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (6)
@@ -32719,6 +32834,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (3)
@@ -34907,6 +35026,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (4)
@@ -35497,6 +35620,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7152758306085627892}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen

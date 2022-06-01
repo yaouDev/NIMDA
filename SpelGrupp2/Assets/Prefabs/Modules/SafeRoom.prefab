@@ -30280,6 +30280,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2908897573534855340}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1203373602896016095, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_PolyMesh.m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen
@@ -31339,6 +31347,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Generator (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4544882962140420143, guid: f6c4965439761c242b3218d842e4e27d, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6c4965439761c242b3218d842e4e27d, type: 3}
 --- !u!1001 &7208788757957345662
@@ -31566,6 +31578,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2908897573534855340}
     m_Modifications:
+    - target: {fileID: 819944421346670166, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1203373602896016095, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
+      propertyPath: m_PolyMesh.m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4000617187333186377, guid: 60534be8b99a1a34094f2a94b8e0ec4b, type: 3}
       propertyPath: m_Name
       value: TvScreen (1)
@@ -32181,6 +32201,45 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 614617765979801253, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
   m_PrefabInstance: {fileID: 8834252122699062993}
   m_PrefabAsset: {fileID: 0}
+--- !u!135 &3086826525227931307
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223043942286432376}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 1.58, y: 0, z: -0.9}
+--- !u!135 &3579358956181643534
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223043942286432376}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: -1.64, y: 0, z: -0.85}
+--- !u!135 &5573257140196175607
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8223043942286432376}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: -2}
 --- !u!135 &6172979241179478634
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -32194,45 +32253,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1.8495471
   m_Center: {x: 0, y: 0.26504397, z: -0.08}
---- !u!135 &3579358956181643534
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8223043942286432376}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: -1.64, y: 0, z: -0.85}
---- !u!135 &5573257140196175607
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8223043942286432376}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: -2}
---- !u!135 &3086826525227931307
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8223043942286432376}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 1.58, y: 0, z: -0.9}
 --- !u!1001 &8845256696824217029
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -31,6 +31,8 @@ public class AudioController : MonoBehaviour
     public PlayerAudioContainer player2;
     public EnemyAudioContainer enemySound;
 
+    public EliasPlayer eliasPlayer;
+
     public static AudioController instance;
     private void Awake()
     {
@@ -68,6 +70,16 @@ public class AudioController : MonoBehaviour
         ei.setParameterByName(pName, pValue);
         ei.start();
         return ei;
+    }
+
+    public void SetEliasLevel(EliasSetLevel setLevel)
+    {
+        eliasPlayer.QueueEvent(setLevel.CreateSetLevelEvent(eliasPlayer.Elias));
+    }
+
+    public void StartElias()
+    {
+        eliasPlayer.StartElias();
     }
 
     public void TriggerTest()
