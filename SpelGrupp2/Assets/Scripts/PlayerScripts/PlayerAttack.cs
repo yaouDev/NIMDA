@@ -368,6 +368,7 @@ namespace CallbackSystem
                                 hitShield = true;
                                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
                                 damageable.TakeDamage(damage);
+                                return;
                             }
                             else if (!hitObstacle && !hitShield &&(hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
                             {
