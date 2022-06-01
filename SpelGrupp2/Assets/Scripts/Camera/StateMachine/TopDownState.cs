@@ -107,8 +107,6 @@ public class TopDownState : CameraState
 		
 		CameraTransform.position = cameraPosition;
 		
-		//LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
-
 		if (distanceFraction > 1f)
 			stateMachine.TransitionTo<TransitionToSplitState>();
 
