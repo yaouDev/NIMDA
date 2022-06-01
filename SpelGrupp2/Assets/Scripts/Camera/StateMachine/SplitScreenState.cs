@@ -59,18 +59,24 @@ public class SplitScreenState : CameraState {
 	private float splitScreenWidth = -.497f;
 	private RaycastHit[] hits = new RaycastHit[10];
 	private bool isRightMostPlayer;
-
-	private void Awake() 
-	{
-		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
-	}
-
 	private float splitMagnitude = 13.0f;
 	private float lateralSplitMagnitude = 7.5f;
 	private float zoomedInDistance = -12.0f;
 	private float zoomedOutDistance = -20.0f;
 	private float timeSinceStateStarted;
 	private float zoomDistance;
+	
+	private void Awake() 
+	{
+		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
+		EventSystem.Current.RegisterListener<BossRoomEvent>(BossRoomEvent);
+	}
+	
+	private void BossRoomEvent(BossRoomEvent bossRoomEvent)
+	{
+		bossRoom = bossRoomEvent.insideBossRoom;
+	}
+	
 	public override void Enter()
 	{
 		trauma = 0;
@@ -148,15 +154,13 @@ public class SplitScreenState : CameraState {
 		hits = new RaycastHit[10];
 		
 		Physics.SphereCastNonAlloc(
-			PlayerThis.position + splitScreenOffset,
-			4.0f,
+			PlayerThis.position,// + splitScreenOffset,
+			8.0f,
 			offsetDirection.normalized,
 			hits,
-			//out  RaycastHit  hit, 
 			25.0f, 
 			collisionMask);
 
-		//Vector3 offset;
 		for (int i = 0; i < hits.Length; i++)
 		{
 			if (hits[i].collider)

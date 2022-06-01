@@ -59,6 +59,12 @@ public class TopDownState : CameraState
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
 		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
+		EventSystem.Current.RegisterListener<BossRoomEvent>(BossRoomEvent);
+	}
+
+	private void BossRoomEvent(BossRoomEvent bossRoomEvent)
+	{
+		bossRoom = bossRoomEvent.insideBossRoom;
 	}
 
 	public override void Enter() 
@@ -107,7 +113,9 @@ public class TopDownState : CameraState
 			stateMachine.TransitionTo<TransitionToSplitState>();
 
 		if (bossRoom)
+		{
 			stateMachine.TransitionTo<BossRoomState>();
+		}
 	}
 
 	private void LerpSplitScreenLineWidth(float offsetMagnitude, float dynamicSplitMagnitude) {
@@ -137,8 +145,8 @@ public class TopDownState : CameraState
 		hits = new RaycastHit[10];
 		
 		Physics.SphereCastNonAlloc(
-			PlayerThis.position + offsetDirection * 6,
-			2.0f,
+			PlayerThis.position + offsetDirection * 2,
+			4.0f,
 			offsetDirection.normalized,
 			hits,
 			25.0f, 

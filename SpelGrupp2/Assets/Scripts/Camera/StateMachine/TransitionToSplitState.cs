@@ -112,14 +112,12 @@ public class TransitionToSplitState : CameraBaseState {
 		
 		Physics.SphereCastNonAlloc(
 			PlayerThis.position,
-			2.0f,
+			8.0f,
 			offsetDirection.normalized,
 			hits,
-			//out  RaycastHit  hit, 
 			25.0f, 
 			collisionMask);
 
-		//Vector3 offset;
 		for (int i = 0; i < hits.Length; i++)
 		{
 			if (hits[i].collider)

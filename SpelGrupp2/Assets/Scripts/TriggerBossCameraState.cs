@@ -25,14 +25,11 @@ public class TriggerBossCameraState : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("in trigger" + other.gameObject.name);
-        if (other.gameObject.tag == player)
+        if (other.gameObject.tag.Equals(player))
         {
-            Debug.Log($"{other.gameObject.name} entered bossroom");
             entered[other.gameObject] = true;
             if (entered[players[0]] && entered[players[1]])
             {
-                Debug.Log("BOTH ENTERED");
                 bossRoomEvent.insideBossRoom = true;
                 EventSystem.Current.FireEvent(bossRoomEvent);
             }
@@ -43,7 +40,6 @@ public class TriggerBossCameraState : MonoBehaviour
     {
         if (other.gameObject.tag == player)
         {
-            Debug.Log($"{other.gameObject.name} exited bossroom");
             entered[other.gameObject] = false;
             if (!entered[players[0]] && !entered[players[1]])
             {

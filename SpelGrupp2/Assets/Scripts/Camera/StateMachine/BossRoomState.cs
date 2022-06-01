@@ -58,6 +58,12 @@ public class BossRoomState : CameraState
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
 		EventSystem.Current.RegisterListener<CameraShakeEvent>(ShakeCamera);
+		EventSystem.Current.RegisterListener<BossRoomEvent>(BossRoomEvent);
+	}
+	
+	private void BossRoomEvent(BossRoomEvent bossRoomEvent)
+	{
+		bossRoom = bossRoomEvent.insideBossRoom;
 	}
 
 	public override void Enter()
@@ -102,7 +108,7 @@ public class BossRoomState : CameraState
 		
 		//LerpSplitScreenLineWidth(centroidOffsetPosition.magnitude, dynamicSplitMagnitude);
 		
-		if (false)//!bossRoom)
+		if (!bossRoom)
 			stateMachine.TransitionTo<TopDownState>();
 	}
 
