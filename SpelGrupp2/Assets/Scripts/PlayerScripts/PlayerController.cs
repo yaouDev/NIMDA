@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
             return input;
 
         Vector3 cameraRotation = _camera.transform.rotation.eulerAngles;
-        cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
+        //cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
         input = Quaternion.Euler(cameraRotation) * input;
         return Vector3.ProjectOnPlane(input, _planeNormal).normalized;
     }
@@ -347,7 +347,7 @@ public class PlayerController : MonoBehaviour
         _grounded = Physics.SphereCast(transform.position + _point2, _colliderRadius, Vector3.down,
                         out var hit, _groundCheckDistance + _skinWidth, _collisionMask);
 
-        _planeNormal = _grounded ? hit.normal : Vector3.up;
+        _planeNormal = false ? hit.normal : Vector3.up;
 
         return _grounded;
     }
