@@ -26,29 +26,39 @@ public class Minimap : MonoBehaviour
     };
 
     private PlayerHealth[] players;
-    
     private WorldGenerator worldGenerator;
     private ProceduralWorldGeneration procGenWorldGenerator;
-    //private uint[,] graph;
     [SerializeField] public Sprite[] moduleImages;
     [SerializeField] private Image[] playerImages;
     [SerializeField] private Image[] map;
+    public float of = 6.3f;
 
     private void Start()
     {
         players = FindObjectsOfType<PlayerHealth>();
-        //procGenWorldGenerator = FindObjectOfType<ProceduralWorldGeneration>();
-        //if (procGenWorldGenerator != null)
-        //{
-            //graph = procGenWorldGenerator.Get();
-            for (int y = 0; y < graph.GetLength(1); y++)
+        
+        for (int y = 0; y < graph.GetLength(1); y++)
+        { 
+            for (int x = 0; x < graph.GetLength(0); x++) 
             {
-                for (int x = 0; x < graph.GetLength(0); x++)
-                {
-                    RevealWorldMapCoordinate(x, y);
-                }
+                RevealWorldMapCoordinate(x, y);
             }
-        //}
+        }
+        
+        EventSystem.Current.RegisterListener<BossRoomEvent>(BossRoomEvent);
+        EventSystem.Current.RegisterListener<ChangeColorEvent>(ColorChange);
+
+    }
+    
+    private void BossRoomEvent(BossRoomEvent bossRoomEvent)
+    {
+        //bossRoom = bossRoomEvent.insideBossRoom;
+    }
+
+    private void ColorChange(ChangeColorEvent changeColorEvent)
+    {
+        playerImages[0].color = changeColorEvent.isPlayerOne ? changeColorEvent.color : playerImages[0].color;
+        playerImages[1].color = !changeColorEvent.isPlayerOne ? changeColorEvent.color : playerImages[1].color;
     }
 
     private void RevealWorldMapCoordinate(int x, int y)
@@ -80,7 +90,7 @@ public class Minimap : MonoBehaviour
         new Vector2Int(-1, 0), new Vector2Int(0,0), new Vector2Int(1, 0),
         new Vector2Int(-1, 1), new Vector2Int(0, 1), new Vector2Int(1, 1)
     };
-    public float of = 6.3f;
+    
     private void UpdatePlayerPositions()
     {
         Vector2 offset = new Vector3(28, -100);

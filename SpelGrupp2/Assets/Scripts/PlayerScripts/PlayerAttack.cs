@@ -122,7 +122,7 @@ namespace CallbackSystem
             if (!activated)
             {
                 resourceEvent.isPlayerOne = isPlayerOne;
-                UpdateBulletCount(0);
+                UpdateAmmoUI();
                 crosshairEvent.usingRevolver = !laserWeapon;
                 crosshairEvent.isPlayerOne = isPlayerOne;
                 crosshairEvent.targetInSight = targetInSight;
@@ -357,7 +357,6 @@ namespace CallbackSystem
                         
                         if (hitInfo.collider != null)
                         {
-                            Debug.Log(hitInfo.transform.gameObject.layer + " " + (1 << LayerMask.NameToLayer("SeeThrough")));
                             if (hitInfo.transform.gameObject.layer == 8)// (1 << LayerMask.NameToLayer("SeeThrough")))
                             {
                                 hitObstacle = true;
@@ -519,11 +518,15 @@ namespace CallbackSystem
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 currentBullet = revolverDamageUpgraded ? upgradedBullet : bullet;
-                UpdateBulletCount(-1);
+                DecreaseBulletCount();
                 critChance = rnd.Next(0, 20);
                 if (revolverCritUpgraded && critChance == 20)
                     currentBullet = explosiveBullet;
                 Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+            } else if(bullets == 0 && ammoBoxes > 0)
+            {
+                Reload();
+                UpdateAmmoUI();
             }
         }
 
@@ -537,16 +540,22 @@ namespace CallbackSystem
             return revolverMagazineUpgraded ? maxBullets + bulletUpgradeIncrease : maxBullets;
         }
 
-        public void UpdateBulletCount(int amount)
+        public void CraftAmmoBox()
         {
-            bullets += amount;
+            ammoBoxes++;
+            UpdateAmmoUI();
+        }
+
+        public void DecreaseBulletCount()
+        {
+            bullets--;
             if (bullets == 0 && ammoBoxes > 0)
                 Reload();
-            if (bullets > ReturnMaxBullets())
-            {
-                ammoBoxes++;
-                bullets = 1;
-            }
+            UpdateAmmoUI();
+        }
+
+        private void UpdateAmmoUI()
+        { 
             resourceEvent.ammoChange = true;
             resourceEvent.a = bullets;
             resourceEvent.magAmmo = ammoBoxes;
