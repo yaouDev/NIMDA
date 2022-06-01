@@ -70,6 +70,7 @@ public class TransitionToSplitState : CameraBaseState {
 		float distanceInCameraViewSpace = (Quaternion.Euler(0, -45, 0) * (PlayerOther.position - PlayerThis.position)).z;
 		float inv = Mathf.InverseLerp(0.0f, 20.0f, Mathf.Abs(distanceInCameraViewSpace));
 		float dynamicSplitMagnitude = Mathf.Lerp(splitMagnitude, lateralSplitMagnitude, inv);
+		
 		// both cameras follow the centroid point between the players, split when necessary
 		Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
 		Vector3 centroid = PlayerThis.position + Vector3.ClampMagnitude( centroidOffsetPosition, dynamicSplitMagnitude);
