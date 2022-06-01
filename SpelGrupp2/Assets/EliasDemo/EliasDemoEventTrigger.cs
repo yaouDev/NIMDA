@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class EliasDemoEventTrigger : MonoBehaviour
 {
+    public bool useEliasFromAudioController;
+
 	public EliasPlayer eliasPlayer;
     public bool useSetLevel;
     public EliasSetLevel setLevel;
@@ -23,8 +25,15 @@ public class EliasDemoEventTrigger : MonoBehaviour
 	public bool useSetSendVolume;
 	public EliasSetSendVolume setSendVolume;
 
-	private void OnTriggerEnter(Collider other)
+    private void Start()
     {
+        if (useEliasFromAudioController) eliasPlayer = AudioController.instance.eliasPlayer;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        print(eliasPlayer.Elias);
+
         if (useSetLevel)
         {
             eliasPlayer.QueueEvent(setLevel.CreateSetLevelEvent(eliasPlayer.Elias));
