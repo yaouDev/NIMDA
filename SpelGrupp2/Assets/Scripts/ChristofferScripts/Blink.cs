@@ -8,7 +8,7 @@ public class Blink : MonoBehaviour
 {
     [SerializeField] private int numberOfUses = 5;
     [SerializeField] private int maxUses = 5;
-    [SerializeField] private float cooldown = 2, reducedCooldown = 1;
+    [SerializeField] private float cooldown = 10, reducedCooldown = 5;
     [SerializeField] private float maxDistance = 5;
     [SerializeField] private float blinkSpeed = 100;
     [SerializeField] private float destinationMultiplier = 0.95f;
@@ -25,7 +25,7 @@ public class Blink : MonoBehaviour
     [SerializeField] private LayerMask whatAreTargets;
     [SerializeField] private LayerMask layerMask;
     private Collider[] colliders;
-    private float cooldownTimer, reverseTimer;
+    private float cooldownTimer, reverseTimer, cooldownTime, maxCooldownTimer, percentage;
     private bool blinking = false, started, isPlayerOne;
     private CallbackSystem.PlayerAttack playerAttack;
     private Vector3 destination;
@@ -145,11 +145,12 @@ public class Blink : MonoBehaviour
         }
     }
 
-    private void UpdateUIEvent(float timer)
+    private void UpdateUIEvent(float time)
     {
-        float fillAmount = reverseTimer - timer;
-        fillAmount /= 10;
-        blinkEvent.fill = fillAmount;
+        maxCooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;
+        cooldownTime = reverseTimer - time;
+        percentage = Mathf.InverseLerp(0f, maxCooldownTimer, cooldownTime);
+        blinkEvent.fill = percentage;
         blinkEvent.blinkCount = numberOfUses;
         CallbackSystem.EventSystem.Current.FireEvent(blinkEvent);
     }
