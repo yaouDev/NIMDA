@@ -170,6 +170,16 @@ public class AI_Controller : MonoBehaviour {
         UpdateRotation();
         behaviorTree.Update();
 
+        //cc anim
+        if (anim != null)
+        {
+            Vector3 rot = transform.rotation.eulerAngles;
+            Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * Rigidbody.velocity;
+
+            anim.SetFloat("Speed", rotatedVelocity.x);
+            anim.SetFloat("Direction", rotatedVelocity.z);
+        }
+
 
         if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
 
