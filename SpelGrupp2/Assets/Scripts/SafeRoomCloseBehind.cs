@@ -69,7 +69,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     void CloseEntrance() {
         if (doorOpen) {
             entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
-            StartCoroutine(MoveEntrence(entranceClosePosition, eventDuration));
+            StartCoroutine(MoveEntrance(entranceClosePosition, eventDuration));
             spawnController.GeneratorRunning(false);
             spawnController.gameObject.SetActive(false);
             objectivesManager.RemoveObjective("enter safe room");
@@ -82,25 +82,28 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         spawnController.gameObject.SetActive(true);
     }
 
-    IEnumerator MoveEntrence(Vector3 targetPosition, float duration) {
+    IEnumerator MoveEntrance(Vector3 targetPosition, float duration) {
         timeElapsed = 0;
         entranceStartPosition = entrance.transform.position;
-        while (entrance.transform.position != targetPosition) {
-            entrance.transform.position = Vector3.Lerp(entranceStartPosition, targetPosition, timeElapsed / duration);
-            timeElapsed += Time.deltaTime;
+        while (timeElapsed < 1.0f) {
+            entrance.transform.position = Vector3.Lerp(entranceStartPosition, targetPosition, timeElapsed);
+            timeElapsed += Time.deltaTime * (1.0f / duration);
             yield return null;
         }
+
+        entrance.transform.position = targetPosition;
         doorOpen = false;
     }
     IEnumerator MoveExit(Vector3 targetPosition, float duration) {
         timeElapsed = 0;
         exitStartPosition = exit.transform.position;
-        while (exit.transform.position != targetPosition) {
-            //Debug.Log("Moving Door");
-            exit.transform.position = Vector3.Lerp(exitStartPosition, targetPosition, timeElapsed / duration);
-            timeElapsed += Time.deltaTime;
+        while (timeElapsed < 1.0f) {
+            exit.transform.position = Vector3.Lerp(exitStartPosition, targetPosition, timeElapsed);
+            timeElapsed += Time.deltaTime * (1.0f / duration);
             yield return null;
         }
+
+        exit.transform.position = targetPosition;
         doorOpen = false;
     }
 }

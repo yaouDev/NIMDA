@@ -45,21 +45,22 @@ public class OpenExit : MonoBehaviour {
             //Debug.Log("Opening");
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
-
         }
     }
 
     IEnumerator MoveDoor(Vector3 targetPosition, float duration) {
+        
         timeElapsed = 0;
-        while (door.transform.position != targetPosition) {
-            //Debug.Log("Moving Door");
-            door.transform.position = Vector3.Lerp(closePosition, targetPosition, timeElapsed / duration);
-            timeElapsed += Time.deltaTime;
+        while (timeElapsed <= duration) {
+            door.transform.position = Vector3.Lerp(closePosition, targetPosition, Ease.EaseInOutSine(timeElapsed));
+            timeElapsed += Time.deltaTime * (1.0f / duration);
             yield return null;
         }
+        
+        door.transform.position = targetPosition;
         doorOpen = true;
-
     }
+    
     /*    public void Interact(InputAction.CallbackContext value)
         {
             if (value.started && interactableRange)

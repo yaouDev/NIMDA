@@ -20,8 +20,8 @@ public class PlayerMoveState : PlayerBaseState {
         //     stateMachine.TransitionTo<PlayerJumpState>();
         //     Player._jumped = false;
         // }
-        if (!Player.Grounded())
-            stateMachine.TransitionTo<PlayerAirState>();
+        // if (!Player.Grounded())
+        //    stateMachine.TransitionTo<PlayerAirState>();
         
         Vector3 gravityMovement = Player._defaultGravity * Time.deltaTime * Vector3.down;
         

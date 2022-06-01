@@ -31,6 +31,7 @@ public class Minimap : MonoBehaviour
     [SerializeField] public Sprite[] moduleImages;
     [SerializeField] private Image[] playerImages;
     [SerializeField] private Image[] map;
+    private bool bossRoom;
     public float of = 6.3f;
 
     private void Start()
@@ -47,12 +48,49 @@ public class Minimap : MonoBehaviour
         
         EventSystem.Current.RegisterListener<BossRoomEvent>(BossRoomEvent);
         EventSystem.Current.RegisterListener<ChangeColorEvent>(ColorChange);
-
     }
     
     private void BossRoomEvent(BossRoomEvent bossRoomEvent)
     {
-        //bossRoom = bossRoomEvent.insideBossRoom;
+        bossRoom = bossRoomEvent.insideBossRoom;
+        if (bossRoom)
+            StartCoroutine(FadeAllMapImages());
+    }
+
+    private IEnumerator FadeAllMapImages()
+    {
+        float t = 1;
+        while (t >= 0)
+        {
+            t -= Time.deltaTime;
+            for (int image = 0; image < map.Length; image++)
+            {
+                Color color = map[image].color;
+                color.a = Mathf.Min(color.a, Mathf.Lerp(0.0f, 1.0f, t));
+                map[image].color = color;
+            }
+
+            for (int player = 0; player < playerImages.Length; player++)
+            {
+                Color color = playerImages[player].color;
+                color.a = Mathf.Min(color.a, Mathf.Lerp(0.0f, 1.0f, t));
+                playerImages[player].color = color;
+            }
+
+            yield return null;
+        }
+        for (int image = 0; image < map.Length; image++)
+        {
+            Color color = map[image].color;
+            color.a = 0;
+            map[image].color = color;
+        }
+        for (int player = 0; player < playerImages.Length; player++)
+        {
+            Color color = playerImages[player].color;
+            color.a = 0;
+            playerImages[player].color = color;
+        }
     }
 
     private void ColorChange(ChangeColorEvent changeColorEvent)
@@ -63,8 +101,6 @@ public class Minimap : MonoBehaviour
 
     private void RevealWorldMapCoordinate(int x, int y)
     {
-        // 14 height
-        // 8 wide
         int index = IndexFromCoord(x, y);
         uint moduleType = graph[x, y];
         map[index].sprite = moduleImages[graph[x, y]];
@@ -75,13 +111,12 @@ public class Minimap : MonoBehaviour
             map[index].color = Color.yellow;
         else if (moduleType == 17)
             map[index].color = Color.red;
-        
-        
     }
 
     private void Update()
     {
-        UpdatePlayerPositions();
+        if (!bossRoom)
+            UpdatePlayerPositions();
     }
 
     private Vector2Int[] nineSquare = new Vector2Int[]
@@ -106,9 +141,8 @@ public class Minimap : MonoBehaviour
         }
 
         Vector2Int off = new Vector2Int(3, 2);
-        for (int player = 0; player < players.Length; player++)
+        for (int player = 0; player < players.Length && !bossRoom; player++)
         {
-                
             Vector2Int playerPos = new Vector2Int((int)(players[player].transform.position.x / 50) + off.x, (int)(players[player].transform.position.z) / 50 + off.y);
             Vector2Int df = new Vector2Int(14 - playerPos.x, playerPos.y);
             for (int i = 0; i < nineSquare.Length; i++)
