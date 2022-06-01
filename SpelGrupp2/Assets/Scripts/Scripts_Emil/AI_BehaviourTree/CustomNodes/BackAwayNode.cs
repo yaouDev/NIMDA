@@ -14,8 +14,10 @@ public class BackAwayNode : Node, IResetableNode {
     private bool initCond;
     private Vector3 backOffPos;
     private Vector3 dirOfPlayer;
+    private Animator animator; 
     public override NodeState Evaluate() {
 
+        animator = agent.GetComponent<Animator>();
         dirOfPlayer = (agent.ClosestPlayer - agent.Position).normalized;
 
         dist = Vector3.Distance(backOffPos, agent.ClosestPlayer);
@@ -30,15 +32,21 @@ public class BackAwayNode : Node, IResetableNode {
             agent.MaxSpeed = maxSpeed;
             agent.Destination = backOffPos;
             agent.IsStopped = false;
-            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.TranslateToGrid(backOffPos))) {
+            if (DynamicGraph.Instance.IsNodeBlocked(DynamicGraph.Instance.TranslateToGrid(backOffPos)))
+            {
+                animator.SetBool("isBackingAway", false);
                 NodeState = NodeState.FAILURE;
                 backOffPos = Vector3.zero;
-            } else
+            }
+            else
+                animator.SetBool("isBackingAway", true);
                 NodeState = NodeState.RUNNING;
         } else if (runningCond) {
+            animator.SetBool("isBackingAway", true);
             NodeState = NodeState.RUNNING;
             agent.IsStopped = false;
         } else {
+            animator.SetBool("isBackingAway", false);
             agent.IsStopped = true;
             NodeState = NodeState.FAILURE;
             backOffPos = Vector3.zero;

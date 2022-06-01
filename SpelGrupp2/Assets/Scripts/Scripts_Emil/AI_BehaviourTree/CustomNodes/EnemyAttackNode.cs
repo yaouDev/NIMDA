@@ -34,12 +34,14 @@ public class EnemyAttackNode : Node, IResetableNode {
             AIData.Instance.IncreaseShotsFired(agent);
 
             if (AIData.Instance.GetShotRequirement(agent) > AIData.Instance.GetShotsFired(agent)) {
+                
                 NodeState = NodeState.RUNNING;
             } else NodeState = NodeState.SUCCESS;
 
             return NodeState;
         }
         if ((AIData.Instance.GetShotRequirement(agent) > AIData.Instance.GetShotsFired(agent)) && !coverIsValid) {
+            
             NodeState = NodeState.RUNNING;
         } else if ((AIData.Instance.GetShotRequirement(agent) < AIData.Instance.GetShotsFired(agent)) || coverIsValid) {
 
@@ -53,9 +55,7 @@ public class EnemyAttackNode : Node, IResetableNode {
     public IEnumerator AttackDelay() {
         yield return new WaitForSeconds(attackDelay);
         Attack();
-
         anim.SetBool("shooting", true);
-
         isShooting = true;
     }
 
