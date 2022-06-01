@@ -524,6 +524,10 @@ namespace CallbackSystem
                 if (revolverCritUpgraded && critChance == 20)
                     currentBullet = explosiveBullet;
                 Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
+            } else if(bullets == 0 && ammoBoxes > 0)
+            {
+                Reload();
+                UpdateAmmoUI();
             }
         }
 
