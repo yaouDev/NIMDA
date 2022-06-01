@@ -49,10 +49,7 @@ public class CameraController : MonoBehaviour {
 	
 	[SerializeField] [Range(1.0f, 10.0f)]
 	private float mouseSensitivityX = 1.0f;
-	
-	// [SerializeField] [Range(1.0f, 10.0f)]
-	// private float mouseSensitivityY = 1.0f;
-		
+
 	[SerializeField] [Range(0.0f, 2.0f)]
 	private float _cameraCollisionRadius;
 

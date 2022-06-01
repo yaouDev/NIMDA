@@ -99,4 +99,9 @@ namespace CallbackSystem {
     }
 
     public class SafeRoomEvent : Event { }
+
+    public class BossRoomEvent : Event
+    {
+        public bool insideBossRoom = true;
+    }
 }
