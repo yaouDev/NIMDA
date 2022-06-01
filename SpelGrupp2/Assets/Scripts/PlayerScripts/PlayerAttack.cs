@@ -540,7 +540,6 @@ namespace CallbackSystem
         public void CraftAmmoBox()
         {
             ammoBoxes++;
-            Debug.Log("Increased AmmoBox Count");
             UpdateAmmoUI();
         }
 
@@ -558,7 +557,6 @@ namespace CallbackSystem
             resourceEvent.a = bullets;
             resourceEvent.magAmmo = ammoBoxes;
             EventSystem.Current.FireEvent(resourceEvent);
-            Debug.Log("Updated Ammo UI");
         }
         private void Reload()
         {
