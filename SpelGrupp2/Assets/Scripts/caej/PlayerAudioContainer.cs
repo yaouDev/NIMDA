@@ -18,5 +18,7 @@ public class PlayerAudioContainer : AudioContainer
     public EventReference dodge;
     public EventReference death;
     public EventReference batteryDelpetion;
+    public EventReference laserNoAmmo;
+    public EventReference projectileNoAmmo;
 
 }
