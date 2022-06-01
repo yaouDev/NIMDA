@@ -13,6 +13,7 @@ public class EnemyPulseAttackAreaNode : Node
     [SerializeField] private Material flashMaterial;
     [SerializeField] private float duration = 0.2f;
     [SerializeField] private Material originalMaterial;
+    private Light siren;
 
     private bool isAttacking = true;
     private bool soundStarted;
@@ -37,6 +38,7 @@ public class EnemyPulseAttackAreaNode : Node
             isAttacking = false;
             agent.StartCoroutine(AttackDelay());
             agent.StartCoroutine(FlashRoutine());
+
             NodeState = NodeState.RUNNING;
             return NodeState;
         }
@@ -56,6 +58,8 @@ public class EnemyPulseAttackAreaNode : Node
             {
                 soundStarted = true;
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.explosion, agent.gameObject);
+                siren = agent.GetComponentInChildren<Light>();
+                siren.enabled = true;
             }
             yield return null;
         }
