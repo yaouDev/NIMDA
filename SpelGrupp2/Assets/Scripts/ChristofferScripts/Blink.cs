@@ -25,25 +25,36 @@ public class Blink : MonoBehaviour
     [SerializeField] private LayerMask whatAreTargets;
     [SerializeField] private LayerMask layerMask;
     private Collider[] colliders;
-    private float cooldownTimer;
-    private bool blinking = false;
+    private float cooldownTimer, reverseTimer;
+    private bool blinking = false, started, isPlayerOne;
     private CallbackSystem.PlayerAttack playerAttack;
     private Vector3 destination;
     private RaycastHit hitInfo;
     private IDamageable damageable;
     private bool blinkUpgraded;
+    private CallbackSystem.UpdateBlinkUIEvent blinkEvent;
 
     void Start()
     {
         playerAttack = player.GetComponent<CallbackSystem.PlayerAttack>();
         trail = GetComponentInChildren<ParticleSystem>();
+        blinkEvent = new CallbackSystem.UpdateBlinkUIEvent();
         maxUses = numberOfUses;
         cooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;
+        reverseTimer = cooldownTimer;
         //UIText.text = numberOfUses.ToString();
     }
 
     void Update()
     {
+        if (!started)
+        {
+            blinkEvent.isPlayerOne = playerAttack.IsPlayerOne();
+            blinkEvent.blinkCountMax = maxUses;
+            UpdateUIEvent(0);
+            started = true;
+        }
+
         if (numberOfUses < maxUses)
         {
             if (cooldownTimer > 0)
@@ -53,9 +64,10 @@ public class Blink : MonoBehaviour
             else
             {
                 numberOfUses += 1;
-                cooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;
+                cooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;    
                 //UIText.text = "Blink: " + numberOfUses.ToString();
             }
+            UpdateUIEvent(cooldownTimer);
         }
         if (blinking)
         {
@@ -79,6 +91,7 @@ public class Blink : MonoBehaviour
         {
             Instantiate(start, transform.position, Quaternion.identity);
             numberOfUses -= 1;
+            UpdateUIEvent(cooldownTimer);
             //UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
@@ -127,11 +140,18 @@ public class Blink : MonoBehaviour
                     {
                         rbTemp.AddExplosionForce(explosionForce, destination, explosionRange);
                     }
-
                 }
-
             }
         }
+    }
+
+    private void UpdateUIEvent(float timer)
+    {
+        float fillAmount = reverseTimer - timer;
+        fillAmount /= 10;
+        blinkEvent.fill = fillAmount;
+        blinkEvent.blinkCount = numberOfUses;
+        CallbackSystem.EventSystem.Current.FireEvent(blinkEvent);
     }
 
     public void DecreaseBlinkCooldown() => blinkUpgraded = true;
