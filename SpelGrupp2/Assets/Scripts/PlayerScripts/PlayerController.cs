@@ -407,19 +407,23 @@ public class PlayerController : MonoBehaviour
     public bool PressedJump() => _pressedJump;
     public Vector2 GetRightJoystickInput() { return joyStickRightInput; }
 
+    private bool dying = false;
     public void Die()
     {
-        if (alive)
+        if (alive && !dying)
+        {
+            dying = true;
+            alive = false;
             StartCoroutine(ReturnToOtherPlayer());
-        alive = false;
+        }
     }
 
     private IEnumerator ReturnToOtherPlayer()
     {
         float t = 0.0f;
         MovementSpeedReduction(false);
-        Quaternion startRot = transform.rotation;
-        Quaternion endRot = quaternion.Euler(-90, 0, 0) * startRot;
+        Quaternion startRot = Quaternion.Euler(0, 150, 0);
+        Quaternion endRot = Quaternion.Euler(-90, 0, 0) * startRot;
         transform.position += Vector3.up * .5f;
         while (t <= 1.0f)
         {
@@ -443,6 +447,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(2);
         visuals.SetActive(true);
         alive = true;
+        dying = false;
     }
 
     public void SetTerminalVelocity(float value) => _terminalVelocity = value;
