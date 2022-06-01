@@ -69,6 +69,12 @@ namespace CallbackSystem {
         public Color color;
     }
 
+    public class UpdateBlinkUIEvent : Event
+    {
+        public float fill;
+        public int blinkCount, blinkCountMax;
+    }
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.

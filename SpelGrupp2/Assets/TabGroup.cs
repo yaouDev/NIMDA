@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class TabGroup : MonoBehaviour
 {
     [SerializeField] private Button[] tabMain, tabLaser, tabRevolver, tabColor;
-    private Button[] currentArray;
+    [SerializeField] private string[] mainDescriptions, laserDescriptions, revolverDescriptions, colorDescriptions;
+    [SerializeField] private TextMeshProUGUI descriptionMesh;
     [SerializeField] private Button defaultColorButton;
     [HideInInspector] public Button selectedButton;
-    private int selectedButtonIndex = 0;
     private CallbackSystem.FadingTextEvent fadingtextEvent;
+    private List<Button> allButtons;
+    private Button[] currentArray;
+    private string[] currentDescriptionArray;
+    private int selectedButtonIndex;
     private bool isPlayerOne;
     public Dictionary<string, bool> buttonsDictionary;
-    private List<Button> allButtons;
 
     private void Awake()
     {
@@ -24,12 +28,14 @@ public class TabGroup : MonoBehaviour
         if (allButtons == null)
             allButtons = new List<Button>();
         currentArray = tabMain;
+        currentDescriptionArray = mainDescriptions;
         selectedButton = tabMain[0];
         selectedButton.image.color = Color.red;
-        SwitchArray(currentArray);
+        SwitchArray(currentArray, currentDescriptionArray);
         CombineArrays();
         InstantiateButtons();
     }
+
     public void NextButton(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -59,6 +65,7 @@ public class TabGroup : MonoBehaviour
         selectedButton.image.color = Color.white;
         selectedButton = currentArray[selectedButtonIndex];
         selectedButton.image.color = Color.red;
+        descriptionMesh.text = currentDescriptionArray[selectedButtonIndex];
     }
 
     public void SelectButton(InputAction.CallbackContext context)
@@ -82,17 +89,17 @@ public class TabGroup : MonoBehaviour
         if (context.performed)
         {
             currentArray.Equals(tabMain);
-            SwitchArray(tabMain);
+            SwitchArray(tabMain, mainDescriptions);
         }
     }
 
     public void ReturnToMain()
     {
         currentArray.Equals(tabMain);
-        SwitchArray(tabMain);
+        SwitchArray(tabMain, mainDescriptions);
     }
 
-    public void SwitchArray(Button[] switchToArray)
+    public void SwitchArray(Button[] switchToArray, string[] desciptionArray)
     {
         if (switchToArray != null)
         {
@@ -104,13 +111,14 @@ public class TabGroup : MonoBehaviour
         for (int j = 0; j < currentArray.Length; j++)
             currentArray[j].gameObject.SetActive(true);
 
+        currentDescriptionArray = desciptionArray;
         selectedButtonIndex = 0;
         ChangeSelectedButton();
     }
 
-    public void SetLaserPage() => SwitchArray(tabLaser);
-    public void SetRevolverPage() => SwitchArray(tabRevolver);
-    public void SetColorPage() => SwitchArray(tabColor);
+    public void SetLaserPage() => SwitchArray(tabLaser, laserDescriptions);
+    public void SetRevolverPage() => SwitchArray(tabRevolver, revolverDescriptions);
+    public void SetColorPage() => SwitchArray(tabColor, colorDescriptions);
 
     public Button GetDefaultColorButton() { return defaultColorButton; }
 
@@ -122,6 +130,7 @@ public class TabGroup : MonoBehaviour
         allButtons.AddRange(tabRevolver);
         allButtons.AddRange(tabColor);
     }
+
     private void InstantiateButtons()
     {
         foreach (Button button in allButtons)
