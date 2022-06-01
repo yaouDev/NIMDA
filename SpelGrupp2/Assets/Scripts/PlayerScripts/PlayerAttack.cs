@@ -357,7 +357,6 @@ namespace CallbackSystem
                         
                         if (hitInfo.collider != null)
                         {
-                            Debug.Log(hitInfo.transform.gameObject.layer + " " + (1 << LayerMask.NameToLayer("SeeThrough")));
                             if (hitInfo.transform.gameObject.layer == 8)// (1 << LayerMask.NameToLayer("SeeThrough")))
                             {
                                 hitObstacle = true;
