@@ -143,32 +143,30 @@ namespace CallbackSystem
             {
                 craftingEvent.activate = false;
                 playerInput.SwitchCurrentActionMap("Player");
-            } else
+            }
+            else
             {
                 craftingEvent.activate = true;
                 playerInput.SwitchCurrentActionMap("Crafting");
             }
             EventSystem.Current.FireEvent(craftingEvent);
         }
-        
+
         //%--------------------------------Crafts & upgrades---------------------------------%
 
         public void CraftBullet(InputAction.CallbackContext context)
         {
             if (context.performed)
             {
-                if (playerAttackScript.ReturnBullets() < playerAttackScript.ReturnMaxBullets())
+                if (TryCraftRecipe(bulletRecipe))
                 {
-                    if (TryCraftRecipe(bulletRecipe))
-                    {
-                        playerAttackScript.CraftAmmoBox();
-                        fadingtextEvent.text = "Ammo Box Crafted";
-                        EventSystem.Current.FireEvent(fadingtextEvent);
-                    }
-                    else
-                    {
-                        Debug.Log("Carrying max bullets!");
-                    }
+                    playerAttackScript.CraftAmmoBox();
+                    fadingtextEvent.text = "Ammo Box Crafted";
+                    EventSystem.Current.FireEvent(fadingtextEvent);
+                }
+                else
+                {
+                    Debug.Log("Carrying max bullets!");
                 }
             }
         }
@@ -210,7 +208,7 @@ namespace CallbackSystem
             {
                 playerAttackScript.RevolverCritUpgrade();
                 fadingtextEvent.text = "Revolver Crit Enabled";
-            }     
+            }
             else
                 fadingtextEvent.text = "Not Enough Resources";
             EventSystem.Current.FireEvent(fadingtextEvent);
