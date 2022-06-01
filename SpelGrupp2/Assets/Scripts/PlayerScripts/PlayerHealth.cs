@@ -162,6 +162,7 @@ namespace CallbackSystem
             UpdateHealthUI();
         }
 
+        //TODO Hedén
         public void SetDefaultStats()
         {
             maxHealth = 100f;
