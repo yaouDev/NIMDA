@@ -17,7 +17,6 @@ public class FadeHint : MonoBehaviour
     {
         if (col.CompareTag("Player"))
         {
-            Debug.Log("Entered");
             //tesh = GetComponent<TextMeshProUGUI>();
             group.alpha = 1;
             StartCoroutine(FadeText());
