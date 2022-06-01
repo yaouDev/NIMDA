@@ -13,7 +13,6 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private bool doorOpen = true;
     private int playerCount;
     private EnemySpawnController spawnController;
-    private Compass compass;
     private Vector3 entranceClosePosition;
     private Vector3 entranceStartPosition;
     private Vector3 entranceOpenPosition;
@@ -27,15 +26,14 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     void Start() {
         entranceOpenPosition = entrance.transform.position;
         exitOpenPosition = exit.transform.position;
-        spawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        spawnController = FindObjectOfType<EnemySpawnController>();
         // compass = GameObject.Find("Compass").GetComponent<Compass>();
-        objectivesManager = GameObject.Find("ObjectivesManager").GetComponent<ObjectivesManager>();
+        objectivesManager = FindObjectOfType<ObjectivesManager>();
     }
 
     void OnTriggerEnter(Collider col) {
         if (col.gameObject.tag == "Player") {
             playerCount++;
-            //Debug.Log("Playercount = " + playerCount);
             if (playerCount == 2) {
                 CloseEntrance();
                 //compass.UpdateQuest();
@@ -70,7 +68,6 @@ public class SafeRoomCloseBehind : MonoBehaviour {
 
     void CloseEntrance() {
         if (doorOpen) {
-            //Debug.Log("Opening");
             entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrence(entranceClosePosition, eventDuration));
             spawnController.GeneratorRunning(false);
@@ -89,12 +86,11 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         timeElapsed = 0;
         entranceStartPosition = entrance.transform.position;
         while (entrance.transform.position != targetPosition) {
-            //Debug.Log("Moving Door");
             entrance.transform.position = Vector3.Lerp(entranceStartPosition, targetPosition, timeElapsed / duration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        doorOpen = !doorOpen;
+        doorOpen = false;
     }
     IEnumerator MoveExit(Vector3 targetPosition, float duration) {
         timeElapsed = 0;

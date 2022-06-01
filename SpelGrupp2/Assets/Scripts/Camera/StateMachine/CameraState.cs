@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using CallbackSystem;
 
 public abstract class CameraState : ScriptableObject
 {
@@ -24,4 +25,17 @@ public abstract class CameraState : ScriptableObject
 	protected const float lookOffset = 90;
 
 	public CameraController Camera => owner;
+
+	private CallbackSystem.BossRoomEvent bossRoomEvent = new BossRoomEvent();
+
+	protected bool bossRoom = false;
+	
+	private void Awake() {
+		EventSystem.Current.RegisterListener<BossRoomEvent>(BossRoomEvent);
+	}
+
+	private void BossRoomEvent(BossRoomEvent bossRoomEvent)
+	{
+		bossRoom = bossRoomEvent.insideBossRoom;
+	}
 }
