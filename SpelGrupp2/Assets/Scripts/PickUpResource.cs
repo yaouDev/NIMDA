@@ -49,7 +49,6 @@ namespace CallbackSystem
                     case (PickUp.Bullet):
                         //if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
                             playerAttack.CraftAmmoBox();
-                        Debug.Log("Picked Up AmmoBox");
                             Destroy(gameObject);
                         //Debug.Log("Picked up bullet");
                         break;
