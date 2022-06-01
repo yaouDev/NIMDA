@@ -128,7 +128,7 @@ namespace CallbackSystem
             if (alive)
             {
                 uiMenus.DeadPlayers(1);
-                //DropLoot();
+                crafting.BisectResources();
             }
             alive = false;
             attackAbility.Die();
@@ -188,30 +188,7 @@ namespace CallbackSystem
             currHealth = Mathf.Min(currHealth, maxHealth);
 
         }
-
-        private Vector3 dropOffset;
-        private GameObject drop;
-        [SerializeField] private GameObject[] dropTable = new GameObject[3];
         
-        /*
-        public void DropLoot()
-        {
-            dropOffset = new Vector3(Random.Range(-1f, 1f), 1f, Random.Range(-1f, 1f));
-            //dropOffset = Random.onUnitSphere * 2f;
-            dropOffset.y = Mathf.Abs(dropOffset.y);
-            for(int index = 0; index < 3; index++)
-            {
-                for (int i = 0; i < crafting.GetHalfResourceAmount(index); i++)
-                {
-                    drop = dropTable[index];
-                    GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-                    Destroy(loot, 15f);
-                }
-                crafting.ReduceResourceByHalf(index);
-            }
-            crafting.UpdateResources();
-        }
-        */
         public void ChooseMaterialColor(Color color)
         {
             playerMaterial.color = color;

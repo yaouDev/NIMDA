@@ -28,6 +28,7 @@ namespace CallbackSystem
         private int[] resourceArray;
         private float sphereRadius = 1f;
         private float maxSphereDistance = 3f;
+        [SerializeField] private GameObject[] dropTable = new GameObject[4];
 
         public int copper, transistor, iron, currency;
 
@@ -96,6 +97,24 @@ namespace CallbackSystem
                 defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
                 started = true;
             }
+        }
+
+        public void DropLoot()
+        {
+            /*
+            dropOffset = new Vector3(UnityEngine.Random.Range(-1f, 1f), 1f, UnityEngine.Random.Range(-1f, 1f));
+            //dropOffset = Random.onUnitSphere * 2f;
+            dropOffset.y = Mathf.Abs(dropOffset.y);
+            */
+ 
+                for (int i = 0; i < resourceArray[i] / 2; i++)
+                {
+              //      drop = dropTable[index];
+              //      GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
+              //      Destroy(loot, 15f);
+                }
+            
+            BisectResources();
         }
 
         //%-------------------------------Crafting table----------------------------------%
@@ -380,6 +399,15 @@ namespace CallbackSystem
             craftingEvent.successfulCraft = true;
             craftingEvent.isPlayerOne = isPlayerOne;
             EventSystem.Current.FireEvent(craftingEvent);
+        }
+
+        public void BisectResources()
+        {
+            copper /= 2;
+            iron /= 2;
+            transistor /= 2;
+            currency /= 2;
+            UpdateResources();
         }
     }
 }

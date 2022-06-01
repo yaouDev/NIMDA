@@ -31,7 +31,8 @@ public class TransitionToIsometricOtherSide : CameraBaseState
 	private float zoomedOutDistance = -20.0f;
 	
 	private Vector3 initialCentroid;
-	
+	private bool startedAsRightMostPlayer;
+	private Vector3 initialCameraPosition;
 	private void Awake() {
 		abovePlayer = Vector3.up * headHeight;
 	}
@@ -48,8 +49,10 @@ public class TransitionToIsometricOtherSide : CameraBaseState
 	    depthMaskPlanePos.x = -.5f;
 	    DepthMaskPlane.localPosition = depthMaskPlanePos;
 	    bool isRightMostPlayer = (Quaternion.Euler(0, -45, 0) * (PlayerThis.position - PlayerOther.position)).x > 0;
+	    startedAsRightMostPlayer = isRightMostPlayer;
 	    initialSplitScreenPosition = Vector3.ProjectOnPlane(!isRightMostPlayer ? Vector3.up : Vector3.down, CameraTransform.transform.forward);
-    }
+	    initialCameraPosition = CameraTransform.position;
+	}
 
     public override void Run()
     {
@@ -58,6 +61,7 @@ public class TransitionToIsometricOtherSide : CameraBaseState
 	    
 	    // both cameras have the same rotation (fixed?)
 	    CameraTransform.rotation = Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f);
+	    
 	    //CameraTransform.rotation = Quaternion.Slerp(CameraTransform.rotation,  Quaternion.Euler(topDownViewRotation.x, topDownViewRotation.y, 0.0f), percentage);
 
 	    // the split is rotating freely between the players
@@ -75,7 +79,7 @@ public class TransitionToIsometricOtherSide : CameraBaseState
 	    Vector3 centroidOffsetPosition = (PlayerOther.position - PlayerThis.position) * .5f;
 	    centroid = PlayerThis.position + centroidOffsetPosition;
 	    Vector3 lerpedCentroid = Vector3.Lerp(initialCentroid, centroid, easedPercentage);
-	    CameraTransform.position = Vector3.Lerp(CameraTransform.position,  lerpedCentroid + abovePlayer + CameraTransform.rotation * topDownOffset, easedPercentage);
+	    CameraTransform.position = Vector3.Lerp(initialCameraPosition,  lerpedCentroid + abovePlayer + CameraTransform.rotation * topDownOffset, easedPercentage);
 	    
 	    LerpSplitScreenLineWidth(easedPercentage);
 		 
@@ -85,8 +89,9 @@ public class TransitionToIsometricOtherSide : CameraBaseState
 		    stateMachine.TransitionTo<TopDownState>();
     }
     
-    private void RotateScreenSplit(float t) {
-	    
+    private void RotateScreenSplit(float t) 
+    {
+	    initialSplitScreenPosition = Vector3.ProjectOnPlane(!startedAsRightMostPlayer ? Vector3.up : Vector3.down, CameraTransform.transform.forward);
 	    Vector3 angle = (PlayerOther.position - PlayerThis.position).normalized;
 	    Vector3 quarterAngle = _ninetyDegrees * angle;
 	    Vector3 screenAngle = Vector3.Lerp(initialSplitScreenPosition ,Vector3.ProjectOnPlane(quarterAngle, -CameraTransform.transform.forward), t);
