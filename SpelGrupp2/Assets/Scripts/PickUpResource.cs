@@ -47,8 +47,9 @@ namespace CallbackSystem
                         //Debug.Log("Picked up transistor");
                         break;
                     case (PickUp.Bullet):
-                        if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
-                            playerAttack.UpdateBulletCount(1);
+                        //if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
+                            playerAttack.CraftAmmoBox();
+                        Debug.Log("Picked Up AmmoBox");
                             Destroy(gameObject);
                         //Debug.Log("Picked up bullet");
                         break;
