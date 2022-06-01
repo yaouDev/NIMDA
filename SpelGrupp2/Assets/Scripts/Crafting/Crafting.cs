@@ -25,24 +25,31 @@ namespace CallbackSystem
         largeMagazineRecipe, laserbeamChargeRecipe, blinkUpgradeRecipe;
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
-        [SerializeField] private Button[] craftingButtons;
-        [SerializeField] private Button defaultColorButton;
         private int[] resourceArray;
-        private Button selectedButton;
         private float sphereRadius = 1f;
         private float maxSphereDistance = 3f;
-        private int selectedButtonIndex;
-        //Cyan, Yellow, Magenta, White, Black
-        private static bool[] colorsTakenArray = new bool[5];
 
         public int copper, transistor, iron, currency;
 
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
+        private CraftingEvent craftingEvent;
         private PlayerHealth playerHealthScript;
         private PlayerController playerControllerScript;
         private bool isPlayerOne, started = false, isCrafting = false;
         private PlayerInput playerInput;
+
+        public Dictionary<string, bool> colorDictionary;
+
+        private Color blackColor = new Color(0.25f, 0.25f, 0.25f, 1f),
+            greenColor = new Color(0.35f, 0.95f, 0f, 1f),
+            cyanColor = new Color(0.1f, 0.90f, 0.90f, 1f),
+            whiteColor = new Color(0.95f, 0.95f, 0.95f, 1f),
+            magentaColor = new Color(0.85f, 0f, 0.85f, 1f),
+            defaultColor;
+
+
+
 
         public void UpdateResources()
         {
@@ -55,11 +62,12 @@ namespace CallbackSystem
             EventSystem.Current.FireEvent(resourceEvent);
         }
 
-
         public bool IsPlayerOne() { return isPlayerOne; }
 
         private void Awake()
         {
+            if (colorDictionary == null)
+                colorDictionary = new Dictionary<string, bool>();
             playerControllerScript = GetComponent<PlayerController>();
             playerBlinkScript = GetComponent<Blink>();
             playerAttackScript = GetComponent<PlayerAttack>();
@@ -67,6 +75,7 @@ namespace CallbackSystem
             playerInput = GetComponent<PlayerInput>();
             fadingtextEvent = new FadingTextEvent();
             resourceEvent = new ResourceUpdateEvent();
+            craftingEvent = new CraftingEvent();
             craftingTable.SetActive(false);
             resourceArray = new int[] { copper, transistor, iron, currency };
 
@@ -79,7 +88,12 @@ namespace CallbackSystem
                 isPlayerOne = playerAttackScript.IsPlayerOne();
                 resourceEvent.isPlayerOne = isPlayerOne;
                 fadingtextEvent.isPlayerOne = isPlayerOne;
+                craftingEvent.isPlayerOne = isPlayerOne;
+                craftingEvent.activate = false;
+                EventSystem.Current.FireEvent(craftingEvent);
                 UpdateResources();
+
+                defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
                 started = true;
             }
         }
@@ -122,69 +136,21 @@ namespace CallbackSystem
         private void EnterCraftingUI()
         {
             isCrafting = !isCrafting;
+            craftingEvent.successfulCraft = false;
+            craftingEvent.isPlayerOne = isPlayerOne;
 
             if (!isCrafting)
             {
-                craftingTable.SetActive(false);
-                selectedButton.image.color = Color.white;
-                selectedButtonIndex = 0;
+                craftingEvent.activate = false;
                 playerInput.SwitchCurrentActionMap("Player");
-            }
-            else
+            } else
             {
-                craftingTable.SetActive(true);
-                selectedButton = craftingButtons[selectedButtonIndex];
-                selectedButton.image.color = Color.red;
+                craftingEvent.activate = true;
                 playerInput.SwitchCurrentActionMap("Crafting");
             }
+            EventSystem.Current.FireEvent(craftingEvent);
         }
-
-        public void NextButton(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                selectedButtonIndex++;
-                if (selectedButtonIndex == craftingButtons.Length)
-                    selectedButtonIndex = 0;
-
-                ChangeSelectedButton();
-            }
-        }
-
-        public void PreviousButton(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                selectedButtonIndex--;
-                if (selectedButtonIndex < 0)
-                    selectedButtonIndex = craftingButtons.Length - 1;
-
-                ChangeSelectedButton();
-            }
-        }
-
-        private void ChangeSelectedButton()
-        {
-            selectedButton.image.color = Color.white;
-            selectedButton = craftingButtons[selectedButtonIndex];
-            selectedButton.image.color = Color.red;
-        }
-
-        public void SelectButton(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                if (selectedButton.interactable)
-                    selectedButton.onClick.Invoke();
-                else
-                {
-                    fadingtextEvent.text = "Unavailable Purchase";
-                    EventSystem.Current.FireEvent(fadingtextEvent);
-                }
-
-            }
-        }
-
+        
         //%--------------------------------Crafts & upgrades---------------------------------%
 
         public void CraftBullet(InputAction.CallbackContext context)
@@ -232,7 +198,6 @@ namespace CallbackSystem
             {
                 playerAttackScript.UpgradeProjectileWeapon();
                 fadingtextEvent.text = "Revolver damage Upgraded";
-                selectedButton.interactable = false;
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -243,9 +208,8 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(RevolverCritRecipe))
             {
-                //playerAttackScript.UpgradeRevolverCrittable();
+                playerAttackScript.RevolverCritUpgrade();
                 fadingtextEvent.text = "Revolver Crit Enabled";
-                selectedButton.interactable = false;
             }     
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -256,9 +220,8 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(largeMagazineRecipe))
             {
-                playerAttackScript.MagSizeUpgrade();
+                playerAttackScript.RevolverMagazineUpgrade();
                 fadingtextEvent.text = "Revolver Ammo Upgraded";
-                selectedButton.interactable = false;
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -270,9 +233,8 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(laserbeamChargeRecipe))
             {
-                playerAttackScript.ChargeRateUpgrade();
+                playerAttackScript.LaserChargeRateUpgrade();
                 fadingtextEvent.text = "Lasergun Upgraded";
-                selectedButton.interactable = false;
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -283,9 +245,8 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(laserbeamWidthRecipe))
             {
-                playerAttackScript.BeamWidthUpgrade();
+                playerAttackScript.LaserBeamWidthUpgrade();
                 fadingtextEvent.text = "Lasergun Upgraded";
-                selectedButton.interactable = false;
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -298,7 +259,6 @@ namespace CallbackSystem
             {
                 playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Lasergun Upgraded";
-                selectedButton.interactable = false;
             }
             else
                 fadingtextEvent.text = "Not Enough Resources";
@@ -311,7 +271,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(cyanRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.1f, 0.90f, 0.90f, 1f));
+                playerHealthScript.ChooseMaterialColor(cyanColor);
                 playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Color Cyan Crafted";
             }
@@ -324,7 +284,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(yellowRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
-                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity() * 1.5f);
+                playerControllerScript.MovementSpeedUpgrade();
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
             else
@@ -335,7 +295,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(whiteRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.95f, 0.95f, 0.95f, 1f));
+                playerHealthScript.ChooseMaterialColor(whiteColor);
                 playerBlinkScript.DecreaseBlinkCooldown();
                 fadingtextEvent.text = "Color White Crafted";
             }
@@ -347,7 +307,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(magentaRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.85f, 0f, 0.85f, 1f));
+                playerHealthScript.ChooseMaterialColor(magentaColor);
                 playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
@@ -360,8 +320,8 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(greenRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.35f, 0.95f, 0f, 1f));
-                playerControllerScript.SetTerminalVelocity(playerControllerScript.GetTerminalVelocity() * 1.5f);
+                playerHealthScript.ChooseMaterialColor(greenColor);
+                playerControllerScript.MovementSpeedUpgrade();
                 fadingtextEvent.text = "Color Green Crafted";
             }
             else
@@ -373,7 +333,7 @@ namespace CallbackSystem
         {
             if (TryCraftRecipe(blackRecipe))
             {
-                playerHealthScript.ChooseMaterialColor(new Color(0.25f, 0.25f, 0.25f, 1f));
+                playerHealthScript.ChooseMaterialColor(blackColor);
                 playerBlinkScript.DecreaseBlinkCooldown();
                 fadingtextEvent.text = "Color Black Crafted";
             }
@@ -384,7 +344,7 @@ namespace CallbackSystem
 
         public void CraftDefaultColor()
         {
-            playerHealthScript.ChooseMaterialColor();
+            playerHealthScript.ChooseMaterialColor(defaultColor);
             playerHealthScript.SetDefaultStats();
             fadingtextEvent.text = "Default Color Crafted";
         }
@@ -411,11 +371,17 @@ namespace CallbackSystem
                 transistor -= recipe.transistorNeeded;
                 currency -= recipe.currencyNeeded;
                 UpdateResources();
-                if (selectedButton != defaultColorButton && isCrafting)
-                    selectedButton.interactable = false;
+                DisableButton();
                 return true;
             }
             return false;
+        }
+
+        public void DisableButton()
+        {
+            craftingEvent.successfulCraft = true;
+            craftingEvent.isPlayerOne = isPlayerOne;
+            EventSystem.Current.FireEvent(craftingEvent);
         }
     }
 }

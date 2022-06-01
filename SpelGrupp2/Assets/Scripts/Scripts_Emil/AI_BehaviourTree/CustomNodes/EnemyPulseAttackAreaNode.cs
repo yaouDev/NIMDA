@@ -14,12 +14,11 @@ public class EnemyPulseAttackAreaNode : Node
     [SerializeField] private float duration = 0.2f;
     [SerializeField] private Material originalMaterial;
 
-    private MeshRenderer meshRenderer;
-    private float counter;
-    //private Coroutine flashRoutine; 
-
-
     private bool isAttacking = true;
+    private bool soundStarted;
+    private float end;
+    private MeshRenderer meshRenderer;
+
 
     IDamageable damageable;
 
@@ -27,8 +26,10 @@ public class EnemyPulseAttackAreaNode : Node
 
     public override NodeState Evaluate()
     {
-
-        meshRenderer = agent.GetComponent<MeshRenderer>();
+        if (meshRenderer == null)
+        {
+            meshRenderer = agent.GetComponent<MeshRenderer>();
+        }
 
         if (isAttacking && agent.TargetInSight)
         {
@@ -46,22 +47,19 @@ public class EnemyPulseAttackAreaNode : Node
     }
     public IEnumerator AttackDelay()
     {
-        float end = Time.realtimeSinceStartup + attackCoolDown;
-        bool soundStarted = false;
+        end = Time.realtimeSinceStartup + attackCoolDown;
+        soundStarted = false;
 
-        while(end > Time.realtimeSinceStartup)
+        while (end > Time.realtimeSinceStartup)
         {
-            if(end - Time.realtimeSinceStartup <= 0.3f && !soundStarted)
+            if (end - Time.realtimeSinceStartup <= 0.3f && !soundStarted)
             {
                 soundStarted = true;
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.explosion, agent.gameObject);
             }
             yield return null;
         }
-
-       // yield return new WaitForSeconds(attackCoolDown);
         Attack();
-        //agent.StartCoroutine(AnimateLineRenderer());
         isAttacking = true;
 
     }
@@ -78,8 +76,6 @@ public class EnemyPulseAttackAreaNode : Node
 
         }
 
-
-        //agent.StopCoroutine(FlashRoutine());
     }
 
 
@@ -112,7 +108,7 @@ public class EnemyPulseAttackAreaNode : Node
                     //damage
                     damageable.TakeDamage(damage);
 
-                    //ExplosionForce
+                    //ExplosionForce - check with Will if we will remove
                     Rigidbody rbTemp = coll.GetComponent<Rigidbody>();
                     if (rbTemp != null)
                     {

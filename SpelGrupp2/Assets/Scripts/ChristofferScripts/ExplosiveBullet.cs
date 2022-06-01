@@ -8,9 +8,7 @@ using UnityEngine;
 public class ExplosiveBullet : MonoBehaviour, IPoolable {
     //Assignables
     [SerializeField] private Rigidbody rigidBody;
-    //[SerializeField] private GameObject explosion;
     [SerializeField] private LayerMask whatIsTarget;
-    //[SerializeField] private GameObject[] players;
 
     //Stats
     [SerializeField] private float bounciness;
@@ -18,7 +16,6 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
 
     //Damage
     [SerializeField] private float explosionRange;
-
 
     //LifeTime
     [SerializeField] private float maxLifeTime = 100f;
@@ -62,8 +59,8 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
         }
     }
 
-    private void Setup() {
-        //Create a new Ohysics material
+    private void Setup() { //-check wit Will 
+        //Create a new Physics material
         physicsMat = new PhysicMaterial();
         physicsMat.bounciness = bounciness;
         physicsMat.frictionCombine = PhysicMaterialCombine.Minimum;
@@ -75,11 +72,6 @@ public class ExplosiveBullet : MonoBehaviour, IPoolable {
         //Set Gravity
         rigidBody.useGravity = useGravity;
         currentLifeTime = maxLifeTime;
-    }
-
-    private void OnDrawGizmosSelected() {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, explosionRange);
     }
 
     public void OnSpawn() {

@@ -6,8 +6,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
-    [SerializeField][Range(0, 10000)] private int fullHealth = 100;
-    [SerializeField] private float hitForce = 10;
+    [SerializeField][Range(0, 2000)] private int fullHealth = 100;
     [SerializeField] string objectPoolTag;
     //public float currHealth;
     private float healthBarLength;
@@ -67,7 +66,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
         Destroy(gameObject);
-        //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+        // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
@@ -87,7 +86,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
                 drop = dropList[1];
             } else if (dropRoll <= transitorRange) {
                 drop = dropList[2];
-            } else if(dropRoll <= currencyRange) {
+            } else if (dropRoll <= currencyRange) {
                 drop = dropList[3];
             }
             //int item = Random.Range(0, dropList.Length);
@@ -105,7 +104,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         //BELOW USES FIND! BAD BAD BAD! GET A REAL REFERENCE!!! // -- fixed
         AudioController.instance.PlayOneShot(AudioController.instance.enemySound.hurt, playersPos.position);
         //Debug.Log(currentHealth);
-        agent.transform.rotation = new Quaternion(Mathf.PingPong(hitForce, -30), agent.transform.rotation.y, agent.transform.rotation.z, 0);
 
     }
 

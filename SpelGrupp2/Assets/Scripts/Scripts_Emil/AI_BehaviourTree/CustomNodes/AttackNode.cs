@@ -3,66 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "AIBehavior/Behavior/Attack")]
-public class AttackNode : Node {
-
+public class AttackNode : Node
+{
     [SerializeField] private float spread;
     [SerializeField] private float shootForce = 20.0f;
     [SerializeField] private float recoilForce = 0f;
     [SerializeField] private float attackDelay = 1.0f;
-    //[SerializeField] private float upwardForce = 10.0f;
 
     private bool isShooting = true;
     private float x;
-    //private float z;
-
     private GameObject currentBullet;
 
-    Vector3 directionWithoutSpread;
-    Vector3 directionWithSpread;
+    private Vector3 directionWithoutSpread;
+    private Vector3 directionWithSpread;
 
-
-
-    public override NodeState Evaluate() {
-
-        if (isShooting && agent.TargetInSight) {
+    public override NodeState Evaluate()
+    {
+        if (isShooting && agent.TargetInSight)
+        {
             agent.IsStopped = true;
             isShooting = false;
             agent.StartCoroutine(AttackDelay());
             return NodeState.RUNNING;
         }
         return NodeState.FAILURE;
-
-
-
-        /*         if (Vector3.Distance(agent.Position, agent.CurrentTarget) <= agent.AttackRange) {
-                    if (agent.Attack.IsShooting()) {
-                        agent.Attack.SetShooting(false);
-                        agent.Attack.StartCoroutine(agent.Attack.AttackDelay());
-                    }
-                    agent.IsStopped = true;
-                    NodeState = NodeState.SUCCESS;
-                } else NodeState = NodeState.FAILURE; */
     }
 
-
-    public IEnumerator AttackDelay() {
+    public IEnumerator AttackDelay()
+    {
         yield return new WaitForSeconds(attackDelay);
         Attack();
         isShooting = true;
-        //agent.StartCoroutine(AnimateLineRenderer());
-
-        //yield return new WaitForSeconds(3f);
     }
 
 
-    void Attack() {
-
+    void Attack()
+    {
         //Calculate direction from attackpoint to targetpoint
         directionWithoutSpread = agent.ClosestPlayer - agent.Health.FirePoint;
 
         //Calculate spread
         x = Random.Range(-spread, spread);
-        //z = Random.Range(-spread, spread);
 
         //Calculate direction 
         directionWithSpread = directionWithoutSpread + new Vector3(x, 0, 0);
@@ -80,7 +61,8 @@ public class AttackNode : Node {
         agent.Rigidbody.AddForce(-directionWithSpread.normalized * recoilForce, ForceMode.Impulse);
 
         //MuzzleFlash
-        if (AIData.Instance.EnemyMuzzleflash != null) {
+        if (AIData.Instance.EnemyMuzzleflash != null)
+        {
             Instantiate(AIData.Instance.EnemyMuzzleflash, agent.Health.FirePoint, Quaternion.identity);
         }
     }

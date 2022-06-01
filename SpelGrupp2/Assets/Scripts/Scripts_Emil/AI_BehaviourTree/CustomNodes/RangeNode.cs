@@ -7,12 +7,11 @@ using UnityEngine;
 public class RangeNode : Node {
 
     public float Range;
+    private float dist;
 
     public override NodeState Evaluate() {
-        /*  distance = Vector3.Distance(agent.ClosestTarget, agent.transform.position);
-          return distance <= Range ? NodeState.SUCCESS : NodeState.FAILURE;*/
 
-        float dist = Vector3.Distance(agent.CurrentTarget, agent.Position);
+        dist = Vector3.Distance(agent.CurrentTarget, agent.Position);
 
         NodeState = dist <= Range ? NodeState.SUCCESS : NodeState.FAILURE;
         return NodeState;

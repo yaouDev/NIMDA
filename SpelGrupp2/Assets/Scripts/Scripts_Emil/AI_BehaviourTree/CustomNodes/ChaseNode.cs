@@ -14,11 +14,13 @@ public class ChaseNode : Node {
             agent.MaxSpeed = maxSpeed;
             agent.Destination = agent.ClosestPlayer;
             agent.IsStopped = false;
+
             NodeState = NodeState.RUNNING;
         } else if (agent.CurrentPath != null && distanceFromTargetToStop < agent.DistanceFromTarget) {
             NodeState = NodeState.RUNNING;
             agent.IsStopped = false;
         } else {
+
             agent.IsStopped = true;
             NodeState = NodeState.SUCCESS;
         }
