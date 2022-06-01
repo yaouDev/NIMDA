@@ -161,8 +161,8 @@ namespace CallbackSystem
                 {
                     if (TryCraftRecipe(bulletRecipe))
                     {
-                        playerAttackScript.UpdateBulletCount(3);
-                        fadingtextEvent.text = "Bullets Crafted (x3)";
+                        playerAttackScript.CraftAmmoBox();
+                        fadingtextEvent.text = "Ammo Box Crafted";
                         EventSystem.Current.FireEvent(fadingtextEvent);
                     }
                     else
