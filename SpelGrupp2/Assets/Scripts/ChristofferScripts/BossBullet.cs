@@ -20,9 +20,8 @@ public class BossBullet : MonoBehaviour
     //LifeTime
     [SerializeField] private int maxCollisions = 5;
     [SerializeField] private float maxLifeTime = 2;
-    [SerializeField] private bool explodeOnTouch = true;
 
-    [SerializeField] private float damage = .1f;
+    [SerializeField] private float damage = 20f;
 
     private GameObject currentBulletOne;
     private GameObject currentBulletTwo;
@@ -66,9 +65,8 @@ public class BossBullet : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //Explode if bullet hits Player directly
-        if (other.gameObject.CompareTag("Player") && explodeOnTouch)
+        if (other.gameObject.CompareTag("Player"))
         {
-            Explode();
             other.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
         }
     }
