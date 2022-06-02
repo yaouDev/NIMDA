@@ -72,7 +72,11 @@ public class PlayerController : MonoBehaviour
     [Range(0.0f, 20.0f)]
     [Tooltip("Max speed")]
     private float _terminalVelocity = 12.0f;
-    private float _defaultTerminalVelocity, _upgradedTerminalVelocity;
+
+    [SerializeField]
+    [Range(0.0f, 30.0f)]
+    [Tooltip("Max speed")]
+    private float _upgradedTerminalVelocity = 18f;
 
     [SerializeField]
     [Range(0.0f, 20.0f)]
