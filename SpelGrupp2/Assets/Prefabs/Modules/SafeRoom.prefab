@@ -9909,7 +9909,8 @@ MonoBehaviour:
   eventDuration: 10
   entrance: {fileID: 2908897572479627236}
   exit: {fileID: 2908897574066981411}
-  doorSoundSource: {fileID: 1928429758755802897}
+  doorEntranceSource: {fileID: 0}
+  doorExitSource: {fileID: 0}
   doorSound:
     Guid:
       Data1: -1029849838
@@ -32740,14 +32741,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
---- !u!1 &2908897572479627236 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8090096044299587051, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
-  m_PrefabInstance: {fileID: 6348863345313047055}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2908897572479627235 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8090096044299587052, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
+  m_PrefabInstance: {fileID: 6348863345313047055}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2908897572479627236 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8090096044299587051, guid: 0fe01dfe1baf3ce4cac57d6d75afe97b, type: 3}
   m_PrefabInstance: {fileID: 6348863345313047055}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6548028358079073044
@@ -33933,11 +33934,6 @@ GameObject:
 --- !u!4 &8223043942286432372 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 614617765979801253, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
-  m_PrefabInstance: {fileID: 8834252122699062993}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1928429758755802897 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6943066121857225152, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
   m_PrefabInstance: {fileID: 8834252122699062993}
   m_PrefabAsset: {fileID: 0}
 --- !u!135 &3086826525227931307
