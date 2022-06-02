@@ -6,6 +6,7 @@ using CallbackSystem;
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private Animator anim;
+    [SerializeField] private float stunLength;
 
     [SerializeField] private float acceleration = 13.5f, maxSpeed = 13.5f, critRange, allowedTargetDiscrepancy, turnSpeed = 100f;
     [SerializeField] private LayerMask targetMask, enemyMask;
@@ -254,9 +255,14 @@ public class AI_Controller : MonoBehaviour {
     private IEnumerator StunCoroutine(float stunTime) {
         stunned = true;
         IsStopped = true;
-        yield return new WaitForSeconds(stunTime);
+
+        anim.SetBool("isStunned", true);
+
+        yield return new WaitForSeconds(stunLength);
         stunned = false;
         IsStopped = false;
+
+        anim.SetBool("isStunned", false);
     }
 
     /// <summary>
