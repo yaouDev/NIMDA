@@ -105,8 +105,8 @@ namespace CallbackSystem
             laserSelfDmg = startLaserSelfDmg;
             teamDamage = startTeamDamage;
             beamThickness = startBeamThickness;
-            laserWeponMesh.SetActive(true);
-            projectileWeaponMesh.SetActive(false);
+            laserWeponMesh?.SetActive(laserWeapon);
+            projectileWeaponMesh?.SetActive(!laserWeapon);
         }
 
         [SerializeField] private Material bulletMat;
@@ -318,16 +318,10 @@ namespace CallbackSystem
             if (context.performed && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
-                if (laserWeapon)
-                {
-                    laserWeponMesh.SetActive(true);
-                    projectileWeaponMesh.SetActive(false);
-                }
-                else
-                {
-                    laserWeponMesh.SetActive(false);
-                    projectileWeaponMesh.SetActive(true);
-                }
+                
+                laserWeponMesh?.SetActive(laserWeapon);
+                projectileWeaponMesh?.SetActive(!laserWeapon);
+                
                 WeaponSwapHUD();
                 // TODO [Sound] Play weapon swap sound(s)
             }
@@ -338,16 +332,10 @@ namespace CallbackSystem
             if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
-                if (laserWeapon)
-                {
-                    laserWeponMesh.SetActive(true);
-                    projectileWeaponMesh.SetActive(false);
-                }
-                else
-                {
-                    laserWeponMesh.SetActive(false);
-                    projectileWeaponMesh.SetActive(true);
-                }
+                
+                laserWeponMesh?.SetActive(laserWeapon);
+                projectileWeaponMesh?.SetActive(!laserWeapon);
+                
                 WeaponSwapHUD();
                 // TODO [Sound] Play weapon swap sound(s)
             }
