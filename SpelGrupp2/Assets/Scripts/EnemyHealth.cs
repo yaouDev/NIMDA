@@ -67,24 +67,32 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
 
     public void Die() {
-
         if (!isDead) {
-            isDead = true;
             enemySpawnController.reduceSpawnCount(1);
-            DropLoot();
             AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-
-            anim.SetBool("isDead", true);
-            Destroy(gameObject, deathWish);
-            // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
-
+            agent.IsStopped = true;
+            agent.Stunned = true;
+            isDead = true;
+            agent.RotationEnabled = false;
+            if (anim != null)
+                anim.SetBool("isDead", true);
         }
+        if (anim == null) Destroy(gameObject);
+
+        anim.SetBool("isDead", true);
+        Invoke("DropLoot", deathWish - 0.05f);
+        Destroy(gameObject, deathWish);
+        // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-
-        anim.SetBool("isDead", true);
-        Destroy(gameObject, deathWish);
+        agent.RotationEnabled = false;
+        if (anim == null) Destroy(gameObject);
+        else {
+            anim.SetBool("isDead", true);
+            Destroy(gameObject, deathWish);
+        }
         //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
