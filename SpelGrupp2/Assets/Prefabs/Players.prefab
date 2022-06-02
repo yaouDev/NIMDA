@@ -336,10 +336,6 @@ MonoBehaviour:
   maxBatteryCount: 5
   healthReg: 10
   playerMaterial: {fileID: 2100000, guid: 4304cd1fa4309ee45923eb268b69dd82, type: 2}
-  dropTable:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &8397479276426667862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,6 +420,7 @@ MonoBehaviour:
   _deceleration: 3.16
   _turnSpeedModifier: 9.32
   _terminalVelocity: 5
+  _upgradedTerminalVelocity: 18
   _jumpForce: 10
   _staticFrictionCoefficient: 0.5
   _kineticFrictionCoefficient: 0.6942
@@ -610,6 +607,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1048832
   craftingTable: {fileID: 0}
+  dropTable:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   copper: 0
   transistor: 0
   iron: 0
@@ -937,7 +939,7 @@ MonoBehaviour:
   maxUses: 2
   cooldown: 15
   reducedCooldown: 1
-  maxDistance: 5
+  maxDistance: 8
   blinkSpeed: 100
   destinationMultiplier: 0.9
   cameraheight: 0
@@ -947,11 +949,11 @@ MonoBehaviour:
   cam: {fileID: 326990608734731273}
   trail: {fileID: 5371080335133204322}
   start: {fileID: 19855466, guid: a6b4217bfe4780a4db70838861dde746, type: 3}
-  finnish: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
+  finnish: {fileID: 4873982171269351023, guid: ceaf4aab86caf6c45bd6d1e66ed0e4e9, type: 3}
   player: {fileID: 326990607570548878}
   whatAreTargets:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2181044224
   layerMask:
     serializedVersion: 2
     m_Bits: 8448
@@ -1116,10 +1118,6 @@ MonoBehaviour:
   maxBatteryCount: 5
   healthReg: 10
   playerMaterial: {fileID: 2100000, guid: b888e97b65c120b499dff59f8baa1a6b, type: 2}
-  dropTable:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &3037943043123946253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1204,6 +1202,7 @@ MonoBehaviour:
   _deceleration: 3.16
   _turnSpeedModifier: 9.32
   _terminalVelocity: 5
+  _upgradedTerminalVelocity: 18
   _jumpForce: 10
   _staticFrictionCoefficient: 0.5
   _kineticFrictionCoefficient: 0.6942
@@ -1390,6 +1389,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1048832
   craftingTable: {fileID: 0}
+  dropTable:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   copper: 0
   transistor: 0
   iron: 0
@@ -1745,7 +1749,7 @@ MonoBehaviour:
   maxUses: 2
   cooldown: 15
   reducedCooldown: 1
-  maxDistance: 5
+  maxDistance: 8
   blinkSpeed: 100
   destinationMultiplier: 0.9
   cameraheight: 0
@@ -1755,11 +1759,11 @@ MonoBehaviour:
   cam: {fileID: 326990608769707818}
   trail: {fileID: 6892499171766090955}
   start: {fileID: 19869518, guid: c093f20f7fecffe40968c260ab8382a2, type: 3}
-  finnish: {fileID: 3775946356171156253, guid: 67f2a9421a64848c2bef46ef4b68cc1b, type: 3}
+  finnish: {fileID: 4466760141139174629, guid: f915b1439faff754186ef283af326f8f, type: 3}
   player: {fileID: 326990607881322127}
   whatAreTargets:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2181043200
   layerMask:
     serializedVersion: 2
     m_Bits: 8448
