@@ -6,15 +6,9 @@ using UnityEngine.UI;
 public class BossShieldHealthBar : MonoBehaviour
 {
     [SerializeField] private Image fillImage;
+    [SerializeField] private Slider slider;
+    [SerializeField] private EnemyShield shield;
     private float fillValue;
-    private Slider slider;
-    private EnemyShield shield;
-
-    void Start()
-    {
-        slider = FindObjectOfType<Slider>();
-        shield = gameObject.GetComponent<EnemyShield>();
-    }
 
 
     void Update()
