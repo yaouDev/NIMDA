@@ -20,7 +20,7 @@ public class AI_Controller : MonoBehaviour {
     private int currentPathIndex = 0;
     private BehaviorTree behaviorTree;
     private CallbackSystem.PlayerHealth[] targets;
-    private bool targetInSight = false, updatingPath = false;
+    private bool targetInSight = false, updatingPath = false, stunned = false;
 
     // Getters and setters below
     public bool TargetInSight {
@@ -168,12 +168,13 @@ public class AI_Controller : MonoBehaviour {
         UpdateTarget();
         UpdateTargetInSight();
         UpdateRotation();
-        behaviorTree.Update();
+        if (!stunned) {
 
+            behaviorTree.UpdateTree();
+            if (TargetReachable && PathRequestAllowed) StartCoroutine(UpdatePath());
+        }
 
         if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
-
-        if (TargetReachable && PathRequestAllowed) StartCoroutine(UpdatePath());
 
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -200,9 +201,11 @@ public class AI_Controller : MonoBehaviour {
 
         // Rotate the Enemy towards the player
         Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        rotation.x = 0;
+        rotation.z = 0;
         transform.rotation = Quaternion.RotateTowards(transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
-        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+        //transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
     }
 
     private void UpdateTargetInSight() {
@@ -229,6 +232,20 @@ public class AI_Controller : MonoBehaviour {
         IsStopped = false;
         behaviorTree.ResetTree();
         updatingPath = false;
+    }
+
+    public void Stun(float stunTime) {
+        if (!stunned) {
+            StartCoroutine(StunCoroutine(stunTime));
+        }
+    }
+
+    private IEnumerator StunCoroutine(float stunTime) {
+        stunned = true;
+        IsStopped = true;
+        yield return new WaitForSeconds(stunTime);
+        stunned = false;
+        IsStopped = false;
     }
 
     /// <summary>

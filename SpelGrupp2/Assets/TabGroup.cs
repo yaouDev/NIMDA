@@ -131,7 +131,7 @@ public class TabGroup : MonoBehaviour
         allButtons.AddRange(tabColor);
     }
 
-    private void InstantiateButtons()
+    public void InstantiateButtons()
     {
         foreach (Button button in allButtons)
         {
