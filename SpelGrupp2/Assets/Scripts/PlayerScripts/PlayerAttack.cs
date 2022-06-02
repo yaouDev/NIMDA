@@ -184,6 +184,7 @@ namespace CallbackSystem
             }
             if (context.performed && laserWeapon && canShootLaser)
             {
+                laserSound.stop(STOP_MODE.IMMEDIATE);
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
                 chargingUP = true;
                 StartCoroutine(ChargeUp());
@@ -211,6 +212,16 @@ namespace CallbackSystem
                 laserSelfDmg = startLaserSelfDmg;
                 teamDamage = startTeamDamage;
                 beamThickness = laserBeamWidthUpgraded ? decreasedBeamWidth : startBeamThickness;
+            }
+
+            if (context.started && !laserWeapon && recentlyFired)
+            {
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.projectileNoAmmo : ac.player2.projectileNoAmmo, gameObject);
+            }
+
+            if (context.performed && laserWeapon && !canShootLaser)
+            {
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.laserNoAmmo: ac.player2.laserNoAmmo, gameObject);
             }
             //damage = startDamage;
         }
