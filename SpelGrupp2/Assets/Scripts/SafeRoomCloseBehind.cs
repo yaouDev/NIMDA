@@ -7,7 +7,7 @@ using CallbackSystem;
 
 public class SafeRoomCloseBehind : MonoBehaviour {
 
-    [SerializeField] private float openHeight;
+    //[SerializeField] private float openHeight;
     [SerializeField] private float eventDuration = 10f;
     [SerializeField] private GameObject entrance;
     [SerializeField] private GameObject exit;
@@ -33,6 +33,9 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Dictionary<GameObject, bool> entered = new Dictionary<GameObject, bool>();
     private bool visited = false;
     private bool exited = false;
+    
+    private float openHeight = 1.0f;
+    private float closedHeight = -8.0f;
 
     void Start() {
         PlayerHealth[] playerHealths = FindObjectsOfType<PlayerHealth>();
@@ -82,11 +85,11 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         if (col.gameObject.tag.Equals(player))
         {
             entered[col.gameObject] = false; // removes colliding player from dictionary
-            if (visited && !exited && !entered[players[0]] && !entered[players[1]])
+            if (visited && !exited && (!entered[players[0]] && !entered[players[1]]))
             {
                 exited = true;
                 CloseExit();
-                if (!objectivesManager.BossNext()) 
+                if (!objectivesManager.BossNext())
                 {
                     objectivesManager.AddObjective("find the next safe room");
                     objectivesManager.FlipBossBool();
@@ -120,18 +123,18 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     }
 
     void CloseEntrance() {
-        if (doorOpen) {
-            entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
+
+        //if (doorOpen) {
+            //entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrance(entranceClosePosition, eventDuration));
             doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
             spawnController.GeneratorRunning(false);
             spawnController.gameObject.SetActive(false);
             objectivesManager.RemoveObjective("enter safe room");
-        }
+        //}
     }
     
     void CloseExit() {
-        //Debug.Log("Opening");
         exitClosePosition = exitOpenPosition + Vector3.down * openHeight;
         StartCoroutine(MoveExit(exitClosePosition, eventDuration));
         spawnController.gameObject.SetActive(true);
@@ -139,28 +142,36 @@ public class SafeRoomCloseBehind : MonoBehaviour {
 
     IEnumerator MoveEntrance(Vector3 targetPosition, float duration) {
         timeElapsed = 0;
-        entranceStartPosition = entrance.transform.position;
+        //entranceStartPosition = entrance.transform.position;
         while (timeElapsed < 1.0f) {
-            entrance.transform.position = Vector3.Lerp(entranceStartPosition, targetPosition, timeElapsed);
+            Vector3 doorPos = entrance.transform.position;
+            doorPos.y = Mathf.Lerp(closedHeight, openHeight, timeElapsed);
+            entrance.transform.position = doorPos;
+            //entrance.transform.position = Vector3.Lerp(entranceStartPosition, targetPosition, timeElapsed);
             timeElapsed += Time.deltaTime * (1.0f / duration);
             yield return null;
         }
 
-        entrance.transform.position = targetPosition;
+        entrance.transform.position =
+            new Vector3(entrance.transform.position.x, openHeight, entrance.transform.position.z);
         doorEvent.setParameterByName("isOpen", 1f); //stop door sound
         doorOpen = false;
     }
     
     IEnumerator MoveExit(Vector3 targetPosition, float duration) {
         timeElapsed = 0;
-        exitStartPosition = exit.transform.position;
-        while (timeElapsed < 1.0f) {
-            exit.transform.position = Vector3.Lerp(exitStartPosition, targetPosition, timeElapsed);
+        //exitStartPosition = exit.transform.position;
+        while (timeElapsed < 1.0f)
+        {
+            Vector3 doorPos = exit.transform.position;
+            doorPos.y = Mathf.Lerp(closedHeight, openHeight, timeElapsed);
+            exit.transform.position = doorPos;
             timeElapsed += Time.deltaTime * (1.0f / duration);
             yield return null;
         }
 
-        exit.transform.position = targetPosition;
+        exit.transform.position = new Vector3(exit.transform.position.x, openHeight, exit.transform.position.z);
+
         doorOpen = false;
     }
 }

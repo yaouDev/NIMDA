@@ -20,8 +20,7 @@ public class OpenExit : MonoBehaviour {
     void Start() {
         closePosition = door.transform.position;
     }
-
-
+    
     /*    private void OnTriggerStay(Collider col)
         {
             if (col.CompareTag("Player"))
@@ -30,8 +29,11 @@ public class OpenExit : MonoBehaviour {
                 interactableRange = true;
             }
         }*/
+    
     private void OnTriggerEnter(Collider col) {
-        if (col.CompareTag("Player")) {
+        if (col.CompareTag("Player"))
+        {
+            Debug.Log($"entered {col.gameObject.name}");
             playerCount++;
             if (playerCount == 1) {
                 textPopup.SetActive(true);
@@ -42,7 +44,6 @@ public class OpenExit : MonoBehaviour {
 
     public void OpenDoor() {
         if (!doorOpen) {
-            //Debug.Log("Opening");
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
         }
