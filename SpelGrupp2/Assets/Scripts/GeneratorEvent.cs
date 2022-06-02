@@ -24,6 +24,7 @@ public class GeneratorEvent : MonoBehaviour
     [SerializeField] private EventReference doorSound;
     private FMOD.Studio.EventInstance doorEvent;
     private AudioController ac;
+    [SerializeField] private EliasSetLevel eliasLevel;
 
     // Start is called before the first frame update
     void Start()
@@ -61,6 +62,7 @@ public class GeneratorEvent : MonoBehaviour
             //objectivesManager.AddObjective("let the generator finish");
             objectivesManager.AddObjective("survive the horde");
             doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
+            ac.SetEliasLevel(eliasLevel);
             isRunning = true;
         }
     }

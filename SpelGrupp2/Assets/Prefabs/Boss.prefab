@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 7312429420559045237}
   - component: {fileID: 5411658906163890308}
   m_Layer: 25
-  m_Name: Shield4
+  m_Name: YellowShield
   m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,6 +345,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 2707496074372812764}
+  slider: {fileID: 4832680725497457059}
+  shield: {fileID: 3953292615016060400}
 --- !u!1 &1466269718487403189
 GameObject:
   m_ObjectHideFlags: 0
@@ -610,6 +612,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0720211dc6baf4995b21d5da3a91d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  deathWish: 0.8
   dropList:
   - {fileID: 8492384828083724688, guid: 88bcf3edf288a58418b0d628398631f5, type: 3}
   - {fileID: 1553260107264835347, guid: abfcc62661ee7b64992f85a7a399ed39, type: 3}
@@ -625,6 +629,7 @@ MonoBehaviour:
   currencyRange: 0
   dropMin: 0
   dropMax: 0
+  isBoss: 1
 --- !u!114 &2570946775122381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -638,6 +643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
+  stunLength: 0
   acceleration: 13.5
   maxSpeed: 13.5
   critRange: 0
@@ -678,6 +684,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 7746462981242154950}
+  slider: {fileID: 5498443751356281275}
+  health: {fileID: 1870368713256031491}
 --- !u!65 &1870368713256031487
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -875,7 +883,7 @@ GameObject:
   - component: {fileID: 5498443751356281275}
   - component: {fileID: 4669769266270955590}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: BossSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -966,6 +974,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 7746462981242154950}
+  slider: {fileID: 0}
+  health: {fileID: 0}
 --- !u!1 &1983134634068771430
 GameObject:
   m_ObjectHideFlags: 0
@@ -1063,7 +1073,7 @@ GameObject:
   - component: {fileID: 3240221697185985925}
   - component: {fileID: 5304814216596559758}
   m_Layer: 25
-  m_Name: Shield2
+  m_Name: GreenShield
   m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1192,6 +1202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 6527632900684506155}
+  slider: {fileID: 6518583420733736425}
+  shield: {fileID: 5224855055660318614}
 --- !u!1 &2624390262425327939
 GameObject:
   m_ObjectHideFlags: 0
@@ -1295,6 +1307,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 2707496074372812764}
+  slider: {fileID: 0}
+  health: {fileID: 0}
 --- !u!1 &2703272045632853508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1398,6 +1412,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 9151693149067424628}
+  slider: {fileID: 0}
+  health: {fileID: 0}
 --- !u!1 &3073798141631859243
 GameObject:
   m_ObjectHideFlags: 0
@@ -1570,7 +1586,7 @@ GameObject:
   - component: {fileID: 1034343170583524237}
   - component: {fileID: 74757566872064062}
   m_Layer: 25
-  m_Name: Shield1
+  m_Name: BlueShield
   m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1699,6 +1715,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 9151693149067424628}
+  slider: {fileID: 7327473486550483028}
+  shield: {fileID: 6343912798462839372}
 --- !u!1 &3707193105070554141
 GameObject:
   m_ObjectHideFlags: 0
@@ -2326,6 +2344,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 6527632900684506155}
+  slider: {fileID: 0}
+  health: {fileID: 0}
 --- !u!1 &5588787363094415907
 GameObject:
   m_ObjectHideFlags: 0
@@ -2933,7 +2953,7 @@ GameObject:
   - component: {fileID: 6687451783486111307}
   - component: {fileID: 5672223605897461829}
   m_Layer: 25
-  m_Name: Shield3
+  m_Name: PurpleShield
   m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3062,6 +3082,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 103105600931635675}
+  slider: {fileID: 1338558250627770043}
+  shield: {fileID: 3940496400804057037}
 --- !u!1 &7392155788466542517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3165,6 +3187,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 103105600931635675}
+  slider: {fileID: 0}
+  health: {fileID: 0}
 --- !u!1 &7800291191566866853
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,6 +33,8 @@ namespace CallbackSystem
         [SerializeField] [Range(0f, 1.18f)] private float laserAttackDelay = 1.18f;
         [SerializeField] private int bullets, maxBullets, ammoBoxes, bulletUpgradeIncrease = 5; //reloads/ammo boxes - UPPDATERA NAMN
         [SerializeField] private GameObject bullet, upgradedBullet, explosiveBullet;
+        [SerializeField] private GameObject laserWeponMesh;
+        [SerializeField] private GameObject projectileWeaponMesh;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
         private UpdateCurrentWeaponEvent weaponUpdateEvent;
@@ -42,8 +44,8 @@ namespace CallbackSystem
         private float reducedSelfDmg, laserWeaponCooldown, currentHitDistance, revolverCooldown,
             reducedChargeTime, decreasedBeamWidth = 0.075f, decreasedThickness = 0.75f;
 
-        private bool revolverDamageUpgraded, revolverCritUpgraded, revolverMagazineUpgraded, 
-            laserDamageUpgraded, laserChargeRateUpgraded, laserBeamWidthUpgraded; 
+        private bool revolverDamageUpgraded, revolverCritUpgraded, revolverMagazineUpgraded,
+            laserDamageUpgraded, laserChargeRateUpgraded, laserBeamWidthUpgraded;
 
         private System.Random rnd = new System.Random();
 
@@ -103,6 +105,8 @@ namespace CallbackSystem
             laserSelfDmg = startLaserSelfDmg;
             teamDamage = startTeamDamage;
             beamThickness = startBeamThickness;
+            laserWeponMesh.SetActive(true);
+            projectileWeaponMesh.SetActive(false);
         }
 
         [SerializeField] private Material bulletMat;
@@ -191,7 +195,7 @@ namespace CallbackSystem
 
             if (context.performed && laserWeapon && canShootLaser)
             {
-                laserSound.stop(STOP_MODE.IMMEDIATE);
+                //laserSound.stop(STOP_MODE.ALLOWFADEOUT);
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
                 chargingUP = true;
                 canSwitchWeapon = false;
@@ -221,7 +225,7 @@ namespace CallbackSystem
 
                 }
                 recentlyFired = true;
-                canSwitchWeapon = true; 
+                canSwitchWeapon = true;
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
                 sightLineWidth = laserBeamWidthUpgraded ? decreasedBeamWidth : startSightLineWidth;
@@ -238,7 +242,7 @@ namespace CallbackSystem
 
             if (context.performed && laserWeapon && !canShootLaser)
             {
-                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.laserNoAmmo: ac.player2.laserNoAmmo, gameObject);
+                ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.laserNoAmmo : ac.player2.laserNoAmmo, gameObject);
             }
             //damage = startDamage;
         }
@@ -251,7 +255,7 @@ namespace CallbackSystem
             while (damage < maxDamage && chargingUP)
             {
 
-                yield return new WaitForSeconds(laserChargeRateUpgraded ?  reducedChargeTime : chargeTime);
+                yield return new WaitForSeconds(laserChargeRateUpgraded ? reducedChargeTime : chargeTime);
                 damage += damageIncreasePerTenthSecond;
                 if (sightLineWidth < maxBeamThickness)
                 {
@@ -263,9 +267,9 @@ namespace CallbackSystem
                 }
                 if (laserSelfDmg < maxSelfDamage)
                 {
-                    if(health.GetCurrenthealth() < laserSelfDmg)
+                    if (health.GetCurrenthealth() < laserSelfDmg)
                     {
-                        break; 
+                        break;
                     }
                     laserSelfDmg += laserDamageUpgraded ? reducedSelfDmg : laserSelfDamageIncreasePerTenthSecond;
                 }
@@ -314,6 +318,16 @@ namespace CallbackSystem
             if (context.performed && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
+                if (laserWeapon)
+                {
+                    laserWeponMesh.SetActive(true);
+                    projectileWeaponMesh.SetActive(false);
+                }
+                else
+                {
+                    laserWeponMesh.SetActive(false);
+                    projectileWeaponMesh.SetActive(true);
+                }
                 WeaponSwapHUD();
                 // TODO [Sound] Play weapon swap sound(s)
             }
@@ -324,6 +338,16 @@ namespace CallbackSystem
             if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
+                if (laserWeapon)
+                {
+                    laserWeponMesh.SetActive(true);
+                    projectileWeaponMesh.SetActive(false);
+                }
+                else
+                {
+                    laserWeponMesh.SetActive(false);
+                    projectileWeaponMesh.SetActive(true);
+                }
                 WeaponSwapHUD();
                 // TODO [Sound] Play weapon swap sound(s)
             }
@@ -397,7 +421,7 @@ namespace CallbackSystem
                     //}
                     foreach (RaycastHit hitInfo in hitList) // TODO change to firepoint
                     {
-                        
+
                         if (hitInfo.collider != null)
                         {
                             if (hitInfo.transform.gameObject.layer == 8)// (1 << LayerMask.NameToLayer("SeeThrough")))
@@ -405,14 +429,14 @@ namespace CallbackSystem
                                 hitObstacle = true;
                                 return;
                             }
-                            if(hitInfo.transform.gameObject.layer == 25)
+                            if (hitInfo.transform.gameObject.layer == 25)
                             {
                                 hitShield = true;
                                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
                                 damageable.TakeDamage(damage);
                                 return;
                             }
-                            else if (!hitObstacle && !hitShield &&(hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
+                            else if (!hitObstacle && !hitShield && (hitInfo.transform.tag == "Enemy" && hitInfo.collider.isTrigger == false || hitInfo.transform.tag == "Player"))
                             {
                                 IDamageable damageable = hitInfo.transform.GetComponent<IDamageable>();
 
@@ -566,7 +590,8 @@ namespace CallbackSystem
                 if (revolverCritUpgraded && critChance == 20)
                     currentBullet = explosiveBullet;
                 Instantiate(currentBullet, transform.position + transform.forward + Vector3.up, transform.rotation, null);
-            } else if(bullets == 0 && ammoBoxes > 0)
+            }
+            else if (bullets == 0 && ammoBoxes > 0)
             {
                 Reload();
                 UpdateAmmoUI();
@@ -598,7 +623,7 @@ namespace CallbackSystem
         }
 
         private void UpdateAmmoUI()
-        { 
+        {
             resourceEvent.ammoChange = true;
             resourceEvent.a = bullets;
             resourceEvent.magAmmo = ammoBoxes;
@@ -611,7 +636,7 @@ namespace CallbackSystem
             ammoBoxes--;
         }
         public void SetBulletsOnLoad(int amount) => bullets = amount;
-       
+
         public void UpgradeLaserWeapon() => LaserDamageUpgraded = true;
         public void LaserChargeRateUpgrade() => LaserChargeRateUpgraded = true;
         public void LaserBeamWidthUpgrade() => LaserBeamWidthUpgraded = true;

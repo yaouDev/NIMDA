@@ -210,6 +210,6 @@ public class BossRoomState : CameraState
 
 	private void OnDisable()
 	{
-		Gamepad.current.SetMotorSpeeds(0, 0);
+		//Gamepad.current.SetMotorSpeeds(0, 0);
 	}
 }
