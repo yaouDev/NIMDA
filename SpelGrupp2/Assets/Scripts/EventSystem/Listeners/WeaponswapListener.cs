@@ -9,7 +9,7 @@ namespace CallbackSystem
     {
         [SerializeField] private Image[] HudOne, HudTwo;
         private Image[] currentHUD;
-        private Color basic = new Color(0, 0, 0, 0), fade = new Color(0, 0, 0, 0.5f);
+        private Color basic = new Color(1, 1, 1, 1), fade = new Color(0.5f, 0.5f, 0.5f, 0.5f);
         void Start()
         {
             EventSystem.Current.RegisterListener<UpdateCurrentWeaponEvent>(SwapWeaponIcon);
