@@ -87,10 +87,7 @@ namespace CallbackSystem
                 float magnitude = Mathf.Max(.28f, damage * .01f);
                 shakeEvent.magnitude = magnitude;
                 EventSystem.Current.FireEvent(shakeEvent);
-                //if(enemyDmg)
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.hurt : ac.player2.hurt, gameObject);
-                //else
-                //enemy damage sound here
             }
 
             if (currHealth <= float.Epsilon && batteryCount > 0)
