@@ -7,34 +7,49 @@ using CallbackSystem;
 public class SaveData {
 
     public float[] saferoomPosition;
+    public Dictionary<string, bool> buttonDict;
 
     // PlayerOne data
-    public int playerOneIron;
-    public int playerOneTransistor;
-    public int playerOneCopper;
-    public int playerOneBattery;
-    public int playerOneAmmo;
-    public int playerOneCurrency;
-    public float playerOneHealth;
-    public float[] playerOneColor;
-    public bool playerOneLaserUpgraded;
-    public bool playerOneProjectileUpgraded;
+    public int pOneIron;
+    public int pOneTransistor;
+    public int pOneCopper;
+    public int pOneBattery;
+    public int pOneAmmo;
+    public int pOneCurrency;
+    public float pOneHealthPoints;
+    public float[] pOneColor;
+    public bool pOneLaserDmgUpgraded;
+    public bool pOneLaserChargeUpgraded;
+    public bool pOneLaserBeamUpgraded;
+    public bool pOneProjectileUpgraded;
+    public bool pOneRevolverCritUpgraded;
+    public bool pOneRevolverMagUpgraded;
+    public bool pOneDecreaseDmgUpgraded;
+    public bool pOneMovementSpeedUpgraded;
+
 
     // PlayerTwo data
-    public int playerTwoIron;
-    public int playerTwoTransistor;
-    public int playerTwoCopper;
-    public int playerTwoBattery;
-    public int playerTwoAmmo;
-    public int playerTwoCurrency;
-    public float playerTwoHealth;
-    public float[] playerTwoColor;
-    public bool playerTwoLaserUpgraded;
-    public bool playerTwoProjectileUpgraded;
-
+    public int pTwoIron;
+    public int pTwoTransistor;
+    public int pTwoCopper;
+    public int pTwoBattery;
+    public int pTwoAmmo;
+    public int pTwoCurrency;
+    public float pTwoHealthPoints;
+    public float[] pTwoColor;
+    public bool pTwoLaserDmgUpgraded;
+    public bool pTwoLaserChargeUpgraded;
+    public bool pTwoLaserBeamUpgraded;
+    public bool pTwoProjectileUpgraded;
+    public bool pTwoRevolverCritUpgraded;
+    public bool pTwoRevolverMagUpgraded;
+    public bool pTwoDecreaseDmgUpgraded;
+    public bool pTwoMovementSpeedUpgraded;
 
     public SaveData(bool enteringSafeRoom) {
         Vector3 pos;
+
+        buttonDict = SaveSystem.Instance.TabGroup.buttonsDictionary;
 
         if (enteringSafeRoom) {
             pos = SaveSystem.Instance.PlayerOneAttack.transform.position.z > SaveSystem.Instance.PlayerTwoAttack.transform.position.z
@@ -52,39 +67,51 @@ public class SaveData {
         saferoomPosition[1] = pos.y;
         saferoomPosition[2] = safeRoomModulePos.y * 50;
 
-        playerOneIron = SaveSystem.Instance.PlayerOneCrafting.iron;
-        playerOneTransistor = SaveSystem.Instance.PlayerOneCrafting.transistor;
-        playerOneCopper = SaveSystem.Instance.PlayerOneCrafting.copper;
-        playerOneBattery = SaveSystem.Instance.PlayerOneHealth.GetCurrentBatteryCount();
-        playerOneAmmo = SaveSystem.Instance.PlayerOneAttack.ReturnBullets();
-        playerOneCurrency = SaveSystem.Instance.PlayerOneCrafting.currency;
-        playerOneHealth = SaveSystem.Instance.PlayerOneHealth.GetCurrenthealth();
-        playerOneLaserUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserDamageUpgraded;
-        playerOneProjectileUpgraded = SaveSystem.Instance.PlayerOneAttack.ProjectileWeaponUpgraded;
+        pOneIron = SaveSystem.Instance.PlayerOneCrafting.iron;
+        pOneTransistor = SaveSystem.Instance.PlayerOneCrafting.transistor;
+        pOneCopper = SaveSystem.Instance.PlayerOneCrafting.copper;
+        pOneBattery = SaveSystem.Instance.PlayerOneHealth.GetCurrentBatteryCount();
+        pOneAmmo = SaveSystem.Instance.PlayerOneAttack.ReturnBullets();
+        pOneCurrency = SaveSystem.Instance.PlayerOneCrafting.currency;
+        pOneHealthPoints = SaveSystem.Instance.PlayerOneHealth.GetCurrenthealth();
+        pOneLaserDmgUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserDamageUpgraded;
+        pOneLaserBeamUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserBeamWidthUpgraded;
+        pOneLaserChargeUpgraded = SaveSystem.Instance.PlayerOneAttack.LaserChargeRateUpgraded;
+        pOneProjectileUpgraded = SaveSystem.Instance.PlayerOneAttack.ProjectileWeaponUpgraded;
+        pOneRevolverCritUpgraded = SaveSystem.Instance.PlayerOneAttack.RevolverCritUpgraded;
+        pOneRevolverMagUpgraded = SaveSystem.Instance.PlayerOneAttack.RevolverMagazineUpgraded;
+        pOneDecreaseDmgUpgraded = SaveSystem.Instance.PlayerOneHealth.DecreaseDamageUpgraded;
+        pOneMovementSpeedUpgraded = SaveSystem.Instance.PlayerOneController.MovementSpeedUpgraded;
 
-        playerOneColor = new float[4];
-        Color playerOneColorRef = SaveSystem.Instance.PlayerOneHealth.GetCurrentMaterialColor();
-        playerOneColor[0] = playerOneColorRef.r;
-        playerOneColor[1] = playerOneColorRef.g;
-        playerOneColor[2] = playerOneColorRef.b;
-        playerOneColor[3] = playerOneColorRef.a;
+        pOneColor = new float[4];
+        Color pOneColorRef = SaveSystem.Instance.PlayerOneHealth.GetCurrentMaterialColor();
+        pOneColor[0] = pOneColorRef.r;
+        pOneColor[1] = pOneColorRef.g;
+        pOneColor[2] = pOneColorRef.b;
+        pOneColor[3] = pOneColorRef.a;
 
-        playerTwoIron = SaveSystem.Instance.PlayerTwoCrafting.iron;
-        playerTwoTransistor = SaveSystem.Instance.PlayerTwoCrafting.transistor;
-        playerTwoCopper = SaveSystem.Instance.PlayerTwoCrafting.copper;
-        playerTwoBattery = SaveSystem.Instance.PlayerTwoHealth.GetCurrentBatteryCount();
-        playerTwoAmmo = SaveSystem.Instance.PlayerTwoAttack.ReturnBullets();
-        playerTwoCurrency = SaveSystem.Instance.PlayerTwoCrafting.currency;
-        playerTwoHealth = SaveSystem.Instance.PlayerTwoHealth.GetCurrenthealth();
-        playerTwoLaserUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserDamageUpgraded;
-        playerTwoProjectileUpgraded = SaveSystem.Instance.PlayerTwoAttack.ProjectileWeaponUpgraded;
+        pTwoIron = SaveSystem.Instance.PlayerTwoCrafting.iron;
+        pTwoTransistor = SaveSystem.Instance.PlayerTwoCrafting.transistor;
+        pTwoCopper = SaveSystem.Instance.PlayerTwoCrafting.copper;
+        pTwoBattery = SaveSystem.Instance.PlayerTwoHealth.GetCurrentBatteryCount();
+        pTwoAmmo = SaveSystem.Instance.PlayerTwoAttack.ReturnBullets();
+        pTwoCurrency = SaveSystem.Instance.PlayerTwoCrafting.currency;
+        pTwoHealthPoints = SaveSystem.Instance.PlayerTwoHealth.GetCurrenthealth();
+        pTwoLaserDmgUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserDamageUpgraded;
+        pTwoLaserBeamUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserBeamWidthUpgraded;
+        pTwoLaserChargeUpgraded = SaveSystem.Instance.PlayerTwoAttack.LaserChargeRateUpgraded;
+        pTwoProjectileUpgraded = SaveSystem.Instance.PlayerTwoAttack.ProjectileWeaponUpgraded;
+        pTwoRevolverCritUpgraded = SaveSystem.Instance.PlayerTwoAttack.RevolverCritUpgraded;
+        pTwoRevolverMagUpgraded = SaveSystem.Instance.PlayerTwoAttack.RevolverMagazineUpgraded;
+        pTwoDecreaseDmgUpgraded = SaveSystem.Instance.PlayerTwoHealth.DecreaseDamageUpgraded;
+        pTwoMovementSpeedUpgraded = SaveSystem.Instance.PlayerTwoController.MovementSpeedUpgraded;
 
-        playerTwoColor = new float[4];
-        Color playerTwoColorRef = SaveSystem.Instance.PlayerTwoHealth.GetCurrentMaterialColor();
-        playerTwoColor[0] = playerTwoColorRef.r;
-        playerTwoColor[1] = playerTwoColorRef.g;
-        playerTwoColor[2] = playerTwoColorRef.b;
-        playerTwoColor[3] = playerTwoColorRef.a;
+        pTwoColor = new float[4];
+        Color pTwoColorRef = SaveSystem.Instance.PlayerTwoHealth.GetCurrentMaterialColor();
+        pTwoColor[0] = pTwoColorRef.r;
+        pTwoColor[1] = pTwoColorRef.g;
+        pTwoColor[2] = pTwoColorRef.b;
+        pTwoColor[3] = pTwoColorRef.a;
     }
 
 }
