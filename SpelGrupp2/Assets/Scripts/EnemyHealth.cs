@@ -27,6 +27,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int currencyRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
+    [SerializeField] private bool isBoss;
+    private UIMenus uIMenus;
     private Transform playersPos;
     private AI_Controller agent;
 
@@ -41,9 +43,14 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         }
     }
 
+    private void Start()
+    {
+        uIMenus = FindObjectOfType<UIMenus>();
+    }
+
     private void Awake() {
         CurrentHealth = fullHealth;
-        enemySpawnController = GameObject.Find("EnemySpawnController").GetComponent<EnemySpawnController>();
+        enemySpawnController = FindObjectOfType<EnemySpawnController>();
         playersPos = GameObject.Find("Players").transform;
         agent = GetComponent<AI_Controller>();
     }
@@ -76,6 +83,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
             agent.RotationEnabled = false;
             if (anim != null)
                 anim.SetBool("isDead", true);
+            if (isBoss)
+            {
+                uIMenus.GameWon();
+                Instantiate(AIData.Instance.BossExplosion, agent.Position, Quaternion.identity);
+            }
         }
         if (anim == null) Destroy(gameObject);
 
