@@ -6,14 +6,9 @@ using UnityEngine.UI;
 public class BossHealthBar : MonoBehaviour
 {
     [SerializeField] private Image fillImage;
+    [SerializeField] private Slider slider;
+    [SerializeField] private EnemyHealth health;
     private float fillValue;
-    private Slider slider;
-    private EnemyHealth health;
-    private void Awake()
-    {
-        slider = FindObjectOfType<Slider>();
-        health = gameObject.GetComponent<EnemyHealth>();
-    }
 
     void Update()
     {
