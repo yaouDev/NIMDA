@@ -41,7 +41,11 @@ public class BehaviorTree : MonoBehaviour {
         agent = GetComponent<AI_Controller>();
     }
 
-    public void Update() {
+    /*     public void Update() {
+
+        } */
+
+    public void UpdateTree() {
         rootNode.Evaluate();
     }
 
