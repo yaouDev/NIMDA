@@ -388,6 +388,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0720211dc6baf4995b21d5da3a91d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 0}
+  deathWish: 0
   dropList: []
   healthRestoreRate: 1
   firePoint: {fileID: 9218188913738382862}
@@ -412,6 +414,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 0}
+  stunLength: 3
   acceleration: 13.5
   maxSpeed: 13.5
   critRange: 0
@@ -420,6 +423,9 @@ MonoBehaviour:
   targetMask:
     serializedVersion: 2
     m_Bits: 3328
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
   drawPath: 0
   isBoss: 0
   isStopped: 1

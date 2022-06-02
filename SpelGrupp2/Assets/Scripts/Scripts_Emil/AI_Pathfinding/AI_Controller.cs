@@ -6,9 +6,10 @@ using CallbackSystem;
 public class AI_Controller : MonoBehaviour {
 
     [SerializeField] private Animator anim;
+    [SerializeField] private float stunLength;
 
     [SerializeField] private float acceleration = 13.5f, maxSpeed = 13.5f, critRange, allowedTargetDiscrepancy, turnSpeed = 100f;
-    [SerializeField] private LayerMask targetMask;
+    [SerializeField] private LayerMask targetMask, enemyMask;
     [SerializeField] private bool drawPath = false, isBoss = false, isStopped = true;
 
     private EnemyHealth enemyHealth;
@@ -20,7 +21,7 @@ public class AI_Controller : MonoBehaviour {
     private int currentPathIndex = 0;
     private BehaviorTree behaviorTree;
     private CallbackSystem.PlayerHealth[] targets;
-    private bool targetInSight = false, updatingPath = false;
+    private bool targetInSight = false, updatingPath = false, stunned = false, rotationEnabled = true;
 
     // Getters and setters below
     public bool TargetInSight {
@@ -118,6 +119,16 @@ public class AI_Controller : MonoBehaviour {
         }
     }
 
+    public bool Stunned {
+        get { return stunned; }
+        set { stunned = value; }
+    }
+
+    public bool RotationEnabled {
+        get { return rotationEnabled; }
+        set { rotationEnabled = value; }
+    }
+
     public Rigidbody Rigidbody { get { return rBody; } }
 
     private bool PathRequestAllowed {
@@ -158,21 +169,26 @@ public class AI_Controller : MonoBehaviour {
 
     private void FixedUpdate() {
         MoveFromBlock();
+        AvoidOtherAgents();
         if (!isStopped) {
             Move();
         }
+        Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
+        //Debug.Log(Rigidbody.velocity.magnitude);
     }
 
     void Update() {
 
         UpdateTarget();
         UpdateTargetInSight();
-        UpdateRotation();
-        behaviorTree.Update();
-
+        if (rotationEnabled)
+            UpdateRotation();
+        if (!stunned) {
+            behaviorTree.UpdateTree();
+            if (TargetReachable && PathRequestAllowed) StartCoroutine(UpdatePath());
+        }
         //cc anim
-        if (anim != null)
-        {
+        if (anim != null) {
             Vector3 rot = transform.rotation.eulerAngles;
             Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * Rigidbody.velocity;
 
@@ -180,10 +196,7 @@ public class AI_Controller : MonoBehaviour {
             anim.SetFloat("Direction", rotatedVelocity.z);
         }
 
-
         if (Vector3.Distance(Position, ClosestPlayer) > 60) Health.DieNoLoot();
-
-        if (TargetReachable && PathRequestAllowed) StartCoroutine(UpdatePath());
 
         // This code is for debugging purposes only, shows current calculated path
         if (drawPath && currentPath != null && currentPath.Count != 0) {
@@ -210,9 +223,11 @@ public class AI_Controller : MonoBehaviour {
 
         // Rotate the Enemy towards the player
         Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+        rotation.x = 0;
+        rotation.z = 0;
         transform.rotation = Quaternion.RotateTowards(transform.rotation,
                                                             rotation, Time.deltaTime * turnSpeed);
-        transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
+        //transform.rotation = new Quaternion(0, transform.rotation.y, 0, transform.rotation.w);
     }
 
     private void UpdateTargetInSight() {
@@ -239,6 +254,25 @@ public class AI_Controller : MonoBehaviour {
         IsStopped = false;
         behaviorTree.ResetTree();
         updatingPath = false;
+    }
+
+    public void Stun(float stunTime) {
+        if (!stunned) {
+            StartCoroutine(StunCoroutine(stunTime));
+        }
+    }
+
+    private IEnumerator StunCoroutine(float stunTime) {
+        stunned = true;
+        IsStopped = true;
+
+        anim.SetBool("isStunned", true);
+
+        yield return new WaitForSeconds(stunLength);
+        stunned = false;
+        IsStopped = false;
+
+        anim.SetBool("isStunned", false);
     }
 
     /// <summary>
@@ -341,7 +375,7 @@ public class AI_Controller : MonoBehaviour {
             }
         }
         // ensure enemies stay at their max speed
-        Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
+        // Rigidbody.velocity = Vector3.ClampMagnitude(Rigidbody.velocity, maxSpeed);
     }
 
     // Callback functions below
@@ -372,7 +406,7 @@ public class AI_Controller : MonoBehaviour {
     /// Unfortunately creates a lot of garbage, which may cause performance issues if too many agents are crammed in a small space.
     /// </summary>
     /// <param name="other"> The collider of the other agent </param>
-    private void OnTriggerStay(Collider other) {
+/*     private void OnTriggerStay(Collider other) {
         if (other != null && other.tag == "Enemy") {
             Vector3 offset = Vector3.zero;
             if (other.transform.position == Position) offset.x += 0.1f;
@@ -386,6 +420,27 @@ public class AI_Controller : MonoBehaviour {
                 if (!isStopped) multiplier = 0.05f;
                 forceToAdd.y = 0;
                 rBody.AddForce(forceToAdd * multiplier, ForceMode.Force);
+            }
+        }
+    } */
+
+    private Collider[] overlapBuffer = new Collider[1];
+    private void AvoidOtherAgents() {
+        int hits = Physics.OverlapSphereNonAlloc(Position, avoidTrigger.radius, overlapBuffer, enemyMask);
+        if (hits > 0) {
+            Vector3 offset = Vector3.zero;
+            if (overlapBuffer[0].transform.position == Position) {
+                offset.x += Random.Range(-0.2f, 0.2f);
+                offset.z += Random.Range(-0.2f, 0.2f);
+            }
+            Vector3 directionOfOtherEnemy = ((overlapBuffer[0].transform.position + offset) - Position).normalized;
+            Vector3 valueToTest = transform.position;
+            if (rBody.velocity.magnitude > 0.05f) valueToTest = rBody.velocity.normalized;
+            float dot = Vector3.Dot(valueToTest, -directionOfOtherEnemy);
+            if ((dot >= 0) || valueToTest == transform.position) {
+                Vector3 forceToAdd = -directionOfOtherEnemy * acceleration;
+                forceToAdd.y = 0;
+                Rigidbody.AddForce(forceToAdd, ForceMode.Force);
             }
         }
     }

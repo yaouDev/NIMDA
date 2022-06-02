@@ -109,18 +109,30 @@ public class EnemySpawnController : MonoBehaviour {
                 }
             }
             if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount) {
-                index = Random.Range(0, nearbySpawners.Count);
-                activeSpawner = nearbySpawners[index];
-                spawnPos = activeSpawner.transform;
-                spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
-                EnemyRange();
                 for (int i = 0; i < spawnThisMany; i++) {
+                    if (i == nearbySpawners.Count) activeSpawner = nearbySpawners[i % nearbySpawners.Count];
+                    else activeSpawner = nearbySpawners[i];
+                    spawnPos = activeSpawner.transform;
+                    spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
+                    EnemyRange();
                     Instantiate(spawnedEnemyGO, spawnPos.position, spawnPos.rotation);
-                    //ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
-                    nearbySpawners.Clear();
-                    spawnCount += 1;
+                    spawnCount++;
                 }
+                nearbySpawners.Clear();
             }
+            /*        if (nearbySpawners.Count > 0 && spawnCount < maxSpawnCount) {
+                       index = Random.Range(0, nearbySpawners.Count);
+                       activeSpawner = nearbySpawners[index];
+                       spawnPos = activeSpawner.transform;
+                       spawnPos.rotation = Quaternion.LookRotation((ClosestPlayer - spawnPos.position).normalized);
+                       EnemyRange();
+                       for (int i = 0; i < spawnThisMany; i++) {
+                           Instantiate(spawnedEnemyGO, spawnPos.position, spawnPos.rotation);
+                           //ObjectPool.Instance.GetFromPool(spawnedEnemy, spawnPos.position, spawnPos.rotation, null, true);
+                           nearbySpawners.Clear();
+                           spawnCount += 1;
+                       }
+                   } */
             yield return new WaitForSeconds(spawnCooldown);
         }
     }

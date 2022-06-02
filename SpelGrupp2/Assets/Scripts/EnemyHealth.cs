@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
+
+    [SerializeField] private Animator anim;
+    [SerializeField] private float deathWish;
+
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
@@ -13,6 +17,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     private Vector3 dropOffset;
     private GameObject drop;
     private float currentHealth;
+    private bool isDead = false;
     //[SerializeField] private int dropAmount;
     private EnemySpawnController enemySpawnController;
 
@@ -62,15 +67,32 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
 
     public void Die() {
-        enemySpawnController.reduceSpawnCount(1);
-        DropLoot();
-        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        Destroy(gameObject);
+        if (!isDead) {
+            enemySpawnController.reduceSpawnCount(1);
+            AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
+            agent.IsStopped = true;
+            agent.Stunned = true;
+            isDead = true;
+            agent.RotationEnabled = false;
+            if (anim != null)
+                anim.SetBool("isDead", true);
+        }
+        if (anim == null) Destroy(gameObject);
+
+        anim.SetBool("isDead", true);
+        Invoke("DropLoot", deathWish - 0.05f);
+        Destroy(gameObject, deathWish);
         // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        Destroy(gameObject);
+        agent.RotationEnabled = false;
+        if (anim == null) Destroy(gameObject);
+        else {
+            anim.SetBool("isDead", true);
+            Destroy(gameObject, deathWish);
+        }
         //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
