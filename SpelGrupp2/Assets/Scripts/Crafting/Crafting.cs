@@ -94,7 +94,7 @@ namespace CallbackSystem
                 EventSystem.Current.FireEvent(craftingEvent);
                 UpdateResources();
 
-                defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
+                defaultColor = isPlayerOne ? new Color(0.3f, 0.9f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
                 started = true;
             }
         }
