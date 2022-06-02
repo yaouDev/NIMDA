@@ -75,6 +75,11 @@ namespace CallbackSystem {
         public int blinkCount, blinkCountMax;
     }
 
+    public class UpdateCurrentWeaponEvent : Event
+    {
+        public bool usingLaserWeapon;
+    }
+
     /// <summary>
     /// Walls is an integer between 0-15 representing
     /// all possible combinations of wall configurations.

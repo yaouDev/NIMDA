@@ -35,6 +35,7 @@ namespace CallbackSystem
         [SerializeField] private GameObject bullet, upgradedBullet, explosiveBullet;
         private ResourceUpdateEvent resourceEvent;
         private WeaponCrosshairEvent crosshairEvent;
+        private UpdateCurrentWeaponEvent weaponUpdateEvent;
         private bool laserWeapon = true;
         private bool activated = false, isPlayerOne, recentlyFired;
         private bool canShootLaser, canShootGun = true, targetInSight = false;
@@ -91,6 +92,7 @@ namespace CallbackSystem
             health = GetComponent<PlayerHealth>();
             resourceEvent = new ResourceUpdateEvent();
             crosshairEvent = new WeaponCrosshairEvent();
+            weaponUpdateEvent = new UpdateCurrentWeaponEvent();
             isPlayerOne = health.IsPlayerOne();
             reducedSelfDmg = laserSelfDamageIncreasePerTenthSecond / 2;
             reducedChargeTime = chargeTime / 2;
@@ -125,6 +127,8 @@ namespace CallbackSystem
             {
                 resourceEvent.isPlayerOne = isPlayerOne;
                 UpdateAmmoUI();
+                weaponUpdateEvent.isPlayerOne = isPlayerOne;
+                WeaponSwapHUD();
                 crosshairEvent.usingRevolver = !laserWeapon;
                 crosshairEvent.isPlayerOne = isPlayerOne;
                 crosshairEvent.targetInSight = targetInSight;
@@ -310,6 +314,7 @@ namespace CallbackSystem
             if (context.performed && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
+                WeaponSwapHUD();
                 // TODO [Sound] Play weapon swap sound(s)
             }
         }
@@ -319,8 +324,15 @@ namespace CallbackSystem
             if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
+                WeaponSwapHUD();
                 // TODO [Sound] Play weapon swap sound(s)
             }
+        }
+
+        private void WeaponSwapHUD()
+        {
+            weaponUpdateEvent.usingLaserWeapon = laserWeapon;
+            EventSystem.Current.FireEvent(weaponUpdateEvent);
         }
 
         //This method & Pass Through(Y) on Input Actions if up = laser & down = projectile.
@@ -590,6 +602,7 @@ namespace CallbackSystem
             resourceEvent.ammoChange = true;
             resourceEvent.a = bullets;
             resourceEvent.magAmmo = ammoBoxes;
+            resourceEvent.maxAmmo = ReturnMaxBullets();
             EventSystem.Current.FireEvent(resourceEvent);
         }
         private void Reload()
@@ -604,7 +617,11 @@ namespace CallbackSystem
         public void LaserBeamWidthUpgrade() => LaserBeamWidthUpgraded = true;
         public void UpgradeProjectileWeapon() => ProjectileWeaponUpgraded = true;
         public void RevolverCritUpgrade() => RevolverCritUpgraded = true;
-        public void RevolverMagazineUpgrade() => RevolverMagazineUpgraded = true;
+        public void RevolverMagazineUpgrade()
+        {
+            RevolverMagazineUpgraded = true;
+            UpdateAmmoUI();
+        }
 
         public bool LaserDamageUpgraded
         {

@@ -10,7 +10,7 @@ using TMPro;
 
 public class BatteryUI : MonoBehaviour
 {
-    [SerializeField] private Image batteryUI;
+    [SerializeField] private Image batteryUI, batteryHUD;
     [SerializeField] private TextMeshProUGUI batteryAmount;
     [SerializeField] private GameObject prefab;
     
@@ -22,11 +22,14 @@ public class BatteryUI : MonoBehaviour
             battery /= 100;
             batteryAmount.gameObject.SetActive(true);
             batteryUI.gameObject.SetActive(true);
+            batteryHUD.fillAmount = battery;
             batteryUI.fillAmount = battery;
+            batteryHUD.color = Color.Lerp(Color.red, Color.green, battery);
             batteryUI.color = Color.Lerp(Color.red, Color.green, battery);
         }
         else
         {
+            batteryHUD.fillAmount = 0f;
             batteryUI.fillAmount = 0f;
             batteryUI.gameObject.SetActive(false);
         }
