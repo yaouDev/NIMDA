@@ -129,12 +129,14 @@ MonoBehaviour:
   damage: 70
   enemyLayerMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 7168
   environmentLayerMask:
     serializedVersion: 2
     m_Bits: 256
   ricochetParticleSystem: {fileID: 0}
   bulletSpeed: 200
+  impactForce: 40
+  hitForce: 10
 --- !u!96 &8633690795862413450
 TrailRenderer:
   serializedVersion: 2

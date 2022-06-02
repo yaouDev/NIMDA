@@ -91,7 +91,8 @@ public class Blink : MonoBehaviour
         {
             Instantiate(start, transform.position, Quaternion.identity);
             numberOfUses -= 1;
-            UpdateUIEvent(cooldownTimer);
+            if (numberOfUses != maxUses)
+                UpdateUIEvent(cooldownTimer);
             //UIText.text = "Blink: " + numberOfUses.ToString();
             trail.Play();
             if(Physics.SphereCast(transform.position + Vector3.up, 0.45f, playerAttack.AimingDirection.normalized, out hitInfo, maxDistance, layerMask))
@@ -147,15 +148,26 @@ public class Blink : MonoBehaviour
 
     private void UpdateUIEvent(float time)
     {
+        //maxcooldowntimer = cd max
+        if (numberOfUses == maxUses)
+            time = 0f;
         maxCooldownTimer = blinkUpgraded ? reducedCooldown : cooldown;
-        cooldownTime = reverseTimer - time;
+        //time = cooldown - time.deltatime
+        //cooldowntime = 0 -> maxcooldowntimer
+        //reversetimer = 
+        cooldownTime = maxCooldownTimer - time;
+        //percentage = 0 -> 1 progress to maxcooldowntimer 
         percentage = Mathf.InverseLerp(0f, maxCooldownTimer, cooldownTime);
         blinkEvent.fill = percentage;
         blinkEvent.blinkCount = numberOfUses;
         CallbackSystem.EventSystem.Current.FireEvent(blinkEvent);
     }
 
-    public void DecreaseBlinkCooldown() => blinkUpgraded = true;
+    public void DecreaseBlinkCooldown()
+    {
+        blinkUpgraded = true;
+        UpdateUIEvent(0);
+    }
     public bool BlinkUpgraded
     {
         get { return blinkUpgraded; }

@@ -52,6 +52,7 @@ namespace CallbackSystem
         [SerializeField] private float beamThickness = 0.5f;
 
         private bool chargingUP = false;
+        private bool canSwitchWeapon = true;
         private float startSightLineWidth = 0.05f;
         private float sightLineWidth;
         private float widthIncreacePerTenthSecond = 0.05f;
@@ -119,6 +120,7 @@ namespace CallbackSystem
             // }
 
             // TODO joystick laser 
+
             if (!activated)
             {
                 resourceEvent.isPlayerOne = isPlayerOne;
@@ -182,13 +184,22 @@ namespace CallbackSystem
                 revolverCooldown = 0f;
 
             }
+
             if (context.performed && laserWeapon && canShootLaser)
             {
                 laserSound.stop(STOP_MODE.IMMEDIATE);
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
                 chargingUP = true;
+                canSwitchWeapon = false;
                 StartCoroutine(ChargeUp());
                 controller.MovementSpeedReduction(true);
+                if (!laserWeapon)
+                {
+                    ShootLaser();
+                    StopCoroutine(ChargeUp());
+                    sightLineWidth = laserBeamWidthUpgraded ? decreasedBeamWidth : startSightLineWidth;
+                }
+
             }
 
             if (context.canceled && laserWeapon)
@@ -206,12 +217,14 @@ namespace CallbackSystem
 
                 }
                 recentlyFired = true;
+                canSwitchWeapon = true; 
                 laserWeaponCooldown = 0f;
                 damage = startDamage;
                 sightLineWidth = laserBeamWidthUpgraded ? decreasedBeamWidth : startSightLineWidth;
                 laserSelfDmg = startLaserSelfDmg;
                 teamDamage = startTeamDamage;
                 beamThickness = laserBeamWidthUpgraded ? decreasedBeamWidth : startBeamThickness;
+
             }
 
             if (context.started && !laserWeapon && recentlyFired)
@@ -233,6 +246,7 @@ namespace CallbackSystem
 
             while (damage < maxDamage && chargingUP)
             {
+
                 yield return new WaitForSeconds(laserChargeRateUpgraded ?  reducedChargeTime : chargeTime);
                 damage += damageIncreasePerTenthSecond;
                 if (sightLineWidth < maxBeamThickness)
@@ -245,12 +259,17 @@ namespace CallbackSystem
                 }
                 if (laserSelfDmg < maxSelfDamage)
                 {
+                    if(health.GetCurrenthealth() < laserSelfDmg)
+                    {
+                        break; 
+                    }
                     laserSelfDmg += laserDamageUpgraded ? reducedSelfDmg : laserSelfDamageIncreasePerTenthSecond;
                 }
                 if (teamDamage < maxTeamDamage)
                 {
                     teamDamage += laserTeamDamageIncreasePerTenthSecond;
                 }
+
             }
         }
 
@@ -287,7 +306,8 @@ namespace CallbackSystem
 
         public void WeaponSwap(InputAction.CallbackContext context)
         {
-            if (context.performed)
+
+            if (context.performed && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
@@ -296,7 +316,7 @@ namespace CallbackSystem
 
         public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
         {
-            if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f)
+            if (context.performed && Mathf.Abs(context.ReadValue<float>()) > 100.0f && canSwitchWeapon)
             {
                 laserWeapon = !laserWeapon;
                 // TODO [Sound] Play weapon swap sound(s)
