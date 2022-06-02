@@ -169,7 +169,7 @@ public class AI_Controller : MonoBehaviour {
 
     private void FixedUpdate() {
         MoveFromBlock();
-        AvoidOtherAgents();
+        if (!stunned) AvoidOtherAgents();
         if (!isStopped) {
             Move();
         }
@@ -269,14 +269,14 @@ public class AI_Controller : MonoBehaviour {
         anim.SetBool("isStunned", true);
 
         yield return new WaitForSeconds(stunLength);
-        
+
         anim.SetBool("isStunned", false);
 
         stunned = false;
         IsStopped = false;
         RotationEnabled = true;
 
-        
+
     }
 
     /// <summary>
