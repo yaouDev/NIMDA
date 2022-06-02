@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
+
+    [SerializeField] private Animator anim;
+    [SerializeField] private float deathWish;
+
     [SerializeField] private GameObject[] dropList;
     [SerializeField] private float healthRestoreRate;
     [SerializeField] private GameObject firePoint;
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
     [SerializeField] string objectPoolTag;
     //public float currHealth;
+    private float healthBarLength;
     private Vector3 dropOffset;
     private GameObject drop;
     private float currentHealth;
+    private bool isDead = false;
     //[SerializeField] private int dropAmount;
     private EnemySpawnController enemySpawnController;
 
@@ -21,10 +27,8 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int currencyRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
-    [SerializeField] private bool isBoss;
     private Transform playersPos;
     private AI_Controller agent;
-    private UIMenus uIMenus;
 
     public float CurrentHealth {
         get { return currentHealth; }
@@ -63,19 +67,32 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
 
 
     public void Die() {
-        enemySpawnController.reduceSpawnCount(1);
-        DropLoot();
-        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
-        if (isBoss)
-        {
-            uIMenus.GameWon();
+        if (!isDead) {
+            enemySpawnController.reduceSpawnCount(1);
+            AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
+            agent.IsStopped = true;
+            agent.Stunned = true;
+            isDead = true;
+            agent.RotationEnabled = false;
+            if (anim != null)
+                anim.SetBool("isDead", true);
         }
-        Destroy(gameObject);
+        if (anim == null) Destroy(gameObject);
+
+        anim.SetBool("isDead", true);
+        Invoke("DropLoot", deathWish - 0.05f);
+        Destroy(gameObject, deathWish);
         // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
+
     }
     public void DieNoLoot() {
         enemySpawnController.reduceSpawnCount(1);
-        Destroy(gameObject);
+        agent.RotationEnabled = false;
+        if (anim == null) Destroy(gameObject);
+        else {
+            anim.SetBool("isDead", true);
+            Destroy(gameObject, deathWish);
+        }
         //ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
 
