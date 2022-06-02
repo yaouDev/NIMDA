@@ -25,6 +25,7 @@ namespace CallbackSystem
         private UIMenus uiMenus;
         [SerializeField] private Material playerMaterial;
         private Color defaultColor;
+        private Blink blink;
 
         private AudioController ac;
 
@@ -42,6 +43,7 @@ namespace CallbackSystem
             crafting = GetComponent<Crafting>();
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
+            blink = GetComponent<Blink>();
             colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
@@ -155,19 +157,11 @@ namespace CallbackSystem
             uiMenus.DeadPlayers(-1);
         }
 
-        public void SetNewHealth(float value)
-        {
-            maxHealth = value;
-            currHealth = maxHealth;
-            UpdateHealthUI();
-        }
-
-        //TODO Hedén
         public void SetDefaultStats()
         {
-            maxHealth = 100f;
-            currHealth = (currHealth > maxHealth) ? maxHealth : currHealth;
-            movement.SetDefaultMovementSpeed();
+            DecreaseDamageUpgraded = false;
+            movement.MovementSpeedUpgraded = false;
+            blink.BlinkUpgraded = false;
         }
 
         private void UpdateHealthUI(bool batteryDecreased = false)
