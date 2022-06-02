@@ -47,16 +47,14 @@ namespace CallbackSystem
             colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
-            defaultColor = isPlayerOne ? new Color(0.9f, 0.3f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
-            playerMaterial.color = defaultColor;
-            colorEvent.color = playerMaterial.color;
-            //EventSystem.Current.FireEvent(colorEvent);
+            defaultColor = isPlayerOne ? new Color(0.3f, 0.9f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
             ac = AudioController.instance;
         }
         private void Update()
         {
             if (!started)
             {
+                ChooseMaterialColor();
                 UpdateHealthUI();
                 started = true;
             }
@@ -128,6 +126,7 @@ namespace CallbackSystem
             {
                 uiMenus.DeadPlayers(1);
                 crafting.BisectResources();
+                UpdateHealthUI();
             }
             alive = false;
             attackAbility.Die();
