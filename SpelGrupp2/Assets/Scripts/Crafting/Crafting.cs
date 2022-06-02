@@ -180,6 +180,7 @@ namespace CallbackSystem
                 if (TryCraftRecipe(bulletRecipe))
                 {
                     playerAttackScript.CraftAmmoBox();
+                    AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.ammoCraft, gameObject);
                     fadingtextEvent.text = "Ammo Box Crafted";
                     EventSystem.Current.FireEvent(fadingtextEvent);
                 }
@@ -198,6 +199,7 @@ namespace CallbackSystem
                     if (TryCraftRecipe(batteryRecipe))
                     {
                         playerHealthScript.IncreaseBattery();
+                        AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.batteryCraft, gameObject);
                         fadingtextEvent.text = "Battery Crafted";
                         EventSystem.Current.FireEvent(fadingtextEvent);
                     }
@@ -214,6 +216,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(UpgradedProjectileWeaponRecipe))
             {
                 playerAttackScript.UpgradeProjectileWeapon();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Revolver damage Upgraded";
             }
             else
@@ -226,6 +229,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(RevolverCritRecipe))
             {
                 playerAttackScript.RevolverCritUpgrade();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Revolver Crit Enabled";
             }
             else
@@ -238,6 +242,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(largeMagazineRecipe))
             {
                 playerAttackScript.RevolverMagazineUpgrade();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Revolver Ammo Upgraded";
             }
             else
@@ -251,6 +256,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(laserbeamChargeRecipe))
             {
                 playerAttackScript.LaserChargeRateUpgrade();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Lasergun Upgraded";
             }
             else
@@ -263,6 +269,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(laserbeamWidthRecipe))
             {
                 playerAttackScript.LaserBeamWidthUpgrade();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Lasergun Upgraded";
             }
             else
@@ -275,6 +282,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(UpgradedLaserWeaponRecipe))
             {
                 playerAttackScript.UpgradeLaserWeapon();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Lasergun Upgraded";
             }
             else
@@ -291,6 +299,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(cyanColor);
                 playerHealthScript.SetDefaultStats();
                 playerAttackScript.UpgradeLaserWeapon();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Cyan Crafted";
             }
             else
@@ -304,6 +313,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
                 playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
             else
@@ -317,6 +327,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(whiteColor);
                 playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color White Crafted";
             }
             else
@@ -330,6 +341,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(magentaColor);
                 playerHealthScript.SetDefaultStats();
                 playerAttackScript.UpgradeLaserWeapon();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
             else
@@ -344,6 +356,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(greenColor);
                 playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Green Crafted";
             }
             else
@@ -358,6 +371,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(blackColor);
                 playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
+                AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Black Crafted";
             }
             else
@@ -369,6 +383,7 @@ namespace CallbackSystem
         {
             playerHealthScript.ChooseMaterialColor(defaultColor);
             playerHealthScript.SetDefaultStats();
+            AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
             fadingtextEvent.text = "Default Color Crafted";
         }
 

@@ -191,7 +191,7 @@ namespace CallbackSystem
 
             if (context.performed && laserWeapon && canShootLaser)
             {
-                laserSound.stop(STOP_MODE.IMMEDIATE);
+                //laserSound.stop(STOP_MODE.ALLOWFADEOUT);
                 laserSound = ac.PlayNewInstanceWithParameter(IsPlayerOne() ? ac.player1.fire1 : ac.player2.fire1, gameObject, "isReleased", 0f);
                 chargingUP = true;
                 canSwitchWeapon = false;

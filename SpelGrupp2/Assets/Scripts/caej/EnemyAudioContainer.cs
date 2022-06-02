@@ -12,6 +12,7 @@ public class EnemyAudioContainer : AudioContainer
     public EventReference hurt;
     public EventReference death;
     public EventReference explosion;
+    public EventReference shieldHit;
 
     [Header("Foley")]
     public EventReference footstep;

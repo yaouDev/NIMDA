@@ -23,7 +23,8 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitOpenPosition;
     private ObjectivesManager objectivesManager;
 
-    [SerializeField] private GameObject doorSoundSource;
+    [SerializeField] private GameObject doorEntranceSource;
+    [SerializeField] private GameObject doorExitSource;
     [SerializeField] private EventReference doorSound;
     private FMOD.Studio.EventInstance doorEvent;
     private AudioController ac;
@@ -127,7 +128,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         //if (doorOpen) {
             //entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrance(entranceClosePosition, eventDuration));
-            doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
+            doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorEntranceSource, "isOpen", 0f); //play door sound
             spawnController.GeneratorRunning(false);
             spawnController.gameObject.SetActive(false);
             objectivesManager.RemoveObjective("enter safe room");
@@ -136,6 +137,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     
     void CloseExit() {
         exitClosePosition = exitOpenPosition + Vector3.down * openHeight;
+        doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorExitSource, "isOpen", 0f); //play door sound
         StartCoroutine(MoveExit(exitClosePosition, eventDuration));
         spawnController.gameObject.SetActive(true);
     }
@@ -170,6 +172,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             yield return null;
         }
 
+        doorEvent.setParameterByName("isOpen", 1f); //stop door sound
         exit.transform.position = new Vector3(exit.transform.position.x, openHeight, exit.transform.position.z);
 
         doorOpen = false;

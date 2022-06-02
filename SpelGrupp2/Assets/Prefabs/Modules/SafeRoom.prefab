@@ -2404,7 +2404,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2530595885228412252}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.12, y: 4.85, z: 22.41}
+  m_LocalPosition: {x: -5.12, y: 4.85, z: 16.12}
   m_LocalScale: {x: 15.04, y: 10.4, z: 2.73}
   m_Children: []
   m_Father: {fileID: 2908897573534855340}
@@ -9908,7 +9908,8 @@ MonoBehaviour:
   eventDuration: 10
   entrance: {fileID: 2908897572479627236}
   exit: {fileID: 2908897574066981411}
-  doorSoundSource: {fileID: 1928429758755802897}
+  doorEntranceSource: {fileID: 1928429758755802897}
+  doorExitSource: {fileID: 5695208154290880770}
   doorSound:
     Guid:
       Data1: -1029849838
@@ -12360,6 +12361,36 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!1 &5695208154290880770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6718286366217489655}
+  m_Layer: 8
+  m_Name: DoorSound (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6718286366217489655
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5695208154290880770}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.56, y: 0, z: 45.07}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8223043942286432372}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5890708558497933627
 GameObject:
   m_ObjectHideFlags: 0
@@ -15966,7 +15997,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6577813304130111473}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.24, y: 4.85, z: -22.19}
+  m_LocalPosition: {x: 4.24, y: 4.85, z: -14.79}
   m_LocalScale: {x: 15.04, y: 10.4, z: 2.73}
   m_Children: []
   m_Father: {fileID: 2908897573534855340}
@@ -33931,6 +33962,14 @@ PrefabInstance:
     - target: {fileID: 614617767351572157, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456627941718137528, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 14.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 7456627941718137528, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.74
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 614617765979801256, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
