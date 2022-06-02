@@ -11,6 +11,7 @@ public class UIMenus : MonoBehaviour
     [SerializeField] private GameObject controls;
     [SerializeField] private GameObject crafting;
     [SerializeField] private GameObject gameOverScreen;
+    [SerializeField] private GameObject victoryScreen;
     [SerializeField] private GameObject blur;
     private bool isPaused = false;
     private int deadPlayerCount;
@@ -85,5 +86,12 @@ public class UIMenus : MonoBehaviour
         {
             GameOver();
         }
+    }
+
+    public void GameWon()
+    {
+        Time.timeScale = 0;
+        blur.SetActive(true);
+        victoryScreen.SetActive(true);
     }
 }
