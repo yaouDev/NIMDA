@@ -59,8 +59,8 @@ public class Bullet : MonoBehaviour
                     else if (hitInfo.transform.tag == "Enemy")
                     {
                         damageable.TakeDamage(damage);
-                        hitInfo.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -5), 
-                            hitInfo.transform.rotation.y, hitInfo.transform.rotation.z, hitInfo.transform.rotation.w);
+                       // hitInfo.transform.rotation = new Quaternion(Mathf.PingPong(Time.deltaTime * hitForce, -5), 
+                           // hitInfo.transform.rotation.y, hitInfo.transform.rotation.z, hitInfo.transform.rotation.w);
 
                         hitInfo.transform.GetComponent<AI_Controller>().Stun(1f);
                     }
