@@ -124,7 +124,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         if (doorOpen) {
             entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrance(entranceClosePosition, eventDuration));
-            doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
+            doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorEntranceSource, "isOpen", 0f); //play door sound
             spawnController.GeneratorRunning(false);
             spawnController.gameObject.SetActive(false);
             objectivesManager.RemoveObjective("enter safe room");
@@ -134,7 +134,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     void CloseExit() {
         //Debug.Log("Opening");
         exitClosePosition = exitOpenPosition + Vector3.down * openHeight;
-        doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
+        doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorExitSource, "isOpen", 0f); //play door sound
         StartCoroutine(MoveExit(exitClosePosition, eventDuration));
         spawnController.gameObject.SetActive(true);
     }
