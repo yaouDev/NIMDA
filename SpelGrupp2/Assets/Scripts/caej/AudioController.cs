@@ -27,6 +27,8 @@ public class AudioController : MonoBehaviour
     public EventReference testReference;
     public Transform testPosition;
 
+    [SerializeField] private bool murderElias;
+
     public PlayerAudioContainer player1;
     public PlayerAudioContainer player2;
     public EnemyAudioContainer enemySound;
