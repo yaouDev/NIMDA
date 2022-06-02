@@ -265,14 +265,18 @@ public class AI_Controller : MonoBehaviour {
     private IEnumerator StunCoroutine(float stunTime) {
         stunned = true;
         IsStopped = true;
-
+        RotationEnabled = false;
         anim.SetBool("isStunned", true);
 
         yield return new WaitForSeconds(stunLength);
+        
+        anim.SetBool("isStunned", false);
+
         stunned = false;
         IsStopped = false;
+        RotationEnabled = true;
 
-        anim.SetBool("isStunned", false);
+        
     }
 
     /// <summary>
