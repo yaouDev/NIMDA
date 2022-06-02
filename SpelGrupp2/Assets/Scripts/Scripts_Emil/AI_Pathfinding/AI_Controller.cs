@@ -266,11 +266,13 @@ public class AI_Controller : MonoBehaviour {
         stunned = true;
         IsStopped = true;
         RotationEnabled = false;
-        anim.SetBool("isStunned", true);
+        if (anim != null)
+            anim.SetBool("isStunned", true);
 
         yield return new WaitForSeconds(stunLength);
 
-        anim.SetBool("isStunned", false);
+        if (anim != null)
+            anim.SetBool("isStunned", false);
 
         stunned = false;
         IsStopped = false;

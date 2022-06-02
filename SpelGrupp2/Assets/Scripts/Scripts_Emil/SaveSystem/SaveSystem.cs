@@ -13,11 +13,11 @@ public class SaveSystem : MonoBehaviour {
     private PlayerHealth pOneHealth, pTwoHealth;
     private Crafting pOneCrafting, pTwoCrafting;
     private bool loadGame = true;
-    private TabGroup tabGroup;
+    [SerializeField] private TabGroup pOneTabGroup, pTwoTabGroup;
 
     private void Start() {
         Instance ??= this;
-        tabGroup = FindObjectOfType<TabGroup>();
+
         path = Application.persistentDataPath + "/save.bin";
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         GameObject playerOne, playerTwo;
@@ -62,6 +62,10 @@ public class SaveSystem : MonoBehaviour {
         get { return pOneController; }
     }
 
+    public TabGroup PlayerOneTabGroup {
+        get { return pOneTabGroup; }
+    }
+
     public PlayerHealth PlayerTwoHealth {
         get { return pTwoHealth; }
     }
@@ -78,8 +82,8 @@ public class SaveSystem : MonoBehaviour {
         get { return pTwoController; }
     }
 
-    public TabGroup TabGroup {
-        get { return tabGroup; }
+    public TabGroup PlayerTwoTabGroup {
+        get { return pTwoTabGroup; }
     }
 
     public void SaveGameData(bool enteringSafeRoom) {
@@ -122,8 +126,10 @@ public class SaveSystem : MonoBehaviour {
         SaveData data = LoadGameData();
         if (data != null && loadGame) {
 
-            tabGroup.buttonsDictionary = data.buttonDict;
-            tabGroup.InstantiateButtons();
+            pOneTabGroup.buttonsDictionary = data.pOneButtonDict;
+            pOneTabGroup.InstantiateButtons();
+            pTwoTabGroup.buttonsDictionary = data.pTwoButtonDict;
+            pTwoTabGroup.InstantiateButtons();
 
             // playerOne
             pOneAttack.LaserDamageUpgraded = data.pOneLaserDmgUpgraded;
@@ -167,8 +173,10 @@ public class SaveSystem : MonoBehaviour {
     }
 
     public void LoadGameRestart() {
-        tabGroup.buttonsDictionary = new System.Collections.Generic.Dictionary<string, bool>();
-        tabGroup.InstantiateButtons();
+        pOneTabGroup.buttonsDictionary = new System.Collections.Generic.Dictionary<string, bool>();
+        pOneTabGroup.InstantiateButtons();
+        pTwoTabGroup.buttonsDictionary = new System.Collections.Generic.Dictionary<string, bool>();
+        pTwoTabGroup.InstantiateButtons();
 
         Vector3 startPos = new Vector3(-10.6f, 2.5f, -18.11f);
 
