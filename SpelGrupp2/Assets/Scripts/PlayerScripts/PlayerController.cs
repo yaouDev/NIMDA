@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     [Range(0.0f, 30.0f)]
-    [Tooltip("Max speed")]
+    [Tooltip("Upgraded max speed")]
     private float _upgradedTerminalVelocity = 18f;
 
     [SerializeField]
