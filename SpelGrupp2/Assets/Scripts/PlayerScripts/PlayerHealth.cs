@@ -25,6 +25,7 @@ namespace CallbackSystem
         private UIMenus uiMenus;
         [SerializeField] private Material playerMaterial;
         private Color defaultColor;
+        private Blink blink;
 
         private AudioController ac;
 
@@ -42,6 +43,7 @@ namespace CallbackSystem
             crafting = GetComponent<Crafting>();
             movement = GetComponent<PlayerController>();
             attackAbility = GetComponent<PlayerAttack>();
+            blink = GetComponent<Blink>();
             colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
@@ -85,10 +87,7 @@ namespace CallbackSystem
                 float magnitude = Mathf.Max(.28f, damage * .01f);
                 shakeEvent.magnitude = magnitude;
                 EventSystem.Current.FireEvent(shakeEvent);
-                //if(enemyDmg)
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.hurt : ac.player2.hurt, gameObject);
-                //else
-                //enemy damage sound here
             }
 
             if (currHealth <= float.Epsilon && batteryCount > 0)
@@ -155,18 +154,11 @@ namespace CallbackSystem
             uiMenus.DeadPlayers(-1);
         }
 
-        public void SetNewHealth(float value)
-        {
-            maxHealth = value;
-            currHealth = maxHealth;
-            UpdateHealthUI();
-        }
-
         public void SetDefaultStats()
         {
-            maxHealth = 100f;
-            currHealth = (currHealth > maxHealth) ? maxHealth : currHealth;
-            movement.SetDefaultMovementSpeed();
+            DecreaseDamageUpgraded = false;
+            movement.MovementSpeedUpgraded = false;
+            blink.BlinkUpgraded = false;
         }
 
         private void UpdateHealthUI(bool batteryDecreased = false)

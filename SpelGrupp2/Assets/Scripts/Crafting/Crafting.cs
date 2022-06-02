@@ -26,7 +26,7 @@ namespace CallbackSystem
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         private int[] resourceArray;
-        private float sphereRadius = 1f;
+        private float sphereRadius = .45f;
         private float maxSphereDistance = 3f;
         [SerializeField] private GameObject[] dropTable = new GameObject[4];
 
@@ -289,6 +289,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(cyanRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(cyanColor);
+                playerHealthScript.SetDefaultStats();
                 playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Color Cyan Crafted";
             }
@@ -301,6 +302,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(yellowRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
+                playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
@@ -313,6 +315,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(whiteRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(whiteColor);
+                playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
                 fadingtextEvent.text = "Color White Crafted";
             }
@@ -325,6 +328,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(magentaRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(magentaColor);
+                playerHealthScript.SetDefaultStats();
                 playerAttackScript.UpgradeLaserWeapon();
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
@@ -338,6 +342,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(greenRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(greenColor);
+                playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
                 fadingtextEvent.text = "Color Green Crafted";
             }
@@ -351,6 +356,7 @@ namespace CallbackSystem
             if (TryCraftRecipe(blackRecipe))
             {
                 playerHealthScript.ChooseMaterialColor(blackColor);
+                playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
                 fadingtextEvent.text = "Color Black Crafted";
             }

@@ -2389,7 +2389,7 @@ GameObject:
   - component: {fileID: 1858839636436277514}
   - component: {fileID: 8215201354916705657}
   - component: {fileID: 8103412737282209534}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: AudioCube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9908,6 +9908,14 @@ MonoBehaviour:
   eventDuration: 10
   entrance: {fileID: 2908897572479627236}
   exit: {fileID: 2908897574066981411}
+  doorSoundSource: {fileID: 1928429758755802897}
+  doorSound:
+    Guid:
+      Data1: -1029849838
+      Data2: 1090237112
+      Data3: -463962697
+      Data4: -1617476776
+    Path: event:/Interactables/Door
 --- !u!54 &2865737039854179439
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15943,7 +15951,7 @@ GameObject:
   - component: {fileID: 4654261023639320778}
   - component: {fileID: 1396983208132352566}
   - component: {fileID: 9065278504415524412}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: AudioCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32557,6 +32565,11 @@ Transform:
 --- !u!1 &8223043942286432376 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 614617765979801257, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
+  m_PrefabInstance: {fileID: 8834252122699062993}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1928429758755802897 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6943066121857225152, guid: 92f364728734ec744bacdcc7f3c143fe, type: 3}
   m_PrefabInstance: {fileID: 8834252122699062993}
   m_PrefabAsset: {fileID: 0}
 --- !u!135 &3086826525227931307
