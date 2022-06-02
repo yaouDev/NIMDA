@@ -47,7 +47,7 @@ public class DynamicGraph : MonoBehaviour {
 
         // hardcoded modules used for playtesting without proc-gen
         if (usePlayTestModules) {
-            //Vector2Int module1 = new Vector2Int(0, 0);
+            Vector2Int module1 = new Vector2Int(0, 0);
             Vector2Int module2 = new Vector2Int(-1, 3);
             Vector2Int module3 = new Vector2Int(0, 3);
             Vector2Int module4 = new Vector2Int(0, 1);
@@ -75,7 +75,7 @@ public class DynamicGraph : MonoBehaviour {
             Vector2Int module26 = new Vector2Int(-1, 7);
             Vector2Int bossmod = new Vector2Int(0, 11);
 
-           // loadedModules.Add(module1);
+            loadedModules.Add(module1);
             loadedModules.Add(module2);
             loadedModules.Add(module3);
             loadedModules.Add(module4);
@@ -103,7 +103,7 @@ public class DynamicGraph : MonoBehaviour {
             loadedModules.Add(module26);
             loadedModules.Add(bossmod);
 
-          //  AddBlockedNodes(module1);
+            AddBlockedNodes(module1);
             AddBlockedNodes(module2);
             AddBlockedNodes(module3);
             AddBlockedNodes(module4);
@@ -329,7 +329,7 @@ public class DynamicGraph : MonoBehaviour {
     /// <param name="secondModule"> the second module to check </param>
     /// <returns> bool indicating whether or not modules are adjacent </returns>
     public bool ModulesAdjacent(Vector2Int firstModule, Vector2Int secondModule) {
-        if(firstModule == secondModule) return true;
+        if (firstModule == secondModule) return true;
 
         if (Mathf.Abs(firstModule.x - secondModule.x) <= 1 || Mathf.Abs(firstModule.y - secondModule.y) <= 1) {
             KeyValuePair<int, int> firstModuleIndex = GetGraphIndexFromModulePos(firstModule);
