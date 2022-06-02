@@ -23,7 +23,8 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitOpenPosition;
     private ObjectivesManager objectivesManager;
 
-    [SerializeField] private GameObject doorSoundSource;
+    [SerializeField] private GameObject doorEntranceSource;
+    [SerializeField] private GameObject doorExitSource;
     [SerializeField] private EventReference doorSound;
     private FMOD.Studio.EventInstance doorEvent;
     private AudioController ac;
@@ -133,6 +134,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     void CloseExit() {
         //Debug.Log("Opening");
         exitClosePosition = exitOpenPosition + Vector3.down * openHeight;
+        doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
         StartCoroutine(MoveExit(exitClosePosition, eventDuration));
         spawnController.gameObject.SetActive(true);
     }
@@ -161,6 +163,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         }
 
         exit.transform.position = targetPosition;
+        doorEvent.setParameterByName("isOpen", 1f); //stop door sound
         doorOpen = false;
     }
 }
