@@ -190,7 +190,6 @@ public class SaveSystem : MonoBehaviour {
         pOneAttack.transform.position = startPos;
         pOneController.MovementSpeedUpgraded = false;
 
-
         // playerTwo
         pTwoAttack.LaserDamageUpgraded = false;
         pTwoAttack.LaserBeamWidthUpgraded = false;
