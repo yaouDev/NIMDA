@@ -128,7 +128,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _defaultTerminalVelocity = _terminalVelocity;
         _upgradedTerminalVelocity = _terminalVelocity * 2;
         _jumpVector = new Vector3(0.0f, _jumpForce);
         _defaultGravity = -Physics.gravity.y;
