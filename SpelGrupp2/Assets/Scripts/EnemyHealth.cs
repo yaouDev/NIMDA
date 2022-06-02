@@ -9,7 +9,6 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField][Range(0, 2000)] private int fullHealth = 100;
     [SerializeField] string objectPoolTag;
     //public float currHealth;
-    private float healthBarLength;
     private Vector3 dropOffset;
     private GameObject drop;
     private float currentHealth;
@@ -22,8 +21,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
     [SerializeField] private int currencyRange;
     [SerializeField] private int dropMin;
     [SerializeField] private int dropMax;
+    [SerializeField] private bool isBoss;
     private Transform playersPos;
     private AI_Controller agent;
+    private UIMenus uIMenus;
 
     public float CurrentHealth {
         get { return currentHealth; }
@@ -65,6 +66,10 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
         enemySpawnController.reduceSpawnCount(1);
         DropLoot();
         AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.death, gameObject);
+        if (isBoss)
+        {
+            uIMenus.GameWon();
+        }
         Destroy(gameObject);
         // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
     }
