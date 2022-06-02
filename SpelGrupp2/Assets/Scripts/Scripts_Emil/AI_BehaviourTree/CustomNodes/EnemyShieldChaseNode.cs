@@ -9,6 +9,8 @@ public class EnemyShieldChaseNode : Node, IResetableNode {
     [SerializeField] private float distanceFromTargetToStop;
     private EnemyShield enemyShield;
     public override NodeState Evaluate() {
+
+
         if (enemyShield == null)
             enemyShield = agent.GetComponentInChildren<EnemyShield>();
 

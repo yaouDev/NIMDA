@@ -55,6 +55,12 @@ public class AudioController : MonoBehaviour
         RuntimeManager.PlayOneShotAttached(audioEvent.Path, attached);
     }
 
+    public void Footstep(GameObject attached)
+    {
+        //cheating
+        PlayOneShotAttatched(player1.footstep, attached);
+    }
+
     public FMOD.Studio.EventInstance PlayNewInstance(EventReference reference, GameObject attached)
     {
         FMOD.Studio.EventInstance ei = RuntimeManager.CreateInstance(reference);

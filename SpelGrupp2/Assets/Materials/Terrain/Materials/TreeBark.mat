@@ -8,18 +8,37 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TreeBark
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: f3c994c053dca1a47b8294cd7d592962, type: 3}
   m_ShaderKeywords: _METALLICSPECGLOSSMAP _NORMALMAP _OCCLUSIONMAP _PARALLAXMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_491983aec03e4d4d83a9dcff22ec6395:
+        m_Texture: {fileID: 2800000, guid: 464187e14f50fcb4aa62ee9af17e8c92, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_5f377845702d4f8cbc085dab8741c834:
+        m_Texture: {fileID: 2800000, guid: c6bed44b20969dc4a8162eed2c9243ce, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_cc197e26fab14ef48e61751467223236:
+        m_Texture: {fileID: 2800000, guid: 2ccdb215f8fb8a040bbd918f699c41fc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_e6625d2cd047498cbb1fbaacf8278dbb:
+        m_Texture: {fileID: 2800000, guid: d30fefd95fd445a42b463e70adc6f42a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_ea5c20075af543beb0d097afe714f3a8:
+        m_Texture: {fileID: 2800000, guid: 47eff6ef55a395e4c93f3905e467114b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: 464187e14f50fcb4aa62ee9af17e8c92, type: 3}
         m_Scale: {x: 4.5, y: 4.5}
@@ -77,6 +96,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_86058e7c23974544a002a4abcfcea14e: 2
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -103,11 +123,15 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _transparency: 1.5
     m_Colors:
+    - Color_50f4ac36aae64541b483dced30f8465a: {r: 1, g: 1, b: 1, a: 0}
+    - Vector2_115c589551284c67944b3a92df88cff5: {r: 4, g: 4, b: 0, a: 0}
     - _BaseColor: {r: 0.9622642, g: 0.79529446, b: 0.49474904, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _fresnel: {r: 0.3301887, g: 0.26652998, b: 0.12927198, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &9150535799208055523
 MonoBehaviour:
