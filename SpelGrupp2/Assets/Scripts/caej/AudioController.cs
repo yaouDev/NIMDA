@@ -32,6 +32,7 @@ public class AudioController : MonoBehaviour
     public PlayerAudioContainer player1;
     public PlayerAudioContainer player2;
     public EnemyAudioContainer enemySound;
+    public CraftingAudioContainer craftingSound;
 
     public EliasPlayer eliasPlayer;
 
