@@ -570,6 +570,7 @@ namespace CallbackSystem
             resourceEvent.ammoChange = true;
             resourceEvent.a = bullets;
             resourceEvent.magAmmo = ammoBoxes;
+            resourceEvent.maxAmmo = ReturnMaxBullets();
             EventSystem.Current.FireEvent(resourceEvent);
         }
         private void Reload()
@@ -584,7 +585,11 @@ namespace CallbackSystem
         public void LaserBeamWidthUpgrade() => LaserBeamWidthUpgraded = true;
         public void UpgradeProjectileWeapon() => ProjectileWeaponUpgraded = true;
         public void RevolverCritUpgrade() => RevolverCritUpgraded = true;
-        public void RevolverMagazineUpgrade() => RevolverMagazineUpgraded = true;
+        public void RevolverMagazineUpgrade()
+        {
+            RevolverMagazineUpgraded = true;
+            UpdateAmmoUI();
+        }
 
         public bool LaserDamageUpgraded
         {
