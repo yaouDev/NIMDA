@@ -21,7 +21,7 @@ namespace CallbackSystem
             currPlayer = eve.isPlayerOne ? player1 : player2;
             if (eve.ammoChange)
             {
-                currPlayer[3].text = eve.a.ToString();
+                currPlayer[3].text = eve.a.ToString() + "/" + eve.maxAmmo.ToString();
                 currPlayer[5].text = eve.magAmmo.ToString();
             }         
             else
