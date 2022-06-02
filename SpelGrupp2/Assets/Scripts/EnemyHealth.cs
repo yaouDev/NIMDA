@@ -88,11 +88,11 @@ public class EnemyHealth : MonoBehaviour, IDamageable, IPoolable {
                 uIMenus.GameWon();
                 Instantiate(AIData.Instance.BossExplosion, agent.Position, Quaternion.identity);
             }
+            Invoke("DropLoot", deathWish - 0.05f);
         }
         if (anim == null) Destroy(gameObject);
 
         anim.SetBool("isDead", true);
-        Invoke("DropLoot", deathWish - 0.05f);
         Destroy(gameObject, deathWish);
         // ObjectPool.Instance.ReturnToPool(objectPoolTag, gameObject);
 
