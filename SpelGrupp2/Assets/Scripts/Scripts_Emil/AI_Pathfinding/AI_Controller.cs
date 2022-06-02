@@ -173,9 +173,8 @@ public class AI_Controller : MonoBehaviour {
             behaviorTree.UpdateTree();
             if (TargetReachable && PathRequestAllowed) StartCoroutine(UpdatePath());
         }
-                //cc anim
-        if (anim != null)
-        {
+        //cc anim
+        if (anim != null) {
             Vector3 rot = transform.rotation.eulerAngles;
             Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * Rigidbody.velocity;
 
