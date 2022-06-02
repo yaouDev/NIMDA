@@ -46,7 +46,6 @@ public class SaveData {
     public bool pTwoDecreaseDmgUpgraded;
     public bool pTwoMovementSpeedUpgraded;
 
-
     public SaveData(bool enteringSafeRoom) {
         Vector3 pos;
 

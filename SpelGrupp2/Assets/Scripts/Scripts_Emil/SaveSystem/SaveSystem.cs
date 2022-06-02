@@ -77,8 +77,8 @@ public class SaveSystem : MonoBehaviour {
         get { return pTwoController; }
     }
 
-    public TabGroup TabGroup{
-        get{ return tabGroup; }
+    public TabGroup TabGroup {
+        get { return tabGroup; }
     }
 
     public void SaveGameData(bool enteringSafeRoom) {
@@ -113,10 +113,14 @@ public class SaveSystem : MonoBehaviour {
         }
     }
 
-    private void LoadGame() {
+    public bool SaveExists {
+        get { return File.Exists(Application.persistentDataPath + "/save.bin"); }
+    }
+
+    public void LoadGame() {
         SaveData data = LoadGameData();
         if (data != null && loadGame) {
-            
+
             tabGroup.buttonsDictionary = data.buttonDict;
             tabGroup.InstantiateButtons();
 
@@ -159,6 +163,53 @@ public class SaveSystem : MonoBehaviour {
             pTwoAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
             pTwoController.MovementSpeedUpgraded = data.pTwoMovementSpeedUpgraded;
         }
+    }
+
+    public void LoadGameRestart() {
+        tabGroup.buttonsDictionary = new System.Collections.Generic.Dictionary<string, bool>();
+        tabGroup.InstantiateButtons();
+
+        Vector3 startPos = new Vector3(-10.6f, 2.5f, -18.11f);
+
+        // playerOne
+        pOneAttack.LaserDamageUpgraded = false;
+        pOneAttack.LaserBeamWidthUpgraded = false;
+        pOneAttack.LaserChargeRateUpgraded = false;
+        pOneAttack.ProjectileWeaponUpgraded = false;
+        pOneAttack.RevolverCritUpgraded = false;
+        pOneAttack.RevolverMagazineUpgraded = false;
+        pOneAttack.SetBulletsOnLoad(5);
+        pOneHealth.SetBatteriesOnLoad(3);
+        pOneHealth.SetHealthOnLoad(100);
+        pOneHealth.DecreaseDamageUpgraded = false;
+        pOneHealth.ChooseMaterialColor();
+        pOneCrafting.iron = 0;
+        pOneCrafting.copper = 0;
+        pOneCrafting.transistor = 0;
+        pOneCrafting.currency = 0;
+        pOneAttack.transform.position = startPos;
+        pOneController.MovementSpeedUpgraded = false;
+
+
+        // playerTwo
+        pTwoAttack.LaserDamageUpgraded = false;
+        pTwoAttack.LaserBeamWidthUpgraded = false;
+        pTwoAttack.LaserChargeRateUpgraded = false;
+        pTwoAttack.ProjectileWeaponUpgraded = false;
+        pTwoAttack.RevolverCritUpgraded = false;
+        pTwoAttack.RevolverMagazineUpgraded = false;
+        pTwoAttack.SetBulletsOnLoad(5);
+        pTwoHealth.SetBatteriesOnLoad(3);
+        pTwoHealth.SetHealthOnLoad(100);
+        pTwoHealth.DecreaseDamageUpgraded = false;
+        pTwoHealth.ChooseMaterialColor();
+        pTwoCrafting.iron = 0;
+        pTwoCrafting.copper = 0;
+        pTwoCrafting.transistor = 0;
+        pTwoCrafting.currency = 0;
+        pTwoAttack.transform.position = startPos;
+        pOneAttack.transform.position = startPos;
+        pTwoController.MovementSpeedUpgraded = false;
     }
 
 }
