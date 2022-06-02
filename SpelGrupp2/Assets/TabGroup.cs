@@ -8,14 +8,14 @@ using TMPro;
 public class TabGroup : MonoBehaviour
 {
     [SerializeField] private Button[] tabMain, tabLaser, tabRevolver, tabColor;
-    [SerializeField] private string[] mainDescriptions, laserDescriptions, revolverDescriptions, colorDescriptions;
-    [SerializeField] private TextMeshProUGUI descriptionMesh;
+    [SerializeField] private GameObject[] mainDescriptions, laserDescriptions, revolverDescriptions, colorDescriptions;
     [SerializeField] private Button defaultColorButton;
     [HideInInspector] public Button selectedButton;
+    private GameObject descriptionGO;
     private CallbackSystem.FadingTextEvent fadingtextEvent;
     private List<Button> allButtons;
     private Button[] currentArray;
-    private string[] currentDescriptionArray;
+    private GameObject[] currentDescriptionArray;
     private int selectedButtonIndex;
     private bool isPlayerOne;
     public Dictionary<string, bool> buttonsDictionary;
@@ -64,8 +64,11 @@ public class TabGroup : MonoBehaviour
     {
         selectedButton.image.color = Color.white;
         selectedButton = currentArray[selectedButtonIndex];
-        selectedButton.image.color = Color.red;
-        descriptionMesh.text = currentDescriptionArray[selectedButtonIndex];
+        selectedButton.image.color = Color.gray;
+        if(descriptionGO != null)
+        descriptionGO.SetActive(false);
+        descriptionGO = currentDescriptionArray[selectedButtonIndex];
+        descriptionGO.SetActive(true);
     }
 
     public void SelectButton(InputAction.CallbackContext context)
@@ -99,7 +102,7 @@ public class TabGroup : MonoBehaviour
         SwitchArray(tabMain, mainDescriptions);
     }
 
-    public void SwitchArray(Button[] switchToArray, string[] desciptionArray)
+    public void SwitchArray(Button[] switchToArray, GameObject[] desciptionArray)
     {
         if (switchToArray != null)
         {
