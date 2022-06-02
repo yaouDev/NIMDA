@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using FMODUnity;
 
 public class SafeRoomCloseBehind : MonoBehaviour {
 
@@ -21,6 +22,11 @@ public class SafeRoomCloseBehind : MonoBehaviour {
     private Vector3 exitOpenPosition;
     private ObjectivesManager objectivesManager;
 
+    [SerializeField] private GameObject doorSoundSource;
+    [SerializeField] private EventReference doorSound;
+    private FMOD.Studio.EventInstance doorEvent;
+    private AudioController ac;
+
 
     // Start is called before the first frame update
     void Start() {
@@ -29,6 +35,8 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         spawnController = FindObjectOfType<EnemySpawnController>();
         // compass = GameObject.Find("Compass").GetComponent<Compass>();
         objectivesManager = FindObjectOfType<ObjectivesManager>();
+
+        ac = AudioController.instance;
     }
 
     void OnTriggerEnter(Collider col) {
@@ -70,6 +78,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         if (doorOpen) {
             entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
             StartCoroutine(MoveEntrance(entranceClosePosition, eventDuration));
+            doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
             spawnController.GeneratorRunning(false);
             spawnController.gameObject.SetActive(false);
             objectivesManager.RemoveObjective("enter safe room");
@@ -92,6 +101,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
         }
 
         entrance.transform.position = targetPosition;
+        doorEvent.setParameterByName("isOpen", 1f); //stop door sound
         doorOpen = false;
     }
     IEnumerator MoveExit(Vector3 targetPosition, float duration) {
