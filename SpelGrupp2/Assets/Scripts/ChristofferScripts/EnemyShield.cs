@@ -44,6 +44,7 @@ public class EnemyShield : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+        AudioController.instance.PlayOneShotAttatched(AudioController.instance.enemySound.shieldHit, gameObject);
         if (isBlue)
         {
             Instantiate(AIData.Instance.BlueShieldHitParticles, transform.position, Quaternion.identity);
