@@ -26,7 +26,7 @@ namespace CallbackSystem
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private GameObject craftingTable;
         private int[] resourceArray;
-        private float sphereRadius = 1f;
+        private float sphereRadius = .45f;
         private float maxSphereDistance = 3f;
         [SerializeField] private GameObject[] dropTable = new GameObject[4];
 
