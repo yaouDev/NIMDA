@@ -12,7 +12,7 @@ public class SaveSystem : MonoBehaviour {
     private PlayerAttack pOneAttack, pTwoAttack;
     private PlayerHealth pOneHealth, pTwoHealth;
     private Crafting pOneCrafting, pTwoCrafting;
-    [SerializeField] private bool loadGame = true;
+    private bool loadGame = true;
     private TabGroup tabGroup;
 
     private void Start() {
@@ -42,7 +42,8 @@ public class SaveSystem : MonoBehaviour {
         pTwoCrafting = playerTwo.GetComponent<Crafting>();
         pTwoController = playerTwo.GetComponent<PlayerController>();
 
-        LoadGame();
+        if (pOneAttack != null)
+            LoadGame();
     }
 
     public PlayerHealth PlayerOneHealth {
