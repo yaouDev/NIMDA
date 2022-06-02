@@ -8,18 +8,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RobotFace
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: b2004a6ef516a674aa42905a40cded43, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap:
-    RenderType: Opaque
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_213a6d36bc3440819ab4cfb94db32eaf:
+        m_Texture: {fileID: 2800000, guid: 85cf19248a8952944a93a69c9cb5ec74, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -77,6 +80,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Vector1_224befd0b3c545a3b8dc21f78f50381a: 0
+    - Vector1_67d188055ade4464b3e015b87fcd3a46: 64
+    - Vector1_f8043ead3705430ca2849154c89fce47: 1
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -108,6 +114,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    - _color: {r: 0.25033897, g: 0.9528302, b: 0.18427375, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5028002052382257416
 MonoBehaviour:
