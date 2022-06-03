@@ -145,7 +145,7 @@ namespace CallbackSystem
                         else if (hit.transform.tag == "Exit")
                         {
                             OpenExit exit = hit.transform.GetComponentInParent<OpenExit>();
-                            exit.OpenDoor();
+                            //exit.OpenDoor();
                         }
                     }
                 }

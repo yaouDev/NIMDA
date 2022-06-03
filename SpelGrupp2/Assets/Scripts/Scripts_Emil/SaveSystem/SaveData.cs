@@ -7,7 +7,7 @@ using CallbackSystem;
 public class SaveData {
 
     public float[] saferoomPosition;
-    public Dictionary<string, bool> buttonDict;
+
 
     // PlayerOne data
     public int pOneIron;
@@ -26,7 +26,7 @@ public class SaveData {
     public bool pOneRevolverMagUpgraded;
     public bool pOneDecreaseDmgUpgraded;
     public bool pOneMovementSpeedUpgraded;
-
+    public Dictionary<string, bool> pOneButtonDict;
 
     // PlayerTwo data
     public int pTwoIron;
@@ -45,11 +45,13 @@ public class SaveData {
     public bool pTwoRevolverMagUpgraded;
     public bool pTwoDecreaseDmgUpgraded;
     public bool pTwoMovementSpeedUpgraded;
+    public Dictionary<string, bool> pTwoButtonDict;
 
     public SaveData(bool enteringSafeRoom) {
         Vector3 pos;
 
-        buttonDict = SaveSystem.Instance.TabGroup.buttonsDictionary;
+        pOneButtonDict = SaveSystem.Instance.PlayerOneTabGroup.buttonsDictionary;
+        pTwoButtonDict = SaveSystem.Instance.PlayerTwoTabGroup.buttonsDictionary;
 
         if (enteringSafeRoom) {
             pos = SaveSystem.Instance.PlayerOneAttack.transform.position.z > SaveSystem.Instance.PlayerTwoAttack.transform.position.z
