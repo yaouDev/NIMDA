@@ -24,7 +24,9 @@ namespace CallbackSystem
         private bool started = false, decreaseDamageUpgrade;
         private UIMenus uiMenus;
         [SerializeField] private Material playerMaterial;
-        private Color defaultColor;
+        [SerializeField] private Material[] playerMaterials;
+        private int currentMaterialIndex;
+        private Color defaultColor, currentColor;
         private Blink blink;
 
         private AudioController ac;
@@ -47,8 +49,11 @@ namespace CallbackSystem
             colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
+            playerMaterial = playerMaterials[0];
+            currentMaterialIndex = isPlayerOne ? 0 : 1;
             defaultColor = isPlayerOne ? new Color(0.3f, 0.9f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
             ac = AudioController.instance;
+            currentColor = defaultColor;
         }
         private void Update()
         {
@@ -182,17 +187,27 @@ namespace CallbackSystem
         
         public void ChooseMaterialColor(Color color)
         {
-            playerMaterial.color = color;
+            //playerMaterial.color = color;
             colorEvent.color = color;
             EventSystem.Current.FireEvent(colorEvent);
         }
+
+        public void ChooseMaterial(int index)
+        {
+            currentMaterialIndex = index;
+            playerMaterial = playerMaterials[currentMaterialIndex];
+        }
         public void ChooseMaterialColor()
         {
-            playerMaterial.color = defaultColor;
+            //playerMaterial.color = defaultColor;
             colorEvent.color = defaultColor;
             EventSystem.Current.FireEvent(colorEvent);
         }
-        public Color GetCurrentMaterialColor() { return playerMaterial.color; }
+        public int GetCurrentMaterialIndex() { return currentMaterialIndex; }
+
+        public Color GetCurrentMaterialColor()
+        {
+            return currentColor; }
 
         public float GetCurrenthealth()
         {
@@ -218,6 +233,12 @@ namespace CallbackSystem
         }
 
         public void DecreaseDamageUpgrade() => DecreaseDamageUpgraded = true;
+
+        public int PlayerMaterialIndex
+        {
+            get { return currentMaterialIndex; }
+            set { currentMaterialIndex = value; }
+        }
 
         public bool DecreaseDamageUpgraded
         {

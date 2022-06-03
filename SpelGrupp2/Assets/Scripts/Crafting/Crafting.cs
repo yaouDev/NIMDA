@@ -298,7 +298,8 @@ namespace CallbackSystem
             {
                 playerHealthScript.ChooseMaterialColor(cyanColor);
                 playerHealthScript.SetDefaultStats();
-                playerAttackScript.UpgradeLaserWeapon();
+                playerHealthScript.ChooseMaterial(2);
+                playerHealthScript.DecreaseDamageUpgrade();
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Cyan Crafted";
             }
@@ -313,6 +314,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
                 playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
+                playerHealthScript.ChooseMaterial(1);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
@@ -327,6 +329,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(whiteColor);
                 playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
+                playerHealthScript.ChooseMaterial(3);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color White Crafted";
             }
@@ -340,7 +343,8 @@ namespace CallbackSystem
             {
                 playerHealthScript.ChooseMaterialColor(magentaColor);
                 playerHealthScript.SetDefaultStats();
-                playerAttackScript.UpgradeLaserWeapon();
+                playerHealthScript.DecreaseDamageUpgrade();
+                playerHealthScript.ChooseMaterial(2);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
@@ -356,6 +360,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(greenColor);
                 playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
+                playerHealthScript.ChooseMaterial(1);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Green Crafted";
             }
@@ -371,6 +376,7 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(blackColor);
                 playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
+                playerHealthScript.ChooseMaterial(3);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Black Crafted";
             }
@@ -383,6 +389,7 @@ namespace CallbackSystem
         {
             playerHealthScript.ChooseMaterialColor(defaultColor);
             playerHealthScript.SetDefaultStats();
+            playerHealthScript.ChooseMaterial(0);
             AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
             fadingtextEvent.text = "Default Color Crafted";
         }

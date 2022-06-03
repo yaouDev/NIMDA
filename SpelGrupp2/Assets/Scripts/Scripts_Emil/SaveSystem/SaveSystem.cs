@@ -157,6 +157,7 @@ public class SaveSystem : MonoBehaviour {
             pOneCrafting.currency = data.pOneCurrency;
             pOneAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
             pOneController.MovementSpeedUpgraded = data.pOneMovementSpeedUpgraded;
+            pOneHealth.PlayerMaterialIndex = data.pOneMaterialIndex;
 
 
             // playerTwo
@@ -177,6 +178,7 @@ public class SaveSystem : MonoBehaviour {
             pTwoCrafting.currency = data.pTwoCurrency;
             pTwoAttack.transform.position = new Vector3(data.saferoomPosition[0], data.saferoomPosition[1], data.saferoomPosition[2]);
             pTwoController.MovementSpeedUpgraded = data.pTwoMovementSpeedUpgraded;
+            pTwoHealth.PlayerMaterialIndex = data.pTwoMaterialIndex;
         }
     }
 
@@ -206,6 +208,7 @@ public class SaveSystem : MonoBehaviour {
         pOneCrafting.currency = 0;
         pOneAttack.transform.position = startPos;
         pOneController.MovementSpeedUpgraded = false;
+        pOneHealth.PlayerMaterialIndex = 0;
 
         // playerTwo
         pTwoAttack.LaserDamageUpgraded = false;
@@ -226,6 +229,7 @@ public class SaveSystem : MonoBehaviour {
         pTwoAttack.transform.position = startPos;
         pOneAttack.transform.position = startPos;
         pTwoController.MovementSpeedUpgraded = false;
+        pTwoHealth.PlayerMaterialIndex = 0;
     }
 
 }

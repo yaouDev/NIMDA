@@ -16,6 +16,7 @@ public class SaveData {
     public int pOneBattery;
     public int pOneAmmo;
     public int pOneCurrency;
+    public int pOneMaterialIndex;
     public float pOneHealthPoints;
     public float[] pOneColor;
     public bool pOneLaserDmgUpgraded;
@@ -35,6 +36,7 @@ public class SaveData {
     public int pTwoBattery;
     public int pTwoAmmo;
     public int pTwoCurrency;
+    public int pTwoMaterialIndex;
     public float pTwoHealthPoints;
     public float[] pTwoColor;
     public bool pTwoLaserDmgUpgraded;
@@ -84,7 +86,7 @@ public class SaveData {
         pOneRevolverMagUpgraded = SaveSystem.Instance.PlayerOneAttack.RevolverMagazineUpgraded;
         pOneDecreaseDmgUpgraded = SaveSystem.Instance.PlayerOneHealth.DecreaseDamageUpgraded;
         pOneMovementSpeedUpgraded = SaveSystem.Instance.PlayerOneController.MovementSpeedUpgraded;
-
+        pOneMaterialIndex = SaveSystem.Instance.PlayerOneHealth.GetCurrentMaterialIndex();
         pOneColor = new float[4];
         Color pOneColorRef = SaveSystem.Instance.PlayerOneHealth.GetCurrentMaterialColor();
         pOneColor[0] = pOneColorRef.r;
@@ -107,6 +109,7 @@ public class SaveData {
         pTwoRevolverMagUpgraded = SaveSystem.Instance.PlayerTwoAttack.RevolverMagazineUpgraded;
         pTwoDecreaseDmgUpgraded = SaveSystem.Instance.PlayerTwoHealth.DecreaseDamageUpgraded;
         pTwoMovementSpeedUpgraded = SaveSystem.Instance.PlayerTwoController.MovementSpeedUpgraded;
+        pTwoMaterialIndex = SaveSystem.Instance.PlayerTwoHealth.PlayerMaterialIndex;
 
         pTwoColor = new float[4];
         Color pTwoColorRef = SaveSystem.Instance.PlayerTwoHealth.GetCurrentMaterialColor();
