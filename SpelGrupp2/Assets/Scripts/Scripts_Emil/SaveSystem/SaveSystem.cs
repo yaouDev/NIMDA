@@ -18,6 +18,8 @@ public class SaveSystem : MonoBehaviour {
     private void Start() {
         Instance ??= this;
 
+        try
+        {
         path = Application.persistentDataPath + "/save.bin";
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         GameObject playerOne, playerTwo;
@@ -44,6 +46,12 @@ public class SaveSystem : MonoBehaviour {
 
         if (pOneAttack != null)
             LoadGame();
+        }
+        catch
+        {
+
+        }
+
     }
 
     public PlayerHealth PlayerOneHealth {
