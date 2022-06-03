@@ -23,6 +23,10 @@ public class ObjectivesManager : MonoBehaviour
     public void AddObjective(string newObjective)
     {
         objectivesIndex++;
+        if (objectives.Length < objectivesIndex)
+        {
+            return;
+        }
         objectives[objectivesIndex].text = newObjective;
         backgroundHeight += 40;
         background.GetComponent<RectTransform>().sizeDelta = new Vector2(backgroundWidth, backgroundHeight);
