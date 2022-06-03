@@ -64,10 +64,10 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             if (entered[players[0]] && entered[players[1]])
             {
                 visited = true;
-                CloseEntrance();
                 spawnController.GeneratorRunning(false);
                 CallbackSystem.EventSystem.Current.FireEvent(new CallbackSystem.SafeRoomEvent());
                 SaveSystem.Instance.SaveGameData(true);
+                CloseEntrance();
             }
         }
         
@@ -89,7 +89,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
             if (visited && !exited && (!entered[players[0]] && !entered[players[1]]))
             {
                 exited = true;
-                CloseExit();
+                
                 if (!objectivesManager.BossNext())
                 {
                     objectivesManager.AddObjective("find the next safe room");
@@ -102,6 +102,7 @@ public class SafeRoomCloseBehind : MonoBehaviour {
                     objectivesManager.AddObjective("kill the boss");
                 }
                 SaveSystem.Instance.SaveGameData(false);
+                CloseExit();
             }
         }
         
