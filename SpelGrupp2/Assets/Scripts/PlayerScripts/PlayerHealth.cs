@@ -28,6 +28,7 @@ namespace CallbackSystem
         private int currentMaterialIndex;
         private Color defaultColor, currentColor;
         private Blink blink;
+        [SerializeField] private SkinnedMeshRenderer currentSkin;
 
         private AudioController ac;
 
@@ -50,6 +51,7 @@ namespace CallbackSystem
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
             playerMaterial = playerMaterials[0];
+            ChooseMaterial(0);
             currentMaterialIndex = isPlayerOne ? 0 : 1;
             defaultColor = isPlayerOne ? new Color(0.3f, 0.9f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
             ac = AudioController.instance;
@@ -196,6 +198,7 @@ namespace CallbackSystem
         {
             currentMaterialIndex = index;
             playerMaterial = playerMaterials[currentMaterialIndex];
+            currentSkin.materials[0] = playerMaterial;
         }
         public void ChooseMaterialColor()
         {
