@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -26,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 point2;
     private Vector2 joyStickLeftInput;
     private Vector2 joyStickRightInput;
+    private Vector2 reference;
+    private Vector2 inputVectorUnSmoothed;
     private bool grounded;
     private float colliderRadius;
     bool movementSpeedUpgraded;
@@ -118,10 +117,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The distance the character should count as being grounded")]
     private float groundCheckDistance = 0.15f;
 
-    [SerializeField] private GameObject visuals;
-
-    private Vector2 reference;
-    private Vector2 inputVectorUnSmoothed;
+    [SerializeField] 
+    private GameObject visuals;
 
     private void Awake()
     {
