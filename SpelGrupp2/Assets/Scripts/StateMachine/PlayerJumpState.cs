@@ -11,7 +11,7 @@ public class PlayerJumpState : PlayerBaseState {
         
         _falling = false;
         airTime = 0;
-        Player.AddVelocity(Vector3.up * Player._jumpForce);
+        Player.AddVelocity(Vector3.up * Player.JumpForce);
     }
 
     public override void Run() {
@@ -26,7 +26,7 @@ public class PlayerJumpState : PlayerBaseState {
         
         AirControl();
 
-        Vector3 gravityMovement = Player._defaultGravity * Time.deltaTime * Vector3.down;
+        Vector3 gravityMovement = Player.DefaultGravity * Time.deltaTime * Vector3.down;
         
         Player._velocity += gravityMovement;
         

@@ -34,90 +34,98 @@ public class PlayerController : MonoBehaviour
     protected bool alive = true;
 
     [HideInInspector] public Vector3 _velocity;
-    [HideInInspector] public Vector3 _jumpVector;
     [HideInInspector] public Vector3 _inputMovement;
     [HideInInspector] public float airControl = 1.0f;
     [HideInInspector] public bool _jumped;
-    public Color _debugColor = new Color(10, 20, 30);
+    [FormerlySerializedAs("_debugColor")] public Color DebugColor = new Color(10, 20, 30);
     public bool _pressedJump;
     public bool _releasedJump;
 
     [SerializeField] public List<State> states;
 
+    [FormerlySerializedAs("PefaultGravity")]
+    [FormerlySerializedAs("_defaultGravity")]
     [FormerlySerializedAs("_gravity")]
     [SerializeField]
     [Range(0.0f, 20.0f)]
     [Tooltip("Set default gravity in:\nEdit > Project Settings > Physics > Gravity")]
-    public float _defaultGravity;
+    public float DefaultGravity;
 
-    [SerializeField] [Range(0.0f, 4.0f)] public float jumpFallVelocityMultiplier = 2.0f;
+    [FormerlySerializedAs("jumpFallVelocityMultiplier")] [SerializeField] [Range(0.0f, 4.0f)] 
+    public float JumpFallVelocityMultiplier = 2.0f;
 
+    [FormerlySerializedAs("_acceleration")]
     [Space(10)]
     [Header("Character Design")]
     [SerializeField]
     [Range(0.0f, 15.0f)]
-    private float _acceleration = 3.0f;
+    private float acceleration = 3.0f;
 
+    [FormerlySerializedAs("_deceleration")]
     [SerializeField]
     [Range(0.0f, 10.0f)]
     [Tooltip("The deceleration when no input")]
-    private float _deceleration = 1.5f;
+    private float deceleration = 1.5f;
 
+    [FormerlySerializedAs("_turnSpeedModifier")]
     [SerializeField]
     [Range(0.0f, 10.0f)]
     [Tooltip("Extra force when character is turning the opposite way")]
-    private float _turnSpeedModifier = 2.0f;
+    private float turnSpeedModifier = 2.0f;
 
+    [FormerlySerializedAs("_terminalVelocity")]
     [SerializeField]
     [Range(0.0f, 20.0f)]
     [Tooltip("Max speed")]
-    private float _terminalVelocity = 12.0f;
+    private float terminalVelocity = 12.0f;
 
+    [FormerlySerializedAs("_upgradedTerminalVelocity")]
     [SerializeField]
     [Range(0.0f, 30.0f)]
     [Tooltip("Upgraded max speed")]
-    private float _upgradedTerminalVelocity = 18f;
+    private float upgradedTerminalVelocity = 18f;
 
+    [FormerlySerializedAs("_jumpForce")]
     [SerializeField]
     [Range(0.0f, 20.0f)]
     [Tooltip("Set before hitting [\u25BA]\nOnly changed during start")]
-    public float _jumpForce = 10.0f;
+    public float JumpForce = 10.0f;
 
-    [SerializeField]
-    [Range(0.0f, 1.0f)]
-    [Tooltip("Force to overcome friction from a standstill")]
-    private float _staticFrictionCoefficient = 0.5f;    // TODO check where this should be used! To check when the velocity is greater than what static friction? 
-
+    [FormerlySerializedAs("_kineticFrictionCoefficient")]
     [SerializeField]
     [Range(0.0f, 1.0f)]
     [Tooltip("Force applied when moving\n(60-70% of static friction usually)")]
-    private float _kineticFrictionCoefficient = 0.2f;   // TODO rename to _dynamicFrictionCoefficient ? 
+    private float kineticFrictionCoefficient = 0.2f;   // TODO rename to _dynamicFrictionCoefficient ? 
 
+    [FormerlySerializedAs("_airResistanceCoefficient")]
     [SerializeField]
     [Range(0.0f, 1.0f)]
     [Tooltip("Force affecting velocity")]
-    private float _airResistanceCoefficient = .5f;
+    private float airResistanceCoefficient = .5f;
 
+    [FormerlySerializedAs("_collisionMask")]
     [Space(10)]
     [Header("Character Controller Implementation Details")]
     [SerializeField]
     [Tooltip("What LayerMask(s) the character should collide with")]
-    private LayerMask _collisionMask;
+    private LayerMask collisionMask;
 
+    [FormerlySerializedAs("_skinWidth")]
     [SerializeField]
     [Range(0.0f, 0.15f)]
     [Tooltip("The distance the character should stop before a collider")]
-    private float _skinWidth = 0.1f;
+    private float skinWidth = 0.1f;
 
+    [FormerlySerializedAs("_groundCheckDistance")]
     [SerializeField]
     [Range(0.0f, 0.2f)]
     [Tooltip("The distance the character should count as being grounded")]
-    private float _groundCheckDistance = 0.15f;
+    private float groundCheckDistance = 0.15f;
 
     [SerializeField] private GameObject visuals;
 
     private Vector2 reference;
-    private Vector2 inputVectorUnsmoothed;
+    private Vector2 inputVectorUnSmoothed;
 
     private void Awake()
     {
@@ -128,9 +136,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _upgradedTerminalVelocity = _terminalVelocity * 2;
-        _jumpVector = new Vector3(0.0f, _jumpForce);
-        _defaultGravity = -Physics.gravity.y;
+        upgradedTerminalVelocity = terminalVelocity * 2;
+        DefaultGravity = -Physics.gravity.y;
         _colliderRadius = _collider.radius;
         _point1 = _collider.center + Vector3.up * (_collider.height / 2 - _colliderRadius);
         _point2 = _collider.center + Vector3.down * (_collider.height / 2 - _colliderRadius);
@@ -142,7 +149,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnsmoothed, ref reference, .05f, 100.0f);
+        joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnSmoothed, ref reference, .05f, 100.0f);
 
         if (alive)
         {
@@ -161,7 +168,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            inputVectorUnsmoothed = Vector2.zero;
+            inputVectorUnSmoothed = Vector2.zero;
             joyStickLeftInput = Vector2.zero;
             reference = Vector2.zero;
             _inputMovement = Vector3.zero;
@@ -190,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
     public void JoystickRight(InputAction.CallbackContext context)
     {
-        inputVectorUnsmoothed = context.ReadValue<Vector2>();
+        inputVectorUnSmoothed = context.ReadValue<Vector2>();
     }
 
     public Vector2 GetRightStickVector()
@@ -209,7 +216,7 @@ public class PlayerController : MonoBehaviour
         if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
 
         _inputMovement = InputToCameraProjection(_inputMovement);
-        _inputMovement *= _acceleration * Time.deltaTime;
+        _inputMovement *= acceleration * Time.deltaTime;
     }
 
     private void AimDirection()
@@ -232,27 +239,27 @@ public class PlayerController : MonoBehaviour
     public void Accelerate(Vector3 input)
     {
         _velocity += input *
-                     ((Vector3.Dot(input, _velocity) < 0.0f ? _turnSpeedModifier : 1.0f) *
-                      _acceleration);
-        _velocity = Vector3.ClampMagnitude(_velocity, _movementSpeedUpgraded ? _upgradedTerminalVelocity : _terminalVelocity);
+                     ((Vector3.Dot(input, _velocity) < 0.0f ? turnSpeedModifier : 1.0f) *
+                      acceleration);
+        _velocity = Vector3.ClampMagnitude(_velocity, _movementSpeedUpgraded ? upgradedTerminalVelocity : terminalVelocity);
     }
 
     public void Decelerate()
     {
 
         Vector3 projection = Vector3.ProjectOnPlane(_velocity, Vector3.up);
-        if (_deceleration * Time.deltaTime > projection.magnitude)
+        if (deceleration * Time.deltaTime > projection.magnitude)
         {
             _velocity.x = 0.0f;
             _velocity.z = 0.0f;
         }
         else
         {
-            _velocity -= projection * (_deceleration * Time.deltaTime);
+            _velocity -= projection * (deceleration * Time.deltaTime);
         }
     }
 
-    public void ApplyAirFriction() => _velocity *= Mathf.Pow(1.0f - _airResistanceCoefficient, Time.deltaTime);
+    public void ApplyAirFriction() => _velocity *= Mathf.Pow(1.0f - airResistanceCoefficient, Time.deltaTime);
 
     public void UpdateVelocity()
     {
@@ -272,7 +279,7 @@ public class PlayerController : MonoBehaviour
             if (!hit.collider)
                 continue;
 
-            float skinWidth = _skinWidth / Vector3.Dot(_velocity.normalized, hit.normal);
+            float skinWidth = this.skinWidth / Vector3.Dot(_velocity.normalized, hit.normal);
             float distanceToSkinWidth = hit.distance + skinWidth;
 
             if (distanceToSkinWidth > _velocity.magnitude * Time.deltaTime)
@@ -299,7 +306,7 @@ public class PlayerController : MonoBehaviour
             transform.position + _point2,
             _collider.radius,
             _OverlapCollidersNonAlloc,
-            _collisionMask);
+            collisionMask);
 
         while (count > 0 && exit++ < 10)
         {
@@ -317,7 +324,7 @@ public class PlayerController : MonoBehaviour
                 {
 
                     Vector3 separationVector = direction * distance;
-                    transform.position += separationVector + separationVector.normalized * _skinWidth;
+                    transform.position += separationVector + separationVector.normalized * skinWidth;
                     _velocity += Normal.Force(_velocity, direction);
                 }
             }
@@ -327,7 +334,7 @@ public class PlayerController : MonoBehaviour
                 transform.position + _point2,
                 _collider.radius,
                 _OverlapCollidersNonAlloc,
-                _collisionMask);
+                collisionMask);
             exit++;
         }
     }
@@ -335,20 +342,20 @@ public class PlayerController : MonoBehaviour
     private void ApplyFriction(Vector3 normalForce)
     {
 
-        if (_velocity.magnitude < normalForce.magnitude * _kineticFrictionCoefficient)
+        if (_velocity.magnitude < normalForce.magnitude * kineticFrictionCoefficient)
         {
             _velocity = Vector3.zero;
         }
         else
         {
-            _velocity -= _kineticFrictionCoefficient * normalForce.magnitude * _velocity.normalized;
+            _velocity -= kineticFrictionCoefficient * normalForce.magnitude * _velocity.normalized;
         }
     }
 
     public bool Grounded()
     {
         _grounded = Physics.SphereCast(transform.position + _point2, _colliderRadius, Vector3.down,
-                        out var hit, _groundCheckDistance + _skinWidth, _collisionMask);
+                        out var hit, groundCheckDistance + skinWidth, collisionMask);
 
         _planeNormal = false ? hit.normal : Vector3.up;
 
@@ -363,7 +370,7 @@ public class PlayerController : MonoBehaviour
             direction,
             out var hit,
             float.PositiveInfinity,
-            _collisionMask);
+            collisionMask);
         return hit;
     }
 
@@ -371,7 +378,7 @@ public class PlayerController : MonoBehaviour
     {
         _debugCollider = transform.position + _velocity * Time.deltaTime + Vector3.up * .5f;
 
-        Gizmos.color = _debugColor;
+        Gizmos.color = DebugColor;
 
         Gizmos.DrawWireSphere(_debugCollider, .5f);
 
@@ -453,8 +460,8 @@ public class PlayerController : MonoBehaviour
         dying = false;
     }
 
-    public void SetTerminalVelocity(float value) => _terminalVelocity = value;
-    public float GetTerminalVelocity() { return _terminalVelocity; }
+    public void SetTerminalVelocity(float value) => terminalVelocity = value;
+    public float GetTerminalVelocity() { return terminalVelocity; }
     public void SetDefaultMovementSpeed() => _movementSpeedUpgraded = false;
     public void Respawn() => alive = true;
 

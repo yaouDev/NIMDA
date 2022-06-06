@@ -19,12 +19,12 @@ public class PlayerAirState : PlayerBaseState {
 			_doubleJump--;
 			airTime = 0;
 			Player._velocity.y = 0.0f;
-			Player._velocity += Vector3.up * Player._jumpForce;
+			Player._velocity += Vector3.up * Player.JumpForce;
 		}
 
 		AirControl();
 
-		Vector3 gravityMovement = Player._defaultGravity * Player.jumpFallVelocityMultiplier * Time.deltaTime * Vector3.down;
+		Vector3 gravityMovement = Player.DefaultGravity * Player.JumpFallVelocityMultiplier * Time.deltaTime * Vector3.down;
 		
 		Player._velocity += gravityMovement;
 		

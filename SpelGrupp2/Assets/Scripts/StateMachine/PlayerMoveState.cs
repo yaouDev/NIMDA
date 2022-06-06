@@ -23,7 +23,7 @@ public class PlayerMoveState : PlayerBaseState {
         // if (!Player.Grounded())
         //    stateMachine.TransitionTo<PlayerAirState>();
         
-        Vector3 gravityMovement = Player._defaultGravity * Time.deltaTime * Vector3.down;
+        Vector3 gravityMovement = Player.DefaultGravity * Time.deltaTime * Vector3.down;
         
         Player._velocity += gravityMovement;
     }
