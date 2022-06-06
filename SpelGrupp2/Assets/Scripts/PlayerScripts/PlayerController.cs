@@ -21,25 +21,22 @@ public class PlayerController : MonoBehaviour
     private StateMachine stateMachine;
     private Transform _camera;
     private Vector3 aimingDirection = Vector3.forward;
-    private Vector3 _debugCollider;
-    private Vector3 _planeNormal;
+    private Vector3 debugCollider;
+    private Vector3 planeNormal;
     private Vector3 _point1;
     private Vector3 _point2;
     private Vector2 joyStickLeftInput;
     private Vector2 joyStickRightInput;
-    private bool _grounded;
-    private float _colliderRadius;
+    private bool grounded;
+    private float colliderRadius;
     bool _movementSpeedUpgraded;
 
     protected bool alive = true;
 
-    [HideInInspector] public Vector3 _velocity;
-    [HideInInspector] public Vector3 _inputMovement;
+    [FormerlySerializedAs("_velocity")] [HideInInspector] public Vector3 velocity;
+    [FormerlySerializedAs("_inputMovement")] [HideInInspector] public Vector3 inputMovement;
     [HideInInspector] public float airControl = 1.0f;
-    [HideInInspector] public bool _jumped;
     [FormerlySerializedAs("_debugColor")] public Color DebugColor = new Color(10, 20, 30);
-    public bool _pressedJump;
-    public bool _releasedJump;
 
     [SerializeField] public List<State> states;
 
@@ -138,9 +135,9 @@ public class PlayerController : MonoBehaviour
     {
         upgradedTerminalVelocity = terminalVelocity * 2;
         DefaultGravity = -Physics.gravity.y;
-        _colliderRadius = _collider.radius;
-        _point1 = _collider.center + Vector3.up * (_collider.height / 2 - _colliderRadius);
-        _point2 = _collider.center + Vector3.down * (_collider.height / 2 - _colliderRadius);
+        colliderRadius = _collider.radius;
+        _point1 = _collider.center + Vector3.up * (_collider.height / 2 - colliderRadius);
+        _point2 = _collider.center + Vector3.down * (_collider.height / 2 - colliderRadius);
         players = GameObject.FindGameObjectsWithTag("Player");
         otherPlayer = players[0] != gameObject ? players[0] : players[1];
     }
@@ -160,7 +157,7 @@ public class PlayerController : MonoBehaviour
             if (anim != null)
             {
                 Vector3 rot = transform.rotation.eulerAngles;
-                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * _velocity;
+                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * velocity;
 
                 anim.SetFloat("Speed", rotatedVelocity.x);
                 anim.SetFloat("Direction", rotatedVelocity.z);
@@ -171,21 +168,14 @@ public class PlayerController : MonoBehaviour
             inputVectorUnSmoothed = Vector2.zero;
             joyStickLeftInput = Vector2.zero;
             reference = Vector2.zero;
-            _inputMovement = Vector3.zero;
-            _velocity = Vector3.zero;
+            inputMovement = Vector3.zero;
+            velocity = Vector3.zero;
         }
     }
 
-    public void JumpButton(InputAction.CallbackContext context)
+    public void JumpButton(InputAction.CallbackContext context) 
     {
-
-        if (context.started && _grounded)
-            _jumped = true;
-        else
-            _pressedJump = false;
-
-        if (context.canceled)
-            _releasedJump = true;
+        return;
     }
 
     public void JoystickLeft(InputAction.CallbackContext context)
@@ -209,14 +199,14 @@ public class PlayerController : MonoBehaviour
     private void ApplyJoystickMovement()
     {
 
-        _inputMovement.x = joyStickLeftInput.x;
-        _inputMovement.y = 0.0f;
-        _inputMovement.z = joyStickLeftInput.y;
+        inputMovement.x = joyStickLeftInput.x;
+        inputMovement.y = 0.0f;
+        inputMovement.z = joyStickLeftInput.y;
 
-        if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
+        if (inputMovement.magnitude > 1.0f) inputMovement.Normalize();
 
-        _inputMovement = InputToCameraProjection(_inputMovement);
-        _inputMovement *= acceleration * Time.deltaTime;
+        inputMovement = InputToCameraProjection(inputMovement);
+        inputMovement *= acceleration * Time.deltaTime;
     }
 
     private void AimDirection()
@@ -233,40 +223,40 @@ public class PlayerController : MonoBehaviour
         Vector3 cameraRotation = _camera.transform.rotation.eulerAngles;
         //cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
         input = Quaternion.Euler(cameraRotation) * input;
-        return Vector3.ProjectOnPlane(input, _planeNormal).normalized;
+        return Vector3.ProjectOnPlane(input, planeNormal).normalized;
     }
 
     public void Accelerate(Vector3 input)
     {
-        _velocity += input *
-                     ((Vector3.Dot(input, _velocity) < 0.0f ? turnSpeedModifier : 1.0f) *
+        velocity += input *
+                     ((Vector3.Dot(input, velocity) < 0.0f ? turnSpeedModifier : 1.0f) *
                       acceleration);
-        _velocity = Vector3.ClampMagnitude(_velocity, _movementSpeedUpgraded ? upgradedTerminalVelocity : terminalVelocity);
+        velocity = Vector3.ClampMagnitude(velocity, _movementSpeedUpgraded ? upgradedTerminalVelocity : terminalVelocity);
     }
 
     public void Decelerate()
     {
 
-        Vector3 projection = Vector3.ProjectOnPlane(_velocity, Vector3.up);
+        Vector3 projection = Vector3.ProjectOnPlane(velocity, Vector3.up);
         if (deceleration * Time.deltaTime > projection.magnitude)
         {
-            _velocity.x = 0.0f;
-            _velocity.z = 0.0f;
+            velocity.x = 0.0f;
+            velocity.z = 0.0f;
         }
         else
         {
-            _velocity -= projection * (deceleration * Time.deltaTime);
+            velocity -= projection * (deceleration * Time.deltaTime);
         }
     }
 
-    public void ApplyAirFriction() => _velocity *= Mathf.Pow(1.0f - airResistanceCoefficient, Time.deltaTime);
+    public void ApplyAirFriction() => velocity *= Mathf.Pow(1.0f - airResistanceCoefficient, Time.deltaTime);
 
     public void UpdateVelocity()
     {
 
-        if (_velocity.magnitude < float.Epsilon)
+        if (velocity.magnitude < float.Epsilon)
         {
-            _velocity = Vector3.zero;
+            velocity = Vector3.zero;
             return;
         }
 
@@ -274,22 +264,22 @@ public class PlayerController : MonoBehaviour
         int iterations = 0;
         do
         {
-            hit = CapsuleCasts(_velocity);
+            hit = CapsuleCasts(velocity);
 
             if (!hit.collider)
                 continue;
 
-            float skinWidth = this.skinWidth / Vector3.Dot(_velocity.normalized, hit.normal);
+            float skinWidth = this.skinWidth / Vector3.Dot(velocity.normalized, hit.normal);
             float distanceToSkinWidth = hit.distance + skinWidth;
 
-            if (distanceToSkinWidth > _velocity.magnitude * Time.deltaTime)
+            if (distanceToSkinWidth > velocity.magnitude * Time.deltaTime)
                 return;
 
             if (distanceToSkinWidth > 0.0f)
-                transform.position += distanceToSkinWidth * _velocity.normalized;
+                transform.position += distanceToSkinWidth * velocity.normalized;
 
-            Vector3 normalForce = Normal.Force(_velocity, hit.normal);
-            _velocity += normalForce;
+            Vector3 normalForce = Normal.Force(velocity, hit.normal);
+            velocity += normalForce;
             ApplyFriction(normalForce);
 
         } while (hit.collider && iterations++ < 10);
@@ -325,7 +315,7 @@ public class PlayerController : MonoBehaviour
 
                     Vector3 separationVector = direction * distance;
                     transform.position += separationVector + separationVector.normalized * skinWidth;
-                    _velocity += Normal.Force(_velocity, direction);
+                    velocity += Normal.Force(velocity, direction);
                 }
             }
 
@@ -342,31 +332,31 @@ public class PlayerController : MonoBehaviour
     private void ApplyFriction(Vector3 normalForce)
     {
 
-        if (_velocity.magnitude < normalForce.magnitude * kineticFrictionCoefficient)
+        if (velocity.magnitude < normalForce.magnitude * kineticFrictionCoefficient)
         {
-            _velocity = Vector3.zero;
+            velocity = Vector3.zero;
         }
         else
         {
-            _velocity -= kineticFrictionCoefficient * normalForce.magnitude * _velocity.normalized;
+            velocity -= kineticFrictionCoefficient * normalForce.magnitude * velocity.normalized;
         }
     }
 
     public bool Grounded()
     {
-        _grounded = Physics.SphereCast(transform.position + _point2, _colliderRadius, Vector3.down,
+        grounded = Physics.SphereCast(transform.position + _point2, colliderRadius, Vector3.down,
                         out var hit, groundCheckDistance + skinWidth, collisionMask);
 
-        _planeNormal = false ? hit.normal : Vector3.up;
+        planeNormal = false ? hit.normal : Vector3.up;
 
-        return _grounded;
+        return grounded;
     }
 
     private RaycastHit CapsuleCasts(Vector3 direction)
     {
         Physics.CapsuleCast(transform.position + _point1,
             transform.position + _point2,
-            _colliderRadius,
+            colliderRadius,
             direction,
             out var hit,
             float.PositiveInfinity,
@@ -376,45 +366,43 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        _debugCollider = transform.position + _velocity * Time.deltaTime + Vector3.up * .5f;
+        debugCollider = transform.position + velocity * Time.deltaTime + Vector3.up * .5f;
 
         Gizmos.color = DebugColor;
 
-        Gizmos.DrawWireSphere(_debugCollider, .5f);
+        Gizmos.DrawWireSphere(debugCollider, .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.back * .5f, _debugCollider + Vector3.up + Vector3.back * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.back * .5f, debugCollider + Vector3.up + Vector3.back * .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.forward * .5f, _debugCollider + Vector3.up + Vector3.forward * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.forward * .5f, debugCollider + Vector3.up + Vector3.forward * .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.right * .5f, _debugCollider + Vector3.up + Vector3.right * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.right * .5f, debugCollider + Vector3.up + Vector3.right * .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.left * .5f, _debugCollider + Vector3.up + Vector3.left * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.left * .5f, debugCollider + Vector3.up + Vector3.left * .5f);
 
-        Gizmos.DrawWireSphere(_debugCollider + Vector3.up, .5f);
+        Gizmos.DrawWireSphere(debugCollider + Vector3.up, .5f);
     }
 
     public Vector3 Velocity()
     {
-        return _velocity;
+        return velocity;
     }
 
     public void SetVelocity(Vector3 velocity)
     {
-        _velocity = velocity;
+        this.velocity = velocity;
     }
 
     public void AddVelocity(Vector3 velocity)
     {
-        _velocity += velocity;
+        this.velocity += velocity;
     }
 
     public bool IsGrounded()
     {
-        return _grounded;
+        return grounded;
     }
-
-    public bool ReleasedJump() => _releasedJump;
-    public bool PressedJump() => _pressedJump;
+    
     public Vector2 GetRightJoystickInput() { return joyStickRightInput; }
 
     private bool dying = false;

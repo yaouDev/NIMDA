@@ -5,20 +5,18 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "PlayerState/JumpState")]
 public class PlayerJumpState : PlayerBaseState {
     
-    private bool _falling;
+    private bool falling;
 
     public override void Enter() {
         
-        _falling = false;
+        falling = false;
         airTime = 0;
         Player.AddVelocity(Vector3.up * Player.JumpForce);
     }
 
     public override void Run() {
-        if (Player.ReleasedJump() || Player.Velocity().y < float.Epsilon) 
-            _falling = true;
-        
-        if (_falling)
+
+        if (falling)
             stateMachine.TransitionTo<PlayerAirState>();
         
         if (Player.IsGrounded() && Player.Velocity().y < float.Epsilon) 
@@ -28,7 +26,7 @@ public class PlayerJumpState : PlayerBaseState {
 
         Vector3 gravityMovement = Player.DefaultGravity * Time.deltaTime * Vector3.down;
         
-        Player._velocity += gravityMovement;
+        Player.velocity += gravityMovement;
         
         Player.ApplyAirFriction();
     }

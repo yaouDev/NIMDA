@@ -5,46 +5,44 @@ using System;
 
 public class StateMachine {
     
-    private State _currentState;
-    private State _queuedState;
-    private PlayerController _owner;
-    private Dictionary<Type, State> _states = new Dictionary<Type, State>();
+    private State currentState;
+    private State queuedState;
+    private PlayerController owner;
+    private Dictionary<Type, State> states = new Dictionary<Type, State>();
     
     public StateMachine(PlayerController owner, List<State> states) {
-        _owner = owner;
+        this.owner = owner;
 
         foreach (State state in states) {
             State instance = UnityEngine.Object.Instantiate(state);
-            instance.owner = _owner;
+            instance.owner = this.owner;
             instance.stateMachine = this;
-            _states.Add(instance.GetType(), instance);
+            this.states.Add(instance.GetType(), instance);
 
-            _currentState ??= instance;
+            currentState ??= instance;
         }
 
-        _queuedState = _currentState;
-        _currentState?.Enter();
+        queuedState = currentState;
+        currentState?.Enter();
     }
 
     public void Run() {
-        if (_currentState != _queuedState) {
-            _currentState.Exit();
-            _currentState = _queuedState;
-            _currentState.Enter();
+        if (currentState != queuedState) {
+            currentState.Exit();
+            currentState = queuedState;
+            currentState.Enter();
         }
         
-        _currentState.Run();
+        currentState.Run();
         
-        _owner.UpdateVelocity();
-        _owner.ResolveOverlap();
+        owner.UpdateVelocity();
+        owner.ResolveOverlap();
         
-        _owner.transform.position +=  Time.deltaTime * _owner._velocity * _owner.movementSpeedReduced;
-        _owner._inputMovement = Vector3.zero;
-        _owner._pressedJump = false;
-        _owner._releasedJump = false;
+        owner.transform.position +=  Time.deltaTime * owner.velocity * owner.movementSpeedReduced;
+        owner.inputMovement = Vector3.zero;
     }
 
     public void TransitionTo<T>() where T : State {
-        _queuedState = _states[typeof(T)];
+        queuedState = states[typeof(T)];
     }
 }
