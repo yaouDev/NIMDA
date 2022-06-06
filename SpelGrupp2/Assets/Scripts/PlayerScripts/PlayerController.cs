@@ -10,26 +10,25 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-    //cc animation
-   [SerializeField] private Animator anim;
+    
+    [SerializeField] private Animator anim; //cc animation
 
-
-    private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
+    private Collider[] overlapCollidersNonAlloc = new Collider[10];
     private GameObject[] players;
     private GameObject otherPlayer;
-    private CapsuleCollider _collider;
+    private CapsuleCollider capsuleCollider;
     private StateMachine stateMachine;
-    private Transform _camera;
+    private Transform myCamera;
     private Vector3 aimingDirection = Vector3.forward;
     private Vector3 debugCollider;
     private Vector3 planeNormal;
-    private Vector3 _point1;
-    private Vector3 _point2;
+    private Vector3 point1;
+    private Vector3 point2;
     private Vector2 joyStickLeftInput;
     private Vector2 joyStickRightInput;
     private bool grounded;
     private float colliderRadius;
-    bool _movementSpeedUpgraded;
+    bool movementSpeedUpgraded;
 
     protected bool alive = true;
 
@@ -127,22 +126,20 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         stateMachine = new StateMachine(this, states);
-        _collider = GetComponent<CapsuleCollider>();
-        _camera = GetComponentInChildren<Camera>().transform;
+        capsuleCollider = GetComponent<CapsuleCollider>();
+        myCamera = GetComponentInChildren<Camera>().transform;
     }
 
     private void Start()
     {
         upgradedTerminalVelocity = terminalVelocity * 2;
         DefaultGravity = -Physics.gravity.y;
-        colliderRadius = _collider.radius;
-        _point1 = _collider.center + Vector3.up * (_collider.height / 2 - colliderRadius);
-        _point2 = _collider.center + Vector3.down * (_collider.height / 2 - colliderRadius);
+        colliderRadius = capsuleCollider.radius;
+        point1 = capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2 - colliderRadius);
+        point2 = capsuleCollider.center + Vector3.down * (capsuleCollider.height / 2 - colliderRadius);
         players = GameObject.FindGameObjectsWithTag("Player");
         otherPlayer = players[0] != gameObject ? players[0] : players[1];
     }
-
-
 
     private void Update()
     {
@@ -217,10 +214,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 InputToCameraProjection(Vector3 input)
     {
 
-        if (_camera == null)
+        if (myCamera == null)
             return input;
 
-        Vector3 cameraRotation = _camera.transform.rotation.eulerAngles;
+        Vector3 cameraRotation = myCamera.transform.rotation.eulerAngles;
         //cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
         input = Quaternion.Euler(cameraRotation) * input;
         return Vector3.ProjectOnPlane(input, planeNormal).normalized;
@@ -231,7 +228,7 @@ public class PlayerController : MonoBehaviour
         velocity += input *
                      ((Vector3.Dot(input, velocity) < 0.0f ? turnSpeedModifier : 1.0f) *
                       acceleration);
-        velocity = Vector3.ClampMagnitude(velocity, _movementSpeedUpgraded ? upgradedTerminalVelocity : terminalVelocity);
+        velocity = Vector3.ClampMagnitude(velocity, movementSpeedUpgraded ? upgradedTerminalVelocity : terminalVelocity);
     }
 
     public void Decelerate()
@@ -292,10 +289,10 @@ public class PlayerController : MonoBehaviour
     {
         int exit = 0;
         int count = Physics.OverlapCapsuleNonAlloc(
-            transform.position + _point1,
-            transform.position + _point2,
-            _collider.radius,
-            _OverlapCollidersNonAlloc,
+            transform.position + point1,
+            transform.position + point2,
+            capsuleCollider.radius,
+            overlapCollidersNonAlloc,
             collisionMask);
 
         while (count > 0 && exit++ < 10)
@@ -303,12 +300,12 @@ public class PlayerController : MonoBehaviour
             for (int i = 0; i < count; i++)
             {
                 if (Physics.ComputePenetration(
-                        _collider,
-                        _collider.transform.position,
-                        _collider.transform.rotation,
-                        _OverlapCollidersNonAlloc[i],
-                        _OverlapCollidersNonAlloc[i].gameObject.transform.position,
-                        _OverlapCollidersNonAlloc[i].gameObject.transform.rotation,
+                        capsuleCollider,
+                        capsuleCollider.transform.position,
+                        capsuleCollider.transform.rotation,
+                        overlapCollidersNonAlloc[i],
+                        overlapCollidersNonAlloc[i].gameObject.transform.position,
+                        overlapCollidersNonAlloc[i].gameObject.transform.rotation,
                         out var direction,
                         out var distance))
                 {
@@ -320,10 +317,10 @@ public class PlayerController : MonoBehaviour
             }
 
             count = Physics.OverlapCapsuleNonAlloc(
-                transform.position + _point1,
-                transform.position + _point2,
-                _collider.radius,
-                _OverlapCollidersNonAlloc,
+                transform.position + point1,
+                transform.position + point2,
+                capsuleCollider.radius,
+                overlapCollidersNonAlloc,
                 collisionMask);
             exit++;
         }
@@ -344,7 +341,7 @@ public class PlayerController : MonoBehaviour
 
     public bool Grounded()
     {
-        grounded = Physics.SphereCast(transform.position + _point2, colliderRadius, Vector3.down,
+        grounded = Physics.SphereCast(transform.position + point2, colliderRadius, Vector3.down,
                         out var hit, groundCheckDistance + skinWidth, collisionMask);
 
         planeNormal = false ? hit.normal : Vector3.up;
@@ -354,8 +351,8 @@ public class PlayerController : MonoBehaviour
 
     private RaycastHit CapsuleCasts(Vector3 direction)
     {
-        Physics.CapsuleCast(transform.position + _point1,
-            transform.position + _point2,
+        Physics.CapsuleCast(transform.position + point1,
+            transform.position + point2,
             colliderRadius,
             direction,
             out var hit,
@@ -450,7 +447,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetTerminalVelocity(float value) => terminalVelocity = value;
     public float GetTerminalVelocity() { return terminalVelocity; }
-    public void SetDefaultMovementSpeed() => _movementSpeedUpgraded = false;
+    public void SetDefaultMovementSpeed() => movementSpeedUpgraded = false;
     public void Respawn() => alive = true;
 
     [HideInInspector] public float movementSpeedReduced = 1f;
@@ -465,11 +462,11 @@ public class PlayerController : MonoBehaviour
             movementSpeedReduced = 1f;
         }
     }
-    public void MovementSpeedUpgrade() => _movementSpeedUpgraded = true;
+    public void MovementSpeedUpgrade() => movementSpeedUpgraded = true;
 
     public bool MovementSpeedUpgraded
     {
-        get { return _movementSpeedUpgraded; }
-        set { _movementSpeedUpgraded = value; }
+        get { return movementSpeedUpgraded; }
+        set { movementSpeedUpgraded = value; }
     }
 }
