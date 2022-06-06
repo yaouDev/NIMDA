@@ -128,11 +128,12 @@ public class SafeRoomCloseBehind : MonoBehaviour {
 
         //if (doorOpen) {
             //entranceClosePosition = entranceOpenPosition + Vector3.down * openHeight;
+            objectivesManager.RemoveObjective("enter safe room");
             StartCoroutine(MoveEntrance(entranceClosePosition, eventDuration));
             doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorEntranceSource, "isOpen", 0f); //play door sound
             spawnController.GeneratorRunning(false);
             spawnController.gameObject.SetActive(false);
-            objectivesManager.RemoveObjective("enter safe room");
+            
         //}
     }
     

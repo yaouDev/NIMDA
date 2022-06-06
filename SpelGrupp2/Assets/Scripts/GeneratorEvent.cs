@@ -15,6 +15,7 @@ public class GeneratorEvent : MonoBehaviour
     [SerializeField] private Light siren;
     private float timeElapsed;
     private bool doorOpen;
+    private bool generatorStarted;
     private Vector3 closePosition;
     private Vector3 openPosition;
     [SerializeField] private ObjectivesManager objectivesManager;
@@ -52,13 +53,14 @@ public class GeneratorEvent : MonoBehaviour
 
     public void StartGenerator()
     {
-        if (!doorOpen)
+        if (!doorOpen && !generatorStarted)
         {
             siren.enabled = true;
             openPosition = closePosition + Vector3.up * openHeight;
             StartCoroutine(MoveDoor(openPosition, eventDuration));
             spawnController.GeneratorRunning(true);
             objectivesManager.RemoveObjective("start the generator");
+            generatorStarted = true;
             //objectivesManager.AddObjective("let the generator finish");
             objectivesManager.AddObjective("survive the horde");
             doorEvent = ac.PlayNewInstanceWithParameter(doorSound, doorSoundSource, "isOpen", 0f); //play door sound
