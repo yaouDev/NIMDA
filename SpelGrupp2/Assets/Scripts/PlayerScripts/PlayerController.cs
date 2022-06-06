@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float airControl = 1.0f;
     [FormerlySerializedAs("_debugColor")] public Color DebugColor = new Color(10, 20, 30);
 
-    [SerializeField] public List<State> states;
+    [FormerlySerializedAs("states")] [SerializeField] public List<State> States;
 
     [FormerlySerializedAs("PefaultGravity")]
     [FormerlySerializedAs("_defaultGravity")]
@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        stateMachine = new StateMachine(this, states);
+        stateMachine = new StateMachine(this, States);
         capsuleCollider = GetComponent<CapsuleCollider>();
         myCamera = GetComponentInChildren<Camera>().transform;
     }
