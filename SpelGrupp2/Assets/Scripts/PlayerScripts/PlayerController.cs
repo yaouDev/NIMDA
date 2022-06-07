@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -10,139 +7,140 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
-    //cc animation
-   [SerializeField] private Animator anim;
+    
+    [SerializeField] private Animator anim; //cc animation
 
-
-    private Collider[] _OverlapCollidersNonAlloc = new Collider[10];
+    private Collider[] overlapCollidersNonAlloc = new Collider[10];
     private GameObject[] players;
     private GameObject otherPlayer;
-    private CapsuleCollider _collider;
+    private CapsuleCollider capsuleCollider;
     private StateMachine stateMachine;
-    private Transform _camera;
+    private Transform myCamera;
     private Vector3 aimingDirection = Vector3.forward;
-    private Vector3 _debugCollider;
-    private Vector3 _planeNormal;
-    private Vector3 _point1;
-    private Vector3 _point2;
+    private Vector3 debugCollider;
+    private Vector3 planeNormal;
+    private Vector3 point1;
+    private Vector3 point2;
     private Vector2 joyStickLeftInput;
     private Vector2 joyStickRightInput;
-    private bool _grounded;
-    private float _colliderRadius;
-    bool _movementSpeedUpgraded;
+    private Vector2 reference;
+    private Vector2 inputVectorUnSmoothed;
+    private bool grounded;
+    private float colliderRadius;
+    bool movementSpeedUpgraded;
 
     protected bool alive = true;
 
-    [HideInInspector] public Vector3 _velocity;
-    [HideInInspector] public Vector3 _jumpVector;
-    [HideInInspector] public Vector3 _inputMovement;
+    [FormerlySerializedAs("_velocity")] [HideInInspector] public Vector3 velocity;
+    [FormerlySerializedAs("_inputMovement")] [HideInInspector] public Vector3 inputMovement;
     [HideInInspector] public float airControl = 1.0f;
-    [HideInInspector] public bool _jumped;
-    public Color _debugColor = new Color(10, 20, 30);
-    public bool _pressedJump;
-    public bool _releasedJump;
+    [FormerlySerializedAs("_debugColor")] public Color DebugColor = new Color(10, 20, 30);
 
-    [SerializeField] public List<State> states;
+    [FormerlySerializedAs("states")] [SerializeField] public List<State> States;
 
+    [FormerlySerializedAs("PefaultGravity")]
+    [FormerlySerializedAs("_defaultGravity")]
     [FormerlySerializedAs("_gravity")]
     [SerializeField]
     [Range(0.0f, 20.0f)]
     [Tooltip("Set default gravity in:\nEdit > Project Settings > Physics > Gravity")]
-    public float _defaultGravity;
+    public float DefaultGravity;
 
-    [SerializeField] [Range(0.0f, 4.0f)] public float jumpFallVelocityMultiplier = 2.0f;
+    [FormerlySerializedAs("jumpFallVelocityMultiplier")] [SerializeField] [Range(0.0f, 4.0f)] 
+    public float JumpFallVelocityMultiplier = 2.0f;
 
+    [FormerlySerializedAs("_acceleration")]
     [Space(10)]
     [Header("Character Design")]
     [SerializeField]
     [Range(0.0f, 15.0f)]
-    private float _acceleration = 3.0f;
+    private float acceleration = 3.0f;
 
+    [FormerlySerializedAs("_deceleration")]
     [SerializeField]
     [Range(0.0f, 10.0f)]
     [Tooltip("The deceleration when no input")]
-    private float _deceleration = 1.5f;
+    private float deceleration = 1.5f;
 
+    [FormerlySerializedAs("_turnSpeedModifier")]
     [SerializeField]
     [Range(0.0f, 10.0f)]
     [Tooltip("Extra force when character is turning the opposite way")]
-    private float _turnSpeedModifier = 2.0f;
+    private float turnSpeedModifier = 2.0f;
 
+    [FormerlySerializedAs("_terminalVelocity")]
     [SerializeField]
     [Range(0.0f, 20.0f)]
     [Tooltip("Max speed")]
-    private float _terminalVelocity = 12.0f;
+    private float terminalVelocity = 12.0f;
 
+    [FormerlySerializedAs("_upgradedTerminalVelocity")]
     [SerializeField]
     [Range(0.0f, 30.0f)]
     [Tooltip("Upgraded max speed")]
-    private float _upgradedTerminalVelocity = 18f;
+    private float upgradedTerminalVelocity = 18f;
 
+    [FormerlySerializedAs("_jumpForce")]
     [SerializeField]
     [Range(0.0f, 20.0f)]
     [Tooltip("Set before hitting [\u25BA]\nOnly changed during start")]
-    public float _jumpForce = 10.0f;
+    public float JumpForce = 10.0f;
 
-    [SerializeField]
-    [Range(0.0f, 1.0f)]
-    [Tooltip("Force to overcome friction from a standstill")]
-    private float _staticFrictionCoefficient = 0.5f;    // TODO check where this should be used! To check when the velocity is greater than what static friction? 
-
+    [FormerlySerializedAs("_kineticFrictionCoefficient")]
     [SerializeField]
     [Range(0.0f, 1.0f)]
     [Tooltip("Force applied when moving\n(60-70% of static friction usually)")]
-    private float _kineticFrictionCoefficient = 0.2f;   // TODO rename to _dynamicFrictionCoefficient ? 
+    private float kineticFrictionCoefficient = 0.2f;   // TODO rename to _dynamicFrictionCoefficient ? 
 
+    [FormerlySerializedAs("_airResistanceCoefficient")]
     [SerializeField]
     [Range(0.0f, 1.0f)]
     [Tooltip("Force affecting velocity")]
-    private float _airResistanceCoefficient = .5f;
+    private float airResistanceCoefficient = .5f;
 
+    [FormerlySerializedAs("_collisionMask")]
     [Space(10)]
     [Header("Character Controller Implementation Details")]
     [SerializeField]
     [Tooltip("What LayerMask(s) the character should collide with")]
-    private LayerMask _collisionMask;
+    private LayerMask collisionMask;
 
+    [FormerlySerializedAs("_skinWidth")]
     [SerializeField]
     [Range(0.0f, 0.15f)]
     [Tooltip("The distance the character should stop before a collider")]
-    private float _skinWidth = 0.1f;
+    private float skinWidth = 0.1f;
 
+    [FormerlySerializedAs("_groundCheckDistance")]
     [SerializeField]
     [Range(0.0f, 0.2f)]
     [Tooltip("The distance the character should count as being grounded")]
-    private float _groundCheckDistance = 0.15f;
+    private float groundCheckDistance = 0.15f;
 
-    [SerializeField] private GameObject visuals;
-
-    private Vector2 reference;
-    private Vector2 inputVectorUnsmoothed;
+    [SerializeField] 
+    private GameObject visuals;
 
     private void Awake()
     {
-        stateMachine = new StateMachine(this, states);
-        _collider = GetComponent<CapsuleCollider>();
-        _camera = GetComponentInChildren<Camera>().transform;
+        stateMachine = new StateMachine(this, States);
+        capsuleCollider = GetComponent<CapsuleCollider>();
+        myCamera = GetComponentInChildren<Camera>().transform;
     }
 
     private void Start()
     {
-        _upgradedTerminalVelocity = _terminalVelocity * 2;
-        _jumpVector = new Vector3(0.0f, _jumpForce);
-        _defaultGravity = -Physics.gravity.y;
-        _colliderRadius = _collider.radius;
-        _point1 = _collider.center + Vector3.up * (_collider.height / 2 - _colliderRadius);
-        _point2 = _collider.center + Vector3.down * (_collider.height / 2 - _colliderRadius);
+        upgradedTerminalVelocity = terminalVelocity * 2;
+        DefaultGravity = -Physics.gravity.y;
+        colliderRadius = capsuleCollider.radius;
+        point1 = capsuleCollider.center + Vector3.up * (capsuleCollider.height / 2 - colliderRadius);
+        point2 = capsuleCollider.center + Vector3.down * (capsuleCollider.height / 2 - colliderRadius);
         players = GameObject.FindGameObjectsWithTag("Player");
         otherPlayer = players[0] != gameObject ? players[0] : players[1];
     }
 
-
-
     private void Update()
     {
-        joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnsmoothed, ref reference, .05f, 100.0f);
+        joyStickRightInput = Vector2.SmoothDamp(joyStickRightInput, inputVectorUnSmoothed, ref reference, .05f, 100.0f);
 
         if (alive)
         {
@@ -153,7 +151,7 @@ public class PlayerController : MonoBehaviour
             if (anim != null)
             {
                 Vector3 rot = transform.rotation.eulerAngles;
-                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * _velocity;
+                Vector3 rotatedVelocity = Quaternion.Euler(rot.x, -rot.y, rot.z) * velocity;
 
                 anim.SetFloat("Speed", rotatedVelocity.x);
                 anim.SetFloat("Direction", rotatedVelocity.z);
@@ -161,24 +159,17 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            inputVectorUnsmoothed = Vector2.zero;
+            inputVectorUnSmoothed = Vector2.zero;
             joyStickLeftInput = Vector2.zero;
             reference = Vector2.zero;
-            _inputMovement = Vector3.zero;
-            _velocity = Vector3.zero;
+            inputMovement = Vector3.zero;
+            velocity = Vector3.zero;
         }
     }
 
-    public void JumpButton(InputAction.CallbackContext context)
+    public void JumpButton(InputAction.CallbackContext context) 
     {
-
-        if (context.started && _grounded)
-            _jumped = true;
-        else
-            _pressedJump = false;
-
-        if (context.canceled)
-            _releasedJump = true;
+        return;
     }
 
     public void JoystickLeft(InputAction.CallbackContext context)
@@ -190,7 +181,7 @@ public class PlayerController : MonoBehaviour
 
     public void JoystickRight(InputAction.CallbackContext context)
     {
-        inputVectorUnsmoothed = context.ReadValue<Vector2>();
+        inputVectorUnSmoothed = context.ReadValue<Vector2>();
     }
 
     public Vector2 GetRightStickVector()
@@ -202,14 +193,14 @@ public class PlayerController : MonoBehaviour
     private void ApplyJoystickMovement()
     {
 
-        _inputMovement.x = joyStickLeftInput.x;
-        _inputMovement.y = 0.0f;
-        _inputMovement.z = joyStickLeftInput.y;
+        inputMovement.x = joyStickLeftInput.x;
+        inputMovement.y = 0.0f;
+        inputMovement.z = joyStickLeftInput.y;
 
-        if (_inputMovement.magnitude > 1.0f) _inputMovement.Normalize();
+        if (inputMovement.magnitude > 1.0f) inputMovement.Normalize();
 
-        _inputMovement = InputToCameraProjection(_inputMovement);
-        _inputMovement *= _acceleration * Time.deltaTime;
+        inputMovement = InputToCameraProjection(inputMovement);
+        inputMovement *= acceleration * Time.deltaTime;
     }
 
     private void AimDirection()
@@ -220,46 +211,46 @@ public class PlayerController : MonoBehaviour
     private Vector3 InputToCameraProjection(Vector3 input)
     {
 
-        if (_camera == null)
+        if (myCamera == null)
             return input;
 
-        Vector3 cameraRotation = _camera.transform.rotation.eulerAngles;
+        Vector3 cameraRotation = myCamera.transform.rotation.eulerAngles;
         //cameraRotation.x = Mathf.Min(cameraRotation.x, _planeNormal.y);
         input = Quaternion.Euler(cameraRotation) * input;
-        return Vector3.ProjectOnPlane(input, _planeNormal).normalized;
+        return Vector3.ProjectOnPlane(input, planeNormal).normalized;
     }
 
     public void Accelerate(Vector3 input)
     {
-        _velocity += input *
-                     ((Vector3.Dot(input, _velocity) < 0.0f ? _turnSpeedModifier : 1.0f) *
-                      _acceleration);
-        _velocity = Vector3.ClampMagnitude(_velocity, _movementSpeedUpgraded ? _upgradedTerminalVelocity : _terminalVelocity);
+        velocity += input *
+                     ((Vector3.Dot(input, velocity) < 0.0f ? turnSpeedModifier : 1.0f) *
+                      acceleration);
+        velocity = Vector3.ClampMagnitude(velocity, movementSpeedUpgraded ? upgradedTerminalVelocity : terminalVelocity);
     }
 
     public void Decelerate()
     {
 
-        Vector3 projection = Vector3.ProjectOnPlane(_velocity, Vector3.up);
-        if (_deceleration * Time.deltaTime > projection.magnitude)
+        Vector3 projection = Vector3.ProjectOnPlane(velocity, Vector3.up);
+        if (deceleration * Time.deltaTime > projection.magnitude)
         {
-            _velocity.x = 0.0f;
-            _velocity.z = 0.0f;
+            velocity.x = 0.0f;
+            velocity.z = 0.0f;
         }
         else
         {
-            _velocity -= projection * (_deceleration * Time.deltaTime);
+            velocity -= projection * (deceleration * Time.deltaTime);
         }
     }
 
-    public void ApplyAirFriction() => _velocity *= Mathf.Pow(1.0f - _airResistanceCoefficient, Time.deltaTime);
+    public void ApplyAirFriction() => velocity *= Mathf.Pow(1.0f - airResistanceCoefficient, Time.deltaTime);
 
     public void UpdateVelocity()
     {
 
-        if (_velocity.magnitude < float.Epsilon)
+        if (velocity.magnitude < float.Epsilon)
         {
-            _velocity = Vector3.zero;
+            velocity = Vector3.zero;
             return;
         }
 
@@ -267,22 +258,22 @@ public class PlayerController : MonoBehaviour
         int iterations = 0;
         do
         {
-            hit = CapsuleCasts(_velocity);
+            hit = CapsuleCasts(velocity);
 
             if (!hit.collider)
                 continue;
 
-            float skinWidth = _skinWidth / Vector3.Dot(_velocity.normalized, hit.normal);
+            float skinWidth = this.skinWidth / Vector3.Dot(velocity.normalized, hit.normal);
             float distanceToSkinWidth = hit.distance + skinWidth;
 
-            if (distanceToSkinWidth > _velocity.magnitude * Time.deltaTime)
+            if (distanceToSkinWidth > velocity.magnitude * Time.deltaTime)
                 return;
 
             if (distanceToSkinWidth > 0.0f)
-                transform.position += distanceToSkinWidth * _velocity.normalized;
+                transform.position += distanceToSkinWidth * velocity.normalized;
 
-            Vector3 normalForce = Normal.Force(_velocity, hit.normal);
-            _velocity += normalForce;
+            Vector3 normalForce = Normal.Force(velocity, hit.normal);
+            velocity += normalForce;
             ApplyFriction(normalForce);
 
         } while (hit.collider && iterations++ < 10);
@@ -295,39 +286,39 @@ public class PlayerController : MonoBehaviour
     {
         int exit = 0;
         int count = Physics.OverlapCapsuleNonAlloc(
-            transform.position + _point1,
-            transform.position + _point2,
-            _collider.radius,
-            _OverlapCollidersNonAlloc,
-            _collisionMask);
+            transform.position + point1,
+            transform.position + point2,
+            capsuleCollider.radius,
+            overlapCollidersNonAlloc,
+            collisionMask);
 
         while (count > 0 && exit++ < 10)
         {
             for (int i = 0; i < count; i++)
             {
                 if (Physics.ComputePenetration(
-                        _collider,
-                        _collider.transform.position,
-                        _collider.transform.rotation,
-                        _OverlapCollidersNonAlloc[i],
-                        _OverlapCollidersNonAlloc[i].gameObject.transform.position,
-                        _OverlapCollidersNonAlloc[i].gameObject.transform.rotation,
+                        capsuleCollider,
+                        capsuleCollider.transform.position,
+                        capsuleCollider.transform.rotation,
+                        overlapCollidersNonAlloc[i],
+                        overlapCollidersNonAlloc[i].gameObject.transform.position,
+                        overlapCollidersNonAlloc[i].gameObject.transform.rotation,
                         out var direction,
                         out var distance))
                 {
 
                     Vector3 separationVector = direction * distance;
-                    transform.position += separationVector + separationVector.normalized * _skinWidth;
-                    _velocity += Normal.Force(_velocity, direction);
+                    transform.position += separationVector + separationVector.normalized * skinWidth;
+                    velocity += Normal.Force(velocity, direction);
                 }
             }
 
             count = Physics.OverlapCapsuleNonAlloc(
-                transform.position + _point1,
-                transform.position + _point2,
-                _collider.radius,
-                _OverlapCollidersNonAlloc,
-                _collisionMask);
+                transform.position + point1,
+                transform.position + point2,
+                capsuleCollider.radius,
+                overlapCollidersNonAlloc,
+                collisionMask);
             exit++;
         }
     }
@@ -335,79 +326,77 @@ public class PlayerController : MonoBehaviour
     private void ApplyFriction(Vector3 normalForce)
     {
 
-        if (_velocity.magnitude < normalForce.magnitude * _kineticFrictionCoefficient)
+        if (velocity.magnitude < normalForce.magnitude * kineticFrictionCoefficient)
         {
-            _velocity = Vector3.zero;
+            velocity = Vector3.zero;
         }
         else
         {
-            _velocity -= _kineticFrictionCoefficient * normalForce.magnitude * _velocity.normalized;
+            velocity -= kineticFrictionCoefficient * normalForce.magnitude * velocity.normalized;
         }
     }
 
     public bool Grounded()
     {
-        _grounded = Physics.SphereCast(transform.position + _point2, _colliderRadius, Vector3.down,
-                        out var hit, _groundCheckDistance + _skinWidth, _collisionMask);
+        grounded = Physics.SphereCast(transform.position + point2, colliderRadius, Vector3.down,
+                        out var hit, groundCheckDistance + skinWidth, collisionMask);
 
-        _planeNormal = false ? hit.normal : Vector3.up;
+        planeNormal = false ? hit.normal : Vector3.up;
 
-        return _grounded;
+        return grounded;
     }
 
     private RaycastHit CapsuleCasts(Vector3 direction)
     {
-        Physics.CapsuleCast(transform.position + _point1,
-            transform.position + _point2,
-            _colliderRadius,
+        Physics.CapsuleCast(transform.position + point1,
+            transform.position + point2,
+            colliderRadius,
             direction,
             out var hit,
             float.PositiveInfinity,
-            _collisionMask);
+            collisionMask);
         return hit;
     }
 
     private void OnDrawGizmos()
     {
-        _debugCollider = transform.position + _velocity * Time.deltaTime + Vector3.up * .5f;
+        debugCollider = transform.position + velocity * Time.deltaTime + Vector3.up * .5f;
 
-        Gizmos.color = _debugColor;
+        Gizmos.color = DebugColor;
 
-        Gizmos.DrawWireSphere(_debugCollider, .5f);
+        Gizmos.DrawWireSphere(debugCollider, .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.back * .5f, _debugCollider + Vector3.up + Vector3.back * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.back * .5f, debugCollider + Vector3.up + Vector3.back * .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.forward * .5f, _debugCollider + Vector3.up + Vector3.forward * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.forward * .5f, debugCollider + Vector3.up + Vector3.forward * .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.right * .5f, _debugCollider + Vector3.up + Vector3.right * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.right * .5f, debugCollider + Vector3.up + Vector3.right * .5f);
 
-        Gizmos.DrawLine(_debugCollider + Vector3.left * .5f, _debugCollider + Vector3.up + Vector3.left * .5f);
+        Gizmos.DrawLine(debugCollider + Vector3.left * .5f, debugCollider + Vector3.up + Vector3.left * .5f);
 
-        Gizmos.DrawWireSphere(_debugCollider + Vector3.up, .5f);
+        Gizmos.DrawWireSphere(debugCollider + Vector3.up, .5f);
     }
 
     public Vector3 Velocity()
     {
-        return _velocity;
+        return velocity;
     }
 
     public void SetVelocity(Vector3 velocity)
     {
-        _velocity = velocity;
+        this.velocity = velocity;
     }
 
     public void AddVelocity(Vector3 velocity)
     {
-        _velocity += velocity;
+        this.velocity += velocity;
     }
 
     public bool IsGrounded()
     {
-        return _grounded;
+        return grounded;
     }
-
-    public bool ReleasedJump() => _releasedJump;
-    public bool PressedJump() => _pressedJump;
+    
     public Vector2 GetRightJoystickInput() { return joyStickRightInput; }
 
     private bool dying = false;
@@ -453,9 +442,9 @@ public class PlayerController : MonoBehaviour
         dying = false;
     }
 
-    public void SetTerminalVelocity(float value) => _terminalVelocity = value;
-    public float GetTerminalVelocity() { return _terminalVelocity; }
-    public void SetDefaultMovementSpeed() => _movementSpeedUpgraded = false;
+    public void SetTerminalVelocity(float value) => terminalVelocity = value;
+    public float GetTerminalVelocity() { return terminalVelocity; }
+    public void SetDefaultMovementSpeed() => movementSpeedUpgraded = false;
     public void Respawn() => alive = true;
 
     [HideInInspector] public float movementSpeedReduced = 1f;
@@ -470,11 +459,11 @@ public class PlayerController : MonoBehaviour
             movementSpeedReduced = 1f;
         }
     }
-    public void MovementSpeedUpgrade() => _movementSpeedUpgraded = true;
+    public void MovementSpeedUpgrade() => movementSpeedUpgraded = true;
 
     public bool MovementSpeedUpgraded
     {
-        get { return _movementSpeedUpgraded; }
-        set { _movementSpeedUpgraded = value; }
+        get { return movementSpeedUpgraded; }
+        set { movementSpeedUpgraded = value; }
     }
 }

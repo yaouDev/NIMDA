@@ -11,21 +11,14 @@ public class PlayerMoveState : PlayerBaseState {
 
     public override void Run() {
         
-        if (Player._inputMovement.magnitude > float.Epsilon)
-            Player.Accelerate(Player._inputMovement);
+        if (Player.inputMovement.magnitude > float.Epsilon)
+            Player.Accelerate(Player.inputMovement);
         else
             Player.Decelerate();
+
+        Vector3 gravityMovement = Player.DefaultGravity * Time.deltaTime * Vector3.down;
         
-        // if (Player._jumped) {
-        //     stateMachine.TransitionTo<PlayerJumpState>();
-        //     Player._jumped = false;
-        // }
-        // if (!Player.Grounded())
-        //    stateMachine.TransitionTo<PlayerAirState>();
-        
-        Vector3 gravityMovement = Player._defaultGravity * Time.deltaTime * Vector3.down;
-        
-        Player._velocity += gravityMovement;
+        Player.velocity += gravityMovement;
     }
 
     public override void Exit() {
