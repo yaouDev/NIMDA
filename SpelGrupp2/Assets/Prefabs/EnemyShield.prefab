@@ -294,6 +294,7 @@ GameObject:
   - component: {fileID: 2315039527980796704}
   - component: {fileID: 2315039527980796639}
   - component: {fileID: 2315039527980796638}
+  - component: {fileID: -3192273114343118758}
   - component: {fileID: 2315039527980796705}
   - component: {fileID: 1907723285357056591}
   - component: {fileID: 570393665669603275}
@@ -376,6 +377,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!95 &-3192273114343118758
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2315039527980796636}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &2315039527980796705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -388,7 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0720211dc6baf4995b21d5da3a91d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
+  anim: {fileID: -3192273114343118758}
   deathWish: 0
   dropList:
   - {fileID: 8492384828083724688, guid: 88bcf3edf288a58418b0d628398631f5, type: 3}
