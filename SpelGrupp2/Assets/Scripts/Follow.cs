@@ -30,7 +30,6 @@ public class Follow : MonoBehaviour
 
     void Update()
     {
-        //transform.LookAt(Camera.main.transform.position, Vector3.up);
         transform.Rotate(rotatationRate);
 
         if (!targetFound)

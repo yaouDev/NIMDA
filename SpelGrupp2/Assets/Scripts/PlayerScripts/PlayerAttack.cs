@@ -60,13 +60,6 @@ namespace CallbackSystem
         private float sightLineWidth;
         private float widthIncreacePerTenthSecond = 0.05f;
         private float maxBeamLenght = 30.0f;
-        //private float distanceToWall;
-        //private RaycastHit wallHitInfo;
-
-        /*
-         * From where the players weapon and ammunition is instantiated, stored and managed.
-         * Only call on ResourceEvents concering ammunition from this script using UpdateBulletCount(increase/decrease).
-         */
 
         public bool IsAlive
         {
@@ -145,12 +138,6 @@ namespace CallbackSystem
                 revolverCooldown += Time.deltaTime;
             else
                 recentlyFired = false;
-            /*
-            if (ASCounter <= 0.1f)
-                ASCounter += Time.deltaTime;
-            else
-                canShootGun = true;
-            */
 
             if (isAlive)
             {
@@ -163,25 +150,6 @@ namespace CallbackSystem
             }
         }
 
-        /*        public void Fire(InputAction.CallbackContext context)
-                {
-                    if (!isAlive) return;
-                    if (context.started && !recentlyFired)
-                    {
-
-                        if (laserWeapon && canShootLaser)
-                        {
-                            StartCoroutine(AttackDelay(laserAttackDelay));
-                        }
-                        else if (!laserWeapon)
-                        {
-                            FireProjectileWeapon();
-                        }
-                        recentlyFired = true;
-                        laserWeaponCooldown = 0f;
-                        revolverCooldown = 0f;
-                    }
-                }*/
         public void Fire(InputAction.CallbackContext context)
         {
             if (!isAlive) return;
@@ -221,8 +189,6 @@ namespace CallbackSystem
 
                     ShootLaser();
                     StartCoroutine(AnimateLineRenderer(aimingDirection));
-                    //add shootsound
-
                 }
                 recentlyFired = true;
                 canSwitchWeapon = true;
@@ -244,7 +210,6 @@ namespace CallbackSystem
             {
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.laserNoAmmo : ac.player2.laserNoAmmo, gameObject);
             }
-            //damage = startDamage;
         }
 
         IEnumerator ChargeUp()
@@ -323,7 +288,6 @@ namespace CallbackSystem
                 projectileWeaponMesh?.SetActive(!laserWeapon);
                 
                 WeaponSwapHUD();
-                // TODO [Sound] Play weapon swap sound(s)
             }
         }
 
@@ -337,7 +301,6 @@ namespace CallbackSystem
                 projectileWeaponMesh?.SetActive(!laserWeapon);
                 
                 WeaponSwapHUD();
-                // TODO [Sound] Play weapon swap sound(s)
             }
         }
 
@@ -346,22 +309,6 @@ namespace CallbackSystem
             weaponUpdateEvent.usingLaserWeapon = laserWeapon;
             EventSystem.Current.FireEvent(weaponUpdateEvent);
         }
-
-        //This method & Pass Through(Y) on Input Actions if up = laser & down = projectile.
-        /*public void WeaponSwapWithMouseWheel(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-            {
-                float scrollDelta = context.ReadValue<float>();
-                Debug.Log(scrollDelta);
-                if (Mathf.Abs(scrollDelta) > 100.0f)
-                {
-                    laserWeapon = scrollDelta > 0;
-                    // TODO [Sound] Play weapon swap sound(s)
-                }
-            }
-        }
-        */
 
         private void AimDirection()
         {
@@ -390,11 +337,6 @@ namespace CallbackSystem
                     health.TakeDamage(laserSelfDmg);
                 }
 
-                //Check how far to not penetrable object
-                /*                Physics.Raycast(transform.position + transform.forward + Vector3.up, aimingDirection, out wallHitInfo, 30.0f, wallLayermask); // TODO change to firepoint
-
-                                distanceToWall = wallHitInfo.distance;*/
-
                 //Check for enemies and onther penetrable objects
                 bool hitObstacle = false;
                 bool hitShield = false;
@@ -403,10 +345,7 @@ namespace CallbackSystem
                 {
                     List<RaycastHit> hitList = new List<RaycastHit>(hits);
                     hitList.Sort((x, y) => x.distance.CompareTo(y.distance));
-                    //for (int i = 0; i < hitList.Count; i++)
-                    //{
-                    //    Debug.Log(hitList[i].transform.gameObject.name);
-                    //}
+
                     foreach (RaycastHit hitInfo in hitList) // TODO change to firepoint
                     {
 
@@ -475,7 +414,6 @@ namespace CallbackSystem
         {
             Vector3[] positions = { transform.position + Vector3.up, transform.position + Vector3.up + dir * currentHitDistance };
             aimLineRenderer.SetPositions(positions);
-            //sightLineWidth = 0.05f;
             aimLineRenderer.startWidth = sightLineWidth;
             aimLineRenderer.endWidth = sightLineWidth;
             Color color = new Color(1f, 0.2f, 0.2f);
@@ -562,14 +500,12 @@ namespace CallbackSystem
         private int critChance;
         private void FireProjectileWeapon()
         {
-            //Debug.Log("Attempting to fire.");
             if (bullets > 0 && ammoBoxes >= 0)
             {
                 if (AIData.Instance.EnemyMuzzleflash != null)
                 {
                     Instantiate(AIData.Instance.EnemyMuzzleflash, transform.position, Quaternion.identity);
                 }
-                //Debug.Log("Firing. Shots left: " + bulletsInGun);
                 AudioController ac = AudioController.instance;
                 ac.PlayOneShotAttatched(IsPlayerOne() ? ac.player1.fire2 : ac.player2.fire2, gameObject); //Gun sound
                 currentBullet = revolverDamageUpgraded ? upgradedBullet : bullet;

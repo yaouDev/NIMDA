@@ -6,31 +6,27 @@ namespace CallbackSystem
 {
     public class PlayerHealth : MonoBehaviour, IDamageable
     {
-        [SerializeField] private GameObject visuals;
         [SerializeField] private float respawnTime = 10.0f;
         [SerializeField] private bool isPlayerOne;
         [SerializeField] private int batteryCount, batteryRespawnCount, maxBatteryCount;
         [SerializeField] private float healthReg;
+        [SerializeField] private GameObject visuals;
         private float maxHealth = 100f;
         private float currHealth;
         private float respawnTimer;
         private bool alive = true;
-        private PlayerAttack attackAbility;
-        private PlayerController movement;
-        private HealthUpdateEvent healthEvent;
-        private Crafting crafting;
-        private ActivationUIEvent UIEvent;
-        private ChangeColorEvent colorEvent;
         private bool started = false, decreaseDamageUpgrade;
         private UIMenus uiMenus;
-        [SerializeField] private Material playerMaterial;
-        [SerializeField] private Material[] playerMaterials;
-        private int currentMaterialIndex;
+        private PlayerAttack attackAbility;
+        private PlayerController movement;
+        private Crafting crafting;
         private Color defaultColor, currentColor;
         private Blink blink;
-        [SerializeField] private SkinnedMeshRenderer currentSkin;
-
         private AudioController ac;
+        private ChangeColorEvent colorEvent;
+        private HealthUpdateEvent healthEvent;
+        private ActivationUIEvent UIEvent;
+
 
         public bool IsPlayerOne() { return isPlayerOne; }
         private void Awake()
@@ -41,7 +37,6 @@ namespace CallbackSystem
         }
         private void Start()
         {
-            //Cursor.visible = false;
             batteryCount = 3;
             crafting = GetComponent<Crafting>();
             movement = GetComponent<PlayerController>();
@@ -50,9 +45,6 @@ namespace CallbackSystem
             colorEvent.isPlayerOne = isPlayerOne;
             currHealth = maxHealth;
             uiMenus = GameObject.FindObjectOfType<UIMenus>();
-            playerMaterial = playerMaterials[0];
-            ChooseMaterial(0);
-            currentMaterialIndex = isPlayerOne ? 0 : 1;
             defaultColor = isPlayerOne ? new Color(0.3f, 0.9f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
             ac = AudioController.instance;
             currentColor = defaultColor;
@@ -108,23 +100,10 @@ namespace CallbackSystem
             }
         }
 
-        public bool Alive
-        {
-            get { return alive; }
-        }
-
         public void IncreaseBattery()
         {
             batteryCount++;
             UpdateHealthUI();
-        }
-
-        public void SetBatteriesOnLoad(int amount){
-            batteryCount = amount;
-        }
-
-        public void SetHealthOnLoad(float amount){
-            currHealth = amount;
         }
 
         public void Die()
@@ -138,7 +117,6 @@ namespace CallbackSystem
             alive = false;
             attackAbility.Die();
             movement.Die();
-            //visuals.SetActive(false);
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
@@ -150,7 +128,6 @@ namespace CallbackSystem
             alive = true;
             currHealth = maxHealth;
             batteryCount = batteryRespawnCount;
-            //visuals.SetActive(true);
             UIEvent.isPlayerOne = isPlayerOne;
             UIEvent.isAlive = alive;
             EventSystem.Current.FireEvent(UIEvent);
@@ -189,24 +166,15 @@ namespace CallbackSystem
         
         public void ChooseMaterialColor(Color color)
         {
-            //playerMaterial.color = color;
             colorEvent.color = color;
             EventSystem.Current.FireEvent(colorEvent);
         }
 
-        public void ChooseMaterial(int index)
-        {
-            currentMaterialIndex = index;
-            playerMaterial = playerMaterials[currentMaterialIndex];
-            currentSkin.materials[0] = playerMaterial;
-        }
         public void ChooseMaterialColor()
         {
-            //playerMaterial.color = defaultColor;
             colorEvent.color = defaultColor;
             EventSystem.Current.FireEvent(colorEvent);
         }
-        public int GetCurrentMaterialIndex() { return currentMaterialIndex; }
 
         public Color GetCurrentMaterialColor()
         {
@@ -237,16 +205,25 @@ namespace CallbackSystem
 
         public void DecreaseDamageUpgrade() => DecreaseDamageUpgraded = true;
 
-        public int PlayerMaterialIndex
+        public void SetBatteriesOnLoad(int amount)
         {
-            get { return currentMaterialIndex; }
-            set { currentMaterialIndex = value; }
+            batteryCount = amount;
+        }
+
+        public void SetHealthOnLoad(float amount)
+        {
+            currHealth = amount;
         }
 
         public bool DecreaseDamageUpgraded
         {
             get { return decreaseDamageUpgrade; }
             set { decreaseDamageUpgrade = value; }
+        }
+
+        public bool Alive
+        {
+            get { return alive; }
         }
     }
 }

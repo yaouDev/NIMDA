@@ -7,14 +7,10 @@ namespace CallbackSystem
 {
     public class CrosshairUIListener : MonoBehaviour
     {
-        //private PlayerAttack[] players;
-        //private PlayerAttack player;
         [SerializeField] private Image player1CH, player2CH;
         private Image currentCH;
         void Start()
         {
-            //players = FindObjectsOfType<PlayerAttack>();
-            //player = players[0].IsPlayerOne() ? players[0] : players[1];
             EventSystem.Current.RegisterListener<WeaponCrosshairEvent>(UpdateCrosshair);
         }
 
@@ -25,7 +21,6 @@ namespace CallbackSystem
             {
                 currentCH.enabled = true;
                 currentCH.transform.position = eve.crosshairPos;
-                //Debug.Log($"{eve.crosshairPos}");
             } else
                 currentCH.enabled = false;
         }

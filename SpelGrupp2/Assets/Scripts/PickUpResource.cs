@@ -34,23 +34,22 @@ namespace CallbackSystem
                     case (PickUp.Iron):
                         crafting.iron++;
                         Destroy(gameObject);
-                        //Debug.Log("Picked up iron");
                         break;
+
                     case (PickUp.Copper):
                         crafting.copper++;
                         Destroy(gameObject);
-                        //Debug.Log("Picked up copper");
                         break;
+
                     case (PickUp.Transistor):
                         crafting.transistor++;
                         Destroy(gameObject);
-                        //Debug.Log("Picked up transistor");
                         break;
+
                     case (PickUp.Bullet):
-                        //if (playerAttack.ReturnBullets() < playerAttack.ReturnMaxBullets())
                             playerAttack.CraftAmmoBox();
                             Destroy(gameObject);
-                        //Debug.Log("Picked up bullet");
+
                         break;
                     case (PickUp.Battery):
                         if (playerHealth.GetCurrentBatteryCount() < playerHealth.GetMaxBatteryCount())
@@ -58,16 +57,12 @@ namespace CallbackSystem
                         else
                         {
                             playerHealth.SetCurrentHealth(playerHealth.GetMaxHealth());
-                            //Debug.Log("Battery count too high. Max hp set");
                         }
                         Destroy(gameObject);
-
-                        //Debug.Log("Picked up Battery");
                         break;
 
                     case (PickUp.Currency):
                         crafting.currency++;
-                        //Debug.Log("Picked up a bottlecap");
                         Destroy(gameObject);
                         break;
                 }

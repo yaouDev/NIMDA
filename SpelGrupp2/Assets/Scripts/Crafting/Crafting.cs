@@ -11,46 +11,37 @@ namespace CallbackSystem
 {
     /*
      * Where the players inventory is instantiated, stored and managed.
-     * Calls on method in PlayerAttack when bullet is crafted. 
      */
     public class Crafting : MonoBehaviour
     {
         [HideInInspector] public PlayerAttack playerAttackScript;
         [HideInInspector] public Blink playerBlinkScript;
+        [SerializeField] private LayerMask layerMask;
+        [SerializeField] private GameObject craftingTable;
         [SerializeField]
         private Recipe batteryRecipe, bulletRecipe,
         UpgradedProjectileWeaponRecipe, UpgradedLaserWeaponRecipe,
         cyanRecipe, yellowRecipe, whiteRecipe, magentaRecipe,
         greenRecipe, blackRecipe, RevolverCritRecipe, laserbeamWidthRecipe,
         largeMagazineRecipe, laserbeamChargeRecipe, blinkUpgradeRecipe;
-        [SerializeField] private LayerMask layerMask;
-        [SerializeField] private GameObject craftingTable;
-        private int[] resourceArray;
-        private float sphereRadius = .45f;
-        private float maxSphereDistance = 3f;
-        [SerializeField] private GameObject[] dropTable = new GameObject[4];
-
-        public int copper, transistor, iron, currency;
-
         private ResourceUpdateEvent resourceEvent;
         private FadingTextEvent fadingtextEvent;
         private CraftingEvent craftingEvent;
         private PlayerHealth playerHealthScript;
         private PlayerController playerControllerScript;
-        private bool isPlayerOne, started = false, isCrafting = false;
         private PlayerInput playerInput;
-
+        private bool isPlayerOne, initialized = false, isCrafting = false;
+        private int[] resourceArray;
+        private float sphereRadius = .45f;
+        private float maxSphereDistance = 3f;
+        public int copper, transistor, iron, currency;
         public Dictionary<string, bool> colorDictionary;
-
         private Color blackColor = new Color(0.25f, 0.25f, 0.25f, 1f),
             greenColor = new Color(0.35f, 0.95f, 0f, 1f),
             cyanColor = new Color(0.1f, 0.90f, 0.90f, 1f),
             whiteColor = new Color(0.95f, 0.95f, 0.95f, 1f),
             magentaColor = new Color(0.85f, 0f, 0.85f, 1f),
             defaultColor;
-
-
-
 
         public void UpdateResources()
         {
@@ -84,7 +75,7 @@ namespace CallbackSystem
 
         private void Update()
         {
-            if (!started)
+            if (!initialized)
             {
                 isPlayerOne = playerAttackScript.IsPlayerOne();
                 resourceEvent.isPlayerOne = isPlayerOne;
@@ -95,26 +86,8 @@ namespace CallbackSystem
                 UpdateResources();
 
                 defaultColor = isPlayerOne ? new Color(0.3f, 0.9f, 0.3f, 1f) : new Color(0.3f, 0.3f, 0.9f, 1f);
-                started = true;
+                initialized = true;
             }
-        }
-
-        public void DropLoot()
-        {
-            /*
-            dropOffset = new Vector3(UnityEngine.Random.Range(-1f, 1f), 1f, UnityEngine.Random.Range(-1f, 1f));
-            //dropOffset = Random.onUnitSphere * 2f;
-            dropOffset.y = Mathf.Abs(dropOffset.y);
-            */
- 
-                for (int i = 0; i < resourceArray[i] / 2; i++)
-                {
-              //      drop = dropTable[index];
-              //      GameObject loot = Instantiate(drop, transform.position + dropOffset, Quaternion.identity);
-              //      Destroy(loot, 15f);
-                }
-            
-            BisectResources();
         }
 
         //%-------------------------------Crafting table----------------------------------%
@@ -145,7 +118,6 @@ namespace CallbackSystem
                         else if (hit.transform.tag == "Exit")
                         {
                             OpenExit exit = hit.transform.GetComponentInParent<OpenExit>();
-                            //exit.OpenDoor();
                         }
                     }
                 }
@@ -298,7 +270,6 @@ namespace CallbackSystem
             {
                 playerHealthScript.ChooseMaterialColor(cyanColor);
                 playerHealthScript.SetDefaultStats();
-                playerHealthScript.ChooseMaterial(2);
                 playerHealthScript.DecreaseDamageUpgrade();
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Cyan Crafted";
@@ -314,7 +285,6 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(Color.yellow);
                 playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
-                playerHealthScript.ChooseMaterial(1);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Yellow Crafted";
             }
@@ -329,7 +299,6 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(whiteColor);
                 playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
-                playerHealthScript.ChooseMaterial(3);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color White Crafted";
             }
@@ -344,7 +313,6 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(magentaColor);
                 playerHealthScript.SetDefaultStats();
                 playerHealthScript.DecreaseDamageUpgrade();
-                playerHealthScript.ChooseMaterial(2);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Magenta Crafted";
             }
@@ -360,7 +328,6 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(greenColor);
                 playerHealthScript.SetDefaultStats();
                 playerControllerScript.MovementSpeedUpgrade();
-                playerHealthScript.ChooseMaterial(1);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Green Crafted";
             }
@@ -376,7 +343,6 @@ namespace CallbackSystem
                 playerHealthScript.ChooseMaterialColor(blackColor);
                 playerHealthScript.SetDefaultStats();
                 playerBlinkScript.DecreaseBlinkCooldown();
-                playerHealthScript.ChooseMaterial(3);
                 AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
                 fadingtextEvent.text = "Color Black Crafted";
             }
@@ -389,7 +355,6 @@ namespace CallbackSystem
         {
             playerHealthScript.ChooseMaterialColor(defaultColor);
             playerHealthScript.SetDefaultStats();
-            playerHealthScript.ChooseMaterial(0);
             AudioController.instance.PlayOneShotAttatched(AudioController.instance.craftingSound.craftTable, gameObject);
             fadingtextEvent.text = "Default Color Crafted";
         }
@@ -408,7 +373,6 @@ namespace CallbackSystem
                     missingResources = true;
                 }
             }
-
             if (!missingResources)
             {
                 copper -= recipe.copperNeeded;
